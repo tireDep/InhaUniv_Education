@@ -15,19 +15,25 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="p131_opcast01.cpp">
+    <ClCompile Include="p183_ctrlbrach01.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="p133_opinc01.cpp">
+    <ClCompile Include="p185_ctrlbranch.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="p135_opinc02.cpp">
+    <ClCompile Include="p185_test.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="p135_test.cpp">
+    <ClCompile Include="p186_test.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="p136_opbit01.cpp">
+    <ClCompile Include="p187_test.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="p192_ctrlifelse02.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="p192_test.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
