@@ -97,6 +97,11 @@ int MultFuc(int num1, int num2)
 int DivFuc(int num1, int num2)	
 {
 	puts("\n[나눗셈 선택]");
+	if (num2 == 0)
+	{
+		puts("0으로 나눌 수 없음");
+		return 0;
+	}
 	return num1 / num2;
 }	// int DivFuc(int num1, int num2)	
 
