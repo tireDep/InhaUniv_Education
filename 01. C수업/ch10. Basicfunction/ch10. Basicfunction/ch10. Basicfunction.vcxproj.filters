@@ -48,6 +48,9 @@
     <ClCompile Include="p364_test_t04_arrInput.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="testSolution.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="test.h">
