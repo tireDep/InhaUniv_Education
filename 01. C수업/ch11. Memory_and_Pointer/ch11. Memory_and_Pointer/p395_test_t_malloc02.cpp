@@ -9,6 +9,7 @@
 
 // #define _CRTDBG_MAP_ALLOC // 메모리 누수
 
+void CheckFree(int *arr);
 void PrintArr(int cnt, int *resultArr, int result);
 
 int main()
@@ -57,7 +58,7 @@ int main()
 			memcpy(tempArr, resultArr, sizeof(resultArr) * cntCheck);	// tempArr에 직전값들 저장
 			*(tempArr + cnt) = inputNum;	// tempArr에 입력값 저장
 
-			free(resultArr);	// 메모리 해제
+			CheckFree(resultArr);
 			resultArr = (int *)malloc(sizeof(int) * cntCheck);	// resultArr 재할당
 
 			memcpy(resultArr, tempArr, sizeof(tempArr) * cntCheck);	// resultArr에 값 저장
@@ -65,11 +66,11 @@ int main()
 			result += inputNum;
 			cnt++;
 		}
-		free(tempArr);
+		CheckFree(tempArr);
 	}
 
 	PrintArr(cnt, resultArr, result);
-	free(resultArr);
+	CheckFree(resultArr);
 	
 	// _CrtSetReportMode(_CRT_WARN, _CRTDBG_MODE_DEBUG);
 	// _CrtSetReportMode(_CRT_ERROR, _CRTDBG_MODE_DEBUG);
@@ -98,7 +99,6 @@ int main()
 메모리 해제에 주의하기!
 - 메모리를 해지하는 순간에 메모리가 존재하지 않을 수도 있음(에러남)
 ==> 메모리가 할당되어있는지 확인 후 해제
-
 if(동적할당메모리변수 != NULL)
 	free()
 else
@@ -118,3 +118,11 @@ void PrintArr(int cnt, int *resultArr, int result)
 
 	return;
 }	// void PrintArr()
+
+void CheckFree(int *arr)
+{
+	if (arr != NULL)
+	{
+		free(arr);
+	}
+}
