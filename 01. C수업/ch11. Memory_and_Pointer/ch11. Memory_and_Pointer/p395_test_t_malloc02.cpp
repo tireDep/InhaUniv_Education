@@ -5,10 +5,22 @@
 #include<stdlib.h>
 #include<string.h>
 
+#include <crtdbg.h>	// 메모리 누수
+
+// #define _CRTDBG_MAP_ALLOC // 메모리 누수
+
 void PrintArr(int cnt, int *resultArr, int result);
 
 int main()
 {
+	// _CrtSetDbgFlag(_CRTDBG_ALLOC_MEM_DF | _CRTDBG_LEAK_CHECK_DF);	// 메모리 누수
+	// _CRTDBG_ALLOC_MEM_DF : 할당 체크
+	// _CRTDBG_LEAK_CHECK_DF : 누수 체크
+	
+
+	// _crtBreakAlloc = 72;	// 메모리 누수
+	// 디버깅시 누수가 일어난 위치에 중단점 설정해줌
+
 	int cnt = 0;
 	int result = 0;
 	int *tempArr = NULL;
@@ -59,13 +71,41 @@ int main()
 	PrintArr(cnt, resultArr, result);
 	free(resultArr);
 	
+	// _CrtSetReportMode(_CRT_WARN, _CRTDBG_MODE_DEBUG);
+	// _CrtSetReportMode(_CRT_ERROR, _CRTDBG_MODE_DEBUG);
+	// _CrtSetReportMode(_CRT_ASSERT, _CRTDBG_MODE_DEBUG);
+	// 메모리 누수
+	// 덤프 위치 리다이렉트
+
+	// _CrtSetReportMode(_CRT_WARN, _CRTDBG_MODE_FILE);
+	// _CrtSetReportFile(_CRT_WARN, _CRTDBG_FILE_STDOUT);
+	// _CrtSetReportMode(_CRT_ERROR, _CRTDBG_MODE_FILE);
+	// _CrtSetReportFile(_CRT_ERROR, _CRTDBG_FILE_STDOUT);
+	// _CrtSetReportMode(_CRT_ASSERT, _CRTDBG_MODE_FILE);
+	// _CrtSetReportFile(_CRT_ASSERT, _CRTDBG_FILE_STDOUT);
+	// 메모리 누수
+	// 콘솔 리다이렉트
+
+	_CrtDumpMemoryLeaks();	// 메모리 누수
+	// 디버깅시 메모리 누수가 일어난 부분을 확인해 줌
+	// {} 안의 숫자가 메모리 누수가 일어난 부분
+
 	return 0;
 }
 
-void CalcArr(int cnt, int *tempArr, int *resultArr, int result)
-{
-	return;
-}	// void CalcArr()
+/*
+-------------------------------------------------------------------
+메모리 해제에 주의하기!
+- 메모리를 해지하는 순간에 메모리가 존재하지 않을 수도 있음(에러남)
+==> 메모리가 할당되어있는지 확인 후 해제
+
+if(동적할당메모리변수 != NULL)
+	free()
+else
+	// 선언이 되지 않았거나
+	// 중간에 해제 되었거나
+-------------------------------------------------------------------
+*/
 
 void PrintArr(int cnt, int *resultArr, int result)
 {
