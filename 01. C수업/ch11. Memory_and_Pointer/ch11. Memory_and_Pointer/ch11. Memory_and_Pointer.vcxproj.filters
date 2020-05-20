@@ -69,5 +69,8 @@
     <ClCompile Include="p408_test_t02_inputArr.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="p413.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>
