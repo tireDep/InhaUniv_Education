@@ -19,7 +19,7 @@ int main()
 	// _CRTDBG_LEAK_CHECK_DF : 누수 체크
 	
 
-	// _crtBreakAlloc = 72;	// 메모리 누수
+	_crtBreakAlloc = 72;	// 메모리 누수
 	// 디버깅시 누수가 일어난 위치에 중단점 설정해줌
 
 	int cnt = 0;
