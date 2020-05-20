@@ -8,17 +8,29 @@
 #include<stdlib.h>
 #include<malloc.h>
 
+#include<Windows.h>	// 콘솔창 관련
+
 void Sort(int *numArr);
 void PrintArr(int *numArr, char *printString);
 
 int main()
 {
+	system("mode con cols=50 lines=25");	// 콘솔창 크기 조절
+	
+	COORD coord;
+	coord.X = 25 / 2;
+	coord.Y = 25 / 2;
+	// 콘솔창 중앙 출력
+
 	int inputNum = 0;
 	int cnt = 0;
 	int *numArr = (int *)malloc(sizeof(int));
 
 	while (1)
 	{
+		system("cls");	// 화면 삭제
+		SetConsoleCursorPosition(GetStdHandle(STD_OUTPUT_HANDLE), coord);	// 콘솔창 중앙 출력
+
 		printf("숫자를 입력하시오 : ");
 		scanf_s("%d", &inputNum);
 
