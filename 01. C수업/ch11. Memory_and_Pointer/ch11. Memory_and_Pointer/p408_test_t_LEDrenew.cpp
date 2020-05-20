@@ -79,6 +79,7 @@ void PrintLedString(char *printString)
 	while (!_kbhit())
 	{
 		puts(printString);
+		puts(printString);
 		Sleep(1000);
 		system("cls");
 
