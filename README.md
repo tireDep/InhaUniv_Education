@@ -18,6 +18,6 @@
 7. 언리얼 엔진 4 마스터 (책 사용 미정)
 
 [Game Design / Plan]
-1. The Art of Game Design (책 X, PDF)
+1. The Art of Game Design (책 X, PDF) (20.05.09. ~ )
 2. 게임의 운명을 결정하는 기획과 시나리오
 3. 핀란드를 게임 강국으로 만든 기획자들
