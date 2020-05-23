@@ -6,12 +6,11 @@ void SetPaul(int *paul)
 	*paul = 0;
 } // void SetPaul()
 
-void SetVal(int *ball, int *strike, int *checkCnt, int *checkZero)
+void SetVal(int *ball, int *strike, int *checkCnt)
 {
 	*ball = 0;
 	*strike = 0;
 	*checkCnt = 0;
-	*checkZero = 0;
 }	// void SetVal()
 
 void SetNumber(int *ansArr)
@@ -21,11 +20,22 @@ void SetNumber(int *ansArr)
 	for (int i = 0; i < 3; i++)
 	{
 		ansArr[i] = rand() % 9 + 1;
-		i = CheckTwice(ansArr, i, 0);
+		i = CheckTwice(ansArr, i);
 	}
-
-	return;
 }	// void SetNumber()
+
+bool IsPaul(int *inputArr, int arrSize, int *paul, int isPaul, char *string)
+{
+	if (isPaul != 3)
+	{
+		printf("%s", string);
+		if (CheckPaul(paul))
+			return true;
+		else
+			return false;
+	}
+	return false;
+}	// bool IsPaul()
 
 bool CheckPaul(int *paul)
 {
@@ -34,21 +44,16 @@ bool CheckPaul(int *paul)
 	PrintScore("Paul", *paul);
 	puts("");
 	if (*paul == 3)
-	{
 		return true;
-		// 다시 실행 할 수 있게 변경해보기
-	}
 	else
-	{
 		return false;
-	}
 }	// bool CheckPaul()
 
-int CheckTwice(int *arr, int maxI, int pos)
+int CheckTwice(int *arr, int maxI)
 {
-	for (int j = 0; j < maxI - pos; j++)
+	for (int j = 0; j < maxI; j++)
 	{
-		if (arr[j] == arr[maxI - pos])
+		if (arr[j] == arr[maxI - j + 1])
 		{
 			maxI--;
 			break;
@@ -58,7 +63,24 @@ int CheckTwice(int *arr, int maxI, int pos)
 	return maxI;
 }	// int CheckTwice()
 
-void InputNumber(int *inputArr, int inputNum)
+void InputNumber(int *inputNum, int *checkCnt, int *paul)
+{
+	int _inputNum, tempNum;
+	printf("숫자를 입력하시오(3자리, 1 ~ 9) : ");
+	scanf_s("%d", &_inputNum);
+
+	*inputNum = _inputNum;
+	tempNum = _inputNum;
+	while (tempNum > 0)
+	{
+		if (tempNum % 10 <= 0)
+			break;
+		tempNum /= 10;
+		(*checkCnt)++;
+	}	// Check Input Cnt & Check Input Zero
+}	// void InputNumber()
+
+void InputNumberArr(int *inputArr, int inputNum)
 {
 	int powNum = 0;
 	int cnt = 0;
@@ -93,6 +115,27 @@ void CheckAnswer(int *answerArr, int *inputArr, int arrSize, int *strike, int *b
 	}	// for_i
 }	// void CheckAnswer()
 
+bool CheckScore(int *answerArr, int *strike, int *ball)
+{
+	if (*strike == 0 && *ball == 0)
+	{
+		PrintScore("No Ball No Strike\n", -1);
+		return false;
+	}
+	else if (*strike == 3)
+	{
+		printf("정답!\n정답은 %d, %d, %d 입니다.\n", answerArr[0], answerArr[1], answerArr[2]);
+		return true;
+	}
+	else
+	{
+		PrintScore("Ball", *ball);
+		PrintScore("Strike", *strike);
+		puts("");
+		return false;
+	}
+}	// bool CheckScore()
+
 void PrintScore(char *scoreName, int score)
 {
 	if (score == -1)
@@ -104,3 +147,24 @@ void PrintScore(char *scoreName, int score)
 		printf("%s : %d\n", scoreName, score);
 	}
 }	// void PrintScore()
+
+bool CheckRestart()
+{
+	char inputAns = 0;
+
+	rewind(stdin);
+	printf("\n재시작(Y/N) : ");
+	scanf_s("%c", &inputAns, 1);
+	puts("");
+
+	if (tolower(inputAns) == 'y')
+	{
+		system("cls");
+		return true;
+	}
+	else
+	{
+		puts("게임을 종료합니다.");
+		return false;
+	}
+}	// bool CheckRestart()
