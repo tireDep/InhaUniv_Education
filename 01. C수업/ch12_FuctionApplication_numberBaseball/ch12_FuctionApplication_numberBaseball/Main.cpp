@@ -15,7 +15,7 @@ int main()
 	while (1)
 	{
 		SetNumber(answerArr);
-		// printf("%d %d %d\n", answerArr[0], answerArr[1], answerArr[2]);
+		printf("%d %d %d\n", answerArr[0], answerArr[1], answerArr[2]);
 		SetPaul(&paul);
 
 		while (1)
@@ -23,15 +23,15 @@ int main()
 			SetVal(&ball, &strike, &checkCnt);
 
 			InputNumber(&inputNum, &checkCnt, &paul);
-			if (IsPaul(inputArr,arrSize,&paul,checkCnt,"\n숫자의 갯수가 맞지 않습니다.\n"))
+			if (IsPaul(inputArr, arrSize, &paul, checkCnt, "\n숫자의 갯수가 맞지 않습니다.\n"))
 				break;
 			else if (checkCnt != 3)
 				continue;
 
 			InputNumberArr(inputArr, inputNum);
-			if (IsPaul(inputArr, arrSize, &paul, CheckTwice(inputArr, arrSize),"\n중복된 숫자의 입력입니다.\n"))
+			if (IsPaul(inputArr, arrSize, &paul, CheckTwice(inputArr, arrSize, 1), "\n중복된 숫자의 입력입니다.\n"))
 				break;
-			else if (CheckTwice(inputArr, arrSize) != 3)
+			else if (CheckTwice(inputArr, arrSize, 1) != 3)
 				continue;
 
 			CheckAnswer(answerArr, inputArr, arrSize, &strike, &ball);

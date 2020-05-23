@@ -20,7 +20,7 @@ void SetNumber(int *ansArr)
 	for (int i = 0; i < 3; i++)
 	{
 		ansArr[i] = rand() % 9 + 1;
-		i = CheckTwice(ansArr, i);
+		i = CheckTwice(ansArr, i, 0);
 	}
 }	// void SetNumber()
 
@@ -49,16 +49,35 @@ bool CheckPaul(int *paul)
 		return false;
 }	// bool CheckPaul()
 
-int CheckTwice(int *arr, int maxI)
+	// 수정 예정 
+int CheckTwice(int *arr, int maxI, int pos)
 {
-	for (int j = 0; j < maxI; j++)
+	if (pos == 0)
 	{
-		if (arr[j] == arr[maxI - j + 1])
+		for (int j = 0; j < maxI; j++)
 		{
-			maxI--;
-			break;
-		}
+			if (arr[j] == arr[maxI])
+			{
+				maxI--;
+				break;
+			}
+		} // rand() 중복 방지
 	}
+
+	else
+	{
+		for (int i = 0; i < maxI - 1; i++)
+		{
+			for (int j = i+1; j < maxI; j++)
+			{
+				if (arr[i] == arr[j])
+				{
+					maxI--;
+					break;
+				}
+			}
+		}
+	}	// 중복 입력 방지
 
 	return maxI;
 }	// int CheckTwice()
