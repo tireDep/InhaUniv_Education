@@ -75,5 +75,8 @@
     <ClCompile Include="p509_test_t_inputPrintChar.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="p509_test_t_inputPrintChar02.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>
