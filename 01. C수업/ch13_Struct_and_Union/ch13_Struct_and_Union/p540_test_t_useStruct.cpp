@@ -23,6 +23,7 @@ kar98k	7		4
 #include<string.h>
 
 #define MAXITEM 6
+#define MAXWEIGHT 10
 
 struct Items_s
 {
@@ -100,7 +101,7 @@ void CheckFree(Items_s *mem)
 void InputItem(Items_s *inventory)
 {
 	char nameArr[MAXITEM][8] = { "kar98r", "pan", "scope", "pot", "raffle", "map" };
-	char numArr[MAXITEM][2] = { { 7,4 },{ 10,2 },{ 7,4 },{ 6,6 },{ 2,7 },{ 3,1 } };
+	char numArr[MAXITEM][2] = { { 7,4 },{ 10,2 },{ 7,4 },{ 6,6 },{ 2,10 },{ 3,5 } };
 
 	for (int i = 0; i < MAXITEM; i++)
 	{
@@ -115,23 +116,33 @@ void ImportantInput(Items_s *inventory, Items_s *yourItem, int *yourImportant, i
 	int index;
 	for (int i = 0; i < MAXITEM - 1; i++)
 	{
-		index = i;
 		for (int j = i; j < MAXITEM; j++)
 		{
-			if (inventory[j].checkInput != 1)
+			if (inventory[j].checkInput != 1)	// 소지하지 않았을 경우
 			{
 				index = inventory[i].important < inventory[j].important ? j : i;
+				// 중요도를 비교하여 더 높은 중요도의 인덱스 저장
 			}
 		}
 
-		yourItem[i] = inventory[index];
-		*yourWeight += inventory[index].weight;
-		*yourImportant += inventory[index].important;
-		inventory[index].checkInput = 1;
-
-		if (*yourWeight >= 10)
-			break;
+		if (*yourWeight + inventory[i].weight <= MAXWEIGHT)
+		{
+			// 가방 무게 + 아이템 무게 기준치보다 낮을 경우에만 적재 가능
+			yourItem[i] = inventory[index];
+			*yourWeight += inventory[index].weight;
+			*yourImportant += inventory[index].important;
+			inventory[index].checkInput = 1;
+		}
+		else
+			continue;
 	}
+	
+	/*
+	------------------------------------------------------------
+	다른방법
+	- 중요도가 높은 순서대로 정렬 후 무게를 계산해서 출력하는 방법
+	-------------------------------------------------------------
+	*/
 }
 
 void LightWeightInput(Items_s *inventory, Items_s *yourItem, int *yourImportant, int *yourWeight)
