@@ -36,5 +36,11 @@
     <ClCompile Include="p525_test_t_struckMalloc02.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="p538_takeNot_t.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="p540_test_t_useStruct.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>
