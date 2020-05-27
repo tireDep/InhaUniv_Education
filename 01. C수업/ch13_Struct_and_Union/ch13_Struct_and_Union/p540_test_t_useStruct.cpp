@@ -44,6 +44,8 @@ void InputItem(Items_s *inventory);
 void ImportantInput(Items_s *inventory, Items_s *yourItem, int *yourImportant, int *yourWeight);
 void PrintYourItem(Items_s *yourItem, int yourImportant, int yourWeight);
 
+void LightWeightInput(Items_s *inventory, Items_s *yourItem, int *yourImportant, int *yourWeight);
+
 int main()
 {
 	Items_s *inventory = NULL;
@@ -59,7 +61,17 @@ int main()
 	int yourWeight = 0;
 	int yourImportant = 0;
 	ImportantInput(inventory, yourItem, &yourImportant, &yourWeight);
+	PrintYourItem(yourItem, yourImportant, yourWeight);
 
+	puts("");
+
+	yourWeight = 0;
+	yourImportant = 0;
+	for (int i = 0; i < MAXITEM; i++)
+	{
+		inventory[i].checkInput = 0;
+	}
+	LightWeightInput(inventory, yourItem, &yourImportant, &yourWeight);
 	PrintYourItem(yourItem, yourImportant, yourWeight);
 
 	CheckFree(inventory);
@@ -88,7 +100,7 @@ void CheckFree(Items_s *mem)
 void InputItem(Items_s *inventory)
 {
 	char nameArr[MAXITEM][8] = { "kar98r", "pan", "scope", "pot", "raffle", "map" };
-	char numArr[MAXITEM][2] = { { 7,4 },{ 10,2 },{ 7,4 },{ 6,6 },{ 2,10 },{ 3,5 } };
+	char numArr[MAXITEM][2] = { { 7,4 },{ 10,2 },{ 7,4 },{ 6,6 },{ 2,7 },{ 3,1 } };
 
 	for (int i = 0; i < MAXITEM; i++)
 	{
@@ -106,9 +118,34 @@ void ImportantInput(Items_s *inventory, Items_s *yourItem, int *yourImportant, i
 		index = i;
 		for (int j = i; j < MAXITEM; j++)
 		{
-			if (inventory[i].checkInput != 1)
+			if (inventory[j].checkInput != 1)
 			{
 				index = inventory[i].important < inventory[j].important ? j : i;
+			}
+		}
+
+		yourItem[i] = inventory[index];
+		*yourWeight += inventory[index].weight;
+		*yourImportant += inventory[index].important;
+		inventory[index].checkInput = 1;
+
+		if (*yourWeight >= 10)
+			break;
+	}
+}
+
+void LightWeightInput(Items_s *inventory, Items_s *yourItem, int *yourImportant, int *yourWeight)
+{
+	int index;
+	for (int i = 0; i < MAXITEM - 1; i++)
+	{
+		index = i;
+		for (int j = i; j < MAXITEM; j++)
+		{
+			if (inventory[j].checkInput != 1)
+			{
+				if (inventory[index].weight > inventory[j].weight)
+					index = j;
 			}
 		}
 
