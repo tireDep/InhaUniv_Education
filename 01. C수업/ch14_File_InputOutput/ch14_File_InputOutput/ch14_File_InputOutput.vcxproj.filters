@@ -54,5 +54,11 @@
     <ClCompile Include="p573_test_t_guguFile.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="p575_test02.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="p575_test03_and_test04_t.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>
