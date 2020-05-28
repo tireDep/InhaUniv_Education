@@ -36,5 +36,20 @@
     <ClCompile Include="p559_Filefgets01.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="p564_takeNote_t.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="p565_Filefwrite01.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="p567_Filefread01.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="p571_Filefseek01.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="p572_takeNote_t.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>
