@@ -14,21 +14,36 @@ struct Student_s
 void CheckMem(Student_s *mem);
 void CheckFree(Student_s *mem);
 
-void AddStudent(Student_s **headStu, Student_s **tailStu);
-void ReadData(Student_s **headStu, Student_s **tailStu, int *nodeCnt);
-bool CheckSameSeat(Student_s **headStu, Student_s **tailStu, Student_s *newStudent);
+void AddStudent(Student_s **headStu, Student_s **tailStu, int nodeCnt);
+int ReadData(Student_s **headStu, Student_s **tailStu);
+bool CheckSameSeat(Student_s **headStu, Student_s *newStudent, int checkNum);
 void SortData(Student_s **headStu, int nodeCnt);
+void WriteData(Student_s **headStu);
 
-int CopyFile();
+void ChangeData(Student_s **headStu, Student_s **tailStu, int nodeCnt);
+
+void CopyFile(char *dstFileName, char *srcFileName);
+
+void CheckFile(Student_s **headStu, Student_s **tailStu, int *nodeCnt)
+{
+	if (_access("./nowFile.dat", 00) == 0)
+	{
+		*headStu = NULL;
+		*tailStu = *headStu;	// 데이터 초기화
+		*nodeCnt = ReadData(headStu, tailStu);	// 기존에 저장되어 있는 값 읽어옴
+	}
+}
 
 int main()
 {
 	Student_s *headStu = NULL;
 	Student_s *tailStu = headStu;
-
 	int inputNum;
+	int nodeCnt = 0;
+
 	while (1)
 	{
+		CheckFile(&headStu, &tailStu, &nodeCnt);
 		printf("[메인화면]\n");
 		printf("1. 데이터 추가  2. 검색&출력  3. 변경  4. 복구  5. 종료\n입력 : ");
 		scanf_s("%d", &inputNum);
@@ -36,17 +51,18 @@ int main()
 		switch (inputNum)
 		{
 		case 1:
-			AddStudent(&headStu, &tailStu);
+			AddStudent(&headStu, &tailStu, nodeCnt);
+			CopyFile("lastFile.dat", "nowFile.dat");	// save파일 생성
 			break;
 		case 2:
 			// SearchAndPrint();
 			break;
 		case 3:
-			// ChangeData();
+			ChangeData(&headStu, &tailStu ,nodeCnt);
 			break;
 		case 4:
-			// RestoreData();
-			// copyfile();	// todo
+			CopyFile("nowFile.dat", "lastFile.dat");
+			printf("파일이 복구되었습니다\n");
 			break;
 		case 5:
 			puts("프로그램 종료");
@@ -83,7 +99,7 @@ void CheckFree(Student_s *mem)
 		free(mem);
 }	// CheckFree()
 
-void AddStudent(Student_s **headStu, Student_s **tailStu)
+void AddStudent(Student_s **headStu, Student_s **tailStu, int nodeCnt)
 {
 	Student_s *newStudent;
 	newStudent = (Student_s *)malloc(sizeof(Student_s));
@@ -95,54 +111,31 @@ void AddStudent(Student_s **headStu, Student_s **tailStu)
 	printf("학생의 이름 입력 : ");
 	scanf_s("%s", newStudent->name, sizeof(newStudent->name));
 
-	if (_access("./nowFile.dat", 00) == 0)
+	if (!CheckSameSeat(headStu, newStudent, nodeCnt)) // 중복 값 판별
 	{
-		/*
-		두번째 입력부터 진행 되며,
-		기존 데이터를 모두 불러온 후 입력받은 값의 중복체크와 정렬 후 파일에 덮어쓰기됨
-		*/
-		*headStu = NULL;
-		*tailStu = *headStu;	// 데이터 초기화
-
-		// CopyFile();	// todo
-
-		int nodeCnt = 0;
-		ReadData(headStu, tailStu, &nodeCnt);	// 기존에 저장되어 있는 값 읽어옴
-		if (!CheckSameSeat(headStu, tailStu, newStudent)) // 중복 값 판별
-		{
-			SortData(headStu, nodeCnt);	// 데이터 정렬
-		}
-		else
-			return;
+		(*tailStu)->nextStudent = newStudent;	
+		*tailStu = newStudent;	// 동일좌석 존재 x시, 연결리스트 노드로 저장
+		SortData(headStu, nodeCnt);	// 데이터 정렬
 	}
 	else
-	{
 		*headStu = newStudent;
-	}
 
-	FILE *nowFp = NULL;
-	fopen_s(&nowFp, "nowFile.dat", "wb");
-
-	while (*headStu != NULL)
-	{
-		fprintf(nowFp, "%d %s\n", (*headStu)->seatNum, (*headStu)->name);
-		(*headStu) = (*headStu)->nextStudent;
-	}
-	fclose(nowFp);
+	WriteData(headStu);
 
 	return;
 }	// void AddStudent()
 
-void ReadData(Student_s **headStu, Student_s **tailStu, int *nodeCnt)
+int ReadData(Student_s **headStu, Student_s **tailStu)
 {
 	FILE *readFp = NULL;
 	fopen_s(&readFp, "nowFile.dat", "rb");
 	if (readFp == NULL)
 	{
 		puts("Error!");
-		return;
+		return 0;
 	}
 
+	int nodeCnt = 0;
 	int intTemp = 0;
 	char charTemp[32] = { 0 };
 	while (!feof(readFp))
@@ -166,23 +159,32 @@ void ReadData(Student_s **headStu, Student_s **tailStu, int *nodeCnt)
 		}
 		nodeCnt++;
 	}
+	nodeCnt += 1;
 	fclose(readFp);
+	
+	return nodeCnt;
 }	// void ReadData()
 
-bool CheckSameSeat(Student_s **headStu, Student_s **tailStu, Student_s *newStudent)
+bool CheckSameSeat(Student_s **headStu, Student_s *newStudent, int checkNum)
 {
+	int cntNum = checkNum;
+	if (checkNum == 0) return true;
+	else if (checkNum == 1) cntNum = 0;
 	Student_s *tempSearch = *headStu;
 	while (tempSearch != NULL)
 	{
 		if (tempSearch->seatNum == newStudent->seatNum)
 		{
-			printf("동일한 좌석이 존재합니다. 입력을 종료합니다.\n");
-			return true;
+			if (checkNum <= cntNum)
+			{
+				printf("동일한 좌석이 존재합니다. 입력을 종료합니다.\n");
+				return true;
+			}
+			cntNum++;
 		}
 		tempSearch = tempSearch->nextStudent;
 	}
-	(*tailStu)->nextStudent = newStudent;	// 동일좌석 존재 x시, 연결리스트 노드로 저장
-	*tailStu = newStudent;
+
 	return false;
 }	// void CheckSameSeat()
 
@@ -196,7 +198,7 @@ void SortData(Student_s **headStu, int nodeCnt)
 
 	int tempNum = 0;
 	char tempName[32] = { 0 };
-	while (nodeCnt + 1 >= 0)
+	while (nodeCnt >= 0)
 	{
 		nodeCnt--;
 		tempHead = *headStu;
@@ -219,29 +221,74 @@ void SortData(Student_s **headStu, int nodeCnt)
 
 }	// void SortData()
 
-int CopyFile()
+void WriteData(Student_s **headStu)
 {
-	FILE *cpFile = NULL;
-	FILE *dstFile = NULL;
+	FILE *nowFp = NULL;
+	fopen_s(&nowFp, "nowFile.dat", "wb");
 
-	fopen_s(&cpFile, "nowFile.dat", "rb");
-	fopen_s(&dstFile, "lastFile.dat", "wb");
-	if (cpFile == NULL)
+	Student_s *inputStu = *headStu;
+	while (inputStu != NULL)
+	{
+		fprintf(nowFp, "%d %s\n", inputStu->seatNum, inputStu->name);
+		inputStu = inputStu->nextStudent;
+	}
+	fclose(nowFp);
+}
+
+void ChangeData(Student_s **headStu, Student_s **tailStu, int nodeCnt)
+{
+	CopyFile("lastFile.dat", "nowFile.dat");
+	Student_s *changeStu = *headStu;
+	int inputNum = 0;
+	char inputChar[32] = { 0 };
+	rewind(stdin);
+	printf("변경할 자리번호 : ");
+	scanf_s("%d", &inputNum);
+
+	while (changeStu != NULL)
+	{
+		if (inputNum == changeStu->seatNum)
+		{
+			printf("바꿀 번호 입력 : ");
+			scanf_s("%d", &inputNum);
+			printf("바꿀 이름 입력 : ");
+			scanf_s("%s", inputChar, sizeof(inputChar));
+
+			changeStu->seatNum = inputNum;
+			strcpy_s(changeStu->name, 32, inputChar);
+
+			if (!CheckSameSeat(headStu, changeStu, 1)) // 중복 값 판별
+			{
+				SortData(headStu, nodeCnt);	// 데이터 정렬
+				WriteData(headStu);
+			}
+			return;
+		}
+		changeStu = changeStu->nextStudent;
+	}
+	printf("해당 번호가 존재하지 않습니다.");
+	return;
+}
+
+void CopyFile(char *dstFileName, char *srcFileName)
+{
+	FILE *srcFile = NULL;
+	FILE *dstFile = NULL;
+	fopen_s(&dstFile, dstFileName, "wb");
+	fopen_s(&srcFile, srcFileName, "rb");
+	if (srcFile == NULL)
 	{
 		puts("파일 복사 에러");
-		return 0;
+		return;
 	}
 
 	int intTemp = 0;
 	char charTemp[128] = { 0 };
-	int cnt = 0;
-	fseek(cpFile, 0, SEEK_SET);
-	while (!feof(cpFile))
+	fseek(srcFile, 0, SEEK_SET);
+	while (!feof(srcFile))
 	{
-		fscanf_s(cpFile, "%d %s", &intTemp, charTemp, sizeof(charTemp));
-		if (!feof(cpFile))fprintf(dstFile, "%d %s\n", intTemp, charTemp);
+		fscanf_s(srcFile, "%d %s", &intTemp, charTemp, sizeof(charTemp));
+		if (!feof(srcFile))fprintf(dstFile, "%d %s\n", intTemp, charTemp);
 	}
-
 	_fcloseall();
-	return 0;
-}
+}	// int CopyFile()
