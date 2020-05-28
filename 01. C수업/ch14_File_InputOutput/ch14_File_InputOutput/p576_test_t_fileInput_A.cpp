@@ -23,7 +23,6 @@ int main()
 	Student_s *tailStu = headStu;
 
 	int inputNum;
-	int checkNum = 0;
 	while (1)
 	{
 		printf("[메인화면]\n");
@@ -35,7 +34,6 @@ int main()
 		case 1:
 		{
 			AddStudent(&headStu, &tailStu);
-			checkNum++;
 			break;
 		}
 		case 2:
@@ -149,27 +147,66 @@ void AddStudent(Student_s **headStu, Student_s **tailStu)
 
 		// =======================================================
 		// sort()
+		/*
+		정렬 방식 : 노드 연결을 바꾸는 것이 아니라 안의 값을 바꾸는 형식으로 진행함
+		*/
+
+		FILE *nowFp = NULL;
+		fopen_s(&nowFp, "nowFile.dat", "wb");
+
 		Student_s *tempHead = *headStu;
 		Student_s *swap = NULL;
-		while (tempHead->nextStudent != NULL)
+		int cnt = 0;
+		while (tempHead != NULL)
 		{
-			if (tempHead->seatNum > tempHead->nextStudent->seatNum)
-			{
-				swap = tempHead;
-				tempHead = tempHead->nextStudent;
-				swap->nextStudent = tempHead->nextStudent;
-				tempHead->nextStudent = swap;
-			}
+			cnt++;
 			tempHead = tempHead->nextStudent;
 		}
+
+		tempHead = *headStu;
+		int check = 0;
+		int tempNum = 0;
+		char tempName[32] = { 0 };
+		while (check <= cnt)
+		{
+			check++;
+			tempHead = *headStu;
+			while (tempHead->nextStudent != NULL)
+			{
+				if (tempHead->seatNum > tempHead->nextStudent->seatNum)
+				{
+					tempNum = tempHead->seatNum;
+					strcpy_s(tempName, 32, tempHead->name);
+
+					tempHead->seatNum = tempHead->nextStudent->seatNum;
+					strcpy_s(tempHead->name, 32, tempHead->nextStudent->name);
+
+					tempHead->nextStudent->seatNum = tempNum;
+					strcpy_s(tempHead->nextStudent->name, 32, tempName);
+				}
+				tempHead = tempHead->nextStudent;
+			}
+		}
+		//-------------------------------------------------------------
+		while (*headStu != NULL)
+		{
+			fprintf(nowFp, "%d %s\n", (*headStu)->seatNum, (*headStu)->name);
+			(*headStu) = (*headStu)->nextStudent;
+		}
+		
+		
+		fclose(nowFp);
+		// 파일 입력
 	}
 	// ---------------------------------------------------------------------------------------
-
-	FILE *nowFp = NULL;
-	fopen_s(&nowFp, "nowFile.dat", "ab");
-	fprintf(nowFp, "%d %s\n", newStudent->seatNum, newStudent->name);
-	fclose(nowFp);
-	// 파일 입력
+	else
+	{
+		FILE *nowFp = NULL;
+		fopen_s(&nowFp, "nowFile.dat", "ab");
+		fprintf(nowFp, "%d %s\n", newStudent->seatNum, newStudent->name);
+		fclose(nowFp);
+		// 파일 입력
+	}
 	return;
 }
 
