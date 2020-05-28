@@ -51,5 +51,8 @@
     <ClCompile Include="p572_takeNote_t.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="p573_test_t_guguFile.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>
