@@ -3,10 +3,12 @@
 #include<string.h>
 #include<io.h>	// _access()
 
+#define ARRSIZE 32
+
 struct Student_s
 {
 	int seatNum;
-	char name[32];
+	char name[ARRSIZE];
 
 	Student_s *nextStudent;
 };
@@ -54,7 +56,7 @@ int main()
 			AddStudent(&headStu, &tailStu, nodeCnt);
 			break;
 		case 2:
-			// SearchAndPrint();
+			SearchAndPrint();
 			break;
 		case 3:
 			ChangeData(&headStu, &tailStu ,nodeCnt);
@@ -141,7 +143,7 @@ int ReadData(Student_s **headStu, Student_s **tailStu)
 
 	int nodeCnt = 0;
 	int intTemp = 0;
-	char charTemp[32] = { 0 };
+	char charTemp[ARRSIZE] = { 0 };
 	while (!feof(readFp))
 	{
 		Student_s *studentList;
@@ -201,7 +203,7 @@ void SortData(Student_s **headStu, int nodeCnt)
 	Student_s *swap = NULL;
 
 	int tempNum = 0;
-	char tempName[32] = { 0 };
+	char tempName[ARRSIZE] = { 0 };
 	while (nodeCnt >= 0)
 	{
 		nodeCnt--;
@@ -211,13 +213,13 @@ void SortData(Student_s **headStu, int nodeCnt)
 			if (tempHead->seatNum > tempHead->nextStudent->seatNum)
 			{
 				tempNum = tempHead->seatNum;
-				strcpy_s(tempName, 32, tempHead->name);
+				strcpy_s(tempName, ARRSIZE, tempHead->name);
 
 				tempHead->seatNum = tempHead->nextStudent->seatNum;
-				strcpy_s(tempHead->name, 32, tempHead->nextStudent->name);
+				strcpy_s(tempHead->name, ARRSIZE, tempHead->nextStudent->name);
 
 				tempHead->nextStudent->seatNum = tempNum;
-				strcpy_s(tempHead->nextStudent->name, 32, tempName);
+				strcpy_s(tempHead->nextStudent->name, ARRSIZE, tempName);
 			}
 			tempHead = tempHead->nextStudent;
 		}	// while() : 내부 순환
@@ -239,12 +241,19 @@ void WriteData(Student_s **headStu)
 	fclose(nowFp);
 }
 
+void SearchAndPrint(Student_s **headStu)
+{
+	int inputNum;
+	int inputName[ARRSIZE];
+	printf("1. 번호로 검색  2. 이름으로 검색\n입력 : ");
+}
+
 void ChangeData(Student_s **headStu, Student_s **tailStu, int nodeCnt)
 {
 	CopyFile("lastFile.dat", "nowFile.dat");
 	Student_s *changeStu = *headStu;
 	int inputNum = 0;
-	char inputChar[32] = { 0 };
+	char inputChar[ARRSIZE] = { 0 };
 	rewind(stdin);
 	printf("변경할 자리번호 : ");
 	scanf_s("%d", &inputNum);
@@ -259,7 +268,7 @@ void ChangeData(Student_s **headStu, Student_s **tailStu, int nodeCnt)
 			scanf_s("%s", inputChar, sizeof(inputChar));
 
 			changeStu->seatNum = inputNum;
-			strcpy_s(changeStu->name, 32, inputChar);
+			strcpy_s(changeStu->name, ARRSIZE, inputChar);
 
 			if (!CheckSameSeat(headStu, changeStu, 1)) // 중복 값 판별
 			{
