@@ -1,6 +1,8 @@
 #include "BasicHeader.h"
 #include "FuncHeader.h"
 
+// todo : 버그찾아야함
+// 값이 초기화 되는 케이스가 존재함..
 int main()
 {
 	Student_s *headStu = NULL;
@@ -18,14 +20,12 @@ int main()
 		switch (inputNum)
 		{
 		case 1:
-			//CheckFile(&headStu, &tailStu, &nodeCnt);
 			AddStudent(&headStu, &tailStu, nodeCnt);
 			break;
 		case 2:
-			// SearchAndPrint();
+			SearchAndPrint(&headStu);
 			break;
 		case 3:
-			//CheckFile(&headStu, &tailStu, &nodeCnt);
 			ChangeData(&headStu, &tailStu, nodeCnt);
 			break;
 		case 4:
@@ -38,7 +38,7 @@ int main()
 			break;
 
 		default:
-			printf("보기에 없는 숫자입니다. 재입력 해주세요.");
+			printf("보기에 없는 숫자입니다. 재입력 해주세요.\n");
 			break;
 		}
 		puts("");
@@ -117,7 +117,7 @@ int ReadData(Student_s **headStu, Student_s **tailStu)
 		studentList = (Student_s *)malloc(sizeof(Student_s));
 		CheckMem(studentList);
 
-		fscanf_s(readFp, "%d %s", &studentList->seatNum, studentList->name, sizeof(studentList));
+		fscanf_s(readFp, "%d %s\n", &studentList->seatNum, studentList->name, sizeof(studentList) * 2);
 		if (studentList->seatNum == 0)	break;	// 맨 마지막 개행 제거
 
 		if (*headStu == NULL)
@@ -206,14 +206,58 @@ void WriteData(Student_s **headStu)
 		inputStu = inputStu->nextStudent;
 	}
 	fclose(nowFp);
-}
+}	// void WriteData()
 
 void SearchAndPrint(Student_s **headStu)
 {
-	int inputNum;
-	int inputName[ARRSIZE];
-	printf("1. 번호로 검색  2. 이름으로 검색\n입력 : ");
-}
+	Student_s *searchTemp = NULL;
+	searchTemp = *headStu;
+
+	int check = 0;
+	int inputNum = 0;
+	char inputName[ARRSIZE] = { 0 };
+	printf("\n1. 번호로 검색  2. 이름으로 검색\n입력 : ");
+	scanf_s("%d", &inputNum);
+
+	if (inputNum == 1)
+	{
+		printf("번호를 입력하세요 : ");
+		scanf_s("%d", &inputNum);
+
+		while (searchTemp!=NULL)
+		{
+			if (searchTemp->seatNum == inputNum)
+			{
+				printf("번호 : %d 이름 : %s\n", searchTemp->seatNum, searchTemp->name);
+				check++;
+			}
+			searchTemp = searchTemp->nextStudent;
+		}
+	}
+	else if (inputNum == 2)
+	{
+		printf("이름을 입력하세요 : ");
+		scanf_s("%s", inputName, sizeof(inputName));
+		
+		while (searchTemp != NULL)
+		{
+			if (strcmp(searchTemp->name,inputName)==0)
+			{
+				printf("번호 : %d 이름 : %s\n", searchTemp->seatNum, searchTemp->name);
+				check++;
+			}
+			searchTemp = searchTemp->nextStudent;
+		}
+
+	}
+	else
+		printf("\n잘못된 값 입력\n");
+
+	if (check == 0)
+		printf("\n해당값이 존재하지 않음\n");
+
+	return;
+}	// void SearchAndPrint()
 
 void ChangeData(Student_s **headStu, Student_s **tailStu, int nodeCnt)
 {
@@ -229,7 +273,7 @@ void ChangeData(Student_s **headStu, Student_s **tailStu, int nodeCnt)
 	{
 		if (inputNum == changeStu->seatNum)
 		{
-			printf("바꿀 번호 입력 : ");
+			printf("\n바꿀 번호 입력 : ");
 			scanf_s("%d", &inputNum);
 			printf("바꿀 이름 입력 : ");
 			scanf_s("%s", inputChar, sizeof(inputChar));
@@ -249,7 +293,7 @@ void ChangeData(Student_s **headStu, Student_s **tailStu, int nodeCnt)
 	}
 	printf("해당 번호가 존재하지 않습니다.");
 	return;
-}
+}	// void ChangeData()
 
 void CopyFile(char *dstFileName, char *srcFileName)
 {
@@ -259,7 +303,7 @@ void CopyFile(char *dstFileName, char *srcFileName)
 	fopen_s(&srcFile, srcFileName, "rb");
 	if (srcFile == NULL)
 	{
-		puts("파일 복사 에러");
+		puts("\n파일 복사 에러");
 		return;
 	}
 
@@ -282,4 +326,4 @@ void CheckFile(Student_s **headStu, Student_s **tailStu, int *nodeCnt)
 		*tailStu = *headStu;	// 데이터 초기화
 		*nodeCnt = ReadData(headStu, tailStu);	// 기존에 저장되어 있는 값 읽어옴
 	}
-}
+}	// void CheckFile()
