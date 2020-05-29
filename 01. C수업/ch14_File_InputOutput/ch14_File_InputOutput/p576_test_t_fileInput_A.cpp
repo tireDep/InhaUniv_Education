@@ -52,7 +52,6 @@ int main()
 		{
 		case 1:
 			AddStudent(&headStu, &tailStu, nodeCnt);
-			CopyFile("lastFile.dat", "nowFile.dat");	// save颇老 积己
 			break;
 		case 2:
 			// SearchAndPrint();
@@ -101,6 +100,11 @@ void CheckFree(Student_s *mem)
 
 void AddStudent(Student_s **headStu, Student_s **tailStu, int nodeCnt)
 {
+	if (_access("./nowFile.dat", 00) == 0)
+	{
+		CopyFile("lastFile.dat", "nowFile.dat");	// save颇老 积己
+	}
+
 	Student_s *newStudent;
 	newStudent = (Student_s *)malloc(sizeof(Student_s));
 	CheckMem(newStudent);
