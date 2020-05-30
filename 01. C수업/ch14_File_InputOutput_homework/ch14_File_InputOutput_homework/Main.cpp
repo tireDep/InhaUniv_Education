@@ -1,8 +1,6 @@
 #include "BasicHeader.h"
 #include "FuncHeader.h"
 
-// todo : 버그찾아야함
-// 값이 초기화 되는 케이스가 존재함..
 int main()
 {
 	Student_s *headStu = NULL;
@@ -30,7 +28,7 @@ int main()
 			break;
 		case 4:
 			CopyFile("nowFile.dat", "lastFile.dat");
-			printf("파일이 복구되었습니다\n");
+			printf("파일 복구\n");
 			break;
 		case 5:
 			puts("프로그램 종료");
@@ -38,7 +36,7 @@ int main()
 			break;
 
 		default:
-			printf("보기에 없는 숫자입니다. 재입력 해주세요.\n");
+			printf("보기에 없는 숫자, 재입력 필요\n");
 			break;
 		}
 		puts("");
@@ -54,7 +52,7 @@ void CheckMem(Student_s *mem)
 {
 	if (mem == NULL)
 	{
-		puts("Error!");
+		puts("Error!_malloc");
 		return;
 	}
 	mem->nextStudent = NULL;
@@ -69,11 +67,6 @@ void CheckFree(Student_s *mem)
 
 void AddStudent(Student_s **headStu, Student_s **tailStu, int nodeCnt)
 {
-	if (_access("./nowFile.dat", 00) == 0)
-	{
-		CopyFile("lastFile.dat", "nowFile.dat");	// save파일 생성
-	}
-
 	Student_s *newStudent;
 	newStudent = (Student_s *)malloc(sizeof(Student_s));
 	CheckMem(newStudent);
@@ -86,12 +79,15 @@ void AddStudent(Student_s **headStu, Student_s **tailStu, int nodeCnt)
 
 	if (!CheckSameSeat(headStu, newStudent, nodeCnt)) // 중복 값 판별
 	{
+		CopyFile("lastFile.dat", "nowFile.dat");	// save파일 생성
 		(*tailStu)->nextStudent = newStudent;
 		*tailStu = newStudent;	// 동일좌석 존재 x시, 연결리스트 노드로 저장
 		SortData(headStu, nodeCnt);	// 데이터 정렬
 	}
-	else
+	else if (_access("./nowFile.dat", 00) != 0)	// 첫 입력일 경우
 		*headStu = newStudent;
+	else
+		return;
 
 	WriteData(headStu);
 
@@ -104,7 +100,7 @@ int ReadData(Student_s **headStu, Student_s **tailStu)
 	fopen_s(&readFp, "nowFile.dat", "rb");
 	if (readFp == NULL)
 	{
-		puts("Error!");
+		puts("Error!_File isn't here");
 		return 0;
 	}
 
@@ -150,7 +146,7 @@ bool CheckSameSeat(Student_s **headStu, Student_s *newStudent, int checkNum)
 		{
 			if (checkNum <= cntNum)
 			{
-				printf("동일한 좌석이 존재합니다. 입력을 종료합니다.\n");
+				printf("동일 좌석 존재, 입력 종료\n");
 				return true;
 			}
 			cntNum++;
@@ -163,12 +159,8 @@ bool CheckSameSeat(Student_s **headStu, Student_s *newStudent, int checkNum)
 
 void SortData(Student_s **headStu, int nodeCnt)
 {
-	/*
-	정렬 방식 : 노드 연결을 바꾸는 것이 아니라 안의 값을 바꾸는 형식으로 진행함
-	*/
 	Student_s *tempHead = *headStu;
 	Student_s *swap = NULL;
-
 	int tempNum = 0;
 	char tempName[ARRSIZE] = { 0 };
 	while (nodeCnt >= 0)
@@ -179,6 +171,7 @@ void SortData(Student_s **headStu, int nodeCnt)
 		{
 			if (tempHead->seatNum > tempHead->nextStudent->seatNum)
 			{
+				// 정렬 방식 : 노드 연결을 바꾸는 것이 아니라 안의 값을 바꾸는 형식으로 진행함
 				tempNum = tempHead->seatNum;
 				strcpy_s(tempName, ARRSIZE, tempHead->name);
 
@@ -216,35 +209,34 @@ void SearchAndPrint(Student_s **headStu)
 	int check = 0;
 	int inputNum = 0;
 	char inputName[ARRSIZE] = { 0 };
+	printf("\n[데이터 검색]\n");
 	printf("\n1. 번호로 검색  2. 이름으로 검색\n입력 : ");
 	scanf_s("%d", &inputNum);
 
 	if (inputNum == 1)
 	{
-		printf("번호를 입력하세요 : ");
+		printf("\n검색할 번호를 입력 : ");
 		scanf_s("%d", &inputNum);
-
+		printf("\n[검색결과]\n");
 		while (searchTemp!=NULL)
 		{
 			if (searchTemp->seatNum == inputNum)
 			{
-				printf("번호 : %d 이름 : %s\n", searchTemp->seatNum, searchTemp->name);
-				check++;
+				PrintData(searchTemp, &check);
 			}
 			searchTemp = searchTemp->nextStudent;
 		}
 	}
 	else if (inputNum == 2)
 	{
-		printf("이름을 입력하세요 : ");
+		printf("\n검색할 이름을 입력 : ");
 		scanf_s("%s", inputName, sizeof(inputName));
-		
+		printf("\n[검색결과]\n");
 		while (searchTemp != NULL)
 		{
 			if (strcmp(searchTemp->name,inputName)==0)
 			{
-				printf("번호 : %d 이름 : %s\n", searchTemp->seatNum, searchTemp->name);
-				check++;
+				PrintData(searchTemp, &check);
 			}
 			searchTemp = searchTemp->nextStudent;
 		}
@@ -256,16 +248,20 @@ void SearchAndPrint(Student_s **headStu)
 	if (check == 0)
 		printf("\n해당값이 존재하지 않음\n");
 
-	return;
 }	// void SearchAndPrint()
+
+void PrintData(Student_s *searchTemp, int *check)
+{
+	printf("번호 : %d 이름 : %s\n", searchTemp->seatNum, searchTemp->name);
+	(*check)++;
+}	// void PrintData()
 
 void ChangeData(Student_s **headStu, Student_s **tailStu, int nodeCnt)
 {
-	CopyFile("lastFile.dat", "nowFile.dat");
 	Student_s *changeStu = *headStu;
 	int inputNum = 0;
 	char inputChar[ARRSIZE] = { 0 };
-	rewind(stdin);
+	printf("\n[데이터 변경]\n");
 	printf("변경할 자리번호 : ");
 	scanf_s("%d", &inputNum);
 
@@ -283,6 +279,7 @@ void ChangeData(Student_s **headStu, Student_s **tailStu, int nodeCnt)
 
 			if (!CheckSameSeat(headStu, changeStu, 1)) // 중복 값 판별
 			{
+				CopyFile("lastFile.dat", "nowFile.dat");
 				SortData(headStu, nodeCnt);	// 데이터 정렬
 				WriteData(headStu);
 				printf("변경 완료\n");
@@ -291,7 +288,7 @@ void ChangeData(Student_s **headStu, Student_s **tailStu, int nodeCnt)
 		}
 		changeStu = changeStu->nextStudent;
 	}
-	printf("해당 번호가 존재하지 않습니다.");
+	printf("해당 번호가 존재하지 않음\n");
 	return;
 }	// void ChangeData()
 
@@ -303,7 +300,7 @@ void CopyFile(char *dstFileName, char *srcFileName)
 	fopen_s(&srcFile, srcFileName, "rb");
 	if (srcFile == NULL)
 	{
-		puts("\n파일 복사 에러");
+		puts("\n파일 복사 에러\n");
 		return;
 	}
 

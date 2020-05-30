@@ -23,3 +23,4 @@ void WriteData(Student_s **headStu);	//	¸µÅ©µå ¸®½ºÆ®ÀÇ ³»¿ëÀ» ÆÄÀÏ·Î Ãâ·ÂÇÏ´Â Ç
 void ChangeData(Student_s **headStu, Student_s **tailStu, int nodeCnt);	//	°ª º¯°æ ÇÔ¼ö
 void CopyFile(char *dstFileName, char *srcFileName);	// ÆÄÀÏ º¹»ç ÇÔ¼ö(savedata »ı¼º)
 void SearchAndPrint(Student_s **headStu);	// °Ë»ö ¹× Ãâ·Â ÇÔ¼ö
+void PrintData(Student_s *searchTemp, int *check);	// Ãâ·Â ÇÔ¼ö
