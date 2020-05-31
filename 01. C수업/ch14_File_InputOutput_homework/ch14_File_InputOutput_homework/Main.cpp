@@ -10,6 +10,7 @@ int main()
 
 	while (1)
 	{
+		rewind(stdin);
 		printf("[메인화면]\n");
 		printf("1. 데이터 추가  2. 검색&출력  3. 변경  4. 복구  5. 종료\n입력 : ");
 		scanf_s("%d", &inputNum);
@@ -213,14 +214,15 @@ void SearchAndPrint(Student_s **headStu)
 	printf("\n1. 번호로 검색  2. 이름으로 검색\n입력 : ");
 	scanf_s("%d", &inputNum);
 
+	int searchNum = 0;
 	if (inputNum == 1)
 	{
 		printf("\n검색할 번호를 입력 : ");
-		scanf_s("%d", &inputNum);
+		scanf_s("%d", &searchNum);
 		printf("\n[검색결과]\n");
 		while (searchTemp!=NULL)
 		{
-			if (searchTemp->seatNum == inputNum)
+			if (searchTemp->seatNum == searchNum)
 			{
 				PrintData(searchTemp, &check);
 			}
