@@ -15,16 +15,16 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="p20_midiumNum.cpp">
+    <ClCompile Include="Q02_distance.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="p31_gaussianAddition.cpp">
+    <ClCompile Include="Q03_inclination.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="p32_inclination.cpp">
+    <ClCompile Include="Q01_acceleration.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="p32_triangleArea.cpp">
+    <ClCompile Include="Q04_triangleArea.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
