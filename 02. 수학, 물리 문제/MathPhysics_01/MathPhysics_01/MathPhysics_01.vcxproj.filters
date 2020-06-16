@@ -42,5 +42,8 @@
     <ClCompile Include="Q09_emirpPrime.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="Q10_crossing.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>
