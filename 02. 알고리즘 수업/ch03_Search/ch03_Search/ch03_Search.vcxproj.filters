@@ -18,5 +18,17 @@
     <ClCompile Include="p108_binarySort.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="p117_bsearch01.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="p125_kuku.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="p126_bsearch03.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="p128_test.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>
