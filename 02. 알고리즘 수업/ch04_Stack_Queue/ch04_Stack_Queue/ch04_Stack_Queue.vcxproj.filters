@@ -15,10 +15,15 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="Q01_insideTheCircle.cpp">
+    <ClInclude Include="p132_intStack.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="p132_intStack.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Q02_Q1Expand.cpp">
+    <ClCompile Include="p140_intStackTest.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

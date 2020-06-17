@@ -19,9 +19,9 @@
     </ProjectConfiguration>
   </ItemGroup>
   <PropertyGroup Label="Globals">
-    <ProjectGuid>{89665F6B-903D-4B2C-996A-4D8CA958326D}</ProjectGuid>
+    <ProjectGuid>{554327E9-9883-4E45-8CBA-C91C0164F4FA}</ProjectGuid>
     <Keyword>Win32Proj</Keyword>
-    <RootNamespace>MathPhysics_02</RootNamespace>
+    <RootNamespace>ch04_Stack_Queue</RootNamespace>
     <WindowsTargetPlatformVersion>8.1</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
@@ -146,10 +146,11 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="Q01_insideTheCircle.cpp">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
-    </ClCompile>
-    <ClCompile Include="Q02_Q1Expand.cpp" />
+    <ClInclude Include="p132_intStack.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="p132_intStack.cpp" />
+    <ClCompile Include="p140_intStackTest.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
