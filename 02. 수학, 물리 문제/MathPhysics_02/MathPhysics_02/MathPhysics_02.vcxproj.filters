@@ -18,7 +18,13 @@
     <ClCompile Include="Q01_insideTheCircle.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Q02_Q1Expand.cpp">
+    <ClCompile Include="Q02_insideTheRectangle.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Q03_Q1Expand.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Q04_Q2Expand.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
