@@ -40,7 +40,7 @@ int main()
 	while (1)
 	{
 		cout << "\n현재 데이터 수 : " << GetSize(stack) << " / " << GetCapacity(stack) << endl;
-		cout << "1) Push 2) Pop 3) Peek 4) Print 5) Search 6) Clear 0) Exit\n\n입력 : ";
+		cout << "\n1) Push 2) Pop 3) Peek \n4) Print 5) Search 6) Clear 0) Exit\n\n입력 : ";
 		cin >> inputMenu;
 
 		if (inputMenu == 0)
@@ -49,32 +49,45 @@ int main()
 		switch (inputMenu)
 		{
 		case 1:
-			Push();
+			if (!Push(&stack))
+				cout << "\n데이터 입력 실패" << endl;
+			else
+				cout << "\n데이터 입력 성공" << endl;
 			break;
 		case 2:
-			Pop();
+			int popData;
+			if (!Pop(&stack, &popData))
+				cout << "\n스택에 데이터가 존재하지 않음" << endl;
+			else
+				cout << "Pop 결과 : " << popData << endl;
 			break;
 		case 3:
-			Peek();
+			int peekData;
+			if (!Peek(&stack, &peekData))
+				cout << "\n스택에 데이터가 존재하지 않음" << endl;
+			else
+				cout << "Peek 결과 : " << peekData << endl;
 			break;
 		case 4:
-			Print();
+			Print(stack);
 			break;
 		case 5:
-			Search();
+			if(!Search(stack))
+				cout << "\n검색 결과 : 해당 데이터가 존재하지 않음" << endl;
 			break;
 		case 6:
-			Clear();
+			Clear(&stack);
+			cout << "\n스택 초기화 완료" << endl;
 			break;
 
 		default:
 			cout << "\n잘못된 수 입력" << endl;
 			break;
 		}
-
 	}
 
 	cout << "프로그램 종료" << endl;
+	Terminate(&stack);
 
 	return 0;
 }
