@@ -27,13 +27,13 @@ int main()
 	ChangeDecimal(startNum, &totalNum, &tempStrInputNum);
 
 	string strChangeNum;
-	Conversion(startNum,endNum,totalNum,&strChangeNum);
+	Conversion(startNum, endNum, totalNum, &strChangeNum);
 
 	if (endNum == 10)
 		cout << endl << startNum << "진수 " << strInputNum << "는 " << endNum << "진수 " << totalNum << "이다" << endl;
-	else if(startNum == endNum)
+	else if (startNum == endNum)
 		cout << endl << startNum << "진수 " << strInputNum << "는 " << endNum << "진수 " << strInputNum << "이다" << endl;
-	else	  
+	else
 		cout << endl << startNum << "진수 " << strInputNum << "는 " << endNum << "진수 " << strChangeNum << "이다" << endl;
 
 	return 0;
@@ -140,8 +140,8 @@ void Conversion(int startNum, int endNum, int totalNum, string *strChangeNum)
 		}
 		totalNum = totalNum / endNum;
 	}
-	
-	while(strTempChange != "")
+
+	while (strTempChange != "")
 	{
 		*strChangeNum += strTempChange.back();
 		strTempChange.pop_back();
