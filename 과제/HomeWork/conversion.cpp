@@ -13,6 +13,8 @@ using namespace std;
 
 void InputNumber(int *startNum, int *endNum, string *strInputNum);
 void ChangeDecimal(int startNum, int *totalNum, string *tempStrInputNum);
+bool CheckDecimal(int startNum, int *tempNum, string *tempStrInputNum);
+void ChangeNum(int tempNum, int *totalNum, int startNum, int powNum);
 void ChangeAlpha(int start, int end, int tempNum, int *totalNum, int startNum, int powNum);
 void Conversion(int startNum, int endNum, int totalNum, string *strChangeNum);
 
@@ -28,13 +30,9 @@ int main()
 
 	string strChangeNum;
 	Conversion(startNum, endNum, totalNum, &strChangeNum);
-
-	if (endNum == 10)
-		cout << endl << startNum << "진수 " << strInputNum << "는 " << endNum << "진수 " << totalNum << "이다" << endl;
-	else if (startNum == endNum)
-		cout << endl << startNum << "진수 " << strInputNum << "는 " << endNum << "진수 " << strInputNum << "이다" << endl;
-	else
-		cout << endl << startNum << "진수 " << strInputNum << "는 " << endNum << "진수 " << strChangeNum << "이다" << endl;
+		
+	cout << endl << startNum << "진수 " << strInputNum << "는 " 
+		<< endNum << "진수 " << strChangeNum << "이다" << endl;
 
 	return 0;
 }
@@ -52,48 +50,56 @@ void InputNumber(int *startNum, int *endNum, string *strInputNum)
 void ChangeDecimal(int startNum, int *totalNum, string *tempStrInputNum)
 {
 	int tempNum = 0;
-	int addNum = 0;
 	int powNum = -1;
 
 	while (*tempStrInputNum != "")
 	{
 		powNum++;
-
-		if (startNum != 10)
-		{
-			tempNum = tempStrInputNum->back();	// 아스키 코드 값
-			tempStrInputNum->pop_back();
-		}
-		else
+		if (CheckDecimal(startNum, &tempNum, tempStrInputNum))
 		{
 			*totalNum = atoi(tempStrInputNum->c_str());
-			return;
+			break;
 		}
 
 		if (tempNum >= 48 && tempNum <= 57)
-		{
-			addNum = 0;
-			for (int i = 48; i <= 57; i++)
-			{
-				if (tempNum == i)
-				{
-					*totalNum += addNum * pow(startNum, powNum);
-				}
-				addNum++;
-			}
-		}
+			ChangeNum(tempNum, totalNum, startNum, powNum);
 		else
 		{
-			if (tempNum >= 65 && tempNum <= 90)
-				ChangeAlpha(65, 90, tempNum, totalNum, startNum, powNum);
-			else if (tempNum >= 97 && tempNum <= 122)
-				ChangeAlpha(97, 122, tempNum, totalNum, startNum, powNum);
-			else
+			if (tempNum >= 97 && tempNum <= 122)	// 소문자 -> 대문자
+				tempNum -= 32;
+			else if (65 > tempNum || 90 < tempNum)
 			{
 				cout << "\n잘못된 값 입력으로 종료" << endl;
 				exit(1);
 			}
+
+			ChangeAlpha(65, 90, tempNum, totalNum, startNum, powNum);
 		}
+	}
+}
+
+bool CheckDecimal(int startNum, int *tempNum, string *tempStrInputNum)
+{
+	if (startNum != 10)
+	{
+		*tempNum = tempStrInputNum->back();	// 아스키 코드 값
+		tempStrInputNum->pop_back();
+		return false;
+	}
+	else
+		return true;
+}
+
+void ChangeNum(int tempNum, int *totalNum, int startNum, int powNum)
+{
+	int addNum = 0;
+	for (int i = 48; i <= 57; i++)
+	{
+		if (tempNum == i)
+		{
+			*totalNum += addNum * pow(startNum, powNum);
+		}
+		addNum++;
 	}
 }
 
@@ -118,14 +124,6 @@ void Conversion(int startNum, int endNum, int totalNum, string *strChangeNum)
 
 	while (totalNum != 0)
 	{
-		if (startNum == endNum)
-			break;
-
-		// if (startNum > endNum)	// 큰 진법 -> 작은 진법
-		// 	tempChangeNum = totalNum / endNum;
-		// else
-		// 	tempChangeNum = totalNum % endNum;
-
 		tempChangeNum = totalNum % endNum;
 
 		if (tempChangeNum < endNum && tempChangeNum < 10)
@@ -141,7 +139,7 @@ void Conversion(int startNum, int endNum, int totalNum, string *strChangeNum)
 		totalNum = totalNum / endNum;
 	}
 
-	while (strTempChange != "")
+	while (strTempChange != "")	// 문자열 뒤집기
 	{
 		*strChangeNum += strTempChange.back();
 		strTempChange.pop_back();
