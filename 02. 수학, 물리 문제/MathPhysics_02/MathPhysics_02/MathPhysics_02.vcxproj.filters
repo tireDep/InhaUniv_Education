@@ -27,5 +27,8 @@
     <ClCompile Include="Q04_Q2Expand.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="Q05_NearSpot.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>
