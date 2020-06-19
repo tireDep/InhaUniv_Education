@@ -63,6 +63,7 @@ int main()
 	}
 
 	cout << "\n가장 긴 문자열 : " << MaxN(charStr, strLen) << endl;
+	printf("%p", MaxN(charStr, strLen));
 
 	Terminate(iNewNumArr);
 	Terminate(dNewNumArr);
