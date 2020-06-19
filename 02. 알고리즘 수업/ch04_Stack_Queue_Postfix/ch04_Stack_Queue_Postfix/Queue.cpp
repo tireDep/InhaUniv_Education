@@ -3,7 +3,7 @@
 
 using namespace std;
 
-bool Initalize(QUEUE_S &queue, int dataSize)
+bool Initialize(QUEUE_S &queue, int dataSize)
 {
 	queue.value = new int[dataSize];
 	if (queue.value == NULL)
@@ -45,17 +45,13 @@ bool IsEmpty(const QUEUE_S &queue)
 		return true;
 }
 
-bool Enque(QUEUE_S &queue)
+bool Enque(QUEUE_S &queue, int inputData)
 {
-	int inputData;
 	if (!IsFull(queue))
 	{
 		cout << "Error : 인큐\n\n";
 		return false;
 	}
-
-	cout << "\n데이터 입력 : ";
-	cin >> inputData;
 
 	queue.value[queue.rear] = inputData;
 	queue.cnt++;
@@ -106,9 +102,11 @@ bool Print(const QUEUE_S &queue)
 		return false;
 	}
 
+	char printChar;
 	for (int i = 0; i < queue.cnt; i++)
 	{
-		cout << queue.value[i] << " ";
+		printChar = queue.value[i];
+		cout << printChar << " ";
 	}
 	return true;
 }

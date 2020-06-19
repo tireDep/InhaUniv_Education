@@ -10,11 +10,11 @@ struct QUEUE_S
 	int *value;	// Å¥ÀÇ °ª
 };
 
-bool Initalize(QUEUE_S &queue, int dataSize);
+bool Initialize(QUEUE_S &queue, int dataSize);
 int GetMax(const QUEUE_S &queue);
 int GetCnt(const QUEUE_S &queue);
 bool IsFull(const QUEUE_S &queue);
-bool Enque(QUEUE_S &queue);
+bool Enque(QUEUE_S &queue, int inputData);
 bool IsEmpty(const QUEUE_S &queue);
 bool Deque(QUEUE_S &queue, int &resultVal);
 bool Peek(const QUEUE_S &queue, int &resultVal);

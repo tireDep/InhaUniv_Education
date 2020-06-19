@@ -3,10 +3,10 @@
 
 using namespace std;
 
-bool Initialize(STACK_S *stack, int dataSize)
+bool Initialize(STACK_S *stack, int inputNum)
 {
 	stack->nextStack = 0;
-	stack->value = new int[dataSize];
+	stack->value = new int[inputNum];
 
 	if (stack->value == NULL)	// 생성 실패
 	{
@@ -15,7 +15,7 @@ bool Initialize(STACK_S *stack, int dataSize)
 	}
 	else
 	{
-		stack->max = dataSize;
+		stack->max = inputNum;
 		return true;
 	}
 }
@@ -46,11 +46,8 @@ bool IsEmpty(STACK_S stack)
 		return true;
 }
 
-bool Push(STACK_S *stack)
+bool Push(STACK_S *stack, int pushData)
 {
-	int pushData;
-	cout << "데이터 입력 : ";
-	cin >> pushData;
 	if (!IsFull(*stack))
 		return false;
 	else
@@ -97,22 +94,16 @@ void Print(STACK_S stack)
 	}
 }
 
-bool Search(STACK_S stack)
+bool Search(STACK_S stack, int searchData, int *index)
 {
-	int searchData;
-	cout << "검색할 값 입력 : ";
-	cin >> searchData;
-
 	for (int i = 0; i < stack.nextStack; i++)
 	{
 		if (searchData == stack.value[i])
 		{
-			cout << "\n검색 결과 : " << searchData;
-			cout << "\n해당 값은 인덱스 번호 [" << i << "] 에 존재" << endl;
+			*index = i;
 			return true;
 		}
 	}
-
 	return false;
 }
 
