@@ -1,4 +1,5 @@
 #include<iostream>
+#include<string>
 #include "_stack.h"
 
 using namespace std;
@@ -6,7 +7,7 @@ using namespace std;
 bool Initialize(STACK_S *stack, int inputNum)
 {
 	stack->nextStack = 0;
-	stack->value = new int[inputNum];
+	stack->value = new string[inputNum];
 
 	if (stack->value == NULL)	// 생성 실패
 	{
@@ -58,7 +59,7 @@ bool Push(STACK_S *stack, int pushData)
 	return true;
 }
 
-bool Pop(STACK_S *stack, int *popData)
+bool Pop(STACK_S *stack, string *popData)
 {
 	if (!IsEmpty(*stack))
 		return false;
@@ -70,7 +71,7 @@ bool Pop(STACK_S *stack, int *popData)
 	return true;
 }
 
-bool Peek(STACK_S *stack, int *peekData)
+bool Peek(STACK_S *stack, string *peekData)
 {
 	if (!IsEmpty(*stack))
 		return false;
@@ -94,7 +95,7 @@ void Print(STACK_S stack)
 	}
 }
 
-bool Search(STACK_S stack, int searchData, int *index)
+bool Search(STACK_S stack, string searchData, int *index)
 {
 	for (int i = 0; i < stack.nextStack; i++)
 	{
@@ -112,7 +113,7 @@ void Clear(STACK_S *stack)
 	stack->nextStack = 0;
 	for (int i = 0; i < stack->max; i++)
 	{
-		stack->value[i] = 0;
+		stack->value[i] = '\0';
 	}
 }
 

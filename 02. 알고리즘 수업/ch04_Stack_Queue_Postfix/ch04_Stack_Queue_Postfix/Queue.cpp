@@ -1,11 +1,12 @@
 #include<iostream>
+#include<string>
 #include "_Queue.h"
 
 using namespace std;
 
 bool Initialize(QUEUE_S &queue, int dataSize)
 {
-	queue.value = new int[dataSize];
+	queue.value = new string[dataSize];
 	if (queue.value == NULL)
 	{
 		cout << "error : 데이터 할당 에러\n\n";
@@ -45,7 +46,7 @@ bool IsEmpty(const QUEUE_S &queue)
 		return true;
 }
 
-bool Enque(QUEUE_S &queue, int inputData)
+bool Enque(QUEUE_S &queue, string inputData)
 {
 	if (!IsFull(queue))
 	{
@@ -63,7 +64,7 @@ bool Enque(QUEUE_S &queue, int inputData)
 	return true;
 }
 
-bool Deque(QUEUE_S &queue, int &resultVal)
+bool Deque(QUEUE_S &queue, string &resultVal)
 {
 	if (!IsEmpty(queue))
 	{
@@ -81,7 +82,7 @@ bool Deque(QUEUE_S &queue, int &resultVal)
 	return true;
 }
 
-bool Peek(const QUEUE_S &queue, int &resultVal)
+bool Peek(const QUEUE_S &queue, string &resultVal)
 {
 	if (!IsEmpty(queue))
 	{
@@ -102,18 +103,18 @@ bool Print(const QUEUE_S &queue)
 		return false;
 	}
 
-	char printChar;
+	//char printChar;
 	for (int i = 0; i < queue.cnt; i++)
 	{
-		printChar = queue.value[i];
-		cout << printChar << " ";
+		//printChar = queue.value[i];
+		cout << queue.value[i] << " ";
 	}
 	return true;
 }
 
 void Search(const QUEUE_S &queue)
 {
-	int searchData;
+	string searchData;
 	cout << "\n검색할 값 입력 : ";
 	cin >> searchData;
 
@@ -133,7 +134,7 @@ void Clear(QUEUE_S &queue)
 {
 	for (int i = 0; i < queue.cnt; i++)
 	{
-		queue.value[i] = 0;
+		queue.value[i] = '\0';
 	}
 	queue.cnt = 0;
 	queue.front = 0;

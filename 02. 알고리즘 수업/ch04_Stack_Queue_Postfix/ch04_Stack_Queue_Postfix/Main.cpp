@@ -9,6 +9,7 @@ using namespace std;
 
 void ReadFileData(string &readData);
 void ReverseData(string &readData);
+string NextNumber(int nReadFirst, string &readData, QUEUE_S postfixQueue);
 
 enum CALC
 {
@@ -22,27 +23,8 @@ enum CALC
 
 int main()
 {
-	// 파일 읽어옴
 	string readData;
 	ReadFileData(readData);
-
-	/* 
-	// test
-
-	int test;
-	char temp;
-	while (readData != "")
-	{
-		temp = readData.back();
-		test = temp - '0';	// ascii -> int
-		// or
-		// temp = static_cast<int>(readData.back());
-		// test = temp - 48;
-		cout << test << endl;
-		readData.pop_back();
-	}
-	//test
-	*/
 
 	ReverseData(readData);	// ))7+321(*)21+2*4((
 
@@ -52,7 +34,7 @@ int main()
 	Initialize(postfixQueue, readData.length());
 
 	int nReadFirst;	// string에서 읽어온 값(아스키숫자)
-	int asciiTemp;	// 스택에서 제거한 값을 받아오는 변수
+	string asciiTemp;	// 스택에서 제거한 값을 받아오는 변수
 	while (readData != "")
 	{
 		nReadFirst = readData.back();
@@ -65,7 +47,7 @@ int main()
 			while (1)
 			{
 				Pop(&operatorStack, &asciiTemp);
-				if (asciiTemp == rightBracket)	// )
+				if (asciiTemp == "(")	// )
 					break;
 				else
 					Enque(postfixQueue, asciiTemp);
@@ -74,7 +56,7 @@ int main()
 		else if (nReadFirst >= multiSign && nReadFirst <= divideSign && nReadFirst != errorSign)	// 부호
 		{
 			int index;
-			while (Search(operatorStack, multiSign, &index) || Search(operatorStack, divideSign, &index))	// *, /
+			while (Search(operatorStack, "*", &index) || Search(operatorStack, "/", &index))	// *, /
 			{
 				if (operatorStack.nextStack - oneNum == index)	// 우선순위 높은 값이 바로 앞에 존재할 경우
 				{
@@ -84,16 +66,16 @@ int main()
 				else
 					break;
 			}
-			if (nReadFirst == spotSign)	// 소수점
-				Enque(postfixQueue, nReadFirst);
-			else if (nReadFirst == minusSign && readData.back() >= zeroNum && readData.back() <= nineNum)	// 음수
-				Enque(postfixQueue, nReadFirst);
-			else
-				Push(&operatorStack, nReadFirst);
+				if (nReadFirst == spotSign)	// 소수점
+					Enque(postfixQueue, NextNumber(nReadFirst, readData, postfixQueue));
+				else if (nReadFirst == minusSign && readData.back() >= zeroNum && readData.back() <= nineNum)	// 음수
+					Enque(postfixQueue, NextNumber(nReadFirst, readData, postfixQueue));
+				else
+					Push(&operatorStack, nReadFirst);
 		}
 
 		else if (nReadFirst >= zeroNum && nReadFirst <= nineNum)	// 숫자
-			Enque(postfixQueue, nReadFirst);
+			Enque(postfixQueue, NextNumber(nReadFirst, readData, postfixQueue));
 	}
 
 	Print(operatorStack);	// 아무것도 없어야 함
@@ -103,12 +85,43 @@ int main()
 	
 }
 
+string NextNumber(int nReadFirst, string &readData, QUEUE_S postfixQueue)
+{
+	char temp = nReadFirst;
+	string addNum;
+	char nextNum;
+
+	if (nReadFirst == minusSign)
+		addNum += '-';
+	else
+		addNum += to_string(temp - '0');
+
+	while (1)
+	{
+		nextNum = readData.back();
+		if (nextNum >= zeroNum && nextNum <= nineNum)
+		{
+			addNum += to_string(nextNum - '0');
+			readData.pop_back();
+		}
+		else if (nextNum == spotSign)
+		{
+			addNum += '.';
+			readData.pop_back();
+		}
+		else
+			break;
+	}
+
+	return addNum;
+}
+
 void ReadFileData(string &readData)
 {
 	ifstream fp;
 	int readCnt = 0;
 
-	fp.open("calc2.txt");
+	fp.open("calc.txt");
 
 	if (fp.is_open())
 	{
