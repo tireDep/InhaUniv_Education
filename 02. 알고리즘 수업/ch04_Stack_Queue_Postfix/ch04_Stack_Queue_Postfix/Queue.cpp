@@ -82,19 +82,6 @@ bool Deque(QUEUE_S &queue, string &resultVal)
 	return true;
 }
 
-bool Peek(const QUEUE_S &queue, string &resultVal)
-{
-	if (!IsEmpty(queue))
-	{
-		cout << "Error : 피크\n\n";
-		return false;
-	}
-
-	resultVal = queue.value[queue.front];
-
-	return true;
-}
-
 bool Print(const QUEUE_S &queue)
 {
 	if (!IsEmpty(queue))
@@ -110,35 +97,6 @@ bool Print(const QUEUE_S &queue)
 		cout << queue.value[i] << " ";
 	}
 	return true;
-}
-
-void Search(const QUEUE_S &queue)
-{
-	string searchData;
-	cout << "\n검색할 값 입력 : ";
-	cin >> searchData;
-
-	for (int i = 0; i < queue.cnt; i++)
-	{
-		if (searchData == queue.value[i])
-		{
-			cout << "\n검색결과 : " << queue.value[i] << "\n인덱스 : " << i << endl << endl;
-			return;
-		}
-	}
-
-	cout << "\n검색결과 : 해당 값이 존재하지 않음\n\n";
-}
-
-void Clear(QUEUE_S &queue)
-{
-	for (int i = 0; i < queue.cnt; i++)
-	{
-		queue.value[i] = '\0';
-	}
-	queue.cnt = 0;
-	queue.front = 0;
-	queue.rear = 0;
 }
 
 void Terminate(QUEUE_S &queue)
