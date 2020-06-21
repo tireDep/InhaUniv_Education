@@ -9,7 +9,9 @@ using namespace std;
 
 void ReadFileData(string &readData);
 void ReverseData(string &readData);
+void PostfixNotation(STACK_S &operatorStack, QUEUE_S &postfixQueue, string &readData);
 string NextNumber(int nReadFirst, string &readData, QUEUE_S postfixQueue);
+
 
 enum CALC
 {
@@ -25,7 +27,6 @@ int main()
 {
 	string readData;
 	ReadFileData(readData);
-
 	ReverseData(readData);	// ))7+321(*)21+2*4((
 
 	STACK_S operatorStack;	// 연산자 저장
@@ -33,6 +34,52 @@ int main()
 	Initialize(&operatorStack, readData.length());
 	Initialize(postfixQueue, readData.length());
 
+	PostfixNotation(operatorStack, postfixQueue, readData);
+
+	// Print(operatorStack);	// 아무것도 없어야 함
+	cout << "후위식 변환결과\n";
+	Print(postfixQueue);	// 후위식
+
+	// -----------------------------------------------------------------------------------
+	
+	// STACK_S operandStack;
+	// Initialize(&operandStack, readData.length());
+	
+}
+
+string NextNumber(int nReadFirst, string &readData, QUEUE_S postfixQueue)
+{
+	char temp = nReadFirst;
+	string addNum;
+	char nextNum;
+
+	if (nReadFirst == minusSign)
+		addNum += '-';
+	else
+		addNum += to_string(temp - '0');
+
+	while (1)
+	{
+		nextNum = readData.back();
+		if (nextNum >= zeroNum && nextNum <= nineNum)
+		{
+			addNum += to_string(nextNum - '0');
+			readData.pop_back();
+		}
+		else if (nextNum == spotSign)
+		{
+			addNum += '.';
+			readData.pop_back();
+		}
+		else
+			break;
+	}
+
+	return addNum;
+}
+
+void PostfixNotation(STACK_S &operatorStack, QUEUE_S &postfixQueue, string &readData)
+{
 	int nReadFirst;	// string에서 읽어온 값(아스키숫자)
 	string asciiTemp;	// 스택에서 제거한 값을 받아오는 변수
 	while (readData != "")
@@ -66,54 +113,17 @@ int main()
 				else
 					break;
 			}
-				if (nReadFirst == spotSign)	// 소수점
-					Enque(postfixQueue, NextNumber(nReadFirst, readData, postfixQueue));
-				else if (nReadFirst == minusSign && readData.back() >= zeroNum && readData.back() <= nineNum)	// 음수
-					Enque(postfixQueue, NextNumber(nReadFirst, readData, postfixQueue));
-				else
-					Push(&operatorStack, nReadFirst);
+			if (nReadFirst == spotSign)	// 소수점
+				Enque(postfixQueue, NextNumber(nReadFirst, readData, postfixQueue));
+			else if (nReadFirst == minusSign && readData.back() >= zeroNum && readData.back() <= nineNum)	// 음수
+				Enque(postfixQueue, NextNumber(nReadFirst, readData, postfixQueue));
+			else
+				Push(&operatorStack, nReadFirst);
 		}
 
 		else if (nReadFirst >= zeroNum && nReadFirst <= nineNum)	// 숫자
 			Enque(postfixQueue, NextNumber(nReadFirst, readData, postfixQueue));
 	}
-
-	Print(operatorStack);	// 아무것도 없어야 함
-	Print(postfixQueue);	// 후위식
-
-	// STACK_S operandStack;
-	
-}
-
-string NextNumber(int nReadFirst, string &readData, QUEUE_S postfixQueue)
-{
-	char temp = nReadFirst;
-	string addNum;
-	char nextNum;
-
-	if (nReadFirst == minusSign)
-		addNum += '-';
-	else
-		addNum += to_string(temp - '0');
-
-	while (1)
-	{
-		nextNum = readData.back();
-		if (nextNum >= zeroNum && nextNum <= nineNum)
-		{
-			addNum += to_string(nextNum - '0');
-			readData.pop_back();
-		}
-		else if (nextNum == spotSign)
-		{
-			addNum += '.';
-			readData.pop_back();
-		}
-		else
-			break;
-	}
-
-	return addNum;
 }
 
 void ReadFileData(string &readData)
