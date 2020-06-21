@@ -59,6 +59,18 @@ bool Push(STACK_S *stack, int pushData)
 	return true;
 }
 
+bool Push(STACK_S *stack, string pushData)
+{
+	if (!IsFull(*stack))
+		return false;
+	else
+	{
+		stack->value[stack->nextStack] = pushData;
+		stack->nextStack++;
+	}
+	return true;
+}
+
 bool Pop(STACK_S *stack, string *popData)
 {
 	if (!IsEmpty(*stack))
@@ -69,52 +81,6 @@ bool Pop(STACK_S *stack, string *popData)
 		stack->nextStack--;
 	}
 	return true;
-}
-
-bool Peek(STACK_S *stack, string *peekData)
-{
-	if (!IsEmpty(*stack))
-		return false;
-	else
-		*peekData = stack->value[stack->nextStack - 1];
-	return true;
-}
-
-void Print(STACK_S stack)
-{
-	cout << endl;
-	if (!IsEmpty(stack))
-		cout << "\n스택에 데이터가 존재하지 않음" << endl;
-	else
-	{
-		for (int i = 0; i < stack.nextStack; i++)
-		{
-			cout << stack.value[i] << " ";
-		}
-		cout << "\n출력 종료" << endl;
-	}
-}
-
-bool Search(STACK_S stack, string searchData, int *index)
-{
-	for (int i = 0; i < stack.nextStack; i++)
-	{
-		if (searchData == stack.value[i])
-		{
-			*index = i;
-			return true;
-		}
-	}
-	return false;
-}
-
-void Clear(STACK_S *stack)
-{
-	stack->nextStack = 0;
-	for (int i = 0; i < stack->max; i++)
-	{
-		stack->value[i] = '\0';
-	}
 }
 
 void Terminate(STACK_S *stack)
