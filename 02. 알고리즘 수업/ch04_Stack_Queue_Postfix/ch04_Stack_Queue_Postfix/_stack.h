@@ -16,9 +16,6 @@ bool IsFull(STACK_S stack);
 bool IsEmpty(STACK_S stack);
 
 bool Push(STACK_S *stack, int pushData);
+bool Push(STACK_S *stack, string pushData);
 bool Pop(STACK_S *stack, string *popData);
-bool Peek(STACK_S *stack, string *peekData);
-void Print(STACK_S stack);
-bool Search(STACK_S stack, string searchData, int *index);
-void Clear(STACK_S *stack);
 void Terminate(STACK_S *stack);

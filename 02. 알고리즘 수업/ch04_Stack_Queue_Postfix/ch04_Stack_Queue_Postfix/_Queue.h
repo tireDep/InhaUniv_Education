@@ -19,8 +19,5 @@ bool IsFull(const QUEUE_S &queue);
 bool Enque(QUEUE_S &queue, string inputData);
 bool IsEmpty(const QUEUE_S &queue);
 bool Deque(QUEUE_S &queue, string &resultVal);
-bool Peek(const QUEUE_S &queue, string &resultVal);
 bool Print(const QUEUE_S &queue);
-void Search(const QUEUE_S &queue);
-void Clear(QUEUE_S &queue);
 void Terminate(QUEUE_S &queue);
