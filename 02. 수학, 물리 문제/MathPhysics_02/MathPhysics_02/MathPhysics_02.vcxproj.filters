@@ -33,5 +33,8 @@
     <ClCompile Include="Q06_coinSimulation.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="Q07_radomGatcha.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>
