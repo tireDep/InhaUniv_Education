@@ -36,5 +36,8 @@
     <ClCompile Include="Q07_radomGatcha.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="Q08_schoolClassromm.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>
