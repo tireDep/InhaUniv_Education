@@ -44,5 +44,11 @@
     <ClCompile Include="p676_takeNote.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="p680_test_t_rectangle.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="p680_test_t02.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>
