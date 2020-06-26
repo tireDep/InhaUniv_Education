@@ -19,9 +19,9 @@
     </ProjectConfiguration>
   </ItemGroup>
   <PropertyGroup Label="Globals">
-    <ProjectGuid>{E8BCC7EB-4A90-4607-A89B-8A0974D9272B}</ProjectGuid>
+    <ProjectGuid>{D94B530C-6B0E-4400-AEF6-3347CAE14CBC}</ProjectGuid>
     <Keyword>Win32Proj</Keyword>
-    <RootNamespace>ch06_Sort</RootNamespace>
+    <RootNamespace>ch12_Problem_HangmanGame</RootNamespace>
     <WindowsTargetPlatformVersion>8.1</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
@@ -146,14 +146,12 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="Bubble_SelectionSort.cpp">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
-    </ClCompile>
-    <ClCompile Include="InsertSort.cpp" />
-    <ClCompile Include="Stopwatch.cpp" />
+    <ClCompile Include="Class_Wordslist.cpp" />
+    <ClCompile Include="Main.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Stopwatch.h" />
+    <ClInclude Include="Class_Wordslist.h" />
+    <ClInclude Include="WordsList.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
