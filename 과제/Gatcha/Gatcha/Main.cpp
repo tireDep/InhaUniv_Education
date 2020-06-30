@@ -9,66 +9,41 @@ void AddItemList(int inputCnt, double gatItem[], double gatchaRate[], int itemLi
 void PrintItemList(int itemList[]);
 
 const int arrSize = 11;
+const int maxGatchaSize = 100;
 
 int main()
 {
 	srand((unsigned)time(NULL));
-	double basicRate[arrSize] = { 1,3,3,5,5,5,10,10,10,10,38 };
-	double gatchaRate[arrSize] = { 0 };
+	double gatchaRate[arrSize] = { 1,3,3,5,5,5,10,10,10,10,38 };
 	int itemList[arrSize] = { 0 };
 	int inputCnt;
 
 	cout << "가챠 횟수 입력 : ";
 	cin >> inputCnt;
 
-	double *gatItem = new double[inputCnt];
+	double *gatItem = new double[maxGatchaSize];
+	while (1)
+	{
+		if (inputCnt < 0)
+			break;
 
-	// 가챠 횟수에 따른 가챠 확률 계산
-	for (int i = 0; i < arrSize; i++)
-	{
-		// gatchaRate[i] = basicRate[i] * inputCnt / 100;
-	
-		gatchaRate[i] = basicRate[i];
-	}
-
-	// 가챠 뽑기 및 중복 체크
-	if (inputCnt <= 100)
-	{
-		PickGatch(inputCnt, gatItem);
-		AddItemList(inputCnt, gatItem, gatchaRate, itemList);
-	}
-	else
-	{
-		int divideVal;
-		int multiVal = 10;
-		while (1)
+		if (inputCnt >= 0)
 		{
-			if (inputCnt >= 100 * multiVal && inputCnt <= 990 * multiVal + 9)
+			if (inputCnt > maxGatchaSize)
 			{
-				divideVal = 1 * multiVal;
-				break;
+				PickGatch(maxGatchaSize, gatItem);
+				AddItemList(maxGatchaSize, gatItem, gatchaRate, itemList);
 			}
 			else
-				multiVal *= 10;
-		}
-
-		int checkEnd = divideVal;
-		while (checkEnd > 0)
-		{
-			checkEnd--;
-			if(inputCnt > 100) inputCnt /= divideVal;
-
-			PickGatch(inputCnt, gatItem);
-			AddItemList(inputCnt, gatItem, gatchaRate, itemList);
-			//PrintItemList(itemList);
-			for (int i = 0; i < inputCnt; i++)
-				gatItem[i] = 0;
-		}
-	}
-
+			{
+				PickGatch(inputCnt, gatItem);
+				AddItemList(inputCnt, gatItem, gatchaRate, itemList);
+			}
+			inputCnt -= maxGatchaSize;
+		}	// if
+	}	// while
 
 	PrintItemList(itemList);
-
 	delete[]gatItem;
 
 	return 0;
@@ -81,7 +56,7 @@ void PickGatch(int inputCnt, double gatItem[])
 
 	for (int i = 0; i < inputCnt; i++)
 	{
-		gatNum = rand() % 100;
+		gatNum = rand() % maxGatchaSize;
 		isDouble = false;
 		for (int j = 0; j < i; j++)
 		{
@@ -105,7 +80,7 @@ void AddItemList(int inputCnt, double gatItem[], double gatchaRate[], int itemLi
 	for (int i = 0; i < inputCnt; i++)
 	{
 		accumulateRate = 0;
-		checkRate = gatItem[i] * inputCnt / 100;
+		checkRate = gatItem[i]; // *inputCnt / maxGatchaSize;
 		for (int k = 0; k < arrSize; k++)
 		{
 			accumulateRate += gatchaRate[k];
@@ -120,6 +95,47 @@ void AddItemList(int inputCnt, double gatItem[], double gatchaRate[], int itemLi
 
 void PrintItemList(int itemList[])
 {
+	// TODO : 출력구문 정리
 	for (int i = 0; i < arrSize; i++)
-		cout << itemList[i] << " ";
+	{
+		switch (i)
+		{
+		case 0:
+			cout << "5성 : " << itemList[i] << "개" << endl;
+			break;
+		case 1:
+			cout << "4성 A : " << itemList[i] << "개" << endl;
+			break;
+		case 2:
+			cout << "4성 B : "<< itemList[i] << "개" << endl;
+			break;
+		case 3:
+			cout << "3성 A : " << itemList[i] << "개" << endl;
+			break;
+		case 4:
+			cout << "3성 B : " << itemList[i] << "개" << endl;
+			break;
+		case 5:
+			cout << "3성 C : " << itemList[i] << "개" << endl;
+			break;
+		case 6:
+			cout << "2성 A : " << itemList[i] << "개" << endl;
+			break;
+		case 7:
+			cout << "2성 B : " << itemList[i] << "개" << endl;
+			break;
+		case 8:
+			cout << "2성 C : " << itemList[i] << "개" << endl;
+			break;
+		case 9:
+			cout << "2성 D : " << itemList[i] << "개" << endl;
+			break;
+		case 10:
+			cout << "1성 : " << itemList[i] << "개" << endl;
+			break;
+			break;
+		default:
+			break;
+		}
+	}
 }
