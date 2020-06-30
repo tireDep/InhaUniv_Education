@@ -4,6 +4,10 @@
 
 using namespace std;
 
+void PickGatch(int inputCnt, double gatItem[]);
+void AddItemList(int inputCnt, double gatItem[], double gatchaRate[], int itemList[]);
+void PrintItemList(int itemList[]);
+
 const int arrSize = 11;
 
 int main()
@@ -18,61 +22,104 @@ int main()
 	cin >> inputCnt;
 
 	double *gatItem = new double[inputCnt];
-	for (int i = 0; i < inputCnt; i++)
-		gatItem[i] = -1;
 
-	// °¡Ã­ È®·ü ¹× °è»ê
+	// °¡Ã­ È½¼ö¿¡ µû¸¥ °¡Ã­ È®·ü °è»ê
 	for (int i = 0; i < arrSize; i++)
 	{
-		gatchaRate[i] = basicRate[i] * inputCnt / 100;
-	}
+		// gatchaRate[i] = basicRate[i] * inputCnt / 100;
 	
-	double gatNum;
-	int i = 0;
-	int accumulateRate;
-	while (inputCnt > 0)
+		gatchaRate[i] = basicRate[i];
+	}
+
+	// °¡Ã­ »Ì±â ¹× Áßº¹ Ã¼Å©
+	if (inputCnt <= 100)
 	{
-		// °¡Ã­ »Ì±â
-		gatNum = rand() % 100;
-		// gatNum = gatNum * (inputCnt / 100);
-
-		i = 0;
-		while (gatItem[i] != -1)
+		PickGatch(inputCnt, gatItem);
+		AddItemList(inputCnt, gatItem, gatchaRate, itemList);
+	}
+	else
+	{
+		int divideVal;
+		int multiVal = 10;
+		while (1)
 		{
-			i++;
-			if (gatNum == gatItem[i])
+			if (inputCnt >= 100 * multiVal && inputCnt <= 990 * multiVal + 9)
 			{
-				gatNum = rand() % 100;
-				i = 0;
-			}
-		}
-		gatItem[i] = gatNum;
-		inputCnt--;
-		gatNum = gatNum * inputCnt / 100;
-		
-		// for(int i=0;i<100;i++)
-		// 	cout << gatItem[i] << " ";
-
-		// cout << endl << gatNum << endl;
-
-		accumulateRate = 0;
-		for (int i = 0; i < arrSize; i++)
-		{
-			accumulateRate += gatchaRate[i];
-
-			if (accumulateRate >= gatNum)
-			{
-				itemList[i]++;
+				divideVal = 1 * multiVal;
 				break;
 			}
+			else
+				multiVal *= 10;
 		}
-		cout << inputCnt << endl;
+
+		int checkEnd = divideVal;
+		while (checkEnd > 0)
+		{
+			checkEnd--;
+			if(inputCnt > 100) inputCnt /= divideVal;
+
+			PickGatch(inputCnt, gatItem);
+			AddItemList(inputCnt, gatItem, gatchaRate, itemList);
+			//PrintItemList(itemList);
+			for (int i = 0; i < inputCnt; i++)
+				gatItem[i] = 0;
+		}
 	}
 
-	for (int i = 0; i < arrSize; i++)
-		cout << itemList[i] << " ";
+
+	PrintItemList(itemList);
 
 	delete[]gatItem;
 
 	return 0;
+}
+
+void PickGatch(int inputCnt, double gatItem[])
+{
+	bool isDouble;
+	double gatNum;
+
+	for (int i = 0; i < inputCnt; i++)
+	{
+		gatNum = rand() % 100;
+		isDouble = false;
+		for (int j = 0; j < i; j++)
+		{
+			if (gatNum == gatItem[j])
+			{
+				i--;
+				isDouble = true;
+			}
+		}
+
+		if (isDouble != true)
+			gatItem[i] = gatNum;
+	}
+}
+
+void AddItemList(int inputCnt, double gatItem[], double gatchaRate[], int itemList[])
+{
+	double checkRate;
+	double accumulateRate;
+
+	for (int i = 0; i < inputCnt; i++)
+	{
+		accumulateRate = 0;
+		checkRate = gatItem[i] * inputCnt / 100;
+		for (int k = 0; k < arrSize; k++)
+		{
+			accumulateRate += gatchaRate[k];
+			if (accumulateRate > checkRate)
+			{
+				itemList[k]++;
+				break;
+			}
+		}	// for_j
+	}	// for_i
+}	// void AddItemList()
+
+void PrintItemList(int itemList[])
+{
+	for (int i = 0; i < arrSize; i++)
+		cout << itemList[i] << " ";
 }

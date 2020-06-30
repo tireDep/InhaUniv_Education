@@ -12,19 +12,24 @@
 
 #include<iostream>
 #include<ctime>
+#include<sys/timeb.h>
 #include"Stopwatch.h"
 
 STOPWATCH_C::STOPWATCH_C()
 {
 	time_t tTime;
+	struct timeb itb;
 	struct tm *t;
 
+	ftime(&itb);
 	tTime = time(NULL);
 	t = localtime(&tTime);
 
 	startHour = t->tm_hour;
 	startMin= t->tm_min;
 	startSec = t->tm_sec;
+	startMs = itb.millitm;
+
 }
 
 STOPWATCH_C::~STOPWATCH_C()
@@ -36,46 +41,52 @@ STOPWATCH_C::~STOPWATCH_C()
 void STOPWATCH_C::StartTime() 
 {
 	time_t tTime;
+	struct timeb itb;
 	struct tm *t;
 
+	ftime(&itb);
 	tTime = time(NULL);
 	t = localtime(&tTime);
 
 	startHour = t->tm_hour;
 	startMin = t->tm_min;
 	startSec = t->tm_sec;
+	startMs = itb.millitm;
 
-	std::cout <<"시작시간 : " << startHour << "시 " << startMin << "분 " << startSec << "초" << std::endl;
+	std::cout <<"시작시간 : " << startHour << "시 " << startMin << "분 " << startSec << "초 " << startMs << "밀리초" << std::endl;
 }
 
 void STOPWATCH_C::EndTime()
 {
 	time_t tTime;
+	struct timeb itb;
 	struct tm *t;
 
+	ftime(&itb);
 	tTime = time(NULL);
 	t = localtime(&tTime);
 
 	endHour = t->tm_hour;
 	endMin = t->tm_min;
 	endSec = t->tm_sec;
+	endMs = itb.millitm;
 
-	std::cout << "종료시간 : " << endHour << "시 " << endMin << "분 " << endSec << "초" << std::endl;
+	std::cout << "종료시간 : " << endHour << "시 " << endMin << "분 " << endSec << "초 " << endMs << "밀리초" << std::endl;
 }
 
 float STOPWATCH_C::GetElapsedTime()
 {
-	int timeGap = -1;
-	while (1)
-	{
-		timeGap++;
-		if (startMin + timeGap == endMin)
-			break;
-	}
+	// int timeGap = -1;
+	// while (1)
+	// {
+	// 	timeGap++;
+	// 	if (startMin + timeGap == endMin)
+	// 		break;
+	// }
+	// 
+	// endSec += 60 * timeGap;
 
-	endSec += 60 * timeGap;
-
-	return abs(endSec - startSec);
+	return abs(endMs - startMs) / 1000;
 }
 
 

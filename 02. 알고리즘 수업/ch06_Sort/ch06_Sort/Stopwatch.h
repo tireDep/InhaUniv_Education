@@ -6,10 +6,12 @@ private:
 	float startHour;
 	float startMin;
 	float startSec;
+	float startMs;
 
 	float endHour;
 	float endMin;
 	float endSec;
+	float endMs;
 
 
 public:
