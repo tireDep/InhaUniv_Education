@@ -63,12 +63,19 @@ void STOPWATCH_C::EndTime()
 	std::cout << "종료시간 : " << endHour << "시 " << endMin << "분 " << endSec << "초" << std::endl;
 }
 
-float  STOPWATCH_C::GetElapsedTime()
+float STOPWATCH_C::GetElapsedTime()
 {
-	if (startSec > endSec)
-		endSec += 60;
+	int timeGap = -1;
+	while (1)
+	{
+		timeGap++;
+		if (startMin + timeGap == endMin)
+			break;
+	}
 
-	return abs(endSec - startSec) / 1000;
+	endSec += 60 * timeGap;
+
+	return abs(endSec - startSec);
 }
 
 
