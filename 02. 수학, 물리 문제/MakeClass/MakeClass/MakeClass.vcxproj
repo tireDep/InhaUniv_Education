@@ -146,6 +146,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="CircleClass.cpp" />
     <ClCompile Include="GemometricObject.cpp" />
     <ClCompile Include="Main.cpp" />
     <ClCompile Include="RectangleClass.cpp">

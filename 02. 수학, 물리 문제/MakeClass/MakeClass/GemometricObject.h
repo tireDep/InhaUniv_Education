@@ -14,8 +14,8 @@ public:
 	GEMOEMTRICOBJECT_S();
 	virtual ~GEMOEMTRICOBJECT_S();
 
-	virtual double GetArea();
-	virtual double GetPerimeter();
+	virtual double GetArea() = 0;
+	virtual double GetPerimeter() = 0;
 };
 
 class TRIANGLE_S : public GEMOEMTRICOBJECT_S
@@ -57,6 +57,21 @@ public:
 	void SetHeight();
 	double GetWidth();
 	double GetHeight();
+	double GetArea();
+	double GetPerimeter();
+};
+
+class CIRCLE_C : public GEMOEMTRICOBJECT_S
+{
+private:
+	double radius;	// ¹ÝÁö¸§
+
+public:
+	CIRCLE_C();
+	CIRCLE_C(double r);
+	~CIRCLE_C();
+
+	double GetRadius();
 	double GetArea();
 	double GetPerimeter();
 };

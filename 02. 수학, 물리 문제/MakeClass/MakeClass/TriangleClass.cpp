@@ -59,6 +59,12 @@ bool TRIANGLE_S::CheckFilled()
 	std::cout << "색상 칠함 여부 입력 (0(X), 1(O)) : ";
 	std::cin >> inputNum;
 
+	while (inputNum > 1 || inputNum < 0)
+	{
+		std::cout << "올바른 숫자 입력 : ";
+		std::cin >> inputNum;
+	}
+
 	if (inputNum == 0)
 		isFilled = false;
 	else

@@ -24,7 +24,6 @@ using namespace std;
 int main()
 {
 	TRIANGLE_S triangle;	// 4, 5, 6 기준 9.92157
-
 	cout << "[삼각형]" << endl;
 	cout << "삼각형의 세 변의 길이 : " << triangle.GetSide1()
 		<< ", " << triangle.GetSide2() << ", " << triangle.GetSide3() << endl;
@@ -37,13 +36,17 @@ int main()
 	else
 		cout << "FALSE\n=> 삼각형이 " << triangle.GetColor() <<" 색상으로 채워지지 않음\n";
 
-	cout << endl << "[직사각형]" << endl;
-
 	RECTANGLE_C rectangle;
+	cout << endl << "[직사각형]" << endl;
 	cout << "직사각형의 두 변의 길이 : " << rectangle.GetWidth() << ", " << rectangle.GetHeight() << endl;
 	cout << "직사각형의 면적 : " << rectangle.GetArea() << endl;
 	cout << "직사각형의 둘레 : " << rectangle.GetPerimeter() << endl;
 	
+	CIRCLE_C circle;
+	cout << endl << "[원]" << endl;
+	cout << "원의 반지름 : " << circle.GetRadius() << endl;
+	cout << "원의 면적 : " << circle.GetArea() << endl;
+	cout << "원의 둘레 : " << circle.GetPerimeter() << endl;
 
 	return 0;
 }

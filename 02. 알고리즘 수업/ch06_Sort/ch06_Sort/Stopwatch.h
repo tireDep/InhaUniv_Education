@@ -3,15 +3,15 @@
 class STOPWATCH_C
 {
 private:
-	float startHour;
-	float startMin;
-	float startSec;
-	float startMs;
+	int startHour;
+	int startMin;
+	int startSec;
+	int startMs;
 
-	float endHour;
-	float endMin;
-	float endSec;
-	float endMs;
+	int endHour;
+	int endMin;
+	int endSec;
+	int endMs;
 
 
 public:
