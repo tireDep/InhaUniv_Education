@@ -24,9 +24,18 @@
     <ClCompile Include="p906_usett1.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="acctabc.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="usebrass3.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="p904_tabtenn1.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="acctabc.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

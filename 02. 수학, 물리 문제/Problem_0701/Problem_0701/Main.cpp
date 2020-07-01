@@ -18,40 +18,23 @@ using namespace std;
 
 int main()
 {
-	// string time = "12:40";
-	// int min = 0;
-	// min += time.back() - '0';
-	// time.pop_back();
-	// min += (time.back() - '0') * 10;
-	// time.pop_back();
-	// time.pop_back();
-	// 
-	// int hour = 0;
-	// hour += time.back() - '0';
-	// time.pop_back();
-	// hour += (time.back() - '0') * 10;
-	// 
-	// cout << hour << " : " << min << endl;
-	// /* string to int */
-
-	// testCase
-	string orderTime[] = { "12:10", "12:20", "12:40", "12:40", "12:50", "13:00", "13:20" , "13:05", "13:06", "13:07", "13:08", "13:20" };
+	string orderTime[] = { "12:10", "12:20", "12:40", "12:40", "12:50", "13:00", "13:05", "13:06", "13:07", "13:08", "13:20" };
 	const int arrSize = sizeof(orderTime) / sizeof(string);
-	int k = 20;
-	// testCase
+	int inputTime;
+
+	cout << "시간 입력 : ";
+	cin >> inputTime;
 
 	string *tempTime = new string[arrSize];
 	for (int i = 0; i < arrSize; i++)
 		tempTime[i] = orderTime[i];
 
 	int *minTime = new int[arrSize];
-	int *hourTime = new int[arrSize];
 	for (int i = 0; i < arrSize; i++)	// 초기화
-	{
 		minTime[i] = 0;
-		hourTime[i] = 0;
-	}
 
+	// 시간 변환 string -> int
+	// 모두 분으로 변경해서 계산과정을 간략화함
 	for (int i = 0; i < arrSize; i++)
 	{
 		minTime[i] += tempTime[i].back() - '0';
@@ -60,25 +43,19 @@ int main()
 		tempTime[i].pop_back();
 		tempTime[i].pop_back();
 
-		hourTime[i] += tempTime[i].back() - '0';
+		minTime[i] += (tempTime[i].back() - '0') * 60;
 		tempTime[i].pop_back();
-		hourTime[i] += (tempTime[i].back() - '0') * 10;
-	}	// 시간 변환 string -> int
+		minTime[i] += (tempTime[i].back() - '0') * 60 * 10;
+	}
 
 	int temp = 0;
 	int highOrder = 0;
-	int tempMin = 0;
 	for (int i = 0; i < arrSize; i++)
 	{
-		temp = 0;
+		temp = 1;	// 처음 주문
 		for (int j = i + 1; j < arrSize; j++)
 		{
-			if (minTime[j] == 0)
-				tempMin = 60;
-			else
-				tempMin = minTime[j];
-
-			if (abs(minTime[i] - tempMin) <= k && abs(hourTime[i] - hourTime[j]) <= 1)
+			if (abs(minTime[i] - minTime[j]) <= inputTime)
 				temp++;
 			else
 				break;
