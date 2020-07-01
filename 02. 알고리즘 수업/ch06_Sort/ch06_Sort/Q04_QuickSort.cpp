@@ -12,10 +12,10 @@ int main()
 {
 	srand((unsigned)time(NULL));
 
-	int quickArr[arrSize] = { 1,3,3,2,3 };
+	int quickArr[arrSize] = { 2,1,5,3,4 };
 
-	//for (int i = 0; i < arrSize; i++)
-	//	quickArr[i] = rand() % arrSize + 1;
+	for (int i = 0; i < arrSize; i++)
+		quickArr[i] = rand() % arrSize + 1;
 
 	cout << "Á¤·Ä Àü\n";
 	PrintArr(quickArr);
@@ -37,37 +37,44 @@ void PrintArr(int arr[])
 void QuickSort(int lv, int rv, int quickArr[])
 {
 	int temp;
-	int pivot = (lv + rv) / 2;
-	cout << "pivot : " << quickArr[pivot] << endl;
-	while (lv <= rv)
+	int left = lv;
+	int right = rv;
+	int index = (lv + rv) / 2;
+	cout << lv << " " << rv << " " << (lv + rv) / 2<<endl;
+	cout << "index : " << quickArr[index] << endl;
+	int pivot =  quickArr[(lv + rv)/2];
+	cout << "pivot : "<< (lv+rv) / 2 <<"/"<<pivot << endl;
+	while (left <= right)
 	{
-		cout << quickArr[lv] << "/" << lv << ", " << quickArr[rv] << "/" << rv << endl;
-		if (quickArr[pivot] < quickArr[rv] && pivot <= rv)
-			rv--;
-		if (quickArr[pivot] > quickArr[lv] && pivot >= lv)
-			lv++;
+		// cout << quickArr[left] << "/" << left << ", " << quickArr[right] << "/" << right << endl;
+		while (pivot > quickArr[left])
+			left++;
+		while (pivot < quickArr[right]) 
+			right--;
 
-		if (quickArr[lv] >= quickArr[rv] && (quickArr[lv] >= quickArr[pivot] && quickArr[rv] <= quickArr[pivot]))
+		if (left <= right)
 		{
-			temp = quickArr[lv];
-			quickArr[lv] = quickArr[rv];
-			quickArr[rv] = temp;
-			rv--;
-			lv++;
-			//pivot = lv; 
+			if (left != right)
+			{
+				temp = quickArr[left];
+				quickArr[left] = quickArr[right];
+				quickArr[right] = temp;
+			}
+			right--;
+			left++;
 		}
+
 		cout << "<<<";
 		PrintArr(quickArr);
 	}
 
-	cout << quickArr[lv] << "/" << lv << ", " << quickArr[rv] << "/" << rv << endl;
-	cout << "pivot : " << quickArr[pivot] << "/" << pivot << endl;
+	// cout << quickArr[left] << "/" << left << ", " << quickArr[right] << "/" << right << endl;
+	// cout << "pivot : " << quickArr[pivot] << "/" << pivot << endl;
 	PrintArr(quickArr);
-	if (lv > rv)
-	{
-		temp = quickArr[rv];
-		quickArr[rv] = quickArr[pivot];
-		quickArr[pivot] = temp;
-	}
-		
+
+	if (lv < right)
+		QuickSort(lv, right, quickArr);
+	if (left < rv)
+		QuickSort(left, rv, quickArr);
+
 }
