@@ -39,6 +39,9 @@
     <ClCompile Include="Q05_MergeSort02.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="Q06_HeapSort.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Stopwatch.h">
