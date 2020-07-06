@@ -1,5 +1,6 @@
 #include<iostream>
 #include<ctime>
+#include"Stopwatch.h"
 
 using namespace std;
 
@@ -20,10 +21,14 @@ int main()
 	//PrintArr(heapArr);
 
 	// heapSort
+	STOPWATCH_C stopWatch;
+	stopWatch.StartTime();
 	HeapSort(heapArr, arrSize - 1);
+	stopWatch.EndTime();
+	cout << "정렬 시간 : " << stopWatch.GetElapsedTime() << endl;
 	// heapSort
-	cout << "정렬 후\n";
-	PrintArr(heapArr);
+	//cout << "정렬 후\n";
+	//PrintArr(heapArr);
 
 	return 0;
 }
@@ -46,8 +51,6 @@ void HeapSort(int heapArr[], int maxRange)
 	int parentIndex;
 	int i = maxRange;
 
-	if (maxRange == 0)
-		return;
 	while(maxRange > 0)
 	{
 		while (i > 0 && i <= maxRange)// for (int i = maxRange; i > 0; i -= 2)
