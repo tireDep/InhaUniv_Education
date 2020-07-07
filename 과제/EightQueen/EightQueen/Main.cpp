@@ -219,9 +219,10 @@ int main(void) {
 	srand((unsigned int)time(NULL));
 
 	/*
-	while(1) {
-	IsAble(rand()%8,rand()%8);
-	getchar();
+	while(1) 
+	{
+		IsAble(rand()%8,rand()%8);
+		getchar();
 	}
 	*/
 
