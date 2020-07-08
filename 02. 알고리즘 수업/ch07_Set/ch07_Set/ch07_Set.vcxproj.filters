@@ -18,9 +18,24 @@
     <ClInclude Include="p278_intSet.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="p292_bitSet.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="p279_intSet.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="p287_intSetTest1.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="p288_intSetTest2.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="p294_bitSet.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="p299_bitSetTest.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
