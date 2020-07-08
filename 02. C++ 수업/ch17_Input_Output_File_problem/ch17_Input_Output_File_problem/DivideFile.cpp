@@ -62,20 +62,7 @@ int main()
 			fileP.read((char *)contents, inputNum);
 
 			if (inputNum > fileSize)
-			{
-				for (int i = 0; i < inputNum; i++)
-				{
-					if (contents[i] == -0)
-					{
-						contents[i] = '\0';
-						inputNum = i;
-					}
-				}
-			}
-			else
-			{
-				contents[inputNum] = '\0';
-			}
+				inputNum = fileSize;
 
 			fileOP.write((char *)contents, inputNum);
 			cout << contents << endl;
