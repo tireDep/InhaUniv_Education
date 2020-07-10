@@ -17,5 +17,9 @@
 #include <memory.h>
 #include <tchar.h>
 
+#include<math.h>
+
+void DrawGrid(HDC hdc, int posX1, int posY1, int posX2, int posY2, int tab);
+void DrawCircle(HDC hdc, int centerX, int centerY, int radius);
 
 // TODO: reference additional headers your program requires here
