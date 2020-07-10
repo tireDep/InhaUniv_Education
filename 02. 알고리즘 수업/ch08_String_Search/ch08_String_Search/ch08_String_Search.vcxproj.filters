@@ -21,5 +21,8 @@
     <ClCompile Include="Q02_strSearch_api.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="Q03_Boyer_Moore.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>
