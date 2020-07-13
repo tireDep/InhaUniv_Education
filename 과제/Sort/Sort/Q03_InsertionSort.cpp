@@ -1,21 +1,23 @@
 /*
 ----------------------------------------------------
-선택정렬(Selection Sort)
+[ 삽입정렬(Insertion Sort) ]
 
-arr : 6 4 8 3 1 9 7
-배열을 순회하면서 가장 작은 값을 찾음
-smallIndex = 1
-찾은 값을 교환함
+arr : 6 4 1 7 3 9 8
+0번째 인덱스가 정렬되었다고 가정, 1번째 인덱스와 비교
+1번째 인덱스가 더 작을 경우 0번째 인덱스의 앞으로 삽입
 
-arr : 1 4 8 3 6 9 7 
-첫번째 인덱스 정렬 완료
-나머지 부분에 대해서도 같은 작업을 반복함
+arr : 4 6 1 7 3 9 8
+1번째 인덱스까지 정렬되었다고 가정, 2번째 인덱스와 0 ~ 1번째 인덱스를 비교
+더 작은 인덱스를 만났을 경우 그 인덱스의 앞에 삽입
 
-arr : 1 3 8 4 6 9 7
-arr : 1 3 4 8 6 9 7
-arr : 1 3 4 6 8 9 7
+arr : 1 4 6 7 3 9 8
+arr : 1 3 4 6 7 9 8
 arr : 1 3 4 6 7 9 8
 arr : 1 3 4 6 7 8 9
+
+작업이 n - 1회 반복되면 정렬 종료
+
+시간 복잡도 : O(n^2)
 ----------------------------------------------------
 */
 
@@ -24,7 +26,7 @@ arr : 1 3 4 6 7 8 9
 #include<ctime>
 
 #define Swap(type, x, y) do { type t = x; x = y; y = t; } while(0)
-void SelectionSort(int sortArr[], int arrSize);
+void InsertionSort(int sortArr[], int arrSize);
 void PrintArr(int sortArr[], int arrSize);
 
 using namespace std;
@@ -44,7 +46,7 @@ int main()
 	cout << "정렬 전 : ";
 	PrintArr(sortArr, arrSize);
 
-	SelectionSort(sortArr, arrSize);
+	InsertionSort(sortArr, arrSize);
 
 	cout << "정렬 후 : ";
 	PrintArr(sortArr, arrSize);
@@ -53,18 +55,18 @@ int main()
 	return 0;
 }
 
-void SelectionSort(int sortArr[], int arrSize)
+void InsertionSort(int sortArr[], int arrSize)
 {
-	int min;
-	for (int i = 0; i < arrSize - 1; i++)
+	int temp;
+	int j;
+	for (int i = 1; i < arrSize; i++)
 	{
-		min = i;
-		for (int j = i + 1; j < arrSize; j++)
+		temp = sortArr[i];
+		for (j = i ; j > 0 && sortArr[j - 1] > temp; j--)
 		{
-			if (sortArr[min] > sortArr[j])
-				min = j;
+			sortArr[j] = sortArr[j - 1];
 		}
-		Swap(int, sortArr[min], sortArr[i]);
+		sortArr[j] = temp;
 	}
 }
 
