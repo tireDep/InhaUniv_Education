@@ -17,9 +17,14 @@
 #include <memory.h>
 #include <tchar.h>
 
+#define _USE_MATH_DEFINES	// use M_PI
 #include<math.h>
 
 void DrawGrid(HDC hdc, int posX1, int posY1, int posX2, int posY2, int tab);
+// void DrawCircle(HDC hdc, int centerX, int centerY, int radius);
+
 void DrawCircle(HDC hdc, int centerX, int centerY, int radius);
+double DegreeToRadian(int arcDegree);
+void DrawSunflower(HDC hdc, int centerX, int centerY, int centerR, int num);
 
 // TODO: reference additional headers your program requires here

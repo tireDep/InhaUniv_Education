@@ -210,9 +210,11 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 			// DrawGrid(hdc, 100, 100, 500, 500, 50);
 			// 격자 생성 함수
 
-			DrawCircle(hdc, 300, 300, 100);	
+			// DrawCircle(hdc, 300, 300, 100);	
 			// 원 생성 함수
 
+			DrawSunflower(hdc, 100, 100, 50, 5);
+			// 해바라기 함수
 
             EndPaint(hWnd, &ps);
         }
@@ -250,6 +252,7 @@ void DrawGrid(HDC hdc, int posX1, int posY1, int posX2, int posY2, int tab)
 
 }
 
+/*
 void DrawCircle(HDC hdc, int centerX, int centerY, int radius)
 {
 	// int yr = radius / 2;
@@ -259,18 +262,40 @@ void DrawCircle(HDC hdc, int centerX, int centerY, int radius)
 	int posY2 = centerY + radius;
 
 	Ellipse(hdc, posX1, posY1, posX2, posY2);
-	
-	int srdi = 0;
-	int calc = pow(radius + srdi, 2);
-	int calc2 = calc + calc - 2 * calc * sqrt(3) / 2;
-	int calc3 = sqrt(calc2) / 2;	// small radius
+}
+*/
 
-	int x1 = centerX - calc3;
-	int y1 = centerY + radius + calc3 - calc3;
-	int x2 = centerX + calc3;
-	int y2 = centerY + radius + calc3 + calc3;
+void DrawCircle(HDC hdc, int centerX, int centerY, int radius)
+{
+	Ellipse(hdc, centerX - radius, centerY - radius, centerX + radius, centerY + radius);
+}
 
-	Ellipse(hdc, x1, y1, x2, y2);
+double DegreeToRadian(int arcDegree)
+{
+	return arcDegree * M_PI / 180;
+}
+
+void DrawSunflower(HDC hdc, int centerX, int centerY, int centerR, int num)
+{
+	DrawCircle(hdc, centerX, centerY, centerR);
+
+	int arcDegree = 360 / num;
+	double rad = DegreeToRadian(arcDegree);
+	int arc2 = arcDegree / 2;
+	double rad2 = DegreeToRadian(arc2);
+	int sonR = centerR * sin(rad2) / (1 - sin(rad2));
+
+	double sonX = centerX;
+	double sonY = centerY + centerR + sonR;
+	for (int i = 0; i < num; i++)
+	{
+		DrawCircle(hdc, sonX, sonY, sonR);
+		double tempX = cos(rad) * (sonX - centerX) - sin(rad) * (sonY - centerY);
+		double tempY = sin(rad) * (sonX - centerX) + cos(rad) * (sonY - centerY);
+		// 삼각함수 회전변환
+		sonX = tempX + centerX;
+		sonY = tempY + centerY;
+	}
 }
 
 // Message handler for about box.
