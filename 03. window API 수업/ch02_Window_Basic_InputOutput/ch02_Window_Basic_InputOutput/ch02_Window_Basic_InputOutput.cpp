@@ -216,26 +216,39 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 			//DrawSunflower(hdc, 100, 100, 50, 5);
 			// 해바라기 함수
 
-			RECT drawRect = { 100,100,300,300 };
-			DrawRectangle(hdc, drawRect.left, drawRect.top, drawRect.right, drawRect.bottom);
+			// RECT drawRect = { 100,100,300,300 };
+			// DrawRectangle(hdc, drawRect.left, drawRect.top, drawRect.right, drawRect.bottom);
 			// 사각형 생성 함수
 
-			RECT rect;
-			rect.left = 101;
-			rect.top = 101;
-			rect.right = 299;
-			rect.bottom = 299;	// 사각형 내부에 들어가기 위한 영역설정
+			// RECT rect;
+			// rect.left = 101;
+			// rect.top = 101;
+			// rect.right = 299;
+			// rect.bottom = 299;	// 사각형 내부에 들어가기 위한 영역설정
 			// DrawText(hdc, _T("Hello"), _tcsclen(_T("Hello")), &rect, DT_LEFT | DT_TOP | DT_SINGLELINE);
 			// DrawText(hdc, _T("Hello"), _tcsclen(_T("Hello")), &rect, DT_CENTER | DT_VCENTER | DT_SINGLELINE);
 			// DrawText(hdc, _T("Hello"), _tcsclen(_T("Hello")), &rect, DT_RIGHT | DT_BOTTOM | DT_SINGLELINE);
 
-			DrawText(hdc, str, _tcslen(str), &rect, DT_CENTER | DT_VCENTER | DT_SINGLELINE);
+			// DrawText(hdc, str, _tcslen(str), &rect, DT_CENTER | DT_VCENTER | DT_SINGLELINE);
 			// 사각형 내부에 문자 찍기
 
-
-			POINT point[5] = { { 10,150 }, { 250,30 }, { 500,150 }, { 350,300 }, { 150,300 } };	// 각각 좌표
-			Polygon(hdc, point, 5);
+			// POINT point[5] = { { 10,150 }, { 250,30 }, { 500,150 }, { 350,300 }, { 150,300 } };	// 각각 좌표
+			// Polygon(hdc, point, 5);
 			// 폴리곤 생성
+
+			// 별 찍기
+			// [개념]
+			// - 두 점 사이 직선 구하기
+			// - 직선의 교차점 구하기
+			// - 구한 교차점 point 리스트(Array)에 추가하기
+
+			// 제공되는 것 : 거리, 원점
+			int distance = 100;
+			int midX = 100;
+			int midY = 100;
+
+			DrawStar(hdc, midX, midY, distance);
+			// 별 찍기
 
             EndPaint(hWnd, &ps);
         }
@@ -253,6 +266,56 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
         return DefWindowProc(hWnd, message, wParam, lParam);
     }
     return 0;
+}
+
+void DrawStar(HDC hdc, int midX, int midY, int distance)
+{
+	POINT point1[5] = { 0 };
+	point1[0] = { midX, midY - distance };
+
+	int degree = 72;
+	AddPoint(degree, midX, midY, point1);
+
+	// 크래머
+	double a, b, c, d, e, f;
+	int posX, posY;
+
+	a = point1[0].y - point1[2].y;
+	b = -(point1[0].x - point1[2].x);
+	e = a*point1[0].x + b*point1[0].y;
+
+	c = point1[1].y - point1[4].y;
+	d = -(point1[1].x - point1[4].x);
+	f = c*point1[1].x + d*point1[1].y;
+
+	double divide = (a*d) - (b*c);
+	posX = ((e*d) - (b*f)) / divide;
+	posY = ((a*f) - (e*c)) / divide;
+
+	POINT point2[5] = { 0 };
+	point2[0] = { posX, posY };
+	AddPoint(degree, midX, midY, point2);
+
+	POINT result[10] = { point1[0], point2[0],point1[1],point2[1],point1[2],point2[2],point1[3],point2[3],point1[4],point2[4] };
+	Polygon(hdc, result, 10);
+}
+
+void AddPoint(int degree, int midX, int midY, POINT point[])
+{
+	int addDeg = degree;
+	double radian;
+	int spotX;
+	int spotY;
+	for (int i = 1; i < 5; i++)
+	{
+		radian = degree * (M_PI / 180);
+		degree += addDeg;
+
+		spotX = (point[0].x - midX) * cos(radian) - (point[0].y - midY) * sin(radian) + midX;
+		spotY = (point[0].x - midX) * sin(radian) + (point[0].y - midY) * cos(radian) + midY;
+
+		point[i] = { spotX, spotY };
+	}
 }
 
 void DrawGrid(HDC hdc, int posX1, int posY1, int posX2, int posY2, int tab)
