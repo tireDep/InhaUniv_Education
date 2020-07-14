@@ -236,6 +236,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 			// Polygon(hdc, point, 5);
 			// 폴리곤 생성
 
+			// ---------------------------------------------------------
 			// 별 찍기
 			// [개념]
 			// - 두 점 사이 직선 구하기
@@ -243,12 +244,60 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 			// - 구한 교차점 point 리스트(Array)에 추가하기
 
 			// 제공되는 것 : 거리, 원점
+			//int distance = 100;
+			//int midX = 100;
+			//int midY = 100;
+			//DrawStar(hdc, midX, midY, distance);
+			// 별 찍기
+			// ---------------------------------------------------------
+
+			// ---------------------------------------------------------
+			// 펜 변경 관련
+			HPEN hPen, hPen2, oldPen;
+			hPen = CreatePen(PS_DOT, 1, RGB(255, 0, 0));
+			hPen2 = CreatePen(PS_DASH, 1, RGB(0, 0, 255)); 
+			oldPen = (HPEN)SelectObject(hdc, hPen);
+			// hPen을 설정하고, 기존 정보를 oldPen에 저장함 
+			// oldPen = CreatePen(PS_SOLID, 1, RGE(0, 0, 0));
+			// 펜 생성 및 설정
+
 			int distance = 100;
 			int midX = 100;
 			int midY = 100;
-
 			DrawStar(hdc, midX, midY, distance);
-			// 별 찍기
+
+			SelectObject(hdc, hPen2);
+			// 펜 변경
+
+			DrawCircle(hdc, 300, 300, 100);
+
+			SelectObject(hdc, oldPen);	// 기존 세팅 돌려줌
+			DeleteObject(hPen);	// 펜 삭제
+			DeleteObject(hPen2);	// 펜 삭제
+			// 펜 변경 관련
+			// ---------------------------------------------------------
+
+			// ---------------------------------------------------------
+			// 면 변경 관련
+			HBRUSH hBrush, oldBrush;
+			hBrush = CreateSolidBrush(RGB(250, 250, 0));
+			//oldBrush = (HBRUSH)SelectObject(hdc, hBrush);
+
+			// DrawCircle(hdc, 300, 300, 100);
+			// 
+			// SelectObject(hdc, oldBrush);
+			// DeleteObject(hBrush);
+
+			// hBrush = CreateSolidBrush(RGB(250, 250, 0));
+			oldBrush = (HBRUSH)SelectObject(hdc, GetStockObject(NULL_BRUSH));
+
+			DrawCircle(hdc, 300, 300, 100);
+
+			SelectObject(hdc, oldBrush);
+			//DeleteObject(hBrush);
+
+			// 면 변경 관련
+			// ---------------------------------------------------------
 
             EndPaint(hWnd, &ps);
         }
