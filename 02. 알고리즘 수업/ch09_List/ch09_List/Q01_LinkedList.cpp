@@ -17,6 +17,7 @@
 
 #include<iostream>
 #include<string>
+#include<Windows.h>
 
 using namespace std;
 
@@ -31,6 +32,7 @@ void ResetNode(ClassMate *node);
 void AddNode(ClassMate **pHead);
 void DeleteNode(ClassMate **pHead);
 void PrintNode(ClassMate *pHead);
+void FreeNode(ClassMate *pHead);
 
 int main()
 {
@@ -41,11 +43,11 @@ int main()
 	while (1)
 	{
 		cout << "[메인메뉴]\n";
-		cout << "1. 노드 추가\n2. 노드 삭제\n3. 노드 출력\n4. 프로그램 종료\n";
+		cout << "1. 노드 추가\n2. 노드 삭제\n3. 노드 출력\n4. 화면 삭제\n5. 프로그램 종료\n";
 		cout << "메뉴 선택 : ";
 		cin >> inputMenu;
 
-		if (inputMenu == 4)
+		if (inputMenu == 5)
 		{
 			cout << "\n프로그램 종료\n";
 			break;
@@ -62,8 +64,13 @@ int main()
 			DeleteNode(&pHead);
 			break;
 		case 3:
-			cout << "\n[리스트 출력]\n";
+			cout << "\n[리스트 출력]\n출력 내역 : 번호, 이름\n";
 			PrintNode(pHead);
+			break;
+		case 4:
+			cout << "\n[화면 삭제]\n";
+			Sleep(200);
+			system("cls");
 			break;
 		default:
 			cout << "\n[잘못된 메뉴 입력. 재입력 필요]\n";
@@ -71,25 +78,33 @@ int main()
 		}
 	}
 	
-	// TODO
-	ClassMate *temp = pHead ->pNext;
-	do
-	{
-		ClassMate *free = temp->pNext;
-		delete free;
-	} while (free != NULL);
-
-	delete pHead;
-	// delete pHead;
-
+	FreeNode(pHead);
 	return 0;
 }
 
 void ResetNode(ClassMate *node)
 {
-	node->num = -1;
+	node->num = INT_MIN;
 	node->name = "";
 	node->pNext = NULL;
+}
+
+void FreeNode(ClassMate *pHead)
+{
+	ClassMate *temp = pHead->pNext;
+	while (1)
+	{
+		delete pHead;
+		pHead = temp;
+
+		if (temp != NULL)
+			temp = temp->pNext;
+		else
+			break;
+	}
+
+	if(pHead != NULL)
+		delete pHead;
 }
 
 void AddNode(ClassMate **pHead)
@@ -104,7 +119,7 @@ void AddNode(ClassMate **pHead)
 	cout << "추가할 이름 입력 : ";
 	cin >> newNode->name;
 
-	if ((*pHead) == NULL || (*pHead)->name == "")	// 리스트가 비어있을 경우, 맨 앞 삽입
+	if ((*pHead) == NULL || (*pHead)->num == INT_MIN)	// 리스트가 비어있을 경우, 맨 앞 삽입
 	{
 		(*pHead) = newNode;
 	}
@@ -114,7 +129,7 @@ void AddNode(ClassMate **pHead)
 		{
 			if (addNode->num == newNode->num)
 			{
-				cout << "같은 번호는 저장할 수 없습니다.\n";
+				cout << "\n[해당 번호가 존재함]\n";
 				break;
 			}
 
@@ -154,15 +169,15 @@ void DeleteNode(ClassMate **pHead)
 	ClassMate *deleteNode = *pHead;
 	ClassMate *removeNode = NULL;
 
+	if ((*pHead) == NULL || (*pHead)->num == INT_MIN)
+	{
+		cout << "\n[리스트가 비어 있음]\n\n";
+		return;
+	}
+
 	int deleteNum = 0;
 	cout << "삭제하려는 번호 입력 : ";
 	cin >> deleteNum;
-
-	if (pHead == NULL || (*pHead)->num == -1)
-	{
-		cout << "리스트가 비어 있음\n\n";
-		return;
-	}
 
 	while (deleteNode)
 	{
@@ -184,10 +199,10 @@ void DeleteNode(ClassMate **pHead)
 	}
 	
 	if (deleteNum != -1)
-		cout << "해당 값이 리스트에 존재하지 않음\n";
+		cout << "\n[해당 값이 리스트에 존재하지 않음]\n";
 	else
 	{
-		cout << "삭제된 데이터 : " << removeNode->num << ", " << removeNode->name << endl;
+		cout << "\n[삭제된 데이터]\n출력내역 : 번호, 이름\n" << removeNode->num << ", " << removeNode->name << endl;
 		delete removeNode;
 	}
 
@@ -196,17 +211,16 @@ void DeleteNode(ClassMate **pHead)
 
 void PrintNode(ClassMate *pHead)
 {
-	ClassMate *tempPrint = pHead;
-
-	if (pHead == NULL || pHead->num == -1)
+	if (pHead == NULL || pHead -> num == INT_MIN)
 	{
-		cout << "리스트가 비어 있음\n\n";
+		cout << "\n[리스트가 비어 있음]\n\n";
 		return;
 	}
 
+	ClassMate *tempPrint = pHead;
 	while (tempPrint != NULL)
 	{
-		cout << tempPrint->num << ", " << tempPrint->name << endl;
+		cout << tempPrint->num <<", "<< tempPrint->name << endl;
 		tempPrint = tempPrint->pNext;
 	}
 	cout << endl << endl;
