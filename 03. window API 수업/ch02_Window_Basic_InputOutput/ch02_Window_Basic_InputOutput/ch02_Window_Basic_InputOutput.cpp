@@ -124,18 +124,18 @@ BOOL InitInstance(HINSTANCE hInstance, int nCmdShow)
 //
 LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 {
-	//static TCHAR str[100];
-	//static int count;
-	//static int yPos;
-	//static RECT rt = { 0,0,1000,1000 };
+	static TCHAR str[100];
+	static int count;
+	static int yPos;
+	static RECT rt = { 0,0,1000,1000 };
 	// 문자열
 
 	// static SIZE size;	// 캐럿
     switch (message)
     {
 	case WM_CREATE:
-		// count = 0;
-		// yPos = 0;
+		count = 0;
+		yPos = 0;
 		// 문자열
 		
 		// CreateCaret(hWnd, NULL, 7, 16);
@@ -144,22 +144,22 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 		break;
 
 	case WM_CHAR:	// 문자열
-		// {
-		// 	if (wParam == VK_BACK && count > 0)
-		// 		count--;
-		// 	else if (VK_RETURN == wParam)
-		// 	{
-		// 		count = 0;
-		// 		yPos += 20;
-		// 		rt = { 0, 0 + yPos, 1000, 1000 + yPos };
-		// 	}
-		// 	else
-		// 		str[count++] = wParam;
-		// 	str[count] = NULL;
-		// 	
-		// 	InvalidateRgn(hWnd, NULL, true);	// window 핸들링에 대해 다시 그리기
-		// 	// WM_PAINT 호출(함수 자체가 다시 실행됨) 
-		// }
+		{
+			if (wParam == VK_BACK && count > 0)
+				count--;
+			else if (VK_RETURN == wParam)
+			{
+				count = 0;
+				yPos += 20;
+				rt = { 0, 0 + yPos, 1000, 1000 + yPos };
+			}
+			else
+				str[count++] = wParam;
+			str[count] = NULL;
+			
+			InvalidateRgn(hWnd, NULL, true);	// window 핸들링에 대해 다시 그리기
+			// WM_PAINT 호출(함수 자체가 다시 실행됨) 
+		}
 		break;
 
     case WM_COMMAND:
@@ -213,8 +213,29 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 			// DrawCircle(hdc, 300, 300, 100);	
 			// 원 생성 함수
 
-			DrawSunflower(hdc, 100, 100, 50, 5);
+			//DrawSunflower(hdc, 100, 100, 50, 5);
 			// 해바라기 함수
+
+			RECT drawRect = { 100,100,300,300 };
+			DrawRectangle(hdc, drawRect.left, drawRect.top, drawRect.right, drawRect.bottom);
+			// 사각형 생성 함수
+
+			RECT rect;
+			rect.left = 101;
+			rect.top = 101;
+			rect.right = 299;
+			rect.bottom = 299;	// 사각형 내부에 들어가기 위한 영역설정
+			// DrawText(hdc, _T("Hello"), _tcsclen(_T("Hello")), &rect, DT_LEFT | DT_TOP | DT_SINGLELINE);
+			// DrawText(hdc, _T("Hello"), _tcsclen(_T("Hello")), &rect, DT_CENTER | DT_VCENTER | DT_SINGLELINE);
+			// DrawText(hdc, _T("Hello"), _tcsclen(_T("Hello")), &rect, DT_RIGHT | DT_BOTTOM | DT_SINGLELINE);
+
+			DrawText(hdc, str, _tcslen(str), &rect, DT_CENTER | DT_VCENTER | DT_SINGLELINE);
+			// 사각형 내부에 문자 찍기
+
+
+			POINT point[5] = { { 10,150 }, { 250,30 }, { 500,150 }, { 350,300 }, { 150,300 } };	// 각각 좌표
+			Polygon(hdc, point, 5);
+			// 폴리곤 생성
 
             EndPaint(hWnd, &ps);
         }
@@ -296,6 +317,11 @@ void DrawSunflower(HDC hdc, int centerX, int centerY, int centerR, int num)
 		sonX = tempX + centerX;
 		sonY = tempY + centerY;
 	}
+}
+
+void DrawRectangle(HDC hdc, int left, int top, int right, int bottom)
+{
+	Rectangle(hdc, left, top, right, bottom);;
 }
 
 // Message handler for about box.

@@ -27,4 +27,6 @@ void DrawCircle(HDC hdc, int centerX, int centerY, int radius);
 double DegreeToRadian(int arcDegree);
 void DrawSunflower(HDC hdc, int centerX, int centerY, int centerR, int num);
 
+void DrawRectangle(HDC hdc, int left, int top, int right, int bottom);
+
 // TODO: reference additional headers your program requires here
