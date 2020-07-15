@@ -127,7 +127,8 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 {
 	srand((unsigned)time(NULL));
 
-	const int arrSize = 50;
+	// TODO : 동적할당
+	const int arrSize = 100;
 
 	static POINT mousePos;
 
@@ -135,12 +136,17 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 	static int circleCnt = 0;
 	static bool isCircle = FALSE;
 
+	static cRect rectangle[arrSize];
+	static int rectCnt = 0;
+	static bool isRect = FALSE;
+
 	static RECT rectView;
 
     switch (message)
     {
 	case WM_CREATE:
 		GetClientRect(hWnd, &rectView);	// 창 크기
+		SetTimer(hWnd, 0, 100, NULL);	// 타이머
 		break;
 
     case WM_COMMAND:
@@ -161,21 +167,26 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
         }
         break;
 
+	case WM_TIMER:
+		circle[circleCnt - 1].MovePos(circle, circleCnt);
+		rectangle[rectCnt - 1].MovePos(rectangle, rectCnt);
+
+		InvalidateRect(hWnd, NULL, TRUE);
+		break;
+
 	case WM_LBUTTONDOWN:
 	{
-		// todo
-		// int rndFigure = rand() % 3;
-		int rndFigure = 0;
-		
-		if (rndFigure == 0)
-		{
-			mousePos.x = LOWORD(lParam);
-			mousePos.y = HIWORD(lParam);
+		int rndFigure = rand() % 2;
+		//int rndFigure = 0;
 
+		mousePos.x = LOWORD(lParam);
+		mousePos.y = HIWORD(lParam);
+
+		if (rndFigure == 0)
 			isCircle = TRUE;
-		}
-		// if (rndFigure == 1)
-		// 	isCircle = TRUE;
+		if (rndFigure == 1)
+			isRect = TRUE;
+		// todo
 		// if (rndFigure == 2)
 		// 	isCircle = TRUE;
 
@@ -193,11 +204,17 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 				circle[circleCnt++].SetPos(mousePos.x, mousePos.y, rectView);
 				isCircle = FALSE;
 			}
-			for (int i = 0; i < circleCnt; i++)
+			if (isRect)
 			{
-				circle[i].DrawCircle(hdc);
+				rectangle[rectCnt++].SetPos(mousePos.x, mousePos.y, rectView);
+				isRect = FALSE;
 			}
 
+			for (int i = 0; i < circleCnt; i++)
+				circle[i].DrawFigure(hdc);
+			
+			for (int i = 0; i < rectCnt; i++)
+				rectangle[i].DrawFigure(hdc);
 
             EndPaint(hWnd, &ps);
         }

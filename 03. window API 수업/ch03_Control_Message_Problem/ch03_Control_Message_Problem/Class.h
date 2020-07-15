@@ -47,27 +47,32 @@ class BasicFigure
 
 private:
 	POINT point;
+	POINT movePoint;
 	int rndPos;
 
-	int size;
+	int length;
 	int angle;
 	int speed;
-	int moveX;
-	int moveY;
-	int playType;
+	
+	static int playType;
 
 public:
-	BasicFigure() : rndPos(0), size(0), angle(0), speed(0), moveX(0), moveY(0), playType(0) 
+	BasicFigure() : rndPos(0), length(0), angle(0), speed(0)
 	{
 		point.x = 0;
 		point.y = 0;
+		movePoint.x = 0;
+		movePoint.y = 0;
 	};
 
 	~BasicFigure() { };
 
 	void Update() { };
 	void SetPos(int x, int y, RECT viewRect);
+	virtual void DrawFigure() { };
 	
+	void MovePos(BasicFigure figure[], int cnt);
+
 	int GetPosX();
 	int GetPosY();
 	int GetPosRnd();
@@ -75,22 +80,23 @@ public:
 
 class cCircle : public BasicFigure
 {
-private:
-
-
 public:
 	cCircle() { };
 	~cCircle() { };
 
-	// void SetPos(int x, int y, RECT viewRect);
-	void DrawCircle(HDC hdc);
+	void DrawFigure(HDC hdc);
+	// void DrawCircle(HDC hdc);
 };
 
-// class cRect : public BasicFigure
-// {
-// 
-// };
-// 
+class cRect : public BasicFigure
+{
+public:
+	cRect() { };
+	~cRect() { };
+
+	void DrawFigure(HDC hdc);
+};
+
 // class cStar : public BasicFigure
 // {
 // 

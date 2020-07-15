@@ -7,11 +7,36 @@ void BasicFigure::SetPos(int x, int y, RECT viewRect)
 
 	point.x = x;
 	point.y = y;
-	rndPos = rand() % 250 + 1;	// 랜덤 크기 설정
+	rndPos = rand() % 150 + 1;	// 랜덤 크기 설정
 
 	while (viewRect.right <= point.x + rndPos || viewRect.bottom <= point.y + rndPos)	// 범위 벗어날 경우 크기 재설정
 	{
-		rndPos = rand() % 250 + 1;
+		rndPos = rand() % 150 + 1;
+	}
+}
+
+void BasicFigure::MovePos(BasicFigure figure[], int cnt)
+{
+	srand((unsigned)time(NULL));
+	int direction;
+
+	for (int i = 0; i < cnt; i++)
+	{
+		if (movePoint.x == 0)
+		{
+			direction = rand() % 2;
+			movePoint.x = rand() % 10 + 1;
+			if (direction % 2 == 0)
+				movePoint.x *= -1;
+
+			direction = rand() % 2;
+			movePoint.y = rand() % 10 + 1;
+			if (direction % 2 == 0)
+				movePoint.y *= -1;
+		}
+
+		figure[i].point.x += figure[i].movePoint.x;
+		figure[i].point.y += figure[i].movePoint.y;
 	}
 }
 

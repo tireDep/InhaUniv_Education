@@ -47,6 +47,9 @@
     <ClCompile Include="CircleClass.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="RectangleClass.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="ch03_Control_Message_Problem.rc">
