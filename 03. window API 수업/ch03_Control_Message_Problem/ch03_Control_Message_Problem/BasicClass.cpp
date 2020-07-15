@@ -38,6 +38,16 @@ void BasicFigure::SetPos(int x, int y, RECT viewRect)
 	{
 		rndPos = rand() % 150 + 1;
 	}
+
+	CalcRadius();
+}
+
+void BasicFigure::CalcRadius()
+{
+	double calcX = pow(point.x - point.y, 2);
+	double calcY = pow((point.x + rndPos) - (point.y + rndPos), 2);
+
+	radius = pow(calcX + calcY, 0.5) / 2;
 }
 
 void BasicFigure::MovePos(BasicFigure figure[], int cnt)
@@ -63,6 +73,11 @@ void BasicFigure::MovePos(BasicFigure figure[], int cnt)
 		figure[i].point.x += figure[i].movePoint.x;
 		figure[i].point.y += figure[i].movePoint.y;
 	}
+}
+
+void BasicFigure::Collision(BasicFigure circle[], BasicFigure rectangle[])
+{
+
 }
 
 int BasicFigure::GetPosX()

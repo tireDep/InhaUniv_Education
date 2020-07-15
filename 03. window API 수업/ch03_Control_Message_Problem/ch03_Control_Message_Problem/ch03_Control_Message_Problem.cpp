@@ -172,6 +172,8 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 		circle[circleCnt - 1].MovePos(circle, circleCnt);
 		rectangle[rectCnt - 1].MovePos(rectangle, rectCnt);
 
+		// CheckCollision()
+
 		// Update()
 		circle[circleCnt - 1].Update(circle, rectView, circleCnt);
 		rectangle[rectCnt - 1].Update(rectangle, rectView, rectCnt);

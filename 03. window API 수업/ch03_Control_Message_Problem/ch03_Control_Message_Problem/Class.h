@@ -22,6 +22,7 @@
 #include "stdafx.h"
 
 #include<time.h>
+#include<math.h>
 
 class BasicFigure
 {
@@ -49,15 +50,14 @@ private:
 	POINT point;
 	POINT movePoint;
 	int rndPos;
+	double radius;
 
-	int length;
 	int angle;
-	int speed;
 	
 	static int playType;
 
 public:
-	BasicFigure() : rndPos(0), length(0), angle(0), speed(0)
+	BasicFigure() : rndPos(0), radius(0), angle(0)
 	{
 		point.x = 0;
 		point.y = 0;
@@ -71,7 +71,10 @@ public:
 	void SetPos(int x, int y, RECT viewRect);
 	virtual void DrawFigure() { };
 	
+	void CalcRadius();
 	void MovePos(BasicFigure figure[], int cnt);
+
+	void Collision(BasicFigure circle[], BasicFigure rectangle[]);
 
 	int GetPosX();
 	int GetPosY();
