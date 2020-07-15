@@ -22,6 +22,8 @@
 #include "stdafx.h"
 
 #include<time.h>
+
+#define _USE_MATH_DEFINES
 #include<math.h>
 
 class BasicFigure
@@ -74,6 +76,9 @@ public:
 	void CalcRadius();
 	void MovePos(BasicFigure figure[], int cnt);
 
+	double CalcRadian(double degree);
+	virtual void Rotation(double degree);
+
 	void Collision(BasicFigure circle[], BasicFigure rectangle[]);
 
 	int GetPosX();
@@ -98,9 +103,16 @@ public:
 	~cRect() { };
 
 	void DrawFigure(HDC hdc);
+	void Rotation();
 };
 
-// class cStar : public BasicFigure
-// {
-// 
-// };
+class cStar : public BasicFigure
+{
+public:
+	cStar() { };
+	~cStar() { };
+
+	void DrawFigure(HDC hdc);
+	void AddPoint(int degree, int midX, int midY, POINT point[]);
+	// void Rotation();
+};

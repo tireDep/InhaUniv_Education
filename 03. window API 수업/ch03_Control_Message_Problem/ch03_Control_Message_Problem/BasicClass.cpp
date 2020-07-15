@@ -80,6 +80,70 @@ void BasicFigure::Collision(BasicFigure circle[], BasicFigure rectangle[])
 
 }
 
+/*
+double DegreeToRadian(int arcDegree)
+{
+return arcDegree * M_PI / 180;
+}
+
+void DrawSunflower(HDC hdc, int centerX, int centerY, int centerR, int num)
+{
+DrawCircle(hdc, centerX, centerY, centerR);
+
+int arcDegree = 360 / num;
+double rad = DegreeToRadian(arcDegree);
+int arc2 = arcDegree / 2;
+double rad2 = DegreeToRadian(arc2);
+int sonR = centerR * sin(rad2) / (1 - sin(rad2));
+
+double sonX = centerX;
+double sonY = centerY + centerR + sonR;
+for (int i = 0; i < num; i++)
+{
+DrawCircle(hdc, sonX, sonY, sonR);
+double tempX = cos(rad) * (sonX - centerX) - sin(rad) * (sonY - centerY);
+double tempY = sin(rad) * (sonX - centerX) + cos(rad) * (sonY - centerY);
+// 삼각함수 회전변환
+sonX = tempX + centerX;
+sonY = tempY + centerY;
+}
+}
+
+void AddPoint(int degree, int midX, int midY, POINT point[])
+{
+int addDeg = degree;
+double radian;
+int spotX;
+int spotY;
+for (int i = 1; i < 5; i++)
+{
+radian = degree * (M_PI / 180);
+degree += addDeg;
+
+spotX = (point[0].x - midX) * cos(radian) - (point[0].y - midY) * sin(radian) + midX;
+spotY = (point[0].x - midX) * sin(radian) + (point[0].y - midY) * cos(radian) + midY;
+
+point[i] = { spotX, spotY };
+}
+}
+*/
+
+double BasicFigure::CalcRadian(double degree)
+{
+	return degree * M_PI / 180;
+}
+
+void BasicFigure::Rotation(double degree) 
+{
+	int addDeg = degree;
+	double radian;
+	CalcRadian(degree);
+	POINT rotatePos[4] = { point.x, point.y, point.x + rndPos, point.y + rndPos };
+	// left, top, right, bottom
+
+
+}
+
 int BasicFigure::GetPosX()
 {
 	return point.x;
