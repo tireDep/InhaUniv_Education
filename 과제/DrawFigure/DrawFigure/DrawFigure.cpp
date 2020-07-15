@@ -1,10 +1,10 @@
-// ch03_Control_Message_Problem.cpp : Defines the entry point for the application.
+// DrawFigure.cpp : Defines the entry point for the application.
 //
 
 #include "stdafx.h"
-#include "ch03_Control_Message_Problem.h"
+#include "DrawFigure.h"
 
-#include "Class.h"
+#include "FigureShape.h"
 
 #define MAX_LOADSTRING 100
 
@@ -31,7 +31,7 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 
     // Initialize global strings
     LoadStringW(hInstance, IDS_APP_TITLE, szTitle, MAX_LOADSTRING);
-    LoadStringW(hInstance, IDC_CH03_CONTROL_MESSAGE_PROBLEM, szWindowClass, MAX_LOADSTRING);
+    LoadStringW(hInstance, IDC_DRAWFIGURE, szWindowClass, MAX_LOADSTRING);
     MyRegisterClass(hInstance);
 
     // Perform application initialization:
@@ -40,7 +40,7 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
         return FALSE;
     }
 
-    HACCEL hAccelTable = LoadAccelerators(hInstance, MAKEINTRESOURCE(IDC_CH03_CONTROL_MESSAGE_PROBLEM));
+    HACCEL hAccelTable = LoadAccelerators(hInstance, MAKEINTRESOURCE(IDC_DRAWFIGURE));
 
     MSG msg;
 
@@ -75,10 +75,10 @@ ATOM MyRegisterClass(HINSTANCE hInstance)
     wcex.cbClsExtra     = 0;
     wcex.cbWndExtra     = 0;
     wcex.hInstance      = hInstance;
-    wcex.hIcon          = LoadIcon(hInstance, MAKEINTRESOURCE(IDI_CH03_CONTROL_MESSAGE_PROBLEM));
+    wcex.hIcon          = LoadIcon(hInstance, MAKEINTRESOURCE(IDI_DRAWFIGURE));
     wcex.hCursor        = LoadCursor(nullptr, IDC_ARROW);
     wcex.hbrBackground  = (HBRUSH)(COLOR_WINDOW+1);
-    wcex.lpszMenuName   = MAKEINTRESOURCEW(IDC_CH03_CONTROL_MESSAGE_PROBLEM);
+    wcex.lpszMenuName   = MAKEINTRESOURCEW(IDC_DRAWFIGURE);
     wcex.lpszClassName  = szWindowClass;
     wcex.hIconSm        = LoadIcon(wcex.hInstance, MAKEINTRESOURCE(IDI_SMALL));
 
@@ -125,32 +125,10 @@ BOOL InitInstance(HINSTANCE hInstance, int nCmdShow)
 //
 LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 {
-	srand((unsigned)time(NULL));
-
-	// TODO : 동적할당
-	const int arrSize = 100;
-
-	static POINT mousePos;
-
-	static cCircle circle[arrSize];
-	static int circleCnt = 0;
-	static bool isCircle = FALSE;
-
-	static cRect rectangle[arrSize];
-	static int rectCnt = 0;
-	static bool isRect = FALSE;
-
-	static cStar star[arrSize];
-	static int starCnt = 0;
-	static bool isStar = FALSE;
-
-	static RECT rectView;
-
+	static vector<BasicFigure *>figureList;
     switch (message)
     {
 	case WM_CREATE:
-		GetClientRect(hWnd, &rectView);	// 창 크기
-		SetTimer(hWnd, 0, 10, NULL);	// 타이머
 		break;
 
     case WM_COMMAND:
@@ -170,76 +148,11 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
             }
         }
         break;
-
-	case WM_TIMER:
-		// CheckCollision()
-		circle[circleCnt - 1].Collision(circle, rectangle, circleCnt);
-
-		// RandomMove()
-		circle[circleCnt - 1].MovePos(circle, circleCnt);
-		rectangle[rectCnt - 1].MovePos(rectangle, rectCnt);
-		star[starCnt - 1].MovePos(star, starCnt);
-		
-		// Rotation()
-		//rectangle[rectCnt - 1].Rotation(90);
-
-		// Update()
-		circle[circleCnt - 1].Update(circle, rectView, circleCnt);
-		rectangle[rectCnt - 1].Update(rectangle, rectView, rectCnt);
-		star[starCnt - 1].Update(star, rectView, starCnt);
-
-		InvalidateRect(hWnd, NULL, TRUE);
-		break;
-
-	case WM_LBUTTONDOWN:
-	{
-		//int rndFigure = rand() % 3;
-		int rndFigure = 0;
-
-		mousePos.x = LOWORD(lParam);
-		mousePos.y = HIWORD(lParam);
-
-		if (rndFigure == 0)
-			isCircle = TRUE;
-		if (rndFigure == 1)
-			isRect = TRUE;
-		if (rndFigure == 2)
-			isStar = TRUE;
-
-		InvalidateRect(hWnd, NULL, TRUE);
-	}
-		break;
-
     case WM_PAINT:
         {
             PAINTSTRUCT ps;
             HDC hdc = BeginPaint(hWnd, &ps);
-
-			if (isCircle)
-			{
-				circle[circleCnt++].SetPos(mousePos.x, mousePos.y, rectView);
-				isCircle = FALSE;
-			}
-			if (isRect)
-			{
-				rectangle[rectCnt++].SetPos(mousePos.x, mousePos.y, rectView);
-				isRect = FALSE;
-			}
-			if (isStar)
-			{
-				star[starCnt++].SetPos(mousePos.x, mousePos.y, rectView);
-				isStar = FALSE;
-			}
-
-			for (int i = 0; i < circleCnt; i++)
-				circle[i].DrawFigure(hdc);
-			
-			for (int i = 0; i < rectCnt; i++)
-				rectangle[i].DrawFigure(hdc);
-
-			for (int i = 0; i < starCnt; i++)
-				star[i].DrawFigure(hdc);
-
+            // TODO: Add any drawing code that uses hdc here...
             EndPaint(hWnd, &ps);
         }
         break;

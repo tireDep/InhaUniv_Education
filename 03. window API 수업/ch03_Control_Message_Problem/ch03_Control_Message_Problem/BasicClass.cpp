@@ -47,16 +47,21 @@ void BasicFigure::SetPos(int x, int y, RECT viewRect)
 		rndPos = rand() % 100 + 1;
 		addNum = -rndPos;
 	}
-
-	CalcRadius();
 }
 
 void BasicFigure::CalcRadius()
 {
-	double calcX = pow(point.x - point.y, 2);
-	double calcY = pow((point.x + rndPos) - (point.y + rndPos), 2);
+	// double calcX = pow(point.x - point.x + rndPos, 2);
+	// double calcY = pow((point.y + rndPos) - (point.y + rndPos), 2);
+	// 
+	// radius = pow(calcX + calcY, 0.5) / 2;
+	// 
+	// centerPos.x = (point.x + (point.x + rndPos)) / 2;
+	// centerPos.y = (point.y + (point.y + rndPos)) / 2;
 
-	radius = pow(calcX + calcY, 0.5) / 2;
+	radius = rndPos / 2;
+	//centerPos.x = point.x + radius;
+	//centerPos.y = point.y + radius;
 }
 
 void BasicFigure::MovePos(BasicFigure figure[], int cnt)
@@ -84,9 +89,45 @@ void BasicFigure::MovePos(BasicFigure figure[], int cnt)
 	}
 }
 
-void BasicFigure::Collision(BasicFigure circle[], BasicFigure rectangle[])
+void BasicFigure::Collision(BasicFigure circle[], BasicFigure rectangle[], int circleCnt)
 {
+	// 두 점 사이의 거리
+	double calcX;
+	double calcY;
+	double length;
 
+	double a, b, c, d;
+	double r1, r2;
+	for (int i = 0; i < circleCnt; i++)
+	{
+		r1 = circle[i].rndPos / 2;
+		a = circle[i].point.x + r1;
+		b = circle[i].point.y + r1;
+		for (int j = 0; j < circleCnt ; j++)
+		{
+			if (i == j)
+				continue; 
+			r2 = circle[j].rndPos / 2;
+			c = circle[j].point.x + r2;
+			d = circle[j].point.y + r2;
+
+			// calcX = pow(circle[i].centerPos.x - circle[j].centerPos.x, 2);
+			// calcY = pow(circle[i].centerPos.y - circle[j].centerPos.y, 2);
+			// length = pow(calcX + calcY, 0.5);
+			calcX = a - c;
+			calcY = b - d;
+			length = sqrt(calcX * calcX + calcY * calcY);
+
+			if (length < (r1 + r2)) //&& length > (r1 - r2))
+			{
+				circle[i].movePoint.x *= -1;
+				//circle[i].movePoint.y *= -1;
+				//circle[j].movePoint.x *= -1;
+				circle[j].movePoint.y *= -1;
+			}
+
+		}
+	}
 }
 
 /*
@@ -142,14 +183,8 @@ double BasicFigure::CalcRadian(double degree)
 	return degree * M_PI / 180;
 }
 
-void BasicFigure::Rotation(double degree) 
+void BasicFigure::Rotation() 
 {
-	int addDeg = degree;
-	double radian;
-	CalcRadian(degree);
-	POINT rotatePos[4] = { point.x, point.y, point.x + rndPos, point.y + rndPos };
-	// left, top, right, bottom
-
 
 }
 
@@ -166,4 +201,24 @@ int BasicFigure::GetPosY()
 int BasicFigure::GetPosRnd()
 {
 	return rndPos;
+}
+
+int BasicFigure::GetCenterX()
+{
+	return centerPos.x;
+}
+
+int BasicFigure::GetCenterY()
+{
+	return centerPos.y;
+}
+
+void BasicFigure::SetPosX(double pos)
+{
+	point.x = pos;
+}
+
+void BasicFigure::SetPosY(double pos)
+{
+	point.y = pos;
 }

@@ -51,9 +51,9 @@ class BasicFigure
 private:
 	POINT point;
 	POINT movePoint;
+	POINT centerPos;
 	int rndPos;
 	double radius;
-
 	int figureShape;
 
 	int angle;
@@ -79,13 +79,18 @@ public:
 	void MovePos(BasicFigure figure[], int cnt);
 
 	double CalcRadian(double degree);
-	virtual void Rotation(double degree);
+	virtual void Rotation();
 
-	void Collision(BasicFigure circle[], BasicFigure rectangle[]);
+	void Collision(BasicFigure circle[], BasicFigure rectangle[], int circleCnt);
+
+	void SetPosX(double pos);
+	void SetPosY(double pos);
 
 	int GetPosX();
 	int GetPosY();
 	int GetPosRnd();
+	int GetCenterX();
+	int GetCenterY();
 
 	void SetFigureShape(int shape)
 	{
@@ -118,7 +123,7 @@ public:
 	~cRect() { };
 
 	void DrawFigure(HDC hdc);
-	void Rotation();
+	void Rotation(double degree);
 };
 
 class cStar : public BasicFigure
