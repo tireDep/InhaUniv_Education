@@ -175,21 +175,21 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 		// RandomMove()
 		circle[circleCnt - 1].MovePos(circle, circleCnt);
 		rectangle[rectCnt - 1].MovePos(rectangle, rectCnt);
-		star[starCnt - 1].MovePos(star, rectCnt);
+		star[starCnt - 1].MovePos(star, starCnt);
 		// CheckCollision()
 
 		// Update()
 		circle[circleCnt - 1].Update(circle, rectView, circleCnt);
 		rectangle[rectCnt - 1].Update(rectangle, rectView, rectCnt);
-		star[starCnt - 1].Update(star, rectView, rectCnt);
+		star[starCnt - 1].Update(star, rectView, starCnt);
 
 		InvalidateRect(hWnd, NULL, TRUE);
 		break;
 
 	case WM_LBUTTONDOWN:
 	{
-		int rndFigure = rand() % 3;
-		//int rndFigure = 0;
+		//int rndFigure = rand() % 3;
+		int rndFigure = 2;
 
 		mousePos.x = LOWORD(lParam);
 		mousePos.y = HIWORD(lParam);
@@ -198,7 +198,6 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 			isCircle = TRUE;
 		if (rndFigure == 1)
 			isRect = TRUE;
-		// todo
 		if (rndFigure == 2)
 			isStar = TRUE;
 

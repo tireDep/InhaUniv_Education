@@ -54,12 +54,14 @@ private:
 	int rndPos;
 	double radius;
 
+	int figureShape;
+
 	int angle;
-	
+
 	static int playType;
 
 public:
-	BasicFigure() : rndPos(0), radius(0), angle(0)
+	BasicFigure() : rndPos(0), radius(0), angle(0), figureShape(0)
 	{
 		point.x = 0;
 		point.y = 0;
@@ -84,12 +86,21 @@ public:
 	int GetPosX();
 	int GetPosY();
 	int GetPosRnd();
+
+	void SetFigureShape(int shape)
+	{
+		figureShape = shape;
+	}
 };
 
 class cCircle : public BasicFigure
 {
 public:
-	cCircle() { };
+	cCircle() 
+	{
+		SetFigureShape(0);
+	};
+
 	~cCircle() { };
 
 	void DrawFigure(HDC hdc);
@@ -99,7 +110,11 @@ public:
 class cRect : public BasicFigure
 {
 public:
-	cRect() { };
+	cRect() 
+	{
+		SetFigureShape(4);
+	};
+
 	~cRect() { };
 
 	void DrawFigure(HDC hdc);
@@ -109,7 +124,11 @@ public:
 class cStar : public BasicFigure
 {
 public:
-	cStar() { };
+	cStar() 
+	{
+		SetFigureShape(5);
+	};
+
 	~cStar() { };
 
 	void DrawFigure(HDC hdc);

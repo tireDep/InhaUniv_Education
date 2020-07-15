@@ -8,7 +8,7 @@ void cStar::DrawFigure(HDC hdc)
 	int _rnd = GetPosRnd();
 
 	POINT point1[5] = { 0 };
-	point1[0] = { _x, _y - _y };
+	point1[0] = { _x, _y - _rnd };
 
 	int degree = 72;
 	AddPoint(degree, _x, _y, point1);

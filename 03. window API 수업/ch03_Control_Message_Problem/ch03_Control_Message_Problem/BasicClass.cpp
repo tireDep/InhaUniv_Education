@@ -8,10 +8,14 @@ void BasicFigure::Update(BasicFigure figure[], RECT viewRect, int cnt)
 	int _right;
 	int _bottom;
 
+	int addNum = 0;
 	for (int i = 0; i < cnt; i++)
 	{
-		_left = figure[i].point.x;
-		_top = figure[i].point.y;
+		if (figureShape == 5)	// 별 모양 벽판정
+			addNum = -figure[i].rndPos;
+
+		_left = figure[i].point.x + addNum;
+		_top = figure[i].point.y + addNum;
 		_right = figure[i].point.x + figure[i].rndPos;
 		_bottom = figure[i].point.y + figure[i].rndPos;
 
@@ -32,11 +36,16 @@ void BasicFigure::SetPos(int x, int y, RECT viewRect)
 
 	point.x = x;
 	point.y = y;
-	rndPos = rand() % 150 + 1;	// 랜덤 크기 설정
+	rndPos = rand() % 150 + 10;	// 랜덤 크기 설정
 
-	while (viewRect.right <= point.x + rndPos || viewRect.bottom <= point.y + rndPos)	// 범위 벗어날 경우 크기 재설정
+	int addNum = 0;
+	if (figureShape == 5)	// 별 모양 벽판정
+		addNum = -rndPos;
+
+	while (viewRect.right <= point.x + rndPos || viewRect.bottom <= point.y + rndPos || viewRect.left >= point.x + addNum || viewRect.top >= point.y + addNum)	// 범위 벗어날 경우 크기 재설정
 	{
-		rndPos = rand() % 150 + 1;
+		rndPos = rand() % 100 + 1;
+		addNum = -rndPos;
 	}
 
 	CalcRadius();
