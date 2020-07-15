@@ -146,7 +146,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
     {
 	case WM_CREATE:
 		GetClientRect(hWnd, &rectView);	// 창 크기
-		SetTimer(hWnd, 0, 100, NULL);	// 타이머
+		SetTimer(hWnd, 0, 10, NULL);	// 타이머
 		break;
 
     case WM_COMMAND:
@@ -168,8 +168,13 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
         break;
 
 	case WM_TIMER:
+		// RandomMove()
 		circle[circleCnt - 1].MovePos(circle, circleCnt);
 		rectangle[rectCnt - 1].MovePos(rectangle, rectCnt);
+
+		// Update()
+		circle[circleCnt - 1].Update(circle, rectView, circleCnt);
+		rectangle[rectCnt - 1].Update(rectangle, rectView, rectCnt);
 
 		InvalidateRect(hWnd, NULL, TRUE);
 		break;

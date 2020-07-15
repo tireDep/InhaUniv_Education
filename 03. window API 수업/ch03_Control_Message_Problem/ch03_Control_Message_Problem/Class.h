@@ -67,7 +67,7 @@ public:
 
 	~BasicFigure() { };
 
-	void Update() { };
+	void Update(BasicFigure figure[], RECT viewRect, int cnt);
 	void SetPos(int x, int y, RECT viewRect);
 	virtual void DrawFigure() { };
 	

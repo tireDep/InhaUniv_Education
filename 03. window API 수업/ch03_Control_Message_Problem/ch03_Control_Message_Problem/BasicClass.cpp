@@ -1,6 +1,31 @@
 #include "stdafx.h"
 #include "Class.h"
 
+void BasicFigure::Update(BasicFigure figure[], RECT viewRect, int cnt)
+{
+	int _left;
+	int _top;
+	int _right;
+	int _bottom;
+
+	for (int i = 0; i < cnt; i++)
+	{
+		_left = figure[i].point.x;
+		_top = figure[i].point.y;
+		_right = figure[i].point.x + figure[i].rndPos;
+		_bottom = figure[i].point.y + figure[i].rndPos;
+
+		if (_left <= viewRect.left || _right >= viewRect.right)
+		{
+			figure[i].movePoint.x *= -1;
+		}
+		else if (_top <= viewRect.top || _bottom >= viewRect.bottom)
+		{
+			figure[i].movePoint.y *= -1;
+		}
+	}
+}
+
 void BasicFigure::SetPos(int x, int y, RECT viewRect)
 {
 	srand((unsigned)time(NULL));
