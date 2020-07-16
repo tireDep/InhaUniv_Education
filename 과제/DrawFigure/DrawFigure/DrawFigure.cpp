@@ -136,9 +136,19 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 		SetTimer(hWnd, 0, 10, NULL);	// ≈∏¿Ã∏”
 		break;
 
+	case WM_TIMER:
+		for (int i = 0; i < figureList.size(); i++)
+		{
+			figureList[i]->MovePos();
+		}
+
+		InvalidateRect(hWnd, NULL, TRUE);
+		break;
+
 	case WM_LBUTTONDOWN:
 		{
-			int rndFigure = 0;
+			int rndFigure = rand() % 2;
+			// int rndFigure = 0;
 
 			mousePos.x = LOWORD(lParam);
 			mousePos.y = HIWORD(lParam);
@@ -148,19 +158,29 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 				cCircle *circle = new cCircle(mousePos.x, mousePos.y);
 				figureList.push_back(circle);
 			}
+			if (rndFigure == 1)
+			{
+				cRect *rectangle = new cRect(mousePos.x, mousePos.y);
+				figureList.push_back(rectangle);
+			}
 
 			InvalidateRect(hWnd, NULL, TRUE);
 		}
 		break;
 
-	case WM_TIMER:
+	case WM_PAINT:
+	{
+		PAINTSTRUCT ps;
+		HDC hdc = BeginPaint(hWnd, &ps);
+
 		for (int i = 0; i < figureList.size(); i++)
 		{
-			figureList[i]->MovePos();
+			figureList[i]->DrawFigureShape(hdc);
 		}
 
-		InvalidateRect(hWnd, NULL, TRUE);
-		break;
+		EndPaint(hWnd, &ps);
+	}
+	break;
 
     case WM_COMMAND:
         {
@@ -177,19 +197,6 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
             default:
                 return DefWindowProc(hWnd, message, wParam, lParam);
             }
-        }
-        break;
-    case WM_PAINT:
-        {
-            PAINTSTRUCT ps;
-            HDC hdc = BeginPaint(hWnd, &ps);
-
-			for (int i = 0; i < figureList.size(); i++)
-			{
-				figureList[i]->DrawFigure(hdc);
-			}
-
-            EndPaint(hWnd, &ps);
         }
         break;
     case WM_DESTROY:

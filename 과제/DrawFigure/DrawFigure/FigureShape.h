@@ -30,11 +30,13 @@ public:
 	~BasicFigure() { };
 
 	void SetFigureShape(int shape) { figureShape = shape; }
-	virtual void DrawFigure(HDC hdc) = 0;
+	virtual void DrawFigureShape(HDC hdc) = 0;
 
 	virtual void MovePos();
 
 	void SetPosRnd(int rndpos) { rndPos = rndpos; }
+	void SetRadius(double radi) { radius = radi; }
+
 	int GetPosRnd() { return rndPos; }
 	POINT GetMovePos() { return movePos;  }
 
@@ -63,30 +65,30 @@ public:
 class cCircle : public BasicFigure
 {
 private:
-	POINT circlePos;
+	POINT circlePos[2];
 
 public:
 	cCircle();
 	cCircle(int posx, int posy);
 	~cCircle();
 
-	void DrawFigure(HDC hdc);
+	void DrawFigureShape(HDC hdc);
 	void MovePos();
 };
 
-// class cRect : public BasicFigure
-// {
-// public:
-// 	cRect()
-// 	{
-// 		SetFigureShape(4);
-// 	};
-// 
-// 	~cRect() { };
-// 
-// 	void DrawFigure(HDC hdc);
-// 	void Rotation(double degree);
-// };
+class cRect : public BasicFigure
+{
+private:
+	POINT rectPos[2];
+
+public:
+	cRect();
+	cRect(int posx, int posy);
+	~cRect();
+
+	void DrawFigureShape(HDC hdc);
+	void MovePos();
+};
 // 
 // class cStar : public BasicFigure
 // {
