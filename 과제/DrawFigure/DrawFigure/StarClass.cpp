@@ -95,3 +95,13 @@ void cStar::MovePos()
 		this->starPos[i].y += _movePos.y;
 	}
 }
+
+void cStar::Update(RECT rectView)
+{
+	int rndpos = GetPosRnd();
+	if (starPos[0].x - rndpos <= rectView.left || starPos[2].x - rndpos <= rectView.left || starPos[4].x - rndpos <= rectView.left || starPos[6].x + rndpos + (rndpos / 2) >= rectView.right || starPos[8].x + rndpos + (rndpos / 2) >= rectView.right)
+		SetMovePosX(-1);
+
+	if (starPos[0].y <= rectView.top || starPos[2].y <= rectView.top || starPos[4].y <= rectView.top || starPos[6].y >= rectView.bottom || starPos[8].y >= rectView.bottom)
+		SetMovePosY(-1);
+}

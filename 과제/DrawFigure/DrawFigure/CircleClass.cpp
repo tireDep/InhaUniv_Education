@@ -55,3 +55,11 @@ void cCircle::MovePos()
 		this->circlePos[i].y += _movePos.y;
 	}
 }
+
+void cCircle::Update(RECT rectView)
+{
+	if (circlePos[0].x <= rectView.left || circlePos[1].x >= rectView.right)
+		SetMovePosX(-1);
+	if (circlePos[0].y <= rectView.top || circlePos[1].y >= rectView.bottom)
+		SetMovePosY(-1);
+}

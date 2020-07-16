@@ -127,12 +127,15 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 {
 	srand((unsigned)time(NULL));
 
+	static RECT rectView;
+
 	static POINT mousePos;
 	static vector<BasicFigure *>figureList;
 
     switch (message)
     {
 	case WM_CREATE:
+		GetClientRect(hWnd, &rectView);	// 창 크기
 		SetTimer(hWnd, 0, 10, NULL);	// 타이머
 		break;
 
@@ -140,6 +143,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 		for (int i = 0; i < figureList.size(); i++)
 		{
 			figureList[i]->MovePos();
+			figureList[i]->Update(rectView);
 		}
 
 		InvalidateRect(hWnd, NULL, TRUE);

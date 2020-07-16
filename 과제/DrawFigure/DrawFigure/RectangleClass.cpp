@@ -55,3 +55,11 @@ void cRect::MovePos()
 		this->rectPos[i].y += _movePos.y;
 	}
 }
+
+void cRect::Update(RECT rectView)
+{
+	if (rectPos[0].x <= rectView.left || rectPos[1].x >= rectView.right)
+		SetMovePosX(-1);
+	if (rectPos[0].y <= rectView.top || rectPos[1].y >= rectView.bottom)
+		SetMovePosY(-1);
+}

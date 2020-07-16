@@ -32,9 +32,13 @@ public:
 
 	virtual void MovePos();
 
+	virtual void Update(RECT rectView) = 0;
+
 	void SetFigureShape(int shape) { figureShape = shape; }
 	void SetPosRnd(int rndpos) { rndPos = rndpos; }
 	void SetRadius(double radi) { radius = radi; }
+	void SetMovePosX(int posx) { movePos.x *= posx; }
+	void SetMovePosY(int posy) { movePos.y *= posy; }
 
 	int GetPosRnd() { return rndPos; }
 	POINT GetMovePos() { return movePos; }
@@ -68,6 +72,8 @@ public:
 
 	void DrawFigureShape(HDC hdc);
 	void MovePos();
+	
+	void Update(RECT rectView);
 };
 
 class cRect : public BasicFigure
@@ -82,6 +88,8 @@ public:
 
 	void DrawFigureShape(HDC hdc);
 	void MovePos();
+
+	void Update(RECT rectView);
 };
 
 class cStar : public BasicFigure
@@ -97,5 +105,6 @@ public:
 	void AddPoint(int posx, int posy, POINT calcP[]);
 	void DrawFigureShape(HDC hdc);
 	void MovePos();
-	// void Rotation();
+
+	void Update(RECT rectView);
 };
