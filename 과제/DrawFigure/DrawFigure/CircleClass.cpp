@@ -58,10 +58,30 @@ void cCircle::MovePos()
 
 void cCircle::Update(RECT rectView)
 {
-	if (circlePos[0].x <= rectView.left || circlePos[1].x >= rectView.right)
+	if (circlePos[0].x <= rectView.left)
+	{
+		circlePos[0].x -= GetMovePos().x;
+		circlePos[1].x -= GetMovePos().x;
 		SetMovePosX(-1);
-	if (circlePos[0].y <= rectView.top || circlePos[1].y >= rectView.bottom)
+	}
+	if (circlePos[0].y <= rectView.top)
+	{
+		circlePos[0].y -= GetMovePos().y;
+		circlePos[1].y -= GetMovePos().y;
 		SetMovePosY(-1);
+	}
+	if (circlePos[1].x >= rectView.right)
+	{
+		circlePos[0].x -= GetMovePos().x;
+		circlePos[1].x -= GetMovePos().x;
+		SetMovePosX(-1);
+	}
+	if (circlePos[1].y >= rectView.bottom)
+	{
+		circlePos[0].y -= GetMovePos().y;
+		circlePos[1].y -= GetMovePos().y;
+		SetMovePosY(-1);
+	}
 }
 
 void cCircle::Collision(vector<BasicFigure *> figureList, int count)

@@ -154,12 +154,12 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 
 	case WM_LBUTTONDOWN:
 		{
-			int rndFigure = rand() % 3;
-			// int rndFigure = 2;
-			while (saveShape == rndFigure)
-			{
-				rndFigure = rand() % 3;
-			}
+			//int rndFigure = rand() % 3;
+			int rndFigure = 2;
+			//while (saveShape == rndFigure)
+			//{
+			//	rndFigure = rand() % 3;
+			//}
 
 			mousePos.x = LOWORD(lParam);
 			mousePos.y = HIWORD(lParam);

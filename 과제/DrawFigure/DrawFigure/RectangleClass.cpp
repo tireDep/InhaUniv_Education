@@ -60,12 +60,14 @@ void cRect::Update(RECT rectView)
 {
 	if (rectPos[0].x <= rectView.left || rectPos[1].x >= rectView.right)
 	{
-		rectPos[0].x = rectView.top;
+		rectPos[0].x -= GetMovePos().x;
+		rectPos[1].x -= GetMovePos().x;
 		SetMovePosX(-1);
 	}
 	if (rectPos[0].y <= rectView.top || rectPos[1].y >= rectView.bottom)
 	{
-		rectPos[0].y = rectView.left;
+		rectPos[0].y -= GetMovePos().y;
+		rectPos[1].y -= GetMovePos().y;
 		SetMovePosY(-1);
 	}
 }

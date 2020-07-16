@@ -101,10 +101,51 @@ void cStar::Update(RECT rectView)
 {
 	int rndpos = GetPosRnd();
 	if (starPos[0].x - rndpos <= rectView.left || starPos[2].x - rndpos <= rectView.left || starPos[4].x - rndpos <= rectView.left || starPos[6].x + rndpos + (rndpos / 2) >= rectView.right || starPos[8].x + rndpos + (rndpos / 2) >= rectView.right)
+	{
+		starPos[0].x -= GetMovePos().x;
+		starPos[2].x -= GetMovePos().x;
+		starPos[4].x -= GetMovePos().x;
+		starPos[6].x -= GetMovePos().x;
+		starPos[8].x -= GetMovePos().x;
+
+		starPos[1].x -= GetMovePos().x;
+		starPos[3].x -= GetMovePos().x;
+		starPos[5].x -= GetMovePos().x;
+		starPos[7].x -= GetMovePos().x;
+		starPos[9].x -= GetMovePos().x;
 		SetMovePosX(-1);
+	}
 
 	if (starPos[0].y <= rectView.top || starPos[2].y <= rectView.top || starPos[4].y <= rectView.top || starPos[6].y >= rectView.bottom || starPos[8].y >= rectView.bottom)
+	{
+		starPos[0].y -= GetMovePos().y;
+		starPos[2].y -= GetMovePos().y;
+		starPos[4].y -= GetMovePos().y;
+		starPos[6].y -= GetMovePos().y;
+		starPos[8].y -= GetMovePos().y;
+
+		starPos[1].y -= GetMovePos().y;
+		starPos[3].y -= GetMovePos().y;
+		starPos[5].y -= GetMovePos().y;
+		starPos[7].y -= GetMovePos().y;
+		starPos[9].y -= GetMovePos().y;
 		SetMovePosY(-1);
+	}
+
+	int degree = 72;
+	int addDegree = degree;
+	double radian = degree * M_PI / 180;
+	int _centerX = starPos[0].x;
+	int _centerY = starPos[0].y;
+
+	int tempX, tempY;
+	for (int i = 0; i < eSTAR * 2; i++)
+	{
+		tempX = (starPos[i].x - _centerX) * cos(radian) - (starPos[i].y - _centerY) * sin(radian) + _centerX;
+		tempY = (starPos[i].x - _centerX) * sin(radian) + (starPos[i].y - _centerY) * cos(radian) + _centerY;
+
+		starPos[i] = { tempX + _centerX, tempY +_centerY};
+	}
 }
 
 void cStar::Collision(vector<BasicFigure *> figureList, int count)

@@ -7,7 +7,7 @@
 #include<vector>
 using std::vector;
 
-enum FigureNum { eCIR = 0, eRECT = 4, eSTAR = 5, eBASIC = 0 };
+enum FigureNum { eCIR = 0, eRECT = 4, eSTAR = 10, eBASIC = 0 };
 
 class BasicFigure
 {
