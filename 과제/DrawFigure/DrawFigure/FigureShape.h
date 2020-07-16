@@ -10,8 +10,7 @@ using std::vector;
 class BasicFigure
 {
 private:
-	POINT point;
-	POINT movePoint;
+	POINT movePos;
 	POINT centerPos;
 	int rndPos;
 	double radius;
@@ -24,53 +23,55 @@ private:
 public:
 	BasicFigure() : rndPos(0), radius(0), angle(0), figureShape(0)
 	{
-		point.x = 0;
-		point.y = 0;
-		movePoint.x = 0;
-		movePoint.y = 0;
+		movePos.x = 0;
+		movePos.y = 0;
 	};
 
 	~BasicFigure() { };
 
-	void Update(BasicFigure figure[], RECT viewRect, int cnt);
-	void SetPos(int x, int y, RECT viewRect);
-	virtual void DrawFigure() { };
+	void SetFigureShape(int shape) { figureShape = shape; }
+	virtual void DrawFigure(HDC hdc) = 0;
 
-	void CalcRadius();
-	void MovePos(BasicFigure figure[], int cnt);
+	virtual void MovePos();
 
-	double CalcRadian(double degree);
-	virtual void Rotation();
+	void SetPosRnd(int rndpos) { rndPos = rndpos; }
+	int GetPosRnd() { return rndPos; }
+	POINT GetMovePos() { return movePos;  }
 
-	void Collision(BasicFigure circle[], BasicFigure rectangle[]);
+	//void Update(BasicFigure figure[], RECT viewRect, int cnt);
+	//void SetPos(int x, int y, RECT viewRect);
 
-	void SetPosX(double pos);
-	void SetPosY(double pos);
+	//void CalcRadius();
+	//void MovePos(BasicFigure figure[], int cnt);
 
-	int GetPosX();
-	int GetPosY();
-	int GetPosRnd();
-	int GetCenterX();
-	int GetCenterY();
+	//double CalcRadian(double degree);
+	//virtual void Rotation();
 
-	void SetFigureShape(int shape)
-	{
-		figureShape = shape;
-	}
+	//void Collision(BasicFigure circle[], BasicFigure rectangle[]);
+
+	//void SetPosX(double pos);
+	//void SetPosY(double pos);
+
+	//int GetPosX();
+	//int GetPosY();
+	//int GetPosRnd();
+	//int GetCenterX();
+	//int GetCenterY();
+	//
 };
 
 class cCircle : public BasicFigure
 {
-public:
-	cCircle()
-	{
-		SetFigureShape(0);
-	};
+private:
+	POINT circlePos;
 
-	~cCircle() { };
+public:
+	cCircle();
+	cCircle(int posx, int posy);
+	~cCircle();
 
 	void DrawFigure(HDC hdc);
-	// void DrawCircle(HDC hdc);
+	void MovePos();
 };
 
 // class cRect : public BasicFigure

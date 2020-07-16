@@ -27,9 +27,6 @@
     <ClInclude Include="Resource.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="DrawFigure.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="FigureShape.h">
       <Filter>Header Files</Filter>
     </ClInclude>

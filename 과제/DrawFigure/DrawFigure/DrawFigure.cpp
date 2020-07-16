@@ -125,10 +125,41 @@ BOOL InitInstance(HINSTANCE hInstance, int nCmdShow)
 //
 LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 {
+	srand((unsigned)time(NULL));
+
+	static POINT mousePos;
 	static vector<BasicFigure *>figureList;
+
     switch (message)
     {
 	case WM_CREATE:
+		SetTimer(hWnd, 0, 10, NULL);	// ≈∏¿Ã∏”
+		break;
+
+	case WM_LBUTTONDOWN:
+		{
+			int rndFigure = 0;
+
+			mousePos.x = LOWORD(lParam);
+			mousePos.y = HIWORD(lParam);
+
+			if (rndFigure == 0)
+			{
+				cCircle *circle = new cCircle(mousePos.x, mousePos.y);
+				figureList.push_back(circle);
+			}
+
+			InvalidateRect(hWnd, NULL, TRUE);
+		}
+		break;
+
+	case WM_TIMER:
+		for (int i = 0; i < figureList.size(); i++)
+		{
+			figureList[i]->MovePos();
+		}
+
+		InvalidateRect(hWnd, NULL, TRUE);
 		break;
 
     case WM_COMMAND:
@@ -152,7 +183,12 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
         {
             PAINTSTRUCT ps;
             HDC hdc = BeginPaint(hWnd, &ps);
-            // TODO: Add any drawing code that uses hdc here...
+
+			for (int i = 0; i < figureList.size(); i++)
+			{
+				figureList[i]->DrawFigure(hdc);
+			}
+
             EndPaint(hWnd, &ps);
         }
         break;
