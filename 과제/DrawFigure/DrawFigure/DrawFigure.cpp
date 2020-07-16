@@ -142,6 +142,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 	case WM_TIMER:
 		for (int i = 0; i < figureList.size(); i++)
 		{
+			figureList[i]->Collision(figureList, i);
 			figureList[i]->MovePos();
 			figureList[i]->Update(rectView);
 		}
@@ -152,7 +153,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 	case WM_LBUTTONDOWN:
 		{
 			int rndFigure = rand() % 3;
-			//int rndFigure = 2;
+			// int rndFigure = 2;
 
 			mousePos.x = LOWORD(lParam);
 			mousePos.y = HIWORD(lParam);

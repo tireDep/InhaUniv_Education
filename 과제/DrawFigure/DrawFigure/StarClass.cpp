@@ -8,7 +8,7 @@ cStar::cStar()
 		starPos[i].x = 0;
 	}
 
-	SetFigureShape(5);
+	SetFigureShape(eSTAR);
 };
 
 cStar::cStar(int posx, int posy)
@@ -53,7 +53,7 @@ cStar::cStar(int posx, int posy)
 
 	SetPosRnd(rndpos);
 	SetRadius((double)rndpos / 2);
-	SetFigureShape(5);
+	SetFigureShape(eSTAR);
 };
 
 cStar::~cStar()
@@ -104,4 +104,59 @@ void cStar::Update(RECT rectView)
 
 	if (starPos[0].y <= rectView.top || starPos[2].y <= rectView.top || starPos[4].y <= rectView.top || starPos[6].y >= rectView.bottom || starPos[8].y >= rectView.bottom)
 		SetMovePosY(-1);
+}
+
+void cStar::Collision(vector<BasicFigure *> figureList, int count)
+{
+	double r1 = GetRadius();	// ¹ÝÁö¸§
+	double r2;
+	double calcA;
+	double calcB;
+	double calcC;
+	double calcD;
+
+	double calcX;
+	double calcY;
+	double length;
+	int checkShape;
+
+	calcA = starPos[0].x + r1;
+	calcB = starPos[0].y + r1;
+	for (int i = 0; i < figureList.size(); i++)
+	{
+		if (count == i)
+			continue;
+
+		r2 = figureList[i]->GetRadius();
+		checkShape = figureList[i]->GetFigureShape();
+
+		if (checkShape == eCIR)
+		{
+			cCircle *temp = (cCircle *)figureList[i];
+			calcC = temp->GetLeftPosX() + r2;
+			calcD = temp->GetTopPosY() + r2;
+		}
+		if (checkShape == eRECT)
+		{
+			cRect *temp = (cRect *)figureList[i];
+			calcC = temp->GetLeftPosX() + r2;
+			calcD = temp->GetTopPosY() + r2;
+		}
+		if (checkShape == eSTAR)
+		{
+			cStar *temp = (cStar *)figureList[i];
+			calcC = temp->starPos[0].x + r2;
+			calcD = temp->starPos[0].y + r2;
+		}
+
+		calcX = calcA - calcC;
+		calcY = calcB - calcD;
+		length = sqrt(calcX * calcX + calcY * calcY);
+
+		if (length < (r1 + r2))
+		{
+			this->SetMovePosX(-1);
+			figureList[i]->SetMovePosY(-1);
+		}
+	}
 }

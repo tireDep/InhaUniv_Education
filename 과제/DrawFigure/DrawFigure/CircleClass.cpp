@@ -8,7 +8,7 @@ cCircle::cCircle()
 		circlePos[i].x = 0;
 		circlePos[i].y = 0;
 	}
-	SetFigureShape(0);
+	SetFigureShape(eCIR);
 };
 
 cCircle::cCircle(int posx, int posy)
@@ -32,7 +32,7 @@ cCircle::cCircle(int posx, int posy)
 
 	SetPosRnd(rndpos);
 	SetRadius((double) rndpos / 2);
-	SetFigureShape(0);
+	SetFigureShape(eCIR);
 };
 
 cCircle::~cCircle() 
@@ -62,4 +62,59 @@ void cCircle::Update(RECT rectView)
 		SetMovePosX(-1);
 	if (circlePos[0].y <= rectView.top || circlePos[1].y >= rectView.bottom)
 		SetMovePosY(-1);
+}
+
+void cCircle::Collision(vector<BasicFigure *> figureList, int count)
+{
+	double r1 = GetRadius();	// ¹ÝÁö¸§
+	double r2;
+	double calcA;
+	double calcB;
+	double calcC;
+	double calcD;
+
+	double calcX;
+	double calcY;
+	double length;
+	int checkShape;
+
+	calcA = circlePos[0].x + r1;
+	calcB = circlePos[0].y + r1;
+	for (int i = 0; i < figureList.size(); i++)
+	{
+		if (count == i)
+			continue;
+
+		r2 = figureList[i]->GetRadius();
+		checkShape = figureList[i]->GetFigureShape();
+
+		if (checkShape == eCIR)
+		{
+			cCircle *temp = (cCircle *)figureList[i];
+			calcC = temp->circlePos[0].x + r2;
+			calcD = temp->circlePos[0].y + r2;
+		}
+		if (checkShape == eRECT)
+		{
+			cRect *temp = (cRect *)figureList[i];
+			calcC = temp->GetLeftPosX() + r2;
+			calcD = temp->GetTopPosY() + r2;
+		}
+		if (checkShape == eSTAR)
+		{
+			cStar *temp = (cStar *)figureList[i];
+			calcC = temp->GetLeftPosX() + r2;
+			calcD = temp->GetTopPosY() + r2;
+		}
+
+		calcX = calcA - calcC;
+		calcY = calcB - calcD;
+		length = sqrt(calcX * calcX + calcY * calcY);
+
+		if (length < (r1 + r2))
+		{
+			this->SetMovePosX(-1);
+			figureList[i]->SetMovePosY(-1);
+		}
+	}
 }

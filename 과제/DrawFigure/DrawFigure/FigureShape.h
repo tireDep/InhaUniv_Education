@@ -7,6 +7,8 @@
 #include<vector>
 using std::vector;
 
+enum FigureNum { eCIR = 0, eRECT = 4, eSTAR = 5, eBASIC = 0 };
+
 class BasicFigure
 {
 private:
@@ -21,7 +23,7 @@ private:
 	static int playType;
 
 public:
-	BasicFigure() : rndPos(0), radius(0), angle(0), figureShape(0)
+	BasicFigure() : rndPos(0), radius(0), angle(0), figureShape(eBASIC)
 	{
 		movePos.x = 0;
 		movePos.y = 0;
@@ -34,6 +36,8 @@ public:
 
 	virtual void Update(RECT rectView) = 0;
 
+	virtual void Collision(vector<BasicFigure *> figureList, int count) = 0;
+
 	void SetFigureShape(int shape) { figureShape = shape; }
 	void SetPosRnd(int rndpos) { rndPos = rndpos; }
 	void SetRadius(double radi) { radius = radi; }
@@ -41,9 +45,10 @@ public:
 	void SetMovePosY(int posy) { movePos.y *= posy; }
 
 	int GetPosRnd() { return rndPos; }
+	double GetRadius() { return radius; }
+	int GetFigureShape() { return figureShape; }
 	POINT GetMovePos() { return movePos; }
 
-	//void Update(BasicFigure figure[], RECT viewRect, int cnt);
 	//void SetPos(int x, int y, RECT viewRect);
 
 	//void MovePos(BasicFigure figure[], int cnt);
@@ -74,6 +79,12 @@ public:
 	void MovePos();
 	
 	void Update(RECT rectView);
+
+	void Collision(vector<BasicFigure *> figureList, int count);
+
+	double GetLeftPosX() { return circlePos[0].x; }
+	double GetTopPosY() { return circlePos[0].y; }
+
 };
 
 class cRect : public BasicFigure
@@ -90,6 +101,11 @@ public:
 	void MovePos();
 
 	void Update(RECT rectView);
+
+	void Collision(vector<BasicFigure *> figureList, int count);
+
+	double GetLeftPosX() { return rectPos[0].x; }
+	double GetTopPosY() { return rectPos[0].y; }
 };
 
 class cStar : public BasicFigure
@@ -107,4 +123,9 @@ public:
 	void MovePos();
 
 	void Update(RECT rectView);
+
+	void Collision(vector<BasicFigure *> figureList, int count);
+
+	double GetLeftPosX() { return starPos[0].x; }
+	double GetTopPosY() { return starPos[0].y; }
 };
