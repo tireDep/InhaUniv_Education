@@ -1,21 +1,3 @@
-// Q. 입력 순서와 상관없이 번호 순서대로 정렬된 리스트를 구현하고자 하는 프로그램 작성
-
-// [링크드 리스트 기능]
-// 1) 리스트 초기화
-// 2) 노드 추가
-//		-> 1. 제일 앞에 추가
-//		-> 2. 맨 뒤에 추가
-//		-> 3. 사이에 추가
-// 3) 노드 삭제
-//		-> 1. 제일 앞 노드 삭제
-//		-> 2. 맨 뒤 노드 삭제
-//		-> 3. 사이 노드 삭제
-// 4) 검색
-//		-> 번호를 입력받아서 해당 번호의 이름 출력
-// 5) 출력
-//		-> 리스트 전체 데이터 출력
-
-
 #include<iostream>
 #include<string>
 #include<Windows.h>
@@ -26,6 +8,8 @@ struct ClassMate
 {
 	int num;
 	string name;
+
+	ClassMate *pPrev;
 	ClassMate *pNext;
 };
 
@@ -88,6 +72,7 @@ void ResetNode(ClassMate *node)
 	node->num = INT_MIN;
 	node->name = "";
 	node->pNext = NULL;
+	node->pPrev = NULL;
 }
 
 void FreeNode(ClassMate *pHead)
@@ -123,44 +108,46 @@ void AddNode(ClassMate **pHead)
 	if ((*pHead) == NULL || (*pHead)->num == INT_MIN)	// 리스트가 비어있을 경우, 맨 앞 삽입
 	{
 		(*pHead) = newNode;
+		(*pHead)->pPrev = newNode;
+		(*pHead)->pNext = newNode;
 	}
-	else // 리스트가 비어있지 않을 경우
+	else if ((*pHead)->num > newNode->num)
 	{
-		while (addNode)
+		(*pHead)->pNext = newNode ->pNext;
+		(*pHead) = newNode;
+		newNode->pPrev = (*pHead);
+	}
+	else
+	{
+		while (1)
 		{
 			if (addNode->num == newNode->num)
 			{
 				cout << "\n[해당 번호가 존재함]\n";
 				break;
 			}
-
-			if (addNode->num < newNode->num)	// 입력한 값이 기존 값 보다 클 경우
+			
+			if (addNode->pNext == (*pHead))
 			{
-				if (addNode->pNext == NULL)	// 리스트의 끝에 삽입
-				{
-					newNode->pNext = addNode->pNext;
-					addNode->pNext = newNode;
-					break;
-				}
-				else if (addNode->pNext != NULL)	// 리스트 중간에 삽입
-				{
-					if (addNode->pNext->num > newNode->num)	// 다음 노드의 값이 삽입하려는 값보다 큰 경우
-					{
-						newNode->pNext = addNode->pNext;
-						addNode->pNext = newNode;
-						break;
-					}
-				}	// else if
-			}	// if
-			else // 입력한 값이 가장 작은 경우, 리스트 맨 앞 삽입
-			{
-				newNode->pNext = addNode;
-				(*pHead) = newNode;
+				addNode->pNext = newNode;
+				addNode->pNext->pPrev = newNode;
+				
+				newNode->pPrev = addNode;				
+				newNode->pNext = (*pHead);
 				break;
 			}
-			addNode = addNode->pNext;	// 다음 노드 진행
-		}	// while
-	}	// else_list is not Empty
+			if (addNode->pNext->num > newNode->num)
+			{
+				addNode->pNext->pPrev = newNode;
+				addNode->pNext = newNode;
+
+				newNode->pPrev = addNode;
+				newNode->pNext = addNode->pNext;
+				break;
+			}
+			addNode = addNode->pNext;
+		}
+	}
 
 	cout << endl;
 }
@@ -180,23 +167,50 @@ void DeleteNode(ClassMate **pHead)
 	cout << "삭제하려는 번호 입력 : ";
 	cin >> deleteNum;
 
-	while (deleteNode)
+	if ((*pHead)->num == deleteNum)
 	{
-		if (deleteNode->num == deleteNum)	// 삭제할 값이 맨 앞인 경우
+		if ((*pHead)->pNext == (*pHead))
 		{
-			removeNode = deleteNode;
-			(*pHead) = removeNode->pNext;
+			removeNode = (*pHead);
+			(*pHead) = NULL;
+			(*pHead)->pPrev = (*pHead)->pNext;
 			deleteNum = -1;
-			break;
 		}
-		else if (deleteNode->pNext != NULL && deleteNode->pNext->num == deleteNum)	// 삭제할 값이 맨 앞이 아닐 경우
+		else
 		{
-			removeNode = deleteNode->pNext;
-			deleteNode->pNext = removeNode->pNext;
+			removeNode = (*pHead);
+			(*pHead) = (*pHead)->pNext;
+			(*pHead)->pNext = removeNode->pNext;
+			(*pHead)->pPrev = removeNode->pPrev;
 			deleteNum = -1;
-			break;
 		}
-		deleteNode = deleteNode->pNext;
+	}
+	else
+	{
+		while (1)
+		{
+			if (deleteNode->pNext == (*pHead))
+				break;
+
+			if (deleteNode->pNext->num == deleteNum)
+			{
+				removeNode = deleteNode->pNext;
+				deleteNode->pNext = removeNode->pNext;
+
+				if (deleteNode->pNext != (*pHead))
+				{
+					deleteNum = -1;
+					removeNode->pNext->pPrev = deleteNode;
+				}
+				else
+				{
+					deleteNum = -1;
+					// tail
+				}
+					break;
+			}
+			deleteNode = deleteNode->pNext;
+		}
 	}
 
 	if (deleteNum != -1)
@@ -219,10 +233,11 @@ void PrintNode(ClassMate *pHead)
 	}
 
 	ClassMate *tempPrint = pHead;
-	while (tempPrint != NULL)
+	do
 	{
 		cout << tempPrint->num << ", " << tempPrint->name << endl;
 		tempPrint = tempPrint->pNext;
-	}
+	} while (tempPrint ->num != pHead -> num);
+
 	cout << endl << endl;
 }

@@ -132,6 +132,8 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 	static POINT mousePos;
 	static vector<BasicFigure *>figureList;
 
+	static int saveShape;
+
     switch (message)
     {
 	case WM_CREATE:
@@ -154,6 +156,10 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 		{
 			int rndFigure = rand() % 3;
 			// int rndFigure = 2;
+			while (saveShape == rndFigure)
+			{
+				rndFigure = rand() % 3;
+			}
 
 			mousePos.x = LOWORD(lParam);
 			mousePos.y = HIWORD(lParam);
@@ -174,6 +180,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 				figureList.push_back(star);
 			}
 
+			saveShape = rndFigure;
 			InvalidateRect(hWnd, NULL, TRUE);
 		}
 		break;

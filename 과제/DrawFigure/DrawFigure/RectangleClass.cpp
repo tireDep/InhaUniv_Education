@@ -59,9 +59,15 @@ void cRect::MovePos()
 void cRect::Update(RECT rectView)
 {
 	if (rectPos[0].x <= rectView.left || rectPos[1].x >= rectView.right)
+	{
+		rectPos[0].x = rectView.top;
 		SetMovePosX(-1);
+	}
 	if (rectPos[0].y <= rectView.top || rectPos[1].y >= rectView.bottom)
+	{
+		rectPos[0].y = rectView.left;
 		SetMovePosY(-1);
+	}
 }
 
 void cRect::Collision(vector<BasicFigure *> figureList, int count)

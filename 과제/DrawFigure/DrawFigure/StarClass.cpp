@@ -16,6 +16,7 @@ cStar::cStar(int posx, int posy)
 	srand((unsigned)time(NULL));
 
 	int rndpos = rand() % 100 + 10;
+	//int rndpos = 5;
 
 	POINT temp[5] = { 0 };
 	temp[0].x = posx;
