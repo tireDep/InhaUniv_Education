@@ -26,24 +26,22 @@ public:
 		movePos.x = 0;
 		movePos.y = 0;
 	};
-
 	~BasicFigure() { };
 
-	void SetFigureShape(int shape) { figureShape = shape; }
 	virtual void DrawFigureShape(HDC hdc) = 0;
 
 	virtual void MovePos();
 
+	void SetFigureShape(int shape) { figureShape = shape; }
 	void SetPosRnd(int rndpos) { rndPos = rndpos; }
 	void SetRadius(double radi) { radius = radi; }
 
 	int GetPosRnd() { return rndPos; }
-	POINT GetMovePos() { return movePos;  }
+	POINT GetMovePos() { return movePos; }
 
 	//void Update(BasicFigure figure[], RECT viewRect, int cnt);
 	//void SetPos(int x, int y, RECT viewRect);
 
-	//void CalcRadius();
 	//void MovePos(BasicFigure figure[], int cnt);
 
 	//double CalcRadian(double degree);
@@ -54,12 +52,8 @@ public:
 	//void SetPosX(double pos);
 	//void SetPosY(double pos);
 
-	//int GetPosX();
-	//int GetPosY();
-	//int GetPosRnd();
 	//int GetCenterX();
 	//int GetCenterY();
-	//
 };
 
 class cCircle : public BasicFigure
@@ -89,18 +83,19 @@ public:
 	void DrawFigureShape(HDC hdc);
 	void MovePos();
 };
-// 
-// class cStar : public BasicFigure
-// {
-// public:
-// 	cStar()
-// 	{
-// 		SetFigureShape(5);
-// 	};
-// 
-// 	~cStar() { };
-// 
-// 	void DrawFigure(HDC hdc);
-// 	void AddPoint(int degree, int midX, int midY, POINT point[]);
-// 	// void Rotation();
-// };
+
+class cStar : public BasicFigure
+{
+private:
+	POINT starPos[10];
+
+public:
+	cStar();
+	cStar(int posx, int posy);
+	~cStar();
+
+	void AddPoint(int posx, int posy, POINT calcP[]);
+	void DrawFigureShape(HDC hdc);
+	void MovePos();
+	// void Rotation();
+};

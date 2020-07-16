@@ -147,8 +147,8 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 
 	case WM_LBUTTONDOWN:
 		{
-			int rndFigure = rand() % 2;
-			// int rndFigure = 0;
+			int rndFigure = rand() % 3;
+			//int rndFigure = 2;
 
 			mousePos.x = LOWORD(lParam);
 			mousePos.y = HIWORD(lParam);
@@ -162,6 +162,11 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 			{
 				cRect *rectangle = new cRect(mousePos.x, mousePos.y);
 				figureList.push_back(rectangle);
+			}
+			if (rndFigure == 2)
+			{
+				cStar *star = new cStar(mousePos.x, mousePos.y);
+				figureList.push_back(star);
 			}
 
 			InvalidateRect(hWnd, NULL, TRUE);
