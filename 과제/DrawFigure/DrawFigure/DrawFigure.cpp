@@ -155,7 +155,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 	case WM_LBUTTONDOWN:
 		{
 			//int rndFigure = rand() % 3;
-			int rndFigure = 2;
+			int rndFigure = 0;
 			//while (saveShape == rndFigure)
 			//{
 			//	rndFigure = rand() % 3;

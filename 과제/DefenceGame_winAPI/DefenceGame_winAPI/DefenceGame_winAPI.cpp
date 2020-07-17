@@ -5,6 +5,7 @@
 #include "DefenceGame_winAPI.h"
 
 #include "ObstalceClass.h"
+#include "Function.h"
 
 #define MAX_LOADSTRING 100
 
@@ -129,7 +130,9 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 
 	static vector<Obstacle *> obstacle;
 
-	static int _downSpeed = 90;
+	static int _downSpeed = 35;
+
+	static int hpPoint = 0;
 
     switch (message)
     {
@@ -145,7 +148,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 
 		if (wParam == eGame)
 			{
-				for (int i = 0; i < eViewW; i += 50)
+				for (int i = 0; i < eViewW - 50; i += 50)
 				{
 					createBlock = rand() % 2;
 					if (createBlock == 0)
@@ -160,7 +163,10 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 				{
 					obstacle[i]->DownObstacle();
 					if (obstacle[i]->CheckDeadLine())
-						obstacle.erase(obstacle.begin() + i); // obstacle.erase(obstacle[i]);
+					{
+						obstacle.erase(obstacle.begin() + i);
+						hpPoint += 10;
+					}
 				}
 			}
 
@@ -173,6 +179,9 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 			PAINTSTRUCT ps;
 			HDC hdc = BeginPaint(hWnd, &ps);
 		
+			DrawHpBar(hdc, hpPoint);
+			DrawGun(hdc);
+
 			for (int i = 0; i < obstacle.size(); i++)
 			{
 				obstacle[i]->DrawObstacle(hdc);

@@ -60,7 +60,7 @@ public:
 
 	bool CheckDeadLine()
 	{
-		if (blockPos[1].y >= 655)
+		if (blockPos[1].y >= 670)
 			return TRUE;
 		else
 			return FALSE;
