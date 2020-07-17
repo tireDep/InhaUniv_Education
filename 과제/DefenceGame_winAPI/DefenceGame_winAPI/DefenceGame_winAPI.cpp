@@ -4,6 +4,8 @@
 #include "stdafx.h"
 #include "DefenceGame_winAPI.h"
 
+#include "ObstalceClass.h"
+
 #define MAX_LOADSTRING 100
 
 // Global Variables:
@@ -98,7 +100,7 @@ BOOL InitInstance(HINSTANCE hInstance, int nCmdShow)
    hInst = hInstance; // Store instance handle in our global variable
 
    HWND hWnd = CreateWindowW(szWindowClass, szTitle, WS_OVERLAPPEDWINDOW,
-      CW_USEDEFAULT, 0, CW_USEDEFAULT, 0, nullptr, nullptr, hInstance, nullptr);
+	   eViewX, eViewY, eViewW, eViewH, nullptr, nullptr, hInstance, nullptr);
 
    if (!hWnd)
    {
@@ -123,8 +125,63 @@ BOOL InitInstance(HINSTANCE hInstance, int nCmdShow)
 //
 LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 {
+	srand((unsigned)time(NULL));
+
+	static vector<Obstacle *> obstacle;
+
+	static int _downSpeed = 90;
+
     switch (message)
     {
+	case WM_CREATE:
+		{
+			SetTimer(hWnd, eGame, 1000, NULL);	// 게임 타이머
+		}
+		break;
+
+	case WM_TIMER:
+		{
+		int createBlock;
+
+		if (wParam == eGame)
+			{
+				for (int i = 0; i < eViewW; i += 50)
+				{
+					createBlock = rand() % 2;
+					if (createBlock == 0)
+					{
+						Block *block = new Block(i, 0, 50 + i, 30, _downSpeed);
+						obstacle.push_back(block);
+					}
+
+				}
+
+				for (int i = 0; i < obstacle.size(); i++)
+				{
+					obstacle[i]->DownObstacle();
+					if (obstacle[i]->CheckDeadLine())
+						obstacle.erase(obstacle.begin() + i); // obstacle.erase(obstacle[i]);
+				}
+			}
+
+			InvalidateRect(hWnd, NULL, TRUE);
+		}
+		break;
+
+	case WM_PAINT:
+		{
+			PAINTSTRUCT ps;
+			HDC hdc = BeginPaint(hWnd, &ps);
+		
+			for (int i = 0; i < obstacle.size(); i++)
+			{
+				obstacle[i]->DrawObstacle(hdc);
+			}
+
+			EndPaint(hWnd, &ps);
+		}
+	break;
+
     case WM_COMMAND:
         {
             int wmId = LOWORD(wParam);
@@ -142,16 +199,10 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
             }
         }
         break;
-    case WM_PAINT:
-        {
-            PAINTSTRUCT ps;
-            HDC hdc = BeginPaint(hWnd, &ps);
-            // TODO: Add any drawing code that uses hdc here...
-            EndPaint(hWnd, &ps);
-        }
-        break;
     case WM_DESTROY:
         PostQuitMessage(0);
+
+		KillTimer(hWnd, eGame);
         break;
     default:
         return DefWindowProc(hWnd, message, wParam, lParam);
