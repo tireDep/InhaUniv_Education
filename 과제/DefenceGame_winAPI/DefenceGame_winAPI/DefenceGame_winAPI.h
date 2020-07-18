@@ -6,10 +6,12 @@
 #include<math.h>
 #include<time.h>
 #include<vector>
+#include<algorithm>
 using std::vector;
 using std::iterator;
+using std::random_shuffle;
 
-enum ViewSize { eViewX = 350, eViewY = 200, eViewW = 516, eViewH = 750 };
+enum ViewSize { eViewX = 50, eViewY = 50, eViewW = 516, eViewH = 750 };
 enum GameScreen { eStart = 0, eGame = 50, eResult = 100, eExit = 9999 };
 
 /*

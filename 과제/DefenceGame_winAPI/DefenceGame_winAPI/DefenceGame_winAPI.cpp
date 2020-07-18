@@ -129,18 +129,19 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 {
 	srand((unsigned)time(NULL));
 
-	static vector<Obstacle *> obstacle;
+	static vector<vector<Obstacle *>> obstacle;
 	static Gun gun;
 
-	static int _downSpeed = 35;
+	static int _downSpeed = 1;
 
-	static int hpPoint = 0;
+	static int _loseHpPoint = 0;
 
     switch (message)
     {
 	case WM_CREATE:
 		{
-			SetTimer(hWnd, eGame, 1000, NULL);	// 게임 타이머
+			SetTimer(hWnd, eGame, 100, NULL);	// 게임 타이머
+			SetTimer(hWnd, eGame + 10, 1000, NULL);	// 게임 타이머
 		}
 		break;
 
@@ -148,28 +149,27 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 		{
 		int createBlock;
 
+		if (eGame + 10 == wParam)
+		{
+			vector<Obstacle *> temp;
+			for (int i = 0; i < eViewW - 50; i += 50)
+			{
+				createBlock = rand() % 2;
+				if (createBlock == 0)
+				{
+					Block *block = new Block(i, 0, 50 + i, 30, 0);
+					temp.push_back(block);
+				}
+
+			}
+			obstacle.push_back(temp);
+		}
+
 		if (wParam == eGame)
 			{
-				for (int i = 0; i < eViewW - 50; i += 50)
-				{
-					createBlock = rand() % 2;
-					if (createBlock == 0)
-					{
-						Block *block = new Block(i, 0, 50 + i, 30, _downSpeed);
-						obstacle.push_back(block);
-					}
-		
-				}
-		
-				for (int i = 0; i < obstacle.size(); i++)
-				{
-					obstacle[i]->DownObstacle();
-					if (obstacle[i]->CheckDeadLine())
-					{
-						obstacle.erase(obstacle.begin() + i);
-						hpPoint += 10;
-					}
-				}
+			// random_shuffle(obstacle.begin(), obstacle.end());
+			if(obstacle.size() != 0)
+				obstacle[0][0]->Update(obstacle, _loseHpPoint);
 			}
 
 			InvalidateRect(hWnd, NULL, TRUE);
@@ -207,14 +207,17 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 		{
 			PAINTSTRUCT ps;
 			HDC hdc = BeginPaint(hWnd, &ps);
-		
-			DrawHpBar(hdc, hpPoint);
-			gun.DrawWeapon(hdc);
 
 			for (int i = 0; i < obstacle.size(); i++)
 			{
-				obstacle[i]->DrawObstacle(hdc);
+				for (int j = 0; j < obstacle[i].size(); j++)
+				{
+					obstacle[i][j]->DrawObstacle(hdc);
+				}
 			}
+
+			DrawHpBar(hdc, _loseHpPoint);
+			gun.DrawWeapon(hdc);
 
 			EndPaint(hWnd, &ps);
 		}
@@ -241,6 +244,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
         PostQuitMessage(0);
 
 		KillTimer(hWnd, eGame);
+		KillTimer(hWnd, eGame+10);
         break;
     default:
         return DefWindowProc(hWnd, message, wParam, lParam);

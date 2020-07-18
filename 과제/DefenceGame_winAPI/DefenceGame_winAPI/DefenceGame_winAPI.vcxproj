@@ -157,7 +157,7 @@
   <ItemGroup>
     <ClCompile Include="DefenceGame_winAPI.cpp" />
     <ClCompile Include="Function.cpp" />
-    <ClCompile Include="ObstacleClass.cpp" />
+    <ClCompile Include="ObstalceClass.cpp" />
     <ClCompile Include="stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>

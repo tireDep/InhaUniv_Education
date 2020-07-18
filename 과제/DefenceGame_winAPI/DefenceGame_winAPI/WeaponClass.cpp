@@ -52,19 +52,13 @@ void Gun::MoveBarrel(int inputKey)
 	}
 }
 
-void SetColor(HDC hdc, HPEN &hPen, HPEN &oldPen, int r, int g, int b);
-void SetColor(HDC hdc, HBRUSH &hBrush, HBRUSH &oldBrush, int r, int g, int b);
-
-void DeleteColor(HDC hdc, HPEN &hPen, HPEN &oldPen);
-void DeleteColor(HDC hdc, HBRUSH &hBrush, HBRUSH &oldBrush);
-
 void Gun::DrawWeapon(HDC hdc)
 {
 	HPEN hPen, oldPen;
 	HBRUSH hBrush, oldBrush;
 
-	SetColor(hdc, hPen, oldPen, 50, 50, 50);
-	SetColor(hdc, hBrush, oldBrush, 50, 50, 50);
+	SetColor(hdc, hPen, oldPen, 100, 100, 100);
+	SetColor(hdc, hBrush, oldBrush, 100, 100, 100);
 
 	Rectangle(hdc, 205, 655, 295, 750);	// 채색용 사각형
 	Ellipse(hdc, 205, 615, 295, 690);	// 채색용 원

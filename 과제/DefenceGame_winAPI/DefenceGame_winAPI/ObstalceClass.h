@@ -7,10 +7,18 @@ class Obstacle
 private:
 
 public:
-	Obstacle() { }
+	Obstacle() 
+	{
+
+	}
+
 	Obstacle(int left, int top, int right, int bottom){ }
 
 	~Obstacle() {}
+
+	void Update(vector<vector<Obstacle *>> &obstacle, int &_loseHpPoint);
+	void CheckHit(vector<vector<Obstacle *>> &obstacle, int &hitCnt, int linePos);
+	void CheckLoseHp(vector<vector<Obstacle *>> &obstacle, int &hitCnt, int &_loseHpPoint, int linePos);
 
 	virtual void DrawObstacle(HDC hdc) = 0;
 	virtual void DownObstacle() = 0;
@@ -54,8 +62,8 @@ public:
 
 	void DownObstacle()
 	{
-		blockPos[0].y += downSpeed;
-		blockPos[1].y += downSpeed;
+		blockPos[0].y += 10;
+		blockPos[1].y += 10;
 	}
 
 	bool CheckDeadLine()

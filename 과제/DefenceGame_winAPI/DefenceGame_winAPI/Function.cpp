@@ -53,18 +53,12 @@ void DrawHpBar(HDC hdc, int _hpPoint)
 {
 	HPEN hPen, oldPen;
 	HBRUSH hBrush, oldBrush;
-
-	hPen = CreatePen(PS_SOLID, 1, RGB(200, 0, 0));
-	oldPen = (HPEN)SelectObject(hdc, hPen);
-
-	hBrush = CreateSolidBrush(RGB(200, 0, 0));
-	oldBrush = (HBRUSH)SelectObject(hdc, hBrush);
+	
+	SetColor(hdc, hPen, oldPen, 50, 50, 50);
+	SetColor(hdc, hBrush, oldBrush, 50, 50, 50);
 
 	Rectangle(hdc, 0, 656, 500 - _hpPoint, 700);
 
-	SelectObject(hdc, oldPen);
-	SelectObject(hdc, oldBrush);
-
-	DeleteObject(hPen);
-	DeleteObject(hBrush);
+	DeleteColor(hdc, hPen, oldPen);
+	DeleteColor(hdc, hBrush, oldBrush);
 }
