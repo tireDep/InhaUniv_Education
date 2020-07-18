@@ -75,3 +75,14 @@ void Gun::DrawWeapon(HDC hdc)
 	DeleteColor(hdc, hPen, oldPen);
 	DeleteColor(hdc, hBrush, oldBrush);
 }
+
+POINT Gun::GetBarrelPosLB()
+{
+	return barrelPos[0];
+}
+
+POINT Gun::GetBarrelPosRB()
+{
+	return barrelPos[1];
+}
+

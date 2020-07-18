@@ -28,4 +28,21 @@ public:
 	void CheckBarrelPos(int inputKey);
 	void MoveBarrel(int inputKey);
 	void DrawWeapon(HDC hdc);
+
+	POINT GetBarrelPosLB();
+	POINT GetBarrelPosRB();
+};
+
+class Bullet : public Gun
+{
+private:
+	POINT bulletPos[2];
+	POINT movePos;
+
+public:
+	Bullet();
+	Bullet(POINT pos1, POINT pos2, POINT move);
+	~Bullet();
+
+	void DrawWeapon(HDC hdc);
 };

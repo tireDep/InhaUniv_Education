@@ -56,6 +56,9 @@
     <ClCompile Include="ObstalceClass.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="BulletClass.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="DefenceGame_winAPI.rc">

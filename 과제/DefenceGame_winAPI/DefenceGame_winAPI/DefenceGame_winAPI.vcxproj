@@ -155,6 +155,7 @@
     <ClInclude Include="WeaponClass.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="BulletClass.cpp" />
     <ClCompile Include="DefenceGame_winAPI.cpp" />
     <ClCompile Include="Function.cpp" />
     <ClCompile Include="ObstalceClass.cpp" />

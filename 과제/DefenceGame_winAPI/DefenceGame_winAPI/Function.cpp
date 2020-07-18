@@ -49,16 +49,34 @@ void DeleteColor(HDC hdc, HBRUSH &hBrush, HBRUSH &oldBrush)
 	DeleteObject(hBrush);
 }
 
-void DrawHpBar(HDC hdc, int _hpPoint)
+void DrawHpBar(HDC hdc, int _loseHpPoint)
 {
 	HPEN hPen, oldPen;
 	HBRUSH hBrush, oldBrush;
-	
+
 	SetColor(hdc, hPen, oldPen, 50, 50, 50);
 	SetColor(hdc, hBrush, oldBrush, 50, 50, 50);
 
-	Rectangle(hdc, 0, 656, 500 - _hpPoint, 700);
+	MoveToEx(hdc, 0, 656, NULL);
+	LineTo(hdc, 500, 656);
+
+	Rectangle(hdc, 0, 656, 500 - _loseHpPoint, 700);
 
 	DeleteColor(hdc, hPen, oldPen);
 	DeleteColor(hdc, hBrush, oldBrush);
+	
+	SetBkMode(hdc, TRANSPARENT);
+	SetTextColor(hdc,_loseHpPoint, 485);
+	TextOut(hdc, 10, 665, _T("H"), _tcslen(_T("H")));
+
+	SetTextColor(hdc, _loseHpPoint, 475);
+	TextOut(hdc, 20, 665, _T("P"), _tcslen(_T("P")));
+}
+
+void SetTextColor(HDC hdc, int _loseHpPoint, int checkNum)
+{
+	if (_loseHpPoint < checkNum)
+		SetTextColor(hdc, RGB(255, 255, 255));
+	else
+		SetTextColor(hdc, RGB(0, 0, 0));
 }

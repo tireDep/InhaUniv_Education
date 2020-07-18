@@ -13,3 +13,4 @@ void DeleteColor(HDC hdc, HPEN &hPen, HPEN &oldPen);
 void DeleteColor(HDC hdc, HBRUSH &hBrush, HBRUSH &oldBrush);
 
 void DrawHpBar(HDC hdc, int _hpPoint);
+void SetTextColor(HDC hdc, int _loseHpPoint, int checkNum);

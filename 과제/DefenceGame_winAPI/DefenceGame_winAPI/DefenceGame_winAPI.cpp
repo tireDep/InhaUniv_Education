@@ -128,7 +128,7 @@ BOOL InitInstance(HINSTANCE hInstance, int nCmdShow)
 LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 {
 	srand((unsigned)time(NULL));
-
+	static vector<Bullet *> bulletList;
 	static vector<vector<Obstacle *>> obstacle;
 	static Gun gun;
 
@@ -196,6 +196,17 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 				gun.MoveBarrel(1);
 				break;
 
+			case VK_SPACE:
+				{
+					// CreateBullet();
+					POINT posLB = gun.GetBarrelPosLB();
+					POINT posRB = gun.GetBarrelPosRB();
+					POINT move = { 0,0 };
+					Bullet *bullet = new Bullet(posLB, posRB, move);
+					bulletList.push_back(bullet);
+				}
+				break;
+
 				default:
 					break;
 			}
@@ -219,6 +230,9 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 			DrawHpBar(hdc, _loseHpPoint);
 			gun.DrawWeapon(hdc);
 
+			for (int i = 0; i < bulletList.size(); i++)
+				bulletList[i]->DrawWeapon(hdc);
+			// bullet.DrawWeapon(hdc);
 			EndPaint(hWnd, &ps);
 		}
 	break;
