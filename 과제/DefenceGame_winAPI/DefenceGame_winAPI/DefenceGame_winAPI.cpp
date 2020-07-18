@@ -134,11 +134,17 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 
 	static int hpPoint = 0;
 
+	static POINT test[4] = { { 245,580 },{ 255,580 },{ 255,650 },{ 245,650 } };
+	static POINT tempP[4] = { { 245,580 },{ 255,580 },{ 255,650 },{ 245,650 } };
+
+	static int nowDeg = 0;
+	static int addDegree = 30;
+
     switch (message)
     {
 	case WM_CREATE:
 		{
-			SetTimer(hWnd, eGame, 1000, NULL);	// 게임 타이머
+			SetTimer(hWnd, eGame, 100, NULL);	// 게임 타이머
 		}
 		break;
 
@@ -146,29 +152,52 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 		{
 		int createBlock;
 
-		if (wParam == eGame)
-			{
-				for (int i = 0; i < eViewW - 50; i += 50)
-				{
-					createBlock = rand() % 2;
-					if (createBlock == 0)
-					{
-						Block *block = new Block(i, 0, 50 + i, 30, _downSpeed);
-						obstacle.push_back(block);
-					}
+		//Polygon(hdc, test, 4);
 
-				}
+		POINT center = { 250, 650 };		
 
-				for (int i = 0; i < obstacle.size(); i++)
-				{
-					obstacle[i]->DownObstacle();
-					if (obstacle[i]->CheckDeadLine())
-					{
-						obstacle.erase(obstacle.begin() + i);
-						hpPoint += 10;
-					}
-				}
-			}
+		//if ( test[0].y > test[3].y )
+		//{
+		//	degree *= -1;
+		//}
+		//else if (test[1].y < test[4].y)
+		//{
+		//	degree = 15;
+		//}
+
+		//if (nowDeg >= -90 && nowDeg < 90)
+			nowDeg += addDegree;
+//		else if (nowDeg >= 90 && nowDeg > -90)
+//			nowDeg -= addDegree;
+
+		for (int i = 0; i < 4; i++)
+		{
+			test[i] = PointRotate(center.x, center.y, nowDeg, &tempP[i]);
+		}
+
+		//if (wParam == eGame)
+		//	{
+		//		for (int i = 0; i < eViewW - 50; i += 50)
+		//		{
+		//			createBlock = rand() % 2;
+		//			if (createBlock == 0)
+		//			{
+		//				Block *block = new Block(i, 0, 50 + i, 30, _downSpeed);
+		//				obstacle.push_back(block);
+		//			}
+		//
+		//		}
+		//
+		//		for (int i = 0; i < obstacle.size(); i++)
+		//		{
+		//			obstacle[i]->DownObstacle();
+		//			if (obstacle[i]->CheckDeadLine())
+		//			{
+		//				obstacle.erase(obstacle.begin() + i);
+		//				hpPoint += 10;
+		//			}
+		//		}
+		//	}
 
 			InvalidateRect(hWnd, NULL, TRUE);
 		}
@@ -179,7 +208,8 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 			PAINTSTRUCT ps;
 			HDC hdc = BeginPaint(hWnd, &ps);
 		
-			DrawHpBar(hdc, hpPoint);
+			Polygon(hdc, test, 4);
+		//	DrawHpBar(hdc, hpPoint);
 			DrawGun(hdc);
 
 			for (int i = 0; i < obstacle.size(); i++)
