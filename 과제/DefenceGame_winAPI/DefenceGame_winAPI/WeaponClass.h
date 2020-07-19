@@ -54,7 +54,8 @@ public:
 	~Bullet();
 
 	void DrawWeapon(HDC hdc);
-	void Update(vector<Bullet*> &Bullet);
+	void Update(vector<Bullet*> &Bullet, RECT viewRect);
 
-
+	void MoveBullet(vector<Bullet *> &bullet);
+	void CheckBulletOutScreen(vector<Bullet *> &bullet, RECT viewRect);
 };

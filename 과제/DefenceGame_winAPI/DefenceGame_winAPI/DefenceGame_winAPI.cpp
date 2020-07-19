@@ -128,6 +128,9 @@ BOOL InitInstance(HINSTANCE hInstance, int nCmdShow)
 LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 {
 	srand((unsigned)time(NULL));
+	
+	static RECT viewRect;
+
 	static vector<Bullet *> bulletList;
 	static vector<vector<Obstacle *>> obstacle;
 	static Gun gun;
@@ -140,6 +143,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
     {
 	case WM_CREATE:
 		{
+			GetClientRect(hWnd, &viewRect);	// 창 크기
 			SetTimer(hWnd, eGame, 100, NULL);	// 게임 타이머
 			SetTimer(hWnd, eGame + 10, 1000, NULL);	// 게임 타이머
 		}
@@ -171,9 +175,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 			if(obstacle.size() != 0)
 				obstacle[0][0]->Update(obstacle, _loseHpPoint);
 			if (bulletList.size() != 0)
-			{
-				bulletList[0]->Update(bulletList);
-			}
+				bulletList[0]->Update(bulletList, viewRect);
 		}
 
 			InvalidateRect(hWnd, NULL, TRUE);

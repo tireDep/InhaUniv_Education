@@ -3,7 +3,7 @@
 #include "WeaponClass.h"
 #include "Function.h"
 
-enum { eStartBulletSpped = 25};
+enum { eStartBulletSpped = 25 };
 
 Bullet::Bullet()
 {
@@ -46,34 +46,6 @@ Bullet::Bullet(POINT posLB, POINT posRB, POINT move, POINT _centerPos, int _nowD
 	centerPos.x = (bulletPos[0].x + bulletPos[2].x) / 2;
 	centerPos.y = (bulletPos[0].y + bulletPos[2].y) / 2;
 	// 총알 중점
-
-	// int length = 
-	// 
-	// if (lengthY == 0 && nowDegree > 0)
-	// {
-	// 	movePos.y = 0;
-	// 	lengthY = 1;
-	// }
-	// else if (nowDegree < 0 && lengthY ==0)
-	// {
-	// 	movePos.y = 0;
-	// 	lengthY = -1;
-	// }
-	// else if (nowDegree <= 0)
-	// 	lengthY *= -1;
-	// 
-	// if (lengthX == 0)
-	// {
-	// 	movePos.x = 0;
-	// 	lengthX = 1;
-	// }
-	// else if (nowDegree < 0)
-	// 	lengthX *= -1;
-	// 
-	// if(movePos.y == -9999)
-	// 	movePos.y = bulletPos[0].y / lengthY;
-	// if (movePos.x == -9999)
-	// 	movePos.x = bulletPos[2].x / lengthX;
 	
 	if (nowDegree == 90 || nowDegree == -90)
 		movePos.y = 0;
@@ -83,15 +55,13 @@ Bullet::Bullet(POINT posLB, POINT posRB, POINT move, POINT _centerPos, int _nowD
 	if (nowDegree == 0)
 		movePos.x = 0;
 	else if (nowDegree > 0)
-		movePos.x = 1;// -(nowDegree / 5) * 0.01;
+		movePos.x = 1;
 	else
-	{
-		movePos.x = -1;// +(nowDegree / 5) * 0.01;
-		// movePos.y = 0.8;
-	}
+		movePos.x = -1;
+	// 방향
 
 	bulletSpped = eStartBulletSpped;
-	// 방향
+	// 속도
 }
 
 Bullet::~Bullet()
@@ -101,20 +71,25 @@ Bullet::~Bullet()
 
 void Bullet::DrawWeapon(HDC hdc)
 {
-	// if (nowDegree == 0)
-	// 	Ellipse(hdc, bulletPos[0].x, bulletPos[0].y, bulletPos[0].x + 13, bulletPos[0].y + 12);
-	// else if (nowDegree > 0)
-	// 	Ellipse(hdc, bulletPos[0].x, bulletPos[0].y, bulletPos[1].x + 13, bulletPos[1].y + 12);
-	// else 
-	// 	Ellipse(hdc, bulletPos[0].x, bulletPos[0].y, bulletPos[0].x + 10, bulletPos[0].y + 20);
+	if (nowDegree == 0)
+		Ellipse(hdc, bulletPos[0].x, bulletPos[0].y, bulletPos[0].x + 13, bulletPos[0].y + 12);
+	else if (nowDegree > 0)
+		Ellipse(hdc, bulletPos[0].x, bulletPos[0].y, bulletPos[0].x - 13, bulletPos[0].y + 12);
+	else 
+		Ellipse(hdc, bulletPos[0].x, bulletPos[0].y, bulletPos[0].x + 13, bulletPos[0].y - 12);
 
-	// Ellipse(hdc,bulletPos[0].x, bulletPos[0].y, bulletPos[2].x, bulletPos[2].y);
-	Polygon(hdc, bulletPos, 4);	// 일단 네모..
+	//Polygon(hdc, bulletPos, 4);	// 일단 네모..
 }
 
-void Bullet::Update(vector<Bullet *> &bullet)
+void Bullet::Update(vector<Bullet *> &bullet, RECT viewRect)
 {
-	// MoveBullet()
+	MoveBullet(bullet);
+	CheckBulletOutScreen(bullet, viewRect);
+	// CheckHitObstacle();
+}
+
+void Bullet::MoveBullet(vector<Bullet *> &bullet)
+{
 	for (int i = 0; i < bullet.size(); i++)
 	{
 		for (int j = 0; j < 4; j++)
@@ -124,3 +99,15 @@ void Bullet::Update(vector<Bullet *> &bullet)
 		}
 	}
 }
+
+void Bullet::CheckBulletOutScreen(vector<Bullet *> &bullet, RECT viewRect)
+{
+	for (int i = 0; i < bullet.size(); i++)
+	{
+		if (viewRect.right <= bulletPos[1].x || viewRect.left >= bulletPos[0].x)
+			bullet.erase(bullet.begin() + i);
+		if (viewRect.top >= bulletPos[0].y)
+			bullet.erase(bullet.begin() + i);
+	}
+}
+

@@ -5,8 +5,6 @@
 
 Gun::Gun()
 {
-	// barrelPos[4] = { { 245,580 },{ 255,580 },{ 255,650 },{ 245,650 } };
-
 	barrelPos[0].x = 245;
 	barrelPos[0].y = 580;
 
@@ -26,7 +24,6 @@ Gun::Gun()
 	}
 
 	nowDegree = 0;
-	// addDegree = 15;
 	addDegree = 15;
 }
 
