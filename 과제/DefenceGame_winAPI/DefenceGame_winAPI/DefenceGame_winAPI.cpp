@@ -166,11 +166,15 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 		}
 
 		if (wParam == eGame)
-			{
-			// random_shuffle(obstacle.begin(), obstacle.end());
+		{
+		// random_shuffle(obstacle.begin(), obstacle.end());
 			if(obstacle.size() != 0)
 				obstacle[0][0]->Update(obstacle, _loseHpPoint);
+			if (bulletList.size() != 0)
+			{
+				bulletList[0]->Update(bulletList);
 			}
+		}
 
 			InvalidateRect(hWnd, NULL, TRUE);
 		}
@@ -201,8 +205,12 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 					// CreateBullet();
 					POINT posLB = gun.GetBarrelPosLB();
 					POINT posRB = gun.GetBarrelPosRB();
+					POINT centerPos = gun.GetCenterPos();
 					POINT move = { 0,0 };
-					Bullet *bullet = new Bullet(posLB, posRB, move);
+
+					int _nowDegree = gun.GetNowDegree();
+					
+					Bullet *bullet = new Bullet(posLB, posRB, move, centerPos, _nowDegree);
 					bulletList.push_back(bullet);
 				}
 				break;

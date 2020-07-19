@@ -31,18 +31,30 @@ public:
 
 	POINT GetBarrelPosLB();
 	POINT GetBarrelPosRB();
+
+	POINT GetCenterPos();
+	int GetNowDegree();
+	int GetAddDegree();
 };
 
 class Bullet : public Gun
 {
 private:
-	POINT bulletPos[2];
+	POINT bulletPos[4];
+	POINT tempBulletPos[4];
+	POINT centerPos;
 	POINT movePos;
+
+	int nowDegree;
+	int bulletSpped;
 
 public:
 	Bullet();
-	Bullet(POINT pos1, POINT pos2, POINT move);
+	Bullet(POINT posLB, POINT posRB, POINT move, POINT _centerPos, int _nowDegree);
 	~Bullet();
 
 	void DrawWeapon(HDC hdc);
+	void Update(vector<Bullet*> &Bullet);
+
+
 };

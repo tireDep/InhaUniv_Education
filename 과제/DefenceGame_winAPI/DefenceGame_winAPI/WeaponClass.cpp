@@ -26,6 +26,7 @@ Gun::Gun()
 	}
 
 	nowDegree = 0;
+	// addDegree = 15;
 	addDegree = 15;
 }
 
@@ -86,3 +87,17 @@ POINT Gun::GetBarrelPosRB()
 	return barrelPos[1];
 }
 
+int Gun::GetNowDegree()
+{
+	return nowDegree;
+}
+
+int Gun::GetAddDegree()
+{
+	return addDegree;
+}
+
+POINT Gun::GetCenterPos()
+{
+	return barrelCenter;
+}
