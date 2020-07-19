@@ -1,9 +1,11 @@
 #include "stdafx.h"
 #include "DefenceGame_winAPI.h"
+#include "ObstalceClass.h"
 #include "WeaponClass.h"
 #include "Function.h"
 
 enum { eStartBulletSpped = 25 };
+int Bullet::bulletCnt = 0;	// static 변수 초기화
 
 Bullet::Bullet()
 {
@@ -18,19 +20,12 @@ Bullet::Bullet()
 	nowDegree = 0;
 }
 
-Bullet::Bullet(POINT posLB, POINT posRB, POINT move, POINT _centerPos, int _nowDegree)
+Bullet::Bullet(POINT _centerPos, int _nowDegree)
 {
 	bulletPos[0] = { 244,569 };
 	bulletPos[1] = { 257,569 };
 	bulletPos[2] = { 257,582 };
 	bulletPos[3] = { 244,582 };
-	// circle Bullet
-
-	// bulletPos[0] = { 248,560 };
-	// bulletPos[1] = { 253,560 };
-	// bulletPos[2] = { 253,582 };
-	// bulletPos[3] = { 248,582 };
-	// rectangle Bullet
 
 	for (int i = 0; i < 4; i++)
 		tempBulletPos[i] = bulletPos[i];
@@ -62,12 +57,16 @@ Bullet::Bullet(POINT posLB, POINT posRB, POINT move, POINT _centerPos, int _nowD
 
 	bulletSpped = eStartBulletSpped;
 	// 속도
+
+	Bullet::bulletCnt++;
+	// 총알 갯수 증가
 }
 
 Bullet::~Bullet()
 {
 
 }
+
 
 void Bullet::DrawWeapon(HDC hdc)
 {
@@ -77,11 +76,9 @@ void Bullet::DrawWeapon(HDC hdc)
 		Ellipse(hdc, bulletPos[0].x, bulletPos[0].y, bulletPos[0].x - 13, bulletPos[0].y + 12);
 	else 
 		Ellipse(hdc, bulletPos[0].x, bulletPos[0].y, bulletPos[0].x + 13, bulletPos[0].y - 12);
-
-	//Polygon(hdc, bulletPos, 4);	// 일단 네모..
 }
 
-void Bullet::Update(vector<Bullet *> &bullet, RECT viewRect)
+void Bullet::Update(vector<Bullet *> &bullet, vector<vector<Obstacle *>> &obstacle, RECT viewRect)
 {
 	MoveBullet(bullet);
 	CheckBulletOutScreen(bullet, viewRect);
@@ -104,10 +101,20 @@ void Bullet::CheckBulletOutScreen(vector<Bullet *> &bullet, RECT viewRect)
 {
 	for (int i = 0; i < bullet.size(); i++)
 	{
-		if (viewRect.right <= bulletPos[1].x || viewRect.left >= bulletPos[0].x)
+		if (viewRect.right <= bullet[i]->bulletPos[1].x || viewRect.left >= bullet[i]->bulletPos[0].x)
+		{
+			Bullet::bulletCnt--;
 			bullet.erase(bullet.begin() + i);
-		if (viewRect.top >= bulletPos[0].y)
+		}
+		else if (viewRect.top >= bullet[i]->bulletPos[3].y)
+		{
+			Bullet::bulletCnt--;
 			bullet.erase(bullet.begin() + i);
+		}
 	}
 }
 
+int Bullet::GetBulletCnt()
+{
+	return Bullet::bulletCnt;
+}

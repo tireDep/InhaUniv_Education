@@ -16,9 +16,9 @@ public:
 
 	~Obstacle() {}
 
-	void Update(vector<vector<Obstacle *>> &obstacle, int &_loseHpPoint);
-	void CheckHit(vector<vector<Obstacle *>> &obstacle, int &hitCnt, int linePos);
-	void CheckLoseHp(vector<vector<Obstacle *>> &obstacle, int &hitCnt, int &_loseHpPoint, int linePos);
+	virtual void Update(vector<vector<Obstacle *>> &obstacle, int &_loseHpPoint) = 0;
+	virtual void CheckHitDeadLine(vector<vector<Obstacle *>> &obstacle, int &hitCnt, int linePos) = 0;
+	virtual void CheckLoseHp(vector<vector<Obstacle *>> &obstacle, int &hitCnt, int &_loseHpPoint, int linePos) = 0;
 
 	virtual void DrawObstacle(HDC hdc) = 0;
 	virtual void DownObstacle() = 0;
@@ -32,45 +32,15 @@ private:
 	int downSpeed;
 
 public:
-	Block() 
-	{
-		blockPos[0].x = 0;
-		blockPos[0].y = 0;
-		blockPos[1].x = 0;
-		blockPos[1].y = 0;
-	}
+	Block();
+	Block(int left, int top, int right, int bottom, int _downSpeed);
+	~Block();
 
-	Block(int left, int top, int right, int bottom, int _downSpeed)
-	{
-		blockPos[0].x = left;
-		blockPos[0].y = top;
-		blockPos[1].x = right;
-		blockPos[1].y = bottom;
+	void DrawObstacle(HDC hdc);
+	void DownObstacle();
+	bool CheckDeadLine();
 
-		downSpeed = _downSpeed;
-	}
-
-	~Block() 
-	{
-
-	}
-
-	void DrawObstacle(HDC hdc)
-	{
-		Rectangle(hdc, blockPos[0].x, blockPos[0].y, blockPos[1].x, blockPos[1].y);
-	}
-
-	void DownObstacle()
-	{
-		blockPos[0].y += 10;
-		blockPos[1].y += 10;
-	}
-
-	bool CheckDeadLine()
-	{
-		if (blockPos[1].y >= 670)
-			return TRUE;
-		else
-			return FALSE;
-	}
+	void Update(vector<vector<Obstacle *>> &obstacle, int &_loseHpPoint);
+	void CheckHitDeadLine(vector<vector<Obstacle *>> &obstacle, int &hitCnt, int linePos);
+	void CheckLoseHp(vector<vector<Obstacle *>> &obstacle, int &hitCnt, int &_loseHpPoint, int linePos);
 };

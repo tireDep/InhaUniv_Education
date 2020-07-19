@@ -175,7 +175,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 			if(obstacle.size() != 0)
 				obstacle[0][0]->Update(obstacle, _loseHpPoint);
 			if (bulletList.size() != 0)
-				bulletList[0]->Update(bulletList, viewRect);
+				bulletList[0]->Update(bulletList, obstacle,  viewRect);
 		}
 
 			InvalidateRect(hWnd, NULL, TRUE);
@@ -205,15 +205,11 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 			case VK_SPACE:
 				{
 					// CreateBullet();
-					POINT posLB = gun.GetBarrelPosLB();
-					POINT posRB = gun.GetBarrelPosRB();
-					POINT centerPos = gun.GetCenterPos();
-					POINT move = { 0,0 };
-
-					int _nowDegree = gun.GetNowDegree();
-					
-					Bullet *bullet = new Bullet(posLB, posRB, move, centerPos, _nowDegree);
-					bulletList.push_back(bullet);
+					if (bulletList.size() == 0 || bulletList[0]->GetBulletCnt() < eBulletLimteCnt)
+					{
+						Bullet *bullet = new Bullet(gun.GetCenterPos(), gun.GetNowDegree());
+						bulletList.push_back(bullet);
+					}
 				}
 				break;
 
@@ -242,7 +238,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 
 			for (int i = 0; i < bulletList.size(); i++)
 				bulletList[i]->DrawWeapon(hdc);
-			// bullet.DrawWeapon(hdc);
+
 			EndPaint(hWnd, &ps);
 		}
 	break;

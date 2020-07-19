@@ -1,5 +1,7 @@
 #pragma once
 
+class Obstacle;	// Update() 용 전방선언
+
 class Weapon
 {
 private:
@@ -29,9 +31,6 @@ public:
 	void MoveBarrel(int inputKey);
 	void DrawWeapon(HDC hdc);
 
-	POINT GetBarrelPosLB();
-	POINT GetBarrelPosRB();
-
 	POINT GetCenterPos();
 	int GetNowDegree();
 	int GetAddDegree();
@@ -47,15 +46,18 @@ private:
 
 	int nowDegree;
 	int bulletSpped;
+	static int bulletCnt;
 
 public:
 	Bullet();
-	Bullet(POINT posLB, POINT posRB, POINT move, POINT _centerPos, int _nowDegree);
+	Bullet(POINT _centerPos, int _nowDegree);
 	~Bullet();
 
 	void DrawWeapon(HDC hdc);
-	void Update(vector<Bullet*> &Bullet, RECT viewRect);
+	void Update(vector<Bullet*> &bullet, vector<vector<Obstacle *>> &obstacle, RECT viewRect);
 
 	void MoveBullet(vector<Bullet *> &bullet);
 	void CheckBulletOutScreen(vector<Bullet *> &bullet, RECT viewRect);
+
+	int GetBulletCnt();
 };

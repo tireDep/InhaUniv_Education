@@ -50,13 +50,13 @@
     <ClCompile Include="Function.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="WeaponClass.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="ObstalceClass.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="BulletClass.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GunClass.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

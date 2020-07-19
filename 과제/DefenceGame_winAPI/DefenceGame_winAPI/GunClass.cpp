@@ -58,7 +58,7 @@ void Gun::DrawWeapon(HDC hdc)
 	SetColor(hdc, hPen, oldPen, 100, 100, 100);
 	SetColor(hdc, hBrush, oldBrush, 100, 100, 100);
 
-	Rectangle(hdc, 205, 655, 295, 750);	// 채색용 사각형
+	Rectangle(hdc, 205, 655, 295, 700);	// 채색용 사각형
 	Ellipse(hdc, 205, 615, 295, 690);	// 채색용 원
 	Arc(hdc, 205, 615, 295, 690, 360, 660, 180, 660);	// 원호
 	
@@ -72,16 +72,6 @@ void Gun::DrawWeapon(HDC hdc)
 
 	DeleteColor(hdc, hPen, oldPen);
 	DeleteColor(hdc, hBrush, oldBrush);
-}
-
-POINT Gun::GetBarrelPosLB()
-{
-	return barrelPos[0];
-}
-
-POINT Gun::GetBarrelPosRB()
-{
-	return barrelPos[1];
 }
 
 int Gun::GetNowDegree()
