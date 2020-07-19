@@ -135,7 +135,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 	static vector<vector<Obstacle *>> obstacle;
 	static Gun gun;
 
-	static int _downSpeed = 1;
+	static int _downSpeed = 10;
 
 	static int _loseHpPoint = 0;
 
@@ -161,7 +161,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 				createBlock = rand() % 2;
 				if (createBlock == 0)
 				{
-					Block *block = new Block(i, 0, 50 + i, 30, 0);
+					Block *block = new Block(i, 0, 50 + i, 30, _downSpeed);
 					temp.push_back(block);
 				}
 

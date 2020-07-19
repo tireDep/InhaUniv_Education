@@ -23,12 +23,16 @@ public:
 	virtual void DrawObstacle(HDC hdc) = 0;
 	virtual void DownObstacle() = 0;
 	virtual bool CheckDeadLine() = 0;
-};
+
+	virtual RECT GetRectPos() = 0;
+	virtual RECT GetHitPos() = 0;
+};	
 
 class Block : public Obstacle
 {
 private:
-	POINT blockPos[2];
+	RECT blockPos;
+	RECT hitCheckPos;
 	int downSpeed;
 
 public:
@@ -43,4 +47,7 @@ public:
 	void Update(vector<vector<Obstacle *>> &obstacle, int &_loseHpPoint);
 	void CheckHitDeadLine(vector<vector<Obstacle *>> &obstacle, int &hitCnt, int linePos);
 	void CheckLoseHp(vector<vector<Obstacle *>> &obstacle, int &hitCnt, int &_loseHpPoint, int linePos);
+
+	RECT GetRectPos();
+	RECT GetHitPos();
 };

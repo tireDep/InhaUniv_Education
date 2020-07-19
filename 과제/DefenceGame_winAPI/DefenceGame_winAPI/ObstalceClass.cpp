@@ -1,20 +1,27 @@
 #include "stdafx.h"
 #include "ObstalceClass.h"
 
+enum { eBulletDecimal = 13 };
+
 Block::Block()
 {
-	blockPos[0].x = 0;
-	blockPos[0].y = 0;
-	blockPos[1].x = 0;
-	blockPos[1].y = 0;
+	blockPos.left = 0;
+	blockPos.top = 0;
+	blockPos.right = 0;
+	blockPos.bottom = 0;
 }
 
 Block::Block(int left, int top, int right, int bottom, int _downSpeed)
 {
-	blockPos[0].x = left;
-	blockPos[0].y = top;
-	blockPos[1].x = right;
-	blockPos[1].y = bottom;
+	blockPos.left = left;
+	blockPos.top = top;
+	blockPos.right = right;
+	blockPos.bottom = bottom;
+
+	hitCheckPos.left = left - eBulletDecimal / 2;
+	hitCheckPos.top = top - eBulletDecimal / 2;
+	hitCheckPos.right = right + eBulletDecimal / 2;
+	hitCheckPos.bottom = bottom + eBulletDecimal / 2;
 
 	downSpeed = _downSpeed;
 }
@@ -22,25 +29,6 @@ Block::Block(int left, int top, int right, int bottom, int _downSpeed)
 Block::~Block()
 {
 
-}
-
-void Block::DrawObstacle(HDC hdc)
-{
-	Rectangle(hdc, blockPos[0].x, blockPos[0].y, blockPos[1].x, blockPos[1].y);
-}
-
-void Block::DownObstacle()
-{
-	blockPos[0].y += 10;
-	blockPos[1].y += 10;
-}
-
-bool Block::CheckDeadLine()
-{
-	if (blockPos[1].y >= 670)
-		return TRUE;
-	else
-		return FALSE;
 }
 
 void Block::Update(vector<vector<Obstacle *>> &obstacle, int &_loseHpPoint)
@@ -71,4 +59,36 @@ void Block::CheckLoseHp(vector<vector<Obstacle *>> &obstacle, int &hitCnt, int &
 		_loseHpPoint += 10 * hitCnt;
 		hitCnt = 0;
 	}
+}
+
+void Block::DrawObstacle(HDC hdc)
+{
+	Rectangle(hdc, blockPos.left, blockPos.top, blockPos.right, blockPos.bottom);
+}
+
+void Block::DownObstacle()
+{
+	blockPos.top += downSpeed;
+	blockPos.bottom += downSpeed;
+
+	hitCheckPos.top += downSpeed;
+	hitCheckPos.bottom += downSpeed;
+}
+
+bool Block::CheckDeadLine()
+{
+	if (blockPos.bottom >= 670)
+		return TRUE;
+	else
+		return FALSE;
+}
+
+RECT Block::GetHitPos()
+{
+	return hitCheckPos;
+}
+
+RECT Block::GetRectPos()
+{
+	return blockPos;
 }
