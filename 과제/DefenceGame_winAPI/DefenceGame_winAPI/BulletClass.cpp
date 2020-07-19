@@ -38,8 +38,8 @@ Bullet::Bullet(POINT _centerPos, int _nowDegree)
 			bulletPos[i] = PointRotate(_centerPos.x, _centerPos.y, _nowDegree, &tempBulletPos[i]);
 	}
 
-	centerPos.x = (bulletPos[0].x + bulletPos[2].x) / 2;
-	centerPos.y = (bulletPos[0].y + bulletPos[2].y) / 2;
+	centerPos.x = (bulletPos[0].x + bulletPos[1].x) / 2;
+	centerPos.y = (bulletPos[0].y + bulletPos[1].y) / 2;
 	// ÃÑ¾Ë ÁßÁ¡
 
 	if (nowDegree == 90 || nowDegree == -90)
@@ -97,49 +97,62 @@ void Bullet::Update(vector<Bullet *> &bullet, vector<vector<Obstacle *>> &obstac
 	CheckBulletOutScreen(bullet, viewRect);
 	// CheckHitObstacle();
 
-	//RECT tempHit;
-	//int bIndex = 0;
-	//if (bullet.size() != 0)
-	//{
-	//	for (int i = 0; i < obstacle.size(); i++)
-	//	{
-	//		for (int j = 0; j < obstacle[i].size(); j++)
-	//		{
-	//			tempHit = obstacle[i][j]->GetRectPos();
-	//			if (tempHit.left <= bullet[bIndex]->GetCenterPos().x && tempHit.right >= bullet[bIndex]->GetCenterPos().x
-	//				|| tempHit.top <= bullet[bIndex]->GetCenterPos().y && tempHit.bottom >= bullet[bIndex]->GetCenterPos().y)
-	//			{
-	//				tempHit = obstacle[i][j]->GetHitPos();
-	//				if (tempHit.left <= bullet[bIndex]->GetCenterPos().x && tempHit.right >= bullet[bIndex]->GetCenterPos().x
-	//					|| tempHit.top <= bullet[bIndex]->GetCenterPos().y && tempHit.bottom >= bullet[bIndex]->GetCenterPos().y)
-	//					obstacle[i].erase(obstacle[i].begin() + j);
-	//			}
-	//			else
-	//			{
-	//				if (CheckPointInCircle(bullet[bIndex]->bulletPos[0].x, bullet[bIndex]->bulletPos[2].y, eBulletDecimal / 2, tempHit.left, tempHit.right))
-	//				{
-	//					obstacle[i].erase(obstacle[i].begin() + j);
-	//					bullet.erase(bullet.begin() + bIndex);
-	//				}
-	//				else if (CheckPointInCircle(bullet[bIndex]->bulletPos[0].x, bullet[bIndex]->bulletPos[2].y, eBulletDecimal / 2, tempHit.left, tempHit.bottom))
-	//				{
-	//					obstacle[i].erase(obstacle[i].begin() + j);
-	//					bullet.erase(bullet.begin() + bIndex);
-	//				}
-	//				else if (CheckPointInCircle(bullet[bIndex]->bulletPos[0].x, bullet[bIndex]->bulletPos[2].y, eBulletDecimal / 2, tempHit.right, tempHit.top))
-	//				{
-	//					obstacle[i].erase(obstacle[i].begin() + j);
-	//					bullet.erase(bullet.begin() + bIndex);
-	//				}
-	//				else if (CheckPointInCircle(bullet[bIndex]->bulletPos[0].x, bullet[bIndex]->bulletPos[2].y, eBulletDecimal / 2, tempHit.right, tempHit.bottom))
-	//				{
-	//					obstacle[i].erase(obstacle[i].begin() + j);
-	//					bullet.erase(bullet.begin() + bIndex);
-	//				}
-	//			}
-	//		}
-	//	}
-	//}
+	RECT tempHit;
+	int bIndex = 0;
+	if(bullet.size() != 0)
+	{
+		for (int i = 0; i < obstacle.size(); i++)
+		{
+			for (int j = 0; j < obstacle[i].size(); j++)
+			{
+				tempHit = obstacle[i][j]->GetRectPos();
+				if (tempHit.left <= bullet[bIndex]->GetCenterPos().x && tempHit.right >= bullet[bIndex]->GetCenterPos().x
+					|| tempHit.top <= bullet[bIndex]->GetCenterPos().y && tempHit.bottom >= bullet[bIndex]->GetCenterPos().y)
+				{
+					tempHit = obstacle[i][j]->GetHitPos();
+					if (tempHit.left < bullet[bIndex]->GetCenterPos().x && tempHit.right > bullet[bIndex]->GetCenterPos().x
+						|| tempHit.top < bullet[bIndex]->GetCenterPos().y && tempHit.bottom > bullet[bIndex]->GetCenterPos().y)
+					{
+						obstacle[i].erase(obstacle[i].begin() + j);
+						bullet[bIndex]->bulletCnt--;
+						bullet.erase(bullet.begin() + bIndex);
+						break;
+					}
+				}
+				else
+				{
+					if (CheckPointInCircle(bullet[bIndex]->bulletPos[0].x, bullet[bIndex]->bulletPos[2].y, eBulletDecimal / 2, tempHit.left, tempHit.right))
+					{
+						obstacle[i].erase(obstacle[i].begin() + j);
+						bullet[bIndex]->bulletCnt--;
+						bullet.erase(bullet.begin() + bIndex);
+						break;
+					}
+					else if (CheckPointInCircle(bullet[bIndex]->bulletPos[0].x, bullet[bIndex]->bulletPos[2].y, eBulletDecimal / 2, tempHit.left, tempHit.bottom))
+					{
+						obstacle[i].erase(obstacle[i].begin() + j);
+						bullet[bIndex]->bulletCnt--;
+						bullet.erase(bullet.begin() + bIndex);
+						break;
+					}
+					else if (CheckPointInCircle(bullet[bIndex]->bulletPos[0].x, bullet[bIndex]->bulletPos[2].y, eBulletDecimal / 2, tempHit.right, tempHit.top))
+					{
+						obstacle[i].erase(obstacle[i].begin() + j);
+						bullet[bIndex]->bulletCnt--;
+						bullet.erase(bullet.begin() + bIndex);
+						break;
+					}
+					else if (CheckPointInCircle(bullet[bIndex]->bulletPos[0].x, bullet[bIndex]->bulletPos[2].y, eBulletDecimal / 2, tempHit.right, tempHit.bottom))
+					{
+						obstacle[i].erase(obstacle[i].begin() + j);
+						bullet[bIndex]->bulletCnt--;
+						bullet.erase(bullet.begin() + bIndex);
+						break;
+					}
+				}
+			}
+		}
+	}
 }
 
 void Bullet::MoveBullet(vector<Bullet *> &bullet)
@@ -150,6 +163,9 @@ void Bullet::MoveBullet(vector<Bullet *> &bullet)
 		{
 			bullet[i]->bulletPos[j].x += bullet[i]->movePos.x * bulletSpped;
 			bullet[i]->bulletPos[j].y += bullet[i]->movePos.y * bulletSpped;
+
+			bullet[i]->centerPos.x += bullet[i]->movePos.x * bulletSpped;
+			bullet[i]->centerPos.y += bullet[i]->movePos.y * bulletSpped;
 		}
 	}
 }

@@ -60,4 +60,8 @@ public:
 	void CheckBulletOutScreen(vector<Bullet *> &bullet, RECT viewRect);
 
 	int GetBulletCnt();
+	POINT GetCenterPos()
+	{
+		return centerPos;
+	}
 };
