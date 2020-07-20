@@ -156,7 +156,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 			SetTimer(hWnd, eGame, 100, NULL);	// 게임 타이머
 			SetTimer(hWnd, eGame + 10, 1000, NULL);	// 게임 타이머
 
-			ReadRanking(playerData);
+			ReadRanking(&playerData);
 		}
 		break;
 
@@ -270,7 +270,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 			switch (wParam)
 			{
 			case VK_ESCAPE:
-				// todo : 일시정지 구현
+				// system("pause");
 				break;
 
 			case 0x41:	// A
@@ -333,32 +333,18 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 		int yPos = HIWORD(lParam);
 		if (gameMode == eResult && yPos >= 500 && yPos <= 550 && xPos >= 50 && xPos <= 200)
 		{
-			int len = wcslen((wchar_t*)playerName);
-			char *tempName = new char[2 * len + 1];
-			wcstombs(tempName, (wchar_t*)playerName, 2 * len + 1);
-			std::string sName = tempName;
-			delete[] tempName;
-
-			playerData.insert(pair<int, string>(playerScore, sName));
+			WriteRanking(&playerData);
+			playerData.erase(playerData.begin(), playerData.end());
+			ReadRanking(&playerData);
 
 			nameCnt = 0;
 			playerName[nameCnt] = NULL;
 			playerScore = 0;
-			gameMode = eResult;
-			WriteRanking(playerData);
-			ReadRanking(playerData);
+			gameMode = eStart;
 		}
 		if (gameMode == eResult && yPos >= 500 && yPos <= 550 && xPos >= 300 && xPos <= 550)
 		{
-			int len = wcslen((wchar_t*)playerName);
-			char *tempName = new char[2 * len + 1];
-			wcstombs(tempName, (wchar_t*)playerName, 2 * len + 1);
-			std::string sName = tempName;
-			delete[] tempName;
-
-			playerData.insert(pair<int, string>(playerScore, sName));
-
-			WriteRanking(playerData);
+			WriteRanking(&playerData);
 			DestroyWindow(hWnd);
 		}
 	}
@@ -421,11 +407,12 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 					obstacle.erase(obstacle.begin(),obstacle.end());
 					_loseHpPoint = 0;
 					gameMode = eResult;
+					SaveData(&playerData, playerName, playerScore);
 				}
 			}
 			else if (gameMode == eResult)
 			{
-				ResultScreen(hdc, tcharScore, playerName, playerScore, playerData);
+				ResultScreen(hdc, tcharScore, playerName, playerScore, &playerData);
 			}
 
 			EndPaint(hWnd, &ps);

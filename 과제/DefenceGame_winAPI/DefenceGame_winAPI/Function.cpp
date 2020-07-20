@@ -84,67 +84,70 @@ void SetTextColor(HDC hdc, int _loseHpPoint, int checkNum)
 		SetTextColor(hdc, RGB(0, 0, 0));
 }
 
-void ReadRanking(multimap<int, string> &playerData)
+void ReadRanking(multimap<int, string> *playerData)
 {
-	FILE *fp;
+	ifstream fp;
+	fp.open("rank.bin", std::ios::binary | std::ios::in);;
 
-	if (!_access("rank.txt", 0))
-		fp = fopen("rank.txt", "r");
-	else
+	if (!fp.is_open())
 		return;
 
-	fseek(fp, 0, SEEK_END);
-	long lSize = ftell(fp);
-	fseek(fp, 0, SEEK_SET);
+	fp.seekg(0, fp.end);
+	int length = (int)fp.tellg();
+	fp.seekg(0, fp.beg);
 
-	char *buffer = new char[lSize];
-	//fread(buffer, 1, lSize, fp);
-	while (fgets(buffer, 100, fp) != NULL)
+	int i = 0;
+	char *buffer = new char[length];
+	fp.read(buffer, length);
+	while (1)
 	{
-		char *tNum = strtok(buffer, " ");
-		char *name = strtok(NULL, " \r\n");
+		char *tNum;
+		char *name;
+		if (i == 0)
+		{
+			tNum = strtok(buffer, " ");
+			name = strtok(NULL, " \r\n");
+		}
+		else
+		{
+			tNum = strtok(NULL, " ");
+			name = strtok(NULL, " \r\n");
+		}
+		i++;
 		int num = atoi(tNum);
-		playerData.insert(pair<int, string>(num, (string)name));
+
+		if (name == NULL) break;
+		playerData->insert(pair<int, string>(num, (string)name));
 	}
 
-	// delete[] buffer;
-	if(fp != NULL)
-		fclose(fp);
+	if (fp.is_open())
+		fp.close();
 }
 
-void WriteRanking(multimap<int, string> &playerData)
+void WriteRanking(multimap<int, string> *playerData)
 {
-	FILE *fp;
-	fp = fopen("rank.txt", "w");
-	if (fp == NULL)
-		exit(1);
+	ofstream fp;
+	fp.open("rank.bin", std::ios::binary | std::ios::out);
+	
+	if (!fp.is_open())
+		return;
 
-	multimap<int,string>::iterator iter;
-	for (iter = playerData.begin(); iter != playerData.end(); iter++)
+	multimap<int, string>::iterator iter;
+	for (iter = playerData->begin(); iter != playerData->end(); iter++)
 	{
 		int temp = iter->first;
-		string saveStr = std::to_string(temp) + " " + iter->second + "\n";
+		string saveStr = std::to_string(temp) + " " + iter->second + "\n" + "\0";
 
-		char saveChar[100];
-		for (int i = 0; i < saveStr.size(); i++)
-			saveChar[i] = saveStr[i];
-
-		saveChar[saveStr.size()] = '\0';
-		// fwrite(&saveStr, sizeof(saveStr), 1, fp);
-		// fprintf(fp,"%d %s\n", temp, stemp);
-		fprintf(fp, "%s", saveChar);
+		fp.write(saveStr.c_str(), saveStr.size());
 	}
 
-	if (fp != NULL)
-		fclose(fp);
+	if(fp.is_open())
+		fp.close();
 }
 
-void ResultScreen(HDC hdc, TCHAR *tcharScore, TCHAR *playerName, int playerScore, multimap<int, string> &playerData)
+void ResultScreen(HDC hdc, TCHAR *tcharScore, TCHAR *playerName, int playerScore, multimap<int, string> *playerData)
 {
-	// multimap<int, string> playerData;
-	// ReadRanking(playerData);
-	
-	RECT resultScreen = { 0,100,eViewW,eViewH };
+	RECT resultScreen = { 0,55,eViewW,eViewH };
 
 	DrawText(hdc, _T("RESULT"), _tcslen(_T("RESULT")), &resultScreen, DT_CENTER | DT_VCENTER);
 	resultScreen.top += 50;
@@ -152,11 +155,12 @@ void ResultScreen(HDC hdc, TCHAR *tcharScore, TCHAR *playerName, int playerScore
 
 	resultScreen.top += 75;
 	DrawText(hdc, _T("RANK"), _tcslen(_T("RANK")), &resultScreen, DT_CENTER | DT_VCENTER);
-	resultScreen.left += 100;
+	
+	resultScreen.left += 130;
 	resultScreen.top += 50;
-	resultScreen.right -= 100;
-	DrawText(hdc, _T("PlayerName + Score"), _tcslen(_T("PlayerName + Score")), &resultScreen, DT_LEFT | DT_VCENTER);
-
+	resultScreen.right -= 130;
+	PrintRank(hdc,resultScreen,playerData);
+	
 	RECT btn1 = { 50,500,200,550 };
 	RECT btn2 = { 300,500,450,550 };
 
@@ -166,8 +170,48 @@ void ResultScreen(HDC hdc, TCHAR *tcharScore, TCHAR *playerName, int playerScore
 	DrawText(hdc, _T("Main"), _tcslen(_T("Main")), &btn1, DT_CENTER | DT_VCENTER | DT_SINGLELINE);
 	DrawText(hdc, _T("Exit"), _tcslen(_T("Exit")), &btn2, DT_CENTER | DT_VCENTER | DT_SINGLELINE);
 	// DrawUI
+}
 
-	
+void SaveData(multimap<int, string> *playerData, TCHAR *playerName, int playerScore)
+{
+	int len = wcslen((wchar_t*)playerName);
+	char *tempName = new char[2 * len + 1];
+	wcstombs(tempName, (wchar_t*)playerName, 2 * len + 1);
+	std::string sName = tempName;
+	delete[] tempName;
 
-	//WriteRanking(playerData);
+	playerData->insert(pair<int, string>(playerScore, sName));
+}
+
+void PrintRank(HDC hdc, RECT resultScreen, multimap<int, string> *playerData)
+{
+	int check = 0;
+	multimap<int, string>::reverse_iterator iter;
+	for (iter = playerData->rbegin(); iter != playerData->rend(); iter++)
+	{
+		if (check > 4) break;
+
+		wchar_t rank[32];
+		_itow_s(check + 1, rank, 10);
+		// change to int -> LPCWSTR
+
+		int len;
+		int sLength = (int)iter->second.length() + 1;
+		len = MultiByteToWideChar(CP_ACP, 0, iter->second.c_str(), sLength, 0, 0);
+		wchar_t *buf = new wchar_t[len];
+		MultiByteToWideChar(CP_ACP, 0, iter->second.c_str(), sLength, buf, len);
+		std::wstring r(buf);
+		delete[] buf;
+		// change to string -> LPCWSTR
+
+		wchar_t num[32];
+		_itow_s(iter->first, num, 10);
+		// change to int -> LPCWSTR
+
+		DrawText(hdc, rank, _tcslen(rank), &resultScreen, DT_LEFT | DT_VCENTER);
+		DrawText(hdc, r.c_str(), _tcslen(r.c_str()), &resultScreen, DT_CENTER | DT_VCENTER);
+		DrawText(hdc, num, _tcslen(num), &resultScreen, DT_RIGHT | DT_VCENTER);
+		check++;
+		resultScreen.top += 50;
+	}
 }

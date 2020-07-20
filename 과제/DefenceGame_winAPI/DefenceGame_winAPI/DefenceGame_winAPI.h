@@ -9,6 +9,12 @@
 #include<map>
 #include<algorithm>
 #include<string>
+#include<fstream>
+#include<iostream>
+
+using std::ofstream;
+using std::ifstream;
+
 using std::vector;
 using std::multimap;
 using std::pair;

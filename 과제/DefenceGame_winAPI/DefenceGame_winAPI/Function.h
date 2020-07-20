@@ -15,6 +15,9 @@ void DeleteColor(HDC hdc, HBRUSH &hBrush, HBRUSH &oldBrush);
 void DrawHpBar(HDC hdc, int _hpPoint);
 void SetTextColor(HDC hdc, int _loseHpPoint, int checkNum);
 
-void ResultScreen(HDC hdc, TCHAR *tcharScore, TCHAR *playerName, int playerScore, multimap<int, string> &playerData);
-void WriteRanking(multimap<int, string> &playerData);
-void ReadRanking(multimap<int, string> &playerData);
+void ResultScreen(HDC hdc, TCHAR *tcharScore, TCHAR *playerName, int playerScore, multimap<int, string> *playerData);
+void WriteRanking(multimap<int, string> *playerData);
+void ReadRanking(multimap<int, string> *playerData);
+
+void SaveData(multimap<int, string> *playerData, TCHAR *playerName, int playerScore);
+void PrintRank(HDC hdc, RECT resultScreen, multimap<int, string> *playerData);
