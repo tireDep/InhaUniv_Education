@@ -67,6 +67,7 @@ void DrawHpBar(HDC hdc, int _loseHpPoint)
 
 	DeleteColor(hdc, hPen, oldPen);
 	DeleteColor(hdc, hBrush, oldBrush);
+	// Ã¼·Â¹Ù
 	
 	SetBkMode(hdc, TRANSPARENT);
 	SetTextColor(hdc,_loseHpPoint, 485);
@@ -166,11 +167,22 @@ void ResultScreen(HDC hdc, TCHAR *tcharScore, TCHAR *playerName, int playerScore
 	RECT btn1 = { 50,500,200,550 };
 	RECT btn2 = { 300,500,450,550 };
 
+	HPEN hPen, oldPen;
+	HBRUSH hBrush, oldBrush;
+
+	SetTextColor(hdc, RGB(0, 0, 0));
+	SetColor(hdc, hPen, oldPen, 200, 200, 200);
+	SetColor(hdc, hBrush, oldBrush, 200, 200, 200);
+
 	Rectangle(hdc, btn1.left, btn1.top, btn1.right, btn1.bottom);
 	Rectangle(hdc, btn2.left, btn2.top, btn2.right, btn2.bottom);
 
 	DrawText(hdc, _T("Main"), _tcslen(_T("Main")), &btn1, DT_CENTER | DT_VCENTER | DT_SINGLELINE);
 	DrawText(hdc, _T("Exit"), _tcslen(_T("Exit")), &btn2, DT_CENTER | DT_VCENTER | DT_SINGLELINE);
+
+	SetTextColor(hdc, RGB(255, 255, 255));
+	DeleteColor(hdc, hPen, oldPen);
+	DeleteColor(hdc, hBrush, oldBrush);
 	// DrawUI
 }
 

@@ -137,7 +137,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 	static TCHAR *tcharScore = new TCHAR;
 	static int _loseHpPoint = 0;
 
-	static int _blockCnt = 10;	// 난이도
+	static int _blockCnt = 3;	// 난이도
 	static int _downSpeed = 5;
 
 	static int gameMode = eStart;
@@ -170,19 +170,18 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 
 	case WM_TIMER:
 		{
-		int createBlock;
-		int tempCnt = _blockCnt;
 		if (eGame + 10 == wParam && gameMode == eGame)
 		{
+			int createBlock;
+			int tempCnt = _blockCnt;
 			vector<Obstacle *> temp;
 			for (int i = 0; i < eViewW - 50; i += 50)
 			{
 				createBlock = rand() % 2;
 				if (createBlock == 0 && tempCnt-- > 0)
 				{
-					// Block *block = new Block(i, 30, 50 + i, 60, _downSpeed);
-					// Block *block = new Block(i, 30, 30 + i, 60, _downSpeed);
-					Block *block = new Block(i, 50, 50 + i, 100, _downSpeed);
+					Block *block = new Block(i, 30, 50 + i, 60, _downSpeed);	// rectangle
+					//Block *block = new Block(i, 50, 50 + i, 100, _downSpeed);	// circle
 					temp.push_back(block);
 				}
 			
@@ -228,12 +227,18 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 				
 			}	// for_i
 
+			// [충돌]
+			// 기존 사유 : 중심좌표값을 이동량 만큼 +해서 좌표값이 음수가 되는 경우 존재
+			// 해결 : 그때 그때 좌표값을 계산해서 리턴
+			// 현재는 원vs원으로 충돌 판정 / 후에 원vs사각형으로 바꿔보기
+			// but 딜레이 때문에 
+
 			// -------------------------------------------------------------------------------
 
 			if (obstacle.size() != 0)
 				obstacle[0][0]->Update(obstacle, _loseHpPoint);
 			if (bulletList.size() != 0)
-				bulletList[0]->Update(bulletList, obstacle, viewRect);
+				bulletList[0]->Update(bulletList, viewRect);
 
 			// -------------------------------------------------------------------------------
 		
@@ -325,6 +330,13 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 			WriteRanking(&playerData);
 			DestroyWindow(hWnd);
 		}
+
+		// RECT btn = { 208,500,308,550 };
+		if (gameMode == eStart && yPos >= 500 && yPos <= 550 && xPos >= 208 && xPos <= 308)
+		{
+			WriteRanking(&playerData);
+			DestroyWindow(hWnd);
+		}
 	}
 		break;
 
@@ -345,13 +357,31 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 				DrawText(hdc, _T("DeffenceGame"), _tcslen(_T("DeffenceGame")), &startScreen, DT_CENTER | DT_VCENTER);
 
 				startScreen.left = 0;
-				startScreen.top = eViewH / 2;
+				startScreen.top = eViewH/2;
 				startScreen.right = eViewW;
 				startScreen.bottom = eViewH;
 				DrawText(hdc, _T("[ ID ]"), _tcslen(_T("[ ID ]")), &startScreen, DT_CENTER | DT_VCENTER);
 
-				startScreen.top = eViewH / 2 + 50;
+				startScreen.top += 50;
 				DrawText(hdc, playerName, _tcslen(playerName), &startScreen, DT_CENTER | DT_VCENTER);
+
+				RECT btn1 = { 208,500,308,550 };
+
+				HPEN hPen, oldPen;
+				HBRUSH hBrush, oldBrush;
+
+				SetTextColor(hdc, RGB(0, 0, 0));
+				SetColor(hdc, hPen, oldPen, 200, 200, 200);
+				SetColor(hdc, hBrush, oldBrush, 200, 200, 200);
+
+				Rectangle(hdc, btn1.left, btn1.top, btn1.right, btn1.bottom);
+
+				DrawText(hdc, _T("Exit"), _tcslen(_T("Exit")), &btn1, DT_CENTER | DT_VCENTER | DT_SINGLELINE);
+
+				SetTextColor(hdc, RGB(255, 255, 255));
+				DeleteColor(hdc, hPen, oldPen);
+				DeleteColor(hdc, hBrush, oldBrush);
+
 				obstacle.erase(obstacle.begin(), obstacle.end());	// 딜레이 시간중 생성되는 것 삭제
 			}
 			else if (gameMode == eGame)
@@ -366,7 +396,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 				_itot(playerScore, tcharScore, 10);
 
 				DrawText(hdc, tcharScore, _tcslen(tcharScore), &gameScreen, DT_CENTER | DT_VCENTER);
-				DrawText(hdc, _T("TEMPLV"), _tcslen(_T("TEMPLV")), &gameScreen, DT_RIGHT | DT_VCENTER);
+				// DrawText(hdc, _T("TEMPLV"), _tcslen(_T("TEMPLV")), &gameScreen, DT_RIGHT | DT_VCENTER);
 				for (int i = 0; i < obstacle.size(); i++)
 				{
 					for (int j = 0; j < obstacle[i].size(); j++)

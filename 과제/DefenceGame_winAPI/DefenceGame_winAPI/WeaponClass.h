@@ -1,7 +1,5 @@
 #pragma once
 
-class Obstacle;	// Update() 용 전방선언
-
 class Weapon
 {
 private:
@@ -46,7 +44,6 @@ private:
 
 	int nowDegree;
 	int bulletSpped;
-	static int bulletCnt;
 	int radius;
 
 public:
@@ -55,27 +52,12 @@ public:
 	~Bullet();
 
 	void DrawWeapon(HDC hdc);
-	void Update(vector<Bullet*> &bullet, vector<vector<Obstacle *>> &obstacle, RECT viewRect);
+	void Update(vector<Bullet*> &bullet, RECT viewRect);
 
 	void MoveBullet(vector<Bullet *> &bullet);
 	void CheckBulletOutScreen(vector<Bullet *> &bullet, RECT viewRect);
 
-	int GetBulletCnt();
-	double GetCenterPosX()
-	{
-		return (bulletPos[0].x + bulletPos[1].x) / 2;
-	}
-	double GetCenterPosY()
-	{
-		return (bulletPos[1].y + bulletPos[2].y) / 2;
-	}
-	int GetRadius()
-	{
-		return radius;
-	}
-
-	//POINT GetBulletPosLT()
-	//{
-	//	return bulletPos;
-	//}
+	double GetCenterPosX();
+	double GetCenterPosY();
+	int GetRadius();
 };

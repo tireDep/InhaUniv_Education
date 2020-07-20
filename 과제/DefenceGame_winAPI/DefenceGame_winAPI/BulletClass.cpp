@@ -5,7 +5,6 @@
 #include "Function.h"
 
 enum { eStartBulletSpped = 25, eBulletDecimal = 13 };
-int Bullet::bulletCnt = 0;	// static 변수 초기화
 
 Bullet::Bullet()
 {
@@ -58,9 +57,6 @@ Bullet::Bullet(POINT _centerPos, int _nowDegree)
 	bulletSpped = eStartBulletSpped;
 	// 속도
 
-	Bullet::bulletCnt++;
-	// 총알 갯수 증가
-
 	radius = (bulletPos[1].x - bulletPos[0].x) / 2;
 	// 반지름
 }
@@ -88,13 +84,6 @@ void Bullet::DrawWeapon(HDC hdc)
 
 	DeleteColor(hdc, hPen, oldPen);
 	DeleteColor(hdc, hBrush, oldBrush);
-
-	wchar_t temp[32];
-	_itot_s(centerPos.x, temp, 10);
-	TextOut(hdc, 50, 10, temp, _tcslen(temp));
-
-	_itot_s(centerPos.y, temp, 10);
-	TextOut(hdc, 100, 10, temp, _tcslen(temp));
 }
 
 bool CheckPointInCircle(int cx, int cy, int cr, int px, int py)
@@ -110,7 +99,7 @@ bool CheckPointInCircle(int cx, int cy, int cr, int px, int py)
 	return TRUE;
 }
 
-void Bullet::Update(vector<Bullet *> &bullet, vector<vector<Obstacle *>> &obstacle, RECT viewRect)
+void Bullet::Update(vector<Bullet *> &bullet, RECT viewRect)
 {
 	MoveBullet(bullet);
 	CheckBulletOutScreen(bullet, viewRect);
@@ -136,19 +125,24 @@ void Bullet::CheckBulletOutScreen(vector<Bullet *> &bullet, RECT viewRect)
 	for (int i = 0; i < bullet.size(); i++)
 	{
 		if (viewRect.right <= bullet[i]->bulletPos[1].x || viewRect.left >= bullet[i]->bulletPos[0].x)
-		{
-			Bullet::bulletCnt--;
 			bullet.erase(bullet.begin() + i);
-		}
 		else if (viewRect.top >= bullet[i]->bulletPos[3].y)
-		{
-			Bullet::bulletCnt--;
 			bullet.erase(bullet.begin() + i);
-		}
 	}
 }
 
-int Bullet::GetBulletCnt()
+
+double Bullet::GetCenterPosX()
 {
-	return Bullet::bulletCnt;
+	return (bulletPos[0].x + bulletPos[1].x) / 2;
+}
+
+double Bullet::GetCenterPosY()
+{
+	return (bulletPos[1].y + bulletPos[2].y) / 2;
+}
+
+int Bullet::GetRadius()
+{
+	return radius;
 }

@@ -24,9 +24,6 @@ public:
 	virtual void DownObstacle() = 0;
 	virtual bool CheckDeadLine() = 0;
 
-	virtual RECT GetRectPos() = 0;
-	virtual RECT GetHitPos() = 0;
-
 	virtual int GetRadius() = 0;
 	virtual double GetCenterPosX() = 0;
 	virtual double GetCenterPosY() = 0;
@@ -54,21 +51,8 @@ public:
 	void Update(vector<vector<Obstacle *>> &obstacle, int &_loseHpPoint);
 	void CheckHitDeadLine(vector<vector<Obstacle *>> &obstacle, int &hitCnt, int linePos);
 	void CheckLoseHp(vector<vector<Obstacle *>> &obstacle, int &hitCnt, int &_loseHpPoint, int linePos);
-
-	RECT GetRectPos();
-	RECT GetHitPos();
 	
-	double GetCenterPosX()
-	{
-		return (blockPos.left + blockPos.right) / 2;
-	}
-	double GetCenterPosY()
-	{
-		return (blockPos.bottom + blockPos.top) / 2;
-	}
-
-	int GetRadius()
-	{
-		return radius;
-	}
+	double GetCenterPosX();
+	double GetCenterPosY();
+	int GetRadius();
 };

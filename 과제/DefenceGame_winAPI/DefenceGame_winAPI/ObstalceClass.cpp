@@ -1,5 +1,6 @@
 #include "stdafx.h"
 #include "ObstalceClass.h"
+#include "Function.h"
 
 enum { eBulletDecimal = 13 };
 
@@ -65,14 +66,17 @@ void Block::CheckLoseHp(vector<vector<Obstacle *>> &obstacle, int &hitCnt, int &
 
 void Block::DrawObstacle(HDC hdc)
 {
-	// Rectangle(hdc, blockPos.left, blockPos.top, blockPos.right, blockPos.bottom);
-	Ellipse(hdc, blockPos.left, blockPos.top, blockPos.right, blockPos.bottom);
-	wchar_t temp[32];
-	_itot_s(centerPos.x, temp, 10);
-	TextOut(hdc, blockPos.left, blockPos.top, temp, _tcslen(temp));
+	HPEN hPen, oldPen;
+	HBRUSH hBrush, oldBrush;
 
-	_itot_s(centerPos.y, temp, 10);
-	TextOut(hdc, blockPos.right, blockPos.bottom, temp, _tcslen(temp));
+	SetColor(hdc, hPen, oldPen, 255, 255, 255);
+	SetColor(hdc, hBrush, oldBrush, 45, 45, 45);
+
+	Rectangle(hdc, blockPos.left, blockPos.top, blockPos.right, blockPos.bottom);
+	//Ellipse(hdc, blockPos.left, blockPos.top, blockPos.right, blockPos.bottom);
+
+	DeleteColor(hdc, hPen, oldPen);
+	DeleteColor(hdc, hBrush, oldBrush);
 }
 
 void Block::DownObstacle()
@@ -89,18 +93,23 @@ void Block::DownObstacle()
 
 bool Block::CheckDeadLine()
 {
-	if (blockPos.bottom >= 670)
+	if (blockPos.bottom >= 660)
 		return TRUE;
 	else
 		return FALSE;
 }
 
-RECT Block::GetHitPos()
+double Block::GetCenterPosX()
 {
-	return hitCheckPos;
+	return (blockPos.left + blockPos.right) / 2;
 }
 
-RECT Block::GetRectPos()
+double Block::GetCenterPosY()
 {
-	return blockPos;
+	return (blockPos.bottom + blockPos.top) / 2;
+}
+
+int Block::GetRadius()
+{
+	return radius;
 }
