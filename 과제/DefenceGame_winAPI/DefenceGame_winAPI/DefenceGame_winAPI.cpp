@@ -138,7 +138,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 	static int _loseHpPoint = 0;
 
 	static int _blockCnt = 10;	// 난이도
-	static int _downSpeed = 50;
+	static int _downSpeed = 5;
 
 	static int gameMode = eStart;
 
@@ -156,6 +156,14 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 			SetTimer(hWnd, eGame, 100, NULL);	// 게임 타이머
 			SetTimer(hWnd, eGame + 10, 1000, NULL);	// 게임 타이머
 
+			vector<Obstacle *> temp;
+			for (int i = 0; i < eViewW - 50; i += 50)
+			{
+				Block *block = new Block(i, 50, 50 + i, 100, _downSpeed);
+				temp.push_back(block);
+			}
+			obstacle.push_back(temp);
+
 			ReadRanking(&playerData);
 		}
 		break;
@@ -164,7 +172,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 		{
 		int createBlock;
 		int tempCnt = _blockCnt;
-		if (eGame + 10 == wParam && gameMode)
+		if (eGame + 10 == wParam && gameMode == eGame)
 		{
 			vector<Obstacle *> temp;
 			for (int i = 0; i < eViewW - 50; i += 50)
@@ -177,77 +185,38 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 					Block *block = new Block(i, 50, 50 + i, 100, _downSpeed);
 					temp.push_back(block);
 				}
-
+			
 			}
 			obstacle.push_back(temp);
 		}
 
 		if (wParam == eGame && gameMode == eGame)
 		{
-			//bool isRemove = FALSE;
-			//for (int k = 0; k < bulletList.size(); k++)
-			//{
-			//	isRemove = FALSE;
-			//	for (int i = 0; i < obstacle.size(); i++)
-			//	{
-			//		for (int j = 0; j < obstacle[i].size(); j++)
-			//		{
-			//			if (
-			//				obstacle[i][j]->GetHitPos().bottom >= bulletList[k]->GetCenterPos().y
-			//		 		&& obstacle[i][j]->GetHitPos().top <= bulletList[k]->GetCenterPos().y
-			//				&& obstacle[i][j]->GetHitPos().left <= bulletList[k]->GetCenterPos().x
-			//				&& obstacle[i][j]->GetHitPos().right >= bulletList[k]->GetCenterPos().x
-			//				)
-			//			{
-			//				playerScore += 10;
-			//				obstacle[i].erase(obstacle[i].begin() + j);
-			//				bulletList.erase(bulletList.begin() + k);
-			//				k = -1;
-			//				isRemove = TRUE;
-			//				break;
-			//			}
-			//		}	// for_j_obstacle
-
-			//		if (isRemove)
-			//			break;
-			//	} // for_i_obstacle
-			//}	// for_k_bullet
-
-			// random_shuffle(obstacle.begin(), obstacle.end());
-			if (obstacle.size() != 0)
-				obstacle[0][0]->Update(obstacle, _loseHpPoint);
-			if (bulletList.size() != 0)
-				bulletList[0]->Update(bulletList, obstacle, viewRect);
-
-			int tempX;
-			int tempY;
-			double length = 0;
-			bool isRemove = FALSE;
-			for (int k = 0; k < bulletList.size(); k++)
+			bool isRemove;
+			for (int i = 0; i < obstacle.size(); i++)
 			{
-				length = 0;
 				isRemove = FALSE;
-				for (int i = 0; i < obstacle.size(); i++)
+				for (int j = 0; j < obstacle[i].size(); j++)
 				{
-					for (int j = 0; j < obstacle[i].size(); j++)
+					for (int k = 0; k < bulletList.size(); k++)
 					{
-						tempX = bulletList[k]->GetCenterPos().x - obstacle[i][j]->GetCenterPos().x;
-						tempY = bulletList[k]->GetCenterPos().y - obstacle[i][j]->GetCenterPos().y;
+						int deltaX = bulletList[k]->GetCenterPosX() - obstacle[i][j]->GetCenterPosX();
+						int deltaY = bulletList[k]->GetCenterPosY() - obstacle[i][j]->GetCenterPosY();
 
-						length = sqrt(tempX * tempX + tempY * tempY);
+						float length = sqrt(deltaX * deltaX + deltaY * deltaY);
 
-						if (length <= (bulletList[k]->GetRadius() + obstacle[i][j]->GetRadius()))
+						if (length < (bulletList[k]->GetRadius() + obstacle[i][j]->GetRadius()))
 						{
- 							playerScore += 10;
+							playerScore += 10;
 							obstacle[i].erase(obstacle[i].begin() + j);
-							bulletList.erase(bulletList.begin() + k);
+;							bulletList.erase(bulletList.begin() + k);
 							k = -1;
 							j = -1;
 							isRemove = TRUE;
 							break;
 						}
-					}
 
+					}	// for_k
 					if (obstacle[i].size() == 0)
 					{
 						obstacle.erase(obstacle.begin() + i);	// 빈 행 삭제
@@ -255,11 +224,20 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 					}
 					if (isRemove)
 						break;
-				}
-			}
+				}	// for_j
+				
+			}	// for_i
 
+			// -------------------------------------------------------------------------------
 
-		}
+			if (obstacle.size() != 0)
+				obstacle[0][0]->Update(obstacle, _loseHpPoint);
+			if (bulletList.size() != 0)
+				bulletList[0]->Update(bulletList, obstacle, viewRect);
+
+			// -------------------------------------------------------------------------------
+		
+		}	// if
 
 			InvalidateRect(hWnd, NULL, TRUE);
 		}

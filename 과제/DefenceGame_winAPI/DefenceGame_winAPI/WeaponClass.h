@@ -61,9 +61,13 @@ public:
 	void CheckBulletOutScreen(vector<Bullet *> &bullet, RECT viewRect);
 
 	int GetBulletCnt();
-	POINT GetCenterPos()
+	double GetCenterPosX()
 	{
-		return centerPos;
+		return (bulletPos[0].x + bulletPos[1].x) / 2;
+	}
+	double GetCenterPosY()
+	{
+		return (bulletPos[1].y + bulletPos[2].y) / 2;
 	}
 	int GetRadius()
 	{

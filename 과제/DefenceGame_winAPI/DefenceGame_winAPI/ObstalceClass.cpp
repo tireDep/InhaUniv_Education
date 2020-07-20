@@ -25,9 +25,6 @@ Block::Block(int left, int top, int right, int bottom, int _downSpeed)
 
 	downSpeed = _downSpeed;
 
-	centerPos.x = (left + right) / 2;
-	centerPos.y = (top + bottom) / 2;
-
 	radius = (right - left) / 2;
 }
 
@@ -70,6 +67,12 @@ void Block::DrawObstacle(HDC hdc)
 {
 	// Rectangle(hdc, blockPos.left, blockPos.top, blockPos.right, blockPos.bottom);
 	Ellipse(hdc, blockPos.left, blockPos.top, blockPos.right, blockPos.bottom);
+	wchar_t temp[32];
+	_itot_s(centerPos.x, temp, 10);
+	TextOut(hdc, blockPos.left, blockPos.top, temp, _tcslen(temp));
+
+	_itot_s(centerPos.y, temp, 10);
+	TextOut(hdc, blockPos.right, blockPos.bottom, temp, _tcslen(temp));
 }
 
 void Block::DownObstacle()

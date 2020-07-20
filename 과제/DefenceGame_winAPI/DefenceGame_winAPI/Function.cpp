@@ -74,6 +74,8 @@ void DrawHpBar(HDC hdc, int _loseHpPoint)
 
 	SetTextColor(hdc, _loseHpPoint, 475);
 	TextOut(hdc, 20, 665, _T("P"), _tcslen(_T("P")));
+
+	SetTextColor(hdc, RGB(0, 0, 0));
 }
 
 void SetTextColor(HDC hdc, int _loseHpPoint, int checkNum)

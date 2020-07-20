@@ -28,7 +28,8 @@ public:
 	virtual RECT GetHitPos() = 0;
 
 	virtual int GetRadius() = 0;
-	virtual POINT GetCenterPos() = 0;;
+	virtual double GetCenterPosX() = 0;
+	virtual double GetCenterPosY() = 0;
 };	
 
 class Block : public Obstacle
@@ -57,9 +58,13 @@ public:
 	RECT GetRectPos();
 	RECT GetHitPos();
 	
-	POINT GetCenterPos()
+	double GetCenterPosX()
 	{
-		return centerPos;
+		return (blockPos.left + blockPos.right) / 2;
+	}
+	double GetCenterPosY()
+	{
+		return (blockPos.bottom + blockPos.top) / 2;
 	}
 
 	int GetRadius()
