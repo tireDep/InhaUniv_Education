@@ -6,8 +6,13 @@
 #include<math.h>
 #include<time.h>
 #include<vector>
+#include<map>
 #include<algorithm>
+#include<string>
 using std::vector;
+using std::multimap;
+using std::pair;
+using std::string;
 using std::iterator;
 using std::random_shuffle;
 

@@ -73,12 +73,21 @@ Bullet::~Bullet()
 
 void Bullet::DrawWeapon(HDC hdc)
 {
+	HPEN hPen, oldPen;
+	HBRUSH hBrush, oldBrush;
+
+	SetColor(hdc, hPen, oldPen, 200, 200, 200);
+	SetColor(hdc, hBrush, oldBrush, 200, 200, 200);
+
 	if (nowDegree == 0)
 		Ellipse(hdc, bulletPos[0].x, bulletPos[0].y, bulletPos[0].x + eBulletDecimal, bulletPos[0].y + eBulletDecimal - 1);
 	else if (nowDegree > 0)
 		Ellipse(hdc, bulletPos[0].x, bulletPos[0].y, bulletPos[0].x - eBulletDecimal, bulletPos[0].y + eBulletDecimal - 1);
 	else
 		Ellipse(hdc, bulletPos[0].x, bulletPos[0].y, bulletPos[0].x + eBulletDecimal, bulletPos[0].y - eBulletDecimal - 1);
+
+	DeleteColor(hdc, hPen, oldPen);
+	DeleteColor(hdc, hBrush, oldBrush);
 }
 
 bool CheckPointInCircle(int cx, int cy, int cr, int px, int py)

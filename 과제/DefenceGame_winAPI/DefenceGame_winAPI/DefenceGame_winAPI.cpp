@@ -129,14 +129,16 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 {
 	srand((unsigned)time(NULL));
 
+	static multimap<int, string> playerData;
+
 	static TCHAR playerName[100];
 	static int nameCnt;
 	static int playerScore = 0;
 	static TCHAR *tcharScore = new TCHAR;
 	static int _loseHpPoint = 0;
 
-	static int _blockCnt = 3;	// 난이도
-	static int _downSpeed = 5;
+	static int _blockCnt = 10;	// 난이도
+	static int _downSpeed = 50;
 
 	static int gameMode = eStart;
 
@@ -153,6 +155,8 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 			GetClientRect(hWnd, &viewRect);	// 창 크기
 			SetTimer(hWnd, eGame, 100, NULL);	// 게임 타이머
 			SetTimer(hWnd, eGame + 10, 1000, NULL);	// 게임 타이머
+
+			ReadRanking(playerData);
 		}
 		break;
 
@@ -329,13 +333,34 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 		int yPos = HIWORD(lParam);
 		if (gameMode == eResult && yPos >= 500 && yPos <= 550 && xPos >= 50 && xPos <= 200)
 		{
+			int len = wcslen((wchar_t*)playerName);
+			char *tempName = new char[2 * len + 1];
+			wcstombs(tempName, (wchar_t*)playerName, 2 * len + 1);
+			std::string sName = tempName;
+			delete[] tempName;
+
+			playerData.insert(pair<int, string>(playerScore, sName));
+
 			nameCnt = 0;
 			playerName[nameCnt] = NULL;
 			playerScore = 0;
-			gameMode = eStart;
+			gameMode = eResult;
+			WriteRanking(playerData);
+			ReadRanking(playerData);
 		}
 		if (gameMode == eResult && yPos >= 500 && yPos <= 550 && xPos >= 300 && xPos <= 550)
+		{
+			int len = wcslen((wchar_t*)playerName);
+			char *tempName = new char[2 * len + 1];
+			wcstombs(tempName, (wchar_t*)playerName, 2 * len + 1);
+			std::string sName = tempName;
+			delete[] tempName;
+
+			playerData.insert(pair<int, string>(playerScore, sName));
+
+			WriteRanking(playerData);
 			DestroyWindow(hWnd);
+		}
 	}
 		break;
 
@@ -400,27 +425,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 			}
 			else if (gameMode == eResult)
 			{
-				RECT resultScreen = { 0,100,eViewW,eViewH };
-
-				DrawText(hdc, _T("RESULT"), _tcslen(_T("RESULT")), &resultScreen, DT_CENTER | DT_VCENTER);
-				resultScreen.top += 50;
-				DrawText(hdc, tcharScore, _tcslen(tcharScore), &resultScreen, DT_CENTER | DT_VCENTER);
-				
-				resultScreen.top += 75;
-				DrawText(hdc, _T("RANK"), _tcslen(_T("RANK")), &resultScreen, DT_CENTER | DT_VCENTER);
-				resultScreen.left += 100;
-				resultScreen.top += 50;
-				resultScreen.right -= 100;
-				DrawText(hdc, _T("PlayerName + Score"), _tcslen(_T("PlayerName + Score")), &resultScreen, DT_LEFT | DT_VCENTER);
-
-				RECT btn1 = { 50,500,200,550 };
-				RECT btn2 = { 300,500,450,550 };
-
-				Rectangle(hdc, btn1.left, btn1.top, btn1.right, btn1.bottom);
-				Rectangle(hdc, btn2.left, btn2.top, btn2.right, btn2.bottom);
-
-				DrawText(hdc, _T("Main"), _tcslen(_T("Main")), &btn1, DT_CENTER | DT_VCENTER | DT_SINGLELINE);
-				DrawText(hdc, _T("Exit"), _tcslen(_T("Exit")), &btn2, DT_CENTER | DT_VCENTER | DT_SINGLELINE);
+				ResultScreen(hdc, tcharScore, playerName, playerScore, playerData);
 			}
 
 			EndPaint(hWnd, &ps);

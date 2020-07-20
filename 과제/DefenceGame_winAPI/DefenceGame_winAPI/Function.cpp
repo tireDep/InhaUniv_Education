@@ -2,6 +2,9 @@
 #include"DefenceGame_winAPI.h"
 #include"Function.h"
 
+#include<stdlib.h>
+#include<io.h>
+
 double DegreeToRadian(int degree)
 {
 	return degree * M_PI / 180;
@@ -79,4 +82,92 @@ void SetTextColor(HDC hdc, int _loseHpPoint, int checkNum)
 		SetTextColor(hdc, RGB(255, 255, 255));
 	else
 		SetTextColor(hdc, RGB(0, 0, 0));
+}
+
+void ReadRanking(multimap<int, string> &playerData)
+{
+	FILE *fp;
+
+	if (!_access("rank.txt", 0))
+		fp = fopen("rank.txt", "r");
+	else
+		return;
+
+	fseek(fp, 0, SEEK_END);
+	long lSize = ftell(fp);
+	fseek(fp, 0, SEEK_SET);
+
+	char *buffer = new char[lSize];
+	//fread(buffer, 1, lSize, fp);
+	while (fgets(buffer, 100, fp) != NULL)
+	{
+		char *tNum = strtok(buffer, " ");
+		char *name = strtok(NULL, " \r\n");
+		int num = atoi(tNum);
+		playerData.insert(pair<int, string>(num, (string)name));
+	}
+
+	// delete[] buffer;
+	if(fp != NULL)
+		fclose(fp);
+}
+
+void WriteRanking(multimap<int, string> &playerData)
+{
+	FILE *fp;
+	fp = fopen("rank.txt", "w");
+	if (fp == NULL)
+		exit(1);
+
+	multimap<int,string>::iterator iter;
+	for (iter = playerData.begin(); iter != playerData.end(); iter++)
+	{
+		int temp = iter->first;
+		string saveStr = std::to_string(temp) + " " + iter->second + "\n";
+
+		char saveChar[100];
+		for (int i = 0; i < saveStr.size(); i++)
+			saveChar[i] = saveStr[i];
+
+		saveChar[saveStr.size()] = '\0';
+		// fwrite(&saveStr, sizeof(saveStr), 1, fp);
+		// fprintf(fp,"%d %s\n", temp, stemp);
+		fprintf(fp, "%s", saveChar);
+	}
+
+	if (fp != NULL)
+		fclose(fp);
+}
+
+void ResultScreen(HDC hdc, TCHAR *tcharScore, TCHAR *playerName, int playerScore, multimap<int, string> &playerData)
+{
+	// multimap<int, string> playerData;
+	// ReadRanking(playerData);
+	
+	RECT resultScreen = { 0,100,eViewW,eViewH };
+
+	DrawText(hdc, _T("RESULT"), _tcslen(_T("RESULT")), &resultScreen, DT_CENTER | DT_VCENTER);
+	resultScreen.top += 50;
+	DrawText(hdc, tcharScore, _tcslen(tcharScore), &resultScreen, DT_CENTER | DT_VCENTER);
+
+	resultScreen.top += 75;
+	DrawText(hdc, _T("RANK"), _tcslen(_T("RANK")), &resultScreen, DT_CENTER | DT_VCENTER);
+	resultScreen.left += 100;
+	resultScreen.top += 50;
+	resultScreen.right -= 100;
+	DrawText(hdc, _T("PlayerName + Score"), _tcslen(_T("PlayerName + Score")), &resultScreen, DT_LEFT | DT_VCENTER);
+
+	RECT btn1 = { 50,500,200,550 };
+	RECT btn2 = { 300,500,450,550 };
+
+	Rectangle(hdc, btn1.left, btn1.top, btn1.right, btn1.bottom);
+	Rectangle(hdc, btn2.left, btn2.top, btn2.right, btn2.bottom);
+
+	DrawText(hdc, _T("Main"), _tcslen(_T("Main")), &btn1, DT_CENTER | DT_VCENTER | DT_SINGLELINE);
+	DrawText(hdc, _T("Exit"), _tcslen(_T("Exit")), &btn2, DT_CENTER | DT_VCENTER | DT_SINGLELINE);
+	// DrawUI
+
+	
+
+	//WriteRanking(playerData);
 }
