@@ -47,6 +47,7 @@ private:
 	int nowDegree;
 	int bulletSpped;
 	static int bulletCnt;
+	int radius;
 
 public:
 	Bullet();
@@ -63,6 +64,10 @@ public:
 	POINT GetCenterPos()
 	{
 		return centerPos;
+	}
+	int GetRadius()
+	{
+		return radius;
 	}
 
 	//POINT GetBulletPosLT()

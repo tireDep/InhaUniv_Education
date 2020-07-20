@@ -26,6 +26,9 @@ public:
 
 	virtual RECT GetRectPos() = 0;
 	virtual RECT GetHitPos() = 0;
+
+	virtual int GetRadius() = 0;
+	virtual POINT GetCenterPos() = 0;;
 };	
 
 class Block : public Obstacle
@@ -33,6 +36,9 @@ class Block : public Obstacle
 private:
 	RECT blockPos;
 	RECT hitCheckPos;
+	POINT centerPos;
+
+	int radius;
 	int downSpeed;
 
 public:
@@ -50,4 +56,14 @@ public:
 
 	RECT GetRectPos();
 	RECT GetHitPos();
+	
+	POINT GetCenterPos()
+	{
+		return centerPos;
+	}
+
+	int GetRadius()
+	{
+		return radius;
+	}
 };

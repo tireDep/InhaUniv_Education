@@ -60,6 +60,9 @@ Bullet::Bullet(POINT _centerPos, int _nowDegree)
 
 	Bullet::bulletCnt++;
 	// 총알 갯수 증가
+
+	radius = (bulletPos[1].x - bulletPos[0].x) / 2;
+	// 반지름
 }
 
 Bullet::~Bullet()

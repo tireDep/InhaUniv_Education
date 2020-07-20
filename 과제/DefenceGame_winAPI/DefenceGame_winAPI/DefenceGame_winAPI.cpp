@@ -128,8 +128,15 @@ BOOL InitInstance(HINSTANCE hInstance, int nCmdShow)
 LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 {
 	srand((unsigned)time(NULL));
-	static TCHAR PlayerName[100];
+
+	static TCHAR playerName[100];
 	static int nameCnt;
+	static int playerScore = 0;
+	static TCHAR *tcharScore = new TCHAR;
+	static int _loseHpPoint = 0;
+
+	static int _blockCnt = 3;	// 난이도
+	static int _downSpeed = 5;
 
 	static int gameMode = eStart;
 
@@ -138,11 +145,6 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 	static vector<Bullet *> bulletList;
 	static vector<vector<Obstacle *>> obstacle;
 	static Gun gun;
-
-	static int _blockCnt = 3;	// 난이도
-	static int _downSpeed = 5;
-
-	static int _loseHpPoint = 0;
 
     switch (message)
     {
@@ -178,40 +180,81 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 
 		if (wParam == eGame && gameMode == eGame)
 		{
+			//bool isRemove = FALSE;
+			//for (int k = 0; k < bulletList.size(); k++)
+			//{
+			//	isRemove = FALSE;
+			//	for (int i = 0; i < obstacle.size(); i++)
+			//	{
+			//		for (int j = 0; j < obstacle[i].size(); j++)
+			//		{
+			//			if (
+			//				obstacle[i][j]->GetHitPos().bottom >= bulletList[k]->GetCenterPos().y
+			//		 		&& obstacle[i][j]->GetHitPos().top <= bulletList[k]->GetCenterPos().y
+			//				&& obstacle[i][j]->GetHitPos().left <= bulletList[k]->GetCenterPos().x
+			//				&& obstacle[i][j]->GetHitPos().right >= bulletList[k]->GetCenterPos().x
+			//				)
+			//			{
+			//				playerScore += 10;
+			//				obstacle[i].erase(obstacle[i].begin() + j);
+			//				bulletList.erase(bulletList.begin() + k);
+			//				k = -1;
+			//				isRemove = TRUE;
+			//				break;
+			//			}
+			//		}	// for_j_obstacle
+
+			//		if (isRemove)
+			//			break;
+			//	} // for_i_obstacle
+			//}	// for_k_bullet
+
+			// random_shuffle(obstacle.begin(), obstacle.end());
+			if (obstacle.size() != 0)
+				obstacle[0][0]->Update(obstacle, _loseHpPoint);
+			if (bulletList.size() != 0)
+				bulletList[0]->Update(bulletList, obstacle, viewRect);
+
+			int tempX;
+			int tempY;
+			double length = 0;
 			bool isRemove = FALSE;
 			for (int k = 0; k < bulletList.size(); k++)
 			{
+				length = 0;
 				isRemove = FALSE;
 				for (int i = 0; i < obstacle.size(); i++)
 				{
 					for (int j = 0; j < obstacle[i].size(); j++)
 					{
-						if (
-							obstacle[i][j]->GetHitPos().bottom >= bulletList[k]->GetCenterPos().y
-					 		&& obstacle[i][j]->GetHitPos().top <= bulletList[k]->GetCenterPos().y
-							&& obstacle[i][j]->GetHitPos().left <= bulletList[k]->GetCenterPos().x
-							&& obstacle[i][j]->GetHitPos().right >= bulletList[k]->GetCenterPos().x
-							)
+						tempX = bulletList[k]->GetCenterPos().x - obstacle[i][j]->GetCenterPos().x;
+						tempY = bulletList[k]->GetCenterPos().y - obstacle[i][j]->GetCenterPos().y;
+
+						length = sqrt(tempX * tempX + tempY * tempY);
+
+						if (length <= (bulletList[k]->GetRadius() + obstacle[i][j]->GetRadius()))
 						{
+ 							playerScore += 10;
 							obstacle[i].erase(obstacle[i].begin() + j);
 							bulletList.erase(bulletList.begin() + k);
 							k = -1;
+							j = -1;
 							isRemove = TRUE;
 							break;
 						}
-					}	// for_j_obstacle
+					}
 
+					if (obstacle[i].size() == 0)
+					{
+						obstacle.erase(obstacle.begin() + i);	// 빈 행 삭제
+						i = -1;
+					}
 					if (isRemove)
 						break;
-				} // for_i_obstacle
-			}	// for_k_bullet
+				}
+			}
 
 
-		// random_shuffle(obstacle.begin(), obstacle.end());
-			if(obstacle.size() != 0)
-				obstacle[0][0]->Update(obstacle, _loseHpPoint);
-			if (bulletList.size() != 0)
-				bulletList[0]->Update(bulletList, obstacle,  viewRect);
 		}
 
 			InvalidateRect(hWnd, NULL, TRUE);
@@ -229,31 +272,32 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 			case 0x41:	// A
 			case 0x61:	// a
 			case VK_LEFT:
-				gun.MoveBarrel(0);
+				if(gameMode == eGame) gun.MoveBarrel(0);
 				break;
 
 			case 0x44:	// D
 			case 0x64:	// d
 			case VK_RIGHT:
-				gun.MoveBarrel(1);
+				if (gameMode == eGame)  gun.MoveBarrel(1);
 				break;
 
 			case VK_SPACE:
 				{
 					// CreateBullet();
+				if (gameMode == eGame) 
+				{
 					if (bulletList.size() == 0 || bulletList.size() < eBulletLimteCnt)
 					{
 						Bullet *bullet = new Bullet(gun.GetCenterPos(), gun.GetNowDegree());
 						bulletList.push_back(bullet);
 					}
 				}
+				}
 				break;
 
 			case VK_RETURN:
 				if (gameMode == eStart)
-				{
 					gameMode = eGame;
-				}
 				break;
 
 				default:
@@ -271,8 +315,8 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 			if (wParam == VK_BACK && nameCnt > 0) 
 				nameCnt--;
 			else 
-				PlayerName[nameCnt++] = wParam;
-			PlayerName[nameCnt] = NULL;
+				playerName[nameCnt++] = wParam;
+			playerName[nameCnt] = NULL;
 			ReleaseDC(hWnd, hdc);
 		}
 	}
@@ -286,7 +330,8 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 		if (gameMode == eResult && yPos >= 500 && yPos <= 550 && xPos >= 50 && xPos <= 200)
 		{
 			nameCnt = 0;
-			PlayerName[nameCnt] = NULL;
+			playerName[nameCnt] = NULL;
+			playerScore = 0;
 			gameMode = eStart;
 		}
 		if (gameMode == eResult && yPos >= 500 && yPos <= 550 && xPos >= 300 && xPos <= 550)
@@ -317,7 +362,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 				DrawText(hdc, _T("[ ID ]"), _tcslen(_T("[ ID ]")), &startScreen, DT_CENTER | DT_VCENTER);
 
 				startScreen.top = eViewH / 2 + 50;
-				DrawText(hdc, PlayerName, _tcslen(PlayerName), &startScreen, DT_CENTER | DT_VCENTER);
+				DrawText(hdc, playerName, _tcslen(playerName), &startScreen, DT_CENTER | DT_VCENTER);
 				obstacle.erase(obstacle.begin(), obstacle.end());	// 딜레이 시간중 생성되는 것 삭제
 			}
 			else if (gameMode == eGame)
@@ -328,8 +373,10 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 				gameScreen.right = eViewW - 35;
 				gameScreen.bottom = eViewH;
 
-				DrawText(hdc, PlayerName, _tcslen(PlayerName), &gameScreen, DT_LEFT | DT_VCENTER);
-				DrawText(hdc, _T("TEMPSCORE"), _tcslen(_T("TEMPSCORE")), &gameScreen, DT_CENTER | DT_VCENTER);
+				DrawText(hdc, playerName, _tcslen(playerName), &gameScreen, DT_LEFT | DT_VCENTER);
+				_itot(playerScore, tcharScore, 10);
+
+				DrawText(hdc, tcharScore, _tcslen(tcharScore), &gameScreen, DT_CENTER | DT_VCENTER);
 				DrawText(hdc, _T("TEMPLV"), _tcslen(_T("TEMPLV")), &gameScreen, DT_RIGHT | DT_VCENTER);
 				for (int i = 0; i < obstacle.size(); i++)
 				{
@@ -356,7 +403,11 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 				RECT resultScreen = { 0,100,eViewW,eViewH };
 
 				DrawText(hdc, _T("RESULT"), _tcslen(_T("RESULT")), &resultScreen, DT_CENTER | DT_VCENTER);
+				resultScreen.top += 50;
+				DrawText(hdc, tcharScore, _tcslen(tcharScore), &resultScreen, DT_CENTER | DT_VCENTER);
 				
+				resultScreen.top += 75;
+				DrawText(hdc, _T("RANK"), _tcslen(_T("RANK")), &resultScreen, DT_CENTER | DT_VCENTER);
 				resultScreen.left += 100;
 				resultScreen.top += 50;
 				resultScreen.right -= 100;

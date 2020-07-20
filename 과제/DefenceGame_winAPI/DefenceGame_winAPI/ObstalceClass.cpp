@@ -24,6 +24,11 @@ Block::Block(int left, int top, int right, int bottom, int _downSpeed)
 	hitCheckPos.bottom = bottom + eBulletDecimal / 2;
 
 	downSpeed = _downSpeed;
+
+	centerPos.x = (left + right) / 2;
+	centerPos.y = (top + bottom) / 2;
+
+	radius = (right - left) / 2;
 }
 
 Block::~Block()
@@ -74,6 +79,9 @@ void Block::DownObstacle()
 
 	hitCheckPos.top += downSpeed;
 	hitCheckPos.bottom += downSpeed;
+	
+	centerPos.x += downSpeed;
+	centerPos.y += downSpeed;
 }
 
 bool Block::CheckDeadLine()
