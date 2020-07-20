@@ -135,7 +135,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 	static vector<vector<Obstacle *>> obstacle;
 	static Gun gun;
 
-	static int _downSpeed = 10;
+	static int _downSpeed = 5;
 
 	static int _loseHpPoint = 0;
 
@@ -161,7 +161,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 				createBlock = rand() % 2;
 				if (createBlock == 0)
 				{
-					Block *block = new Block(i, 0, 50 + i, 30, _downSpeed);
+					Block *block = new Block(i, 0, 30 + i, 30, _downSpeed);
 					temp.push_back(block);
 				}
 
@@ -171,6 +171,35 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 
 		if (wParam == eGame)
 		{
+			bool isRemove = FALSE;
+			for (int k = 0; k < bulletList.size(); k++)
+			{
+				isRemove = FALSE;
+				for (int i = 0; i < obstacle.size(); i++)
+				{
+					for (int j = 0; j < obstacle[i].size(); j++)
+					{
+						if (
+							obstacle[i][j]->GetHitPos().bottom >= bulletList[k]->GetCenterPos().y
+					 		&& obstacle[i][j]->GetHitPos().top <= bulletList[k]->GetCenterPos().y
+							&& obstacle[i][j]->GetHitPos().left <= bulletList[k]->GetCenterPos().x
+							&& obstacle[i][j]->GetHitPos().right >= bulletList[k]->GetCenterPos().x
+							)
+						{
+							obstacle[i].erase(obstacle[i].begin() + j);
+							bulletList.erase(bulletList.begin() + k);
+							k = -1;
+							isRemove = TRUE;
+							break;
+						}
+					}	// for_j_obstacle
+
+					if (isRemove)
+						break;
+				} // for_i_obstacle
+			}	// for_k_bullet
+
+
 		// random_shuffle(obstacle.begin(), obstacle.end());
 			if(obstacle.size() != 0)
 				obstacle[0][0]->Update(obstacle, _loseHpPoint);
@@ -205,7 +234,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 			case VK_SPACE:
 				{
 					// CreateBullet();
-					if (bulletList.size() == 0 || bulletList[0]->GetBulletCnt() < eBulletLimteCnt)
+					if (bulletList.size() == 0 || bulletList.size() < eBulletLimteCnt)
 					{
 						Bullet *bullet = new Bullet(gun.GetCenterPos(), gun.GetNowDegree());
 						bulletList.push_back(bullet);

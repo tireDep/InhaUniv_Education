@@ -64,4 +64,9 @@ public:
 	{
 		return centerPos;
 	}
+
+	//POINT GetBulletPosLT()
+	//{
+	//	return bulletPos;
+	//}
 };
