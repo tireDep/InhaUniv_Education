@@ -63,7 +63,8 @@ void Block::CheckLoseHp(vector<vector<Obstacle *>> &obstacle, int &hitCnt, int &
 
 void Block::DrawObstacle(HDC hdc)
 {
-	Rectangle(hdc, blockPos.left, blockPos.top, blockPos.right, blockPos.bottom);
+	// Rectangle(hdc, blockPos.left, blockPos.top, blockPos.right, blockPos.bottom);
+	Ellipse(hdc, blockPos.left, blockPos.top, blockPos.right, blockPos.bottom);
 }
 
 void Block::DownObstacle()
