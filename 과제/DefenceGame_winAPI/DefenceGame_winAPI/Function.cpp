@@ -90,7 +90,7 @@ void SetTextColor(HDC hdc, int _loseHpPoint, int checkNum)
 void ReadRanking(multimap<int, string> *playerData)
 {
 	ifstream fp;
-	fp.open("rank.bin", std::ios::binary | std::ios::in);;
+	fp.open("rank.bin", std::ios_base::binary | std::ios_base::in);
 
 	if (!fp.is_open())
 		return;
@@ -102,6 +102,10 @@ void ReadRanking(multimap<int, string> *playerData)
 	int i = 0;
 	char *buffer = new char[length];
 	fp.read(buffer, length);
+	
+	for (int i = 0; i < length; i++)
+		buffer[i] -= 1;
+
 	while (1)
 	{
 		char *tNum;
@@ -130,7 +134,7 @@ void ReadRanking(multimap<int, string> *playerData)
 void WriteRanking(multimap<int, string> *playerData)
 {
 	ofstream fp;
-	fp.open("rank.bin", std::ios::binary | std::ios::out);
+	fp.open("rank.bin", std::ios_base::binary | std::ios_base::out);
 	
 	if (!fp.is_open())
 		return;
@@ -139,9 +143,12 @@ void WriteRanking(multimap<int, string> *playerData)
 	for (iter = playerData->begin(); iter != playerData->end(); iter++)
 	{
 		int temp = iter->first;
-		string saveStr = std::to_string(temp) + " " + iter->second + "\n" + "\0";
+		string saveStr = std::to_string(temp) + " " + iter->second + "\n";
 
-		fp.write(saveStr.c_str(), saveStr.size());
+		// fp.write(saveStr.c_str(), saveStr.size());
+		for (int i = 0; i < saveStr.size(); i++)
+			saveStr[i] += 1;
+		fp << saveStr;
 	}
 
 	if(fp.is_open())

@@ -204,7 +204,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 
 						float length = sqrt(deltaX * deltaX + deltaY * deltaY);
 
-						if (length < (bulletList[k]->GetRadius() + obstacle[i][j]->GetRadius()))
+						if (length <= (bulletList[k]->GetRadius() + obstacle[i][j]->GetRadius()))
 						{
 							playerScore += 10;
 							obstacle[i].erase(obstacle[i].begin() + j);
