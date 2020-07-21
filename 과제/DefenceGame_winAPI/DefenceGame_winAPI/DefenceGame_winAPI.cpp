@@ -127,6 +127,9 @@ BOOL InitInstance(HINSTANCE hInstance, int nCmdShow)
 //
 LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 {
+	_CrtSetDbgFlag(_CRTDBG_ALLOC_MEM_DF || _CRTDBG_LEAK_CHECK_DF);
+	//_CrtSetBreakAlloc(218);
+
 	srand((unsigned)time(NULL));
 
 	static multimap<int, string> playerData;
@@ -149,6 +152,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 	static Gun gun;
 
 	static vector<Obstacle *> hitEffect;
+	static vector<Obstacle *> deleteEffect;
 
     switch (message)
     {
@@ -158,6 +162,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 			SetTimer(hWnd, eGame, 100, NULL);	// 게임 타이머
 			SetTimer(hWnd, eGame + 10, 1000, NULL);	// 게임 타이머_생성
 			SetTimer(hWnd, eGame + 75, 100, NULL);	// 이펙트 타이머
+			SetTimer(hWnd, eGame + 85, 100, NULL);
 
 			vector<Obstacle *> temp;
 			for (int i = 0; i < eViewW - 50; i += 50)
@@ -212,8 +217,15 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 
 							hitEffect.push_back(obstacle[i][j]);
 
+						//	Obstacle *dObs = obstacle[i][j];
+						//	Bullet *dBul = bulletList[i];
+
 							obstacle[i].erase(obstacle[i].begin() + j);
 							bulletList.erase(bulletList.begin() + k);
+
+						//	delete dObs;
+						//	delete dBul;
+
 							k = -1;
 							j = -1;
 							isRemove = TRUE;
@@ -223,7 +235,14 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 					}	// for_k
 					if (obstacle[i].size() == 0)
 					{
-						obstacle.erase(obstacle.begin() + i);	// 빈 행 삭제
+					//	vector<Obstacle *>::iterator iter;
+					//	for (iter = obstacle[i].begin(); iter < obstacle[i].end(); iter++)
+					//	{
+					//		Obstacle *dObs = (*iter);
+							obstacle.erase(obstacle.begin() + i);	// 빈 행 삭제
+					//		delete dObs;
+					//		break;
+					//	}
 						i = -1;
 					}
 					if (isRemove)
@@ -241,7 +260,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 			// -------------------------------------------------------------------------------
 
 			if (obstacle.size() != 0)
-				obstacle[0][0]->Update(obstacle, _loseHpPoint);
+				obstacle[0][0]->Update(obstacle, deleteEffect, _loseHpPoint);
 			if (bulletList.size() != 0)
 				bulletList[0]->Update(bulletList, viewRect);
 
@@ -252,23 +271,70 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 		if (wParam == eGame + 75 && gameMode == eGame)
 		{
 			for (int i = 0; i < hitEffect.size(); i++)
-			{
-				//hitEffect[i]->SetDownSpeed(0);
-
+			{	
 				for (int j = 0; j < 4; j++)
 				{
 					hitEffect[i]->SetBlockPos(j, 0, cos(45 * M_PI / 180) * (hitEffect[i]->GetBlockPos(j, 0) - hitEffect[i]->GetCenterPosX()) - sin(45 * M_PI / 180) * (hitEffect[i]->GetBlockPos(j, 1) - hitEffect[i]->GetCenterPosY()) + hitEffect[i]->GetCenterPosX());
 					hitEffect[i]->SetBlockPos(j, 1, sin(45 * M_PI / 180) * (hitEffect[i]->GetBlockPos(j, 0) - hitEffect[i]->GetCenterPosX()) + cos(45 * M_PI / 180) * (hitEffect[i]->GetBlockPos(j, 1) - hitEffect[i]->GetCenterPosY()) + hitEffect[i]->GetCenterPosY());
-					
+
 					hitEffect[i]->SetSpinCnt();
 					if (hitEffect[i]->GetSpinCnt() > 20)
 					{
-						hitEffect.erase(hitEffect.begin() + i);
+						//vector<Obstacle *>::iterator iter;
+						//for (iter = hitEffect.begin(); iter < hitEffect.end(); iter++)
+						//{
+						//	if ((*iter) == hitEffect[i])
+						//	{
+						//		Obstacle *dObs = (*iter);
+								hitEffect.erase(hitEffect.begin() + i);
+					//			delete dObs;
+					//			break;
+					//		}
+					//	}
 						i = -1;
 						break;
 					}	// if
 				}	// for_j
 			}	// for_i
+
+
+			for (int i = 0; i < deleteEffect.size(); i++)
+			{
+				for (int j = 0; j < 4; j++)
+				{
+					double tempX = cos(30 * M_PI / 180) * (deleteEffect[i]->GetBlockPos(j, 0) - deleteEffect[i]->GetCenterPosX()) - sin(30 * M_PI / 180) * (deleteEffect[i]->GetBlockPos(j, 1) - deleteEffect[i]->GetCenterPosY());
+					double tempY = sin(30 * M_PI / 180) * (deleteEffect[i]->GetBlockPos(j, 0) - deleteEffect[i]->GetCenterPosX()) + cos(30 * M_PI / 180) * (deleteEffect[i]->GetBlockPos(j, 1) - deleteEffect[i]->GetCenterPosY());
+					deleteEffect[i]->SetBlockPos(j, 0, tempX + deleteEffect[i]->GetCenterPosX());
+					deleteEffect[i]->SetBlockPos(j, 1, tempY + deleteEffect[i]->GetCenterPosY());
+
+					//deleteEffect[i]->SetBlockPos(j, 0, cos(135 * M_PI / 180) * (deleteEffect[i]->GetBlockPos(j, 0) - deleteEffect[i]->GetCenterPosX()) - sin(135 * M_PI / 180) * (deleteEffect[i]->GetBlockPos(j, 1) - deleteEffect[i]->GetCenterPosY()) + deleteEffect[i]->GetCenterPosX());
+					//deleteEffect[i]->SetBlockPos(j, 1, sin(135 * M_PI / 180) * (deleteEffect[i]->GetBlockPos(j, 0) - deleteEffect[i]->GetCenterPosX()) + cos(135 * M_PI / 180) * (deleteEffect[i]->GetBlockPos(j, 1) - deleteEffect[i]->GetCenterPosY()) + deleteEffect[i]->GetCenterPosY());
+
+					deleteEffect[i]->SetSpinCnt();
+					if (deleteEffect[i]->GetSpinCnt() > 20)
+					{
+						//vector<Obstacle *>::iterator iter;
+						//for (iter = hitEffect.begin(); iter < hitEffect.end(); iter++)
+						//{
+						//	if ((*iter) == deleteEffect[i])
+						//	{
+						//		Obstacle *dObs = (*iter);
+								deleteEffect.erase(deleteEffect.begin() + i);
+						//		delete dObs;
+						//		break;
+						//	}
+						//}
+						i = -1;
+						break;
+					}	// if
+				}	// for_j
+			}	// for_i
+
+		}	// if
+
+		if (wParam == eGame + 85 && gameMode == eGame)
+		{
+			
 		}	// if
 
 			InvalidateRect(hWnd, NULL, TRUE);
@@ -344,6 +410,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 		if (gameMode == eResult && yPos >= 500 && yPos <= 550 && xPos >= 50 && xPos <= 200)
 		{
 			WriteRanking(&playerData);
+
 			playerData.erase(playerData.begin(), playerData.end());
 			ReadRanking(&playerData);
 
@@ -439,10 +506,31 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 				for (int i = 0; i < hitEffect.size(); i++)
 					hitEffect[i]->DrawObstacle(hdc);
 
+				for(int i=0;i<deleteEffect.size();i++)
+					deleteEffect[i]->DrawObstacle(hdc);
+
 				if (_loseHpPoint >= 500)
 				{
-					bulletList.erase(bulletList.begin(),bulletList.end());
-					obstacle.erase(obstacle.begin(),obstacle.end());
+					//vector<Bullet *>::iterator iter;
+					//for (iter = bulletList.begin(); iter < bulletList.end(); iter++)
+					//{
+					//	Bullet *dBul = (*iter);
+						bulletList.erase(bulletList.begin(),bulletList.end());
+					//	delete (*iter);
+					//	break;
+					//}
+
+					//for(int i=0;i<obstacle.size();i++)
+					//{
+					//	for (int j = 0; j < obstacle[i].size(); j++)
+					//	{
+					//		Obstacle *oOb = obstacle[i][j];
+							obstacle.erase(obstacle.begin(), obstacle.end());
+					//		delete oOb;
+					//		break;
+					//	}
+					//}
+
 					_loseHpPoint = 0;
 					gameMode = eResult;
 					SaveData(&playerData, playerName, playerScore);
@@ -480,6 +568,8 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 		KillTimer(hWnd, eGame);
 		KillTimer(hWnd, eGame + 10);
 		KillTimer(hWnd, eGame + 75);
+
+		_CrtDumpMemoryLeaks();
         break;
     default:
         return DefWindowProc(hWnd, message, wParam, lParam);

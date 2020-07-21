@@ -44,13 +44,13 @@ Block::~Block()
 
 }
 
-void Block::Update(vector<vector<Obstacle *>> &obstacle, int &_loseHpPoint)
+void Block::Update(vector<vector<Obstacle *>> &obstacle, vector<Obstacle *> &deleteEffect, int &_loseHpPoint)
 {
 	int hitCnt = 0;
 	for (int i = 0; i < obstacle.size(); i++)
 	{
 		CheckHitDeadLine(obstacle, hitCnt, i);
-		CheckLoseHp(obstacle, hitCnt, _loseHpPoint, i);
+		CheckLoseHp(obstacle, deleteEffect, hitCnt, _loseHpPoint, i);
 	}
 }
 
@@ -64,10 +64,17 @@ void Block::CheckHitDeadLine(vector<vector<Obstacle *>> &obstacle, int &hitCnt, 
 	}
 }
 
-void Block::CheckLoseHp(vector<vector<Obstacle *>> &obstacle, int &hitCnt, int &_loseHpPoint, int linePos)
+void Block::CheckLoseHp(vector<vector<Obstacle *>> &obstacle, vector<Obstacle *> &deleteEffect, int &hitCnt, int &_loseHpPoint, int linePos)
 {
 	if (hitCnt != 0)
 	{
+		Obstacle *temp;
+		for (int i = 0; i < obstacle[linePos].size(); i++)
+		{
+			temp = obstacle[linePos].at(i);
+			deleteEffect.push_back(temp);
+		}
+
 		obstacle.erase(obstacle.begin() + linePos);
 		_loseHpPoint += 25 * hitCnt;
 		hitCnt = 0;

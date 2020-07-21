@@ -104,7 +104,7 @@ void ReadRanking(multimap<int, string> *playerData)
 	fp.read(buffer, length);
 	
 	for (int i = 0; i < length; i++)
-		buffer[i] -= 1;
+		buffer[i] -= 'a';
 
 	while (1)
 	{
@@ -129,6 +129,8 @@ void ReadRanking(multimap<int, string> *playerData)
 
 	if (fp.is_open())
 		fp.close();
+
+	delete[] buffer;
 }
 
 void WriteRanking(multimap<int, string> *playerData)
@@ -147,7 +149,7 @@ void WriteRanking(multimap<int, string> *playerData)
 
 		// fp.write(saveStr.c_str(), saveStr.size());
 		for (int i = 0; i < saveStr.size(); i++)
-			saveStr[i] += 1;
+			saveStr[i] += 'a';
 		fp << saveStr;
 	}
 

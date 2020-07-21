@@ -12,9 +12,9 @@ public:
 	Obstacle(int left, int top, int right, int bottom){ }
 	~Obstacle() {}
 
-	virtual void Update(vector<vector<Obstacle *>> &obstacle, int &_loseHpPoint) = 0;
+	virtual void Update(vector<vector<Obstacle *>> &obstacle, vector<Obstacle *> &deleteEffect, int &_loseHpPoint) = 0;
 	virtual void CheckHitDeadLine(vector<vector<Obstacle *>> &obstacle, int &hitCnt, int linePos) = 0;
-	virtual void CheckLoseHp(vector<vector<Obstacle *>> &obstacle, int &hitCnt, int &_loseHpPoint, int linePos) = 0;
+	virtual void CheckLoseHp(vector<vector<Obstacle *>> &obstacle, vector<Obstacle *> &deleteEffect, int &hitCnt, int &_loseHpPoint, int linePos) = 0;
 
 	virtual void DrawObstacle(HDC hdc) = 0;
 	virtual void DownObstacle() = 0;
@@ -65,9 +65,9 @@ public:
 	void DownObstacle();
 	bool CheckDeadLine();
 
-	void Update(vector<vector<Obstacle *>> &obstacle, int &_loseHpPoint);
+	void Update(vector<vector<Obstacle *>> &obstacle, vector<Obstacle *> &deleteEffect, int &_loseHpPoint);
 	void CheckHitDeadLine(vector<vector<Obstacle *>> &obstacle, int &hitCnt, int linePos);
-	void CheckLoseHp(vector<vector<Obstacle *>> &obstacle, int &hitCnt, int &_loseHpPoint, int linePos);
+	void CheckLoseHp(vector<vector<Obstacle *>> &obstacle, vector<Obstacle *> &deleteEffect, int &hitCnt, int &_loseHpPoint, int linePos);
 	
 	double GetCenterPosX();
 	double GetCenterPosY();

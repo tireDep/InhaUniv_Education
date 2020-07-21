@@ -21,3 +21,6 @@ void ReadRanking(multimap<int, string> *playerData);
 
 void SaveData(multimap<int, string> *playerData, TCHAR *playerName, int playerScore);
 void PrintRank(HDC hdc, RECT resultScreen, multimap<int, string> *playerData);
+
+#include <stdlib.h>
+#include <crtdbg.h>
