@@ -244,8 +244,8 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 			// - 구한 교차점 point 리스트(Array)에 추가하기
 
 			// 제공되는 것 : 거리, 원점
-			int distance = 50;
-			int midX = 50;
+			int distance = 0;
+			int midX = 0;
 			int midY = 50;
 			DrawStar(hdc, midX, midY, distance);
 			// 별 찍기
