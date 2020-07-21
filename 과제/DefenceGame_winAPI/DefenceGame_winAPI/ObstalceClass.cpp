@@ -6,18 +6,26 @@ enum { eBulletDecimal = 13 };
 
 Block::Block()
 {
-	blockPos.left = 0;
-	blockPos.top = 0;
-	blockPos.right = 0;
-	blockPos.bottom = 0;
+	for (int i = 0; i < 4; i++)
+	{
+		blockPos[i].x = 0;
+		blockPos[i].y = 0;
+	}
 }
 
 Block::Block(int left, int top, int right, int bottom, int _downSpeed)
 {
-	blockPos.left = left;
-	blockPos.top = top;
-	blockPos.right = right;
-	blockPos.bottom = bottom;
+	blockPos[0].x = left;
+	blockPos[0].y = top;
+
+	blockPos[1].x = right;
+	blockPos[1].y = top;
+
+	blockPos[2].x = right;
+	blockPos[2].y = bottom;
+
+	blockPos[3].x = left;
+	blockPos[3].y = bottom;
 
 	hitCheckPos.left = left - eBulletDecimal / 2;
 	hitCheckPos.top = top - eBulletDecimal / 2;
@@ -27,6 +35,8 @@ Block::Block(int left, int top, int right, int bottom, int _downSpeed)
 	downSpeed = _downSpeed;
 
 	radius = (right - left) / 2;
+
+	isHit = FALSE;
 }
 
 Block::~Block()
@@ -49,7 +59,7 @@ void Block::CheckHitDeadLine(vector<vector<Obstacle *>> &obstacle, int &hitCnt, 
 	for (int j = 0; j < obstacle[linePos].size(); j++)
 	{
 		obstacle[linePos][j]->DownObstacle();
-		if (obstacle[linePos][j]->CheckDeadLine())
+		if (obstacle[linePos][j]->CheckDeadLine() && !isHit)
 			hitCnt++;
 	}
 }
@@ -59,7 +69,7 @@ void Block::CheckLoseHp(vector<vector<Obstacle *>> &obstacle, int &hitCnt, int &
 	if (hitCnt != 0)
 	{
 		obstacle.erase(obstacle.begin() + linePos);
-		_loseHpPoint += 10 * hitCnt;
+		_loseHpPoint += 25 * hitCnt;
 		hitCnt = 0;
 	}
 }
@@ -72,8 +82,7 @@ void Block::DrawObstacle(HDC hdc)
 	SetColor(hdc, hPen, oldPen, 255, 255, 255);
 	SetColor(hdc, hBrush, oldBrush, 45, 45, 45);
 
-	Rectangle(hdc, blockPos.left, blockPos.top, blockPos.right, blockPos.bottom);
-	//Ellipse(hdc, blockPos.left, blockPos.top, blockPos.right, blockPos.bottom);
+	Polygon(hdc, blockPos, 4);
 
 	DeleteColor(hdc, hPen, oldPen);
 	DeleteColor(hdc, hBrush, oldBrush);
@@ -81,8 +90,8 @@ void Block::DrawObstacle(HDC hdc)
 
 void Block::DownObstacle()
 {
-	blockPos.top += downSpeed;
-	blockPos.bottom += downSpeed;
+	for(int i = 0; i < 4; i++)
+		blockPos[i].y += downSpeed;
 
 	hitCheckPos.top += downSpeed;
 	hitCheckPos.bottom += downSpeed;
@@ -93,7 +102,7 @@ void Block::DownObstacle()
 
 bool Block::CheckDeadLine()
 {
-	if (blockPos.bottom >= 660)
+	if (blockPos[2].y >= 660)
 		return TRUE;
 	else
 		return FALSE;
@@ -101,12 +110,12 @@ bool Block::CheckDeadLine()
 
 double Block::GetCenterPosX()
 {
-	return (blockPos.left + blockPos.right) / 2;
+	return (blockPos[0].x + blockPos[1].x) / 2;
 }
 
 double Block::GetCenterPosY()
 {
-	return (blockPos.bottom + blockPos.top) / 2;
+	return (blockPos[1].y + blockPos[2].y) / 2;
 }
 
 int Block::GetRadius()

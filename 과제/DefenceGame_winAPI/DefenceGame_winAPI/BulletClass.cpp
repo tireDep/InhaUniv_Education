@@ -131,7 +131,6 @@ void Bullet::CheckBulletOutScreen(vector<Bullet *> &bullet, RECT viewRect)
 	}
 }
 
-
 double Bullet::GetCenterPosX()
 {
 	return (bulletPos[0].x + bulletPos[1].x) / 2;
