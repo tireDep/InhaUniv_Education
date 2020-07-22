@@ -188,6 +188,12 @@ void DeleteNode(Node **tree)
 					delete(removeNode);
 					deleteNode->right->left = NULL;
 				}
+				else
+				{
+					deleteNode = removeNode->left;
+					delete(removeNode);
+					deleteNode->left = NULL;
+				}
 			}	// 지우려는 노드의 왼쪽 자식노드 존재
 
 			else
@@ -210,13 +216,50 @@ void DeleteNode(Node **tree)
 		
 		else
 		{
-			Node *tempNode = removeNode;
-			Node *tempPNode = deleteNode;
+			Node *tempNode = removeNode -> left;
 
-			while (tempNode != NULL)
+			while (tempNode->right != NULL)
+				tempNode = tempNode->right;
+
+			Node *pNode = *tree;
+			pNode = SearchParentNode(&pNode, tempNode->num);
+			
+			if (pNode == *tree)
 			{
-				// if()
+				tempNode->right = (*tree)->right;
+				(*tree) = tempNode;
+				delete removeNode;
 			}
+			else if (pNode == removeNode)
+			{
+				pNode = removeNode->left;
+				pNode->left = NULL;
+				pNode->right = removeNode->right;
+			
+				delete removeNode;
+			}
+			else
+			{
+				pNode->right = tempNode->left;
+				tempNode->left = NULL;
+
+				if (pNode != NULL)
+				{
+					if (pNode->left == removeNode)
+						pNode->left = tempNode;
+					else
+						pNode->right = tempNode;
+				}
+				else
+					(*tree) = tempNode;
+
+				tempNode->left = removeNode->left;
+				tempNode->right = removeNode->right;
+
+				delete removeNode;
+			}
+
+
 		}// 지우려는 노드에 자식노드가 양쪽 모두 존재
 
 	}	// else
