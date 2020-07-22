@@ -302,16 +302,11 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 			{
 				for (int j = 0; j < 4; j++)
 				{
-					double tempX = cos(30 * M_PI / 180) * (deleteEffect[i]->GetBlockPos(j, 0) - deleteEffect[i]->GetCenterPosX()) - sin(30 * M_PI / 180) * (deleteEffect[i]->GetBlockPos(j, 1) - deleteEffect[i]->GetCenterPosY());
-					double tempY = sin(30 * M_PI / 180) * (deleteEffect[i]->GetBlockPos(j, 0) - deleteEffect[i]->GetCenterPosX()) + cos(30 * M_PI / 180) * (deleteEffect[i]->GetBlockPos(j, 1) - deleteEffect[i]->GetCenterPosY());
-					deleteEffect[i]->SetBlockPos(j, 0, tempX + deleteEffect[i]->GetCenterPosX());
-					deleteEffect[i]->SetBlockPos(j, 1, tempY + deleteEffect[i]->GetCenterPosY());
-
-					//deleteEffect[i]->SetBlockPos(j, 0, cos(135 * M_PI / 180) * (deleteEffect[i]->GetBlockPos(j, 0) - deleteEffect[i]->GetCenterPosX()) - sin(135 * M_PI / 180) * (deleteEffect[i]->GetBlockPos(j, 1) - deleteEffect[i]->GetCenterPosY()) + deleteEffect[i]->GetCenterPosX());
-					//deleteEffect[i]->SetBlockPos(j, 1, sin(135 * M_PI / 180) * (deleteEffect[i]->GetBlockPos(j, 0) - deleteEffect[i]->GetCenterPosX()) + cos(135 * M_PI / 180) * (deleteEffect[i]->GetBlockPos(j, 1) - deleteEffect[i]->GetCenterPosY()) + deleteEffect[i]->GetCenterPosY());
+					deleteEffect[i]->SetBlockPos(j, 0, cos(15 * M_PI / 180) * (deleteEffect[i]->GetBlockPos(j, 0) - deleteEffect[i]->GetCenterPosX()) - sin(15 * M_PI / 180) * (deleteEffect[i]->GetBlockPos(j, 1) - deleteEffect[i]->GetCenterPosY()) + deleteEffect[i]->GetCenterPosX());
+					deleteEffect[i]->SetBlockPos(j, 1, sin(15 * M_PI / 180) * (deleteEffect[i]->GetBlockPos(j, 0) - deleteEffect[i]->GetCenterPosX()) + cos(15 * M_PI / 180) * (deleteEffect[i]->GetBlockPos(j, 1) - deleteEffect[i]->GetCenterPosY()) + deleteEffect[i]->GetCenterPosY());
 
 					deleteEffect[i]->SetSpinCnt();
-					if (deleteEffect[i]->GetSpinCnt() > 20)
+					if (deleteEffect[i]->GetSpinCnt() > 25)
 					{
 						//vector<Obstacle *>::iterator iter;
 						//for (iter = hitEffect.begin(); iter < hitEffect.end(); iter++)
@@ -533,6 +528,8 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 
 					_loseHpPoint = 0;
 					gameMode = eResult;
+					hitEffect.erase(hitEffect.begin(), hitEffect.end());
+					deleteEffect.erase(deleteEffect.begin(), deleteEffect.end());
 					SaveData(&playerData, playerName, playerScore);
 				}
 			}
