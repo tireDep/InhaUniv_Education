@@ -27,9 +27,27 @@ INT_PTR CALLBACK    About(HWND, UINT, WPARAM, LPARAM);
 HBITMAP hBackImage;
 BITMAP bitBack;
 
+HBITMAP hTransparentImage;
+BITMAP bitTransparent;
+
+HBITMAP hAniImage;
+BITMAP bitAni;
+const int Sprite_Size_x = 57;	// 이미지 가로 크기 / 이미지 수
+const int Sprite_Size_y = 52;	// 이미지 세로 크기 / 이미지 수
+int runFrameMax = 0;
+int runFrameMin = 0;
+int curFrame = runFrameMin;
+
+RECT rectView;
+void DrawRectText(HDC hdc);
+
 void CreateBitmap();
 void DrawBitmap(HWND hWnd, HDC hdc);
 void DeleteBitmap();
+
+void UpdateFrame(HWND hWnd);
+
+VOID CALLBACK AniProc(HWND hWnd, UINT uMsg, UINT idEvent, DWORD dwTime);
 
 // ------------------------------------------------ <<
 
@@ -143,7 +161,15 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
     {
 	case WM_CREATE:
 		CreateBitmap();
+		// SetTimer(hWnd, 0, 50, NULL);
+		SetTimer(hWnd, 0, 40, AniProc);
+		GetClientRect(hWnd, &rectView);
 		break;
+
+	// case WM_TIMER:
+	// 	UpdateFrame(hWnd);
+	// 	InvalidateRect(hWnd, NULL, FALSE);
+	// 	break;
 
     case WM_COMMAND:
         {
@@ -169,13 +195,15 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
             
 			DrawBitmap(hWnd, hdc);
 
+			DrawRectText(hdc);
+
             EndPaint(hWnd, &ps);
         }
         break;
     case WM_DESTROY:
 
 		DeleteBitmap();
-
+		KillTimer(hWnd, 0);
         PostQuitMessage(0);
         break;
     default:
@@ -208,32 +236,135 @@ INT_PTR CALLBACK About(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam)
 
 void CreateBitmap()
 {
-	hBackImage = (HBITMAP)LoadImage(NULL, TEXT("../Image/TRU256.bmp"),
-		IMAGE_BITMAP, 0, 0, LR_LOADFROMFILE | LR_CREATEDIBSECTION);
+	{
+		hBackImage = (HBITMAP)LoadImage(NULL, TEXT("../Image/Marbles.bmp"),
+			IMAGE_BITMAP, 0, 0, LR_LOADFROMFILE | LR_CREATEDIBSECTION);
+	
+		GetObject(hBackImage, sizeof(BITMAP), &bitBack);
+	}
+	// Bitmap Img
 
-	GetObject(hBackImage, sizeof(BITMAP), &bitBack);
+	{
+		hTransparentImage = (HBITMAP)LoadImage(NULL, TEXT("../Image/Zero_Run.bmp"),
+			IMAGE_BITMAP, 0, 0, LR_LOADFROMFILE | LR_CREATEDIBSECTION);
+		GetObject(hTransparentImage, sizeof(BITMAP), &bitTransparent);
+	}
+	// Magenta Img
+
+	{
+		hAniImage = (HBITMAP)LoadImage(NULL, TEXT("../Image/Zero_Run.bmp"),
+			IMAGE_BITMAP, 0, 0, LR_LOADFROMFILE | LR_CREATEDIBSECTION);
+		GetObject(hAniImage, sizeof(BITMAP), &bitAni);
+		
+		// 달리는 애니메이션만
+		runFrameMax = bitAni.bmWidth / Sprite_Size_x - 1;	// 인덱스
+		runFrameMin = 2;
+		curFrame = runFrameMin;
+	}
+	// Animation Img
 }
 
 void DrawBitmap(HWND hWnd, HDC hdc)
 {
-	HDC hMemDC;	// back Buffer
-	HBITMAP hOldBitmap;
-	int bx, by;
+	{
+		HDC hMemDC;	// back Buffer
+		HBITMAP hOldBitmap;
+		int bx, by;
+	
+		hMemDC = CreateCompatibleDC(hdc);
+		hOldBitmap = (HBITMAP)SelectObject(hMemDC, hBackImage);
+		bx = bitBack.bmWidth;
+		by = bitBack.bmHeight;
+	
+		BitBlt(hdc, 0, 0, bx, by, hMemDC, 0, 0, SRCCOPY);
+	
+		SelectObject(hMemDC, hOldBitmap);
+		DeleteDC(hMemDC);
+	}
+	// Bitmap Img
 
-	hMemDC = CreateCompatibleDC(hdc);
-	hOldBitmap = (HBITMAP)SelectObject(hMemDC, hBackImage);
-	bx = bitBack.bmWidth;
-	by = bitBack.bmHeight;
+	{
+		HDC hMemDC2;
+		HBITMAP hOldBitmap2;
+		int bx, by;
 
-	BitBlt(hdc, 0, 0, bx, by, hMemDC, 0, 0, SRCCOPY);
+		hMemDC2 = CreateCompatibleDC(hdc);
+		hOldBitmap2 = (HBITMAP)SelectObject(hMemDC2, hTransparentImage);
+		bx = bitTransparent.bmWidth;
+		by = bitTransparent.bmHeight;
 
-	SelectObject(hMemDC, hOldBitmap);
-	DeleteDC(hMemDC);
+		//BitBlt(hdc, 0, 0, bx, by, hMemDC2, 0, 0, SRCCOPY);
+
+		TransparentBlt(hdc, 0, 0, bx, by, hMemDC2, 0, 0, bx, by, RGB(255, 0, 255));
+		// Magenta 제거
+
+		SelectObject(hMemDC2, hOldBitmap2);
+		DeleteDC(hMemDC2);
+	}
+	// Magenta Img
+
+	{
+		HDC hMemDC3;
+		HBITMAP hOldBitmap3;
+		int bx, by;
+
+		hMemDC3 = CreateCompatibleDC(hdc);
+		hOldBitmap3 = (HBITMAP)SelectObject(hMemDC3, hAniImage);
+		bx = bitAni.bmWidth	/ 16;	// 이미지 수로 나눠줌 
+		by = bitAni.bmHeight / 2;	// 이미지 수로 나눠줌 
+
+		int xStart = curFrame * bx;
+		int yStart = 0;
+
+		TransparentBlt(hdc, 0, 150, bx, by, hMemDC3, xStart, yStart, bx, by, RGB(255, 0, 255));
+
+		SelectObject(hMemDC3, hOldBitmap3);
+		DeleteDC(hMemDC3);
+	}
+	// Animation Img
 }
 
 void DeleteBitmap()
 {
 	DeleteObject(hBackImage);
+	// Bitmap Img
+
+	DeleteObject(hTransparentImage);
+	// Magenta Img
+
+	DeleteObject(hAniImage);
+	// Magenta Img
 }
 
+void UpdateFrame(HWND hWnd)
+{
+	curFrame++;
+	//curFrame %= (runFrameMax - runFrameMin);
+	//curFrame += runFrameMin;
+	if(curFrame > runFrameMax)
+		curFrame = runFrameMin;
+}
+
+int posY = 0;
+
+VOID CALLBACK AniProc(HWND hWnd, UINT uMsg, UINT idEvent, DWORD dwTime)
+{
+	UpdateFrame(hWnd);
+
+	{
+		posY += 5;
+		if (posY > rectView.bottom) posY = 0;
+		// 창 이동과 상관없이 posY 증가
+	}
+
+	InvalidateRect(hWnd, NULL, FALSE);
+	return;
+}
+
+void DrawRectText(HDC hdc)
+{
+	TCHAR strTest[] = _T("TEXT");
+	TextOut(hdc, 10, posY, strTest, _tcslen(strTest));
+	
+}
 // ------------------------------------------------------------- <<
