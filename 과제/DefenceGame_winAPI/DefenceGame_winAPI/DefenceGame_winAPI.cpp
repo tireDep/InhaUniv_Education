@@ -128,7 +128,7 @@ BOOL InitInstance(HINSTANCE hInstance, int nCmdShow)
 LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 {
 	_CrtSetDbgFlag(_CRTDBG_ALLOC_MEM_DF || _CRTDBG_LEAK_CHECK_DF);
-	//_CrtSetBreakAlloc(218);
+	//_CrtSetBreakAlloc(276);
 
 	srand((unsigned)time(NULL));
 
@@ -137,7 +137,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 	static TCHAR playerName[100];
 	static int nameCnt;
 	static int playerScore = 0;
-	static TCHAR *tcharScore = new TCHAR;
+	static TCHAR tcharScore[sizeof(TCHAR)];
 	static int _loseHpPoint = 0;
 
 	static int _blockCnt = 3;	// 난이도
@@ -216,15 +216,12 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 							playerScore += 10;
 
 							hitEffect.push_back(obstacle[i][j]);
-
-						//	Obstacle *dObs = obstacle[i][j];
-						//	Bullet *dBul = bulletList[i];
+							Bullet *dBul = bulletList[k];
 
 							obstacle[i].erase(obstacle[i].begin() + j);
 							bulletList.erase(bulletList.begin() + k);
 
-						//	delete dObs;
-						//	delete dBul;
+							delete dBul;
 
 							k = -1;
 							j = -1;
@@ -235,14 +232,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 					}	// for_k
 					if (obstacle[i].size() == 0)
 					{
-					//	vector<Obstacle *>::iterator iter;
-					//	for (iter = obstacle[i].begin(); iter < obstacle[i].end(); iter++)
-					//	{
-					//		Obstacle *dObs = (*iter);
 							obstacle.erase(obstacle.begin() + i);	// 빈 행 삭제
-					//		delete dObs;
-					//		break;
-					//	}
 						i = -1;
 					}
 					if (isRemove)
@@ -280,17 +270,17 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 					hitEffect[i]->SetSpinCnt();
 					if (hitEffect[i]->GetSpinCnt() > 20)
 					{
-						//vector<Obstacle *>::iterator iter;
-						//for (iter = hitEffect.begin(); iter < hitEffect.end(); iter++)
-						//{
-						//	if ((*iter) == hitEffect[i])
-						//	{
-						//		Obstacle *dObs = (*iter);
-								hitEffect.erase(hitEffect.begin() + i);
-					//			delete dObs;
-					//			break;
-					//		}
-					//	}
+						vector<Obstacle *>::iterator iter;
+						for (iter = hitEffect.begin(); iter < hitEffect.end(); iter++)
+						{
+							if ((*iter) == hitEffect[i])
+							{
+								Obstacle *dObs = (*iter);
+								hitEffect.erase(iter);
+								delete dObs;
+								break;
+							}
+						}
 						i = -1;
 						break;
 					}	// if
@@ -308,17 +298,17 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 					deleteEffect[i]->SetSpinCnt();
 					if (deleteEffect[i]->GetSpinCnt() > 25)
 					{
-						//vector<Obstacle *>::iterator iter;
-						//for (iter = hitEffect.begin(); iter < hitEffect.end(); iter++)
-						//{
-						//	if ((*iter) == deleteEffect[i])
-						//	{
-						//		Obstacle *dObs = (*iter);
-								deleteEffect.erase(deleteEffect.begin() + i);
-						//		delete dObs;
-						//		break;
-						//	}
-						//}
+						vector<Obstacle *>::iterator iter;
+						for (iter = deleteEffect.begin(); iter < deleteEffect.end(); iter++)
+						{
+							if ((*iter) == deleteEffect[i])
+							{
+								Obstacle *dObs = (*iter);
+								deleteEffect.erase(iter);
+								delete dObs;
+								break;
+							}
+						}
 						i = -1;
 						break;
 					}	// if
@@ -471,7 +461,26 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 				DeleteColor(hdc, hPen, oldPen);
 				DeleteColor(hdc, hBrush, oldBrush);
 
-				obstacle.erase(obstacle.begin(), obstacle.end());	// 딜레이 시간중 생성되는 것 삭제
+				vector<vector<Obstacle *>>::iterator iter;
+				vector<Obstacle *>::iterator iter2;
+				for (iter = obstacle.begin(); iter < obstacle.end(); iter++)
+				{
+					for (iter2 = iter->begin(); iter2 < iter->end();)
+					{
+						if ((*iter2))
+						{
+							Obstacle *dOb = *iter2;
+							iter2 = iter->erase(iter2);
+							delete dOb;
+						}
+						else
+							iter2++;
+					}
+					break;
+				}
+				if(obstacle.size()!=0)
+					obstacle.erase(iter);
+				break;
 			}
 			else if (gameMode == eGame)
 			{
@@ -506,30 +515,64 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 
 				if (_loseHpPoint >= 500)
 				{
-					//vector<Bullet *>::iterator iter;
-					//for (iter = bulletList.begin(); iter < bulletList.end(); iter++)
-					//{
-					//	Bullet *dBul = (*iter);
-						bulletList.erase(bulletList.begin(),bulletList.end());
-					//	delete (*iter);
-					//	break;
-					//}
+					vector<Bullet *>::iterator iter;
+					for (iter = bulletList.begin(); iter < bulletList.end(); iter++)
+					{
+						Bullet *dBul = (*iter);
+						iter = bulletList.erase(iter);
+						delete (*iter);
+					}
 
-					//for(int i=0;i<obstacle.size();i++)
-					//{
-					//	for (int j = 0; j < obstacle[i].size(); j++)
-					//	{
-					//		Obstacle *oOb = obstacle[i][j];
-							obstacle.erase(obstacle.begin(), obstacle.end());
-					//		delete oOb;
-					//		break;
-					//	}
-					//}
+					vector<vector<Obstacle *>>::iterator it;
+					vector<Obstacle *>::iterator it2;
+					for (it = obstacle.begin(); it < obstacle.end();)
+					{
+						for (it2 = it->begin(); it2 < it->end();)
+						{
+							if ((*it2))
+							{
+								Obstacle *dOb = *it2;
+								it2 = it->erase(it2);
+								delete dOb;
+							}
+							else
+								it2++;
+						}
+						if (it->size() == 0)
+							it = obstacle.erase(it);
+						else
+							it++;
+					}
 
 					_loseHpPoint = 0;
 					gameMode = eResult;
-					hitEffect.erase(hitEffect.begin(), hitEffect.end());
-					deleteEffect.erase(deleteEffect.begin(), deleteEffect.end());
+					
+					vector<Obstacle *>::iterator hIt;
+					for (hIt = hitEffect.begin(); hIt < hitEffect.end(); hIt++)
+					{
+						if ((*hIt))
+						{
+							Obstacle *dOb = *hIt;
+							hIt = hitEffect.erase(hIt);
+							delete dOb;
+						}
+						else
+							hIt++;
+					}
+
+					vector<Obstacle *>::iterator dIt;
+					for (dIt = hitEffect.begin(); dIt < hitEffect.end(); dIt++)
+					{
+						if ((*dIt))
+						{
+							Obstacle *dOb = *dIt;
+							dIt = deleteEffect.erase(dIt);
+							delete dOb;
+						}
+						else
+							dIt++;
+					}
+
 					SaveData(&playerData, playerName, playerScore);
 				}
 			}
@@ -560,17 +603,17 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
         }
         break;
     case WM_DESTROY:
-        PostQuitMessage(0);
-
 		KillTimer(hWnd, eGame);
 		KillTimer(hWnd, eGame + 10);
 		KillTimer(hWnd, eGame + 75);
 
-		_CrtDumpMemoryLeaks();
+        PostQuitMessage(0);
         break;
     default:
         return DefWindowProc(hWnd, message, wParam, lParam);
     }
+
+	_CrtDumpMemoryLeaks();
     return 0;
 }
 
