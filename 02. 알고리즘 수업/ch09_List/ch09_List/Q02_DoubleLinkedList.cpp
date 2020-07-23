@@ -78,12 +78,22 @@ void ResetNode(ClassMate *node)
 void FreeNode(ClassMate *pHead)
 {
 	ClassMate *temp = pHead->pNext;
-	while (1)
+	ClassMate *deleteCnt = pHead;
+
+	int delCnt = 0;
+	while (deleteCnt->pNext != pHead)
 	{
+		delCnt;
+		deleteCnt = deleteCnt->pNext;
+	}
+
+	while (delCnt > 0)
+	{
+		delCnt--;
 		delete pHead;
 		pHead = temp;
 
-		if (temp != NULL)
+		if (temp->name != "")
 			temp = temp->pNext;
 		else
 			break;
@@ -113,10 +123,15 @@ void AddNode(ClassMate **pHead)
 	}
 	else if ((*pHead)->num > newNode->num)
 	{
-		//(*pHead)->pNext = newNode ->pNext;
-		newNode->pNext = (*pHead)->pNext;
-		(*pHead) = newNode;
+		newNode->pNext = (*pHead);
+		(*pHead)->pPrev = newNode;
+		
+		while ((*pHead)->pNext != newNode->pNext)
+			(*pHead) = (*pHead)->pNext;
+
 		newNode->pPrev = (*pHead);
+		(*pHead)->pNext = newNode;
+		(*pHead) = newNode;
 	}
 	else
 	{
@@ -139,11 +154,10 @@ void AddNode(ClassMate **pHead)
 			}
 			if (addNode->pNext->num > newNode->num)
 			{
-				addNode->pNext->pPrev = newNode;
-				addNode->pNext = newNode;
-
 				newNode->pPrev = addNode;
 				newNode->pNext = addNode->pNext;
+
+				addNode->pNext = newNode;
 				break;
 			}
 			addNode = addNode->pNext;
@@ -173,16 +187,24 @@ void DeleteNode(ClassMate **pHead)
 		if ((*pHead)->pNext == (*pHead))
 		{
 			removeNode = (*pHead);
+			(*pHead)->pNext = NULL;
+			(*pHead)->pPrev = NULL;
 			(*pHead) = NULL;
-			(*pHead)->pPrev = (*pHead)->pNext;
 			deleteNum = -1;
 		}
 		else
 		{
 			removeNode = (*pHead);
-			(*pHead) = (*pHead)->pNext;
-			(*pHead)->pNext = removeNode->pNext;
-			(*pHead)->pPrev = removeNode->pPrev;
+			(*pHead) = removeNode->pNext;
+
+			while (deleteNode->pNext != removeNode)
+				deleteNode = deleteNode->pNext;
+
+			(*pHead)->pNext = removeNode->pNext->pNext;
+			removeNode->pPrev->pPrev = (*pHead);
+
+			(*pHead)->pPrev = deleteNode;
+			deleteNode->pNext = (*pHead);
 			deleteNum = -1;
 		}
 	}
@@ -203,11 +225,11 @@ void DeleteNode(ClassMate **pHead)
 					deleteNum = -1;
 					removeNode->pNext->pPrev = deleteNode;
 				}
-				else
-				{
-					deleteNum = -1;
-					// tail
-				}
+				// else
+				// {
+				// 	deleteNum = -1;
+				// 	// tail
+				// }
 					break;
 			}
 			deleteNode = deleteNode->pNext;
