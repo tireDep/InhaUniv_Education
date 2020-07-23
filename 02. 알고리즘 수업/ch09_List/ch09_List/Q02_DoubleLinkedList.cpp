@@ -113,7 +113,8 @@ void AddNode(ClassMate **pHead)
 	}
 	else if ((*pHead)->num > newNode->num)
 	{
-		(*pHead)->pNext = newNode ->pNext;
+		//(*pHead)->pNext = newNode ->pNext;
+		newNode->pNext = (*pHead)->pNext;
 		(*pHead) = newNode;
 		newNode->pPrev = (*pHead);
 	}

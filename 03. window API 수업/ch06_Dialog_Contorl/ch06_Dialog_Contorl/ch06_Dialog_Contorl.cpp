@@ -203,23 +203,55 @@ INT_PTR CALLBACK About(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam)
 
 BOOL CALLBACK Dlg6_1Proc(HWND hDlg, UINT iMsg, WPARAM wParam, LPARAM lParam)
 {
-	// int posX = rect.right();
 	RECT dlgRect;
 	GetWindowRect(hDlg, &dlgRect);
+
+	HDC hdc;
+	TCHAR tStr[256];
 
 	int width = (dlgRect.right - dlgRect.left);
 	int height = (dlgRect.bottom - dlgRect.top);
 	switch (iMsg)
 	{
 	case WM_INITDIALOG:
-		SetWindowPos(hDlg, NULL, (rect.right + rect.left) * 0.5 - width * 0.5, (rect.bottom + rect.top) * 0.5 - height * 0.5, 0, 0, SWP_NOSIZE);
+		{
+			HWND hButton;
+			hButton = GetDlgItem(hDlg, IDC_BTN_PRINT);
+			EnableWindow(hButton, FALSE);
+			SetWindowPos(hDlg, NULL, (rect.right + rect.left) * 0.5 - width * 0.5, (rect.bottom + rect.top) * 0.5 - height * 0.5, 0, 0, SWP_NOSIZE);
+		}
 		return (INT_PTR)TRUE;
 
 	case WM_COMMAND:
-		if (LOWORD(wParam) == IDOK || LOWORD(wParam) == IDCANCEL)
+		switch (LOWORD(wParam))
 		{
-			EndDialog(hDlg, LOWORD(wParam));
-			return (INT_PTR)TRUE;
+		case IDC_BUTTON_COPY:
+			GetDlgItemText(hDlg, IDC_EDIT_INPUT, tStr, 256);
+			SetDlgItemText(hDlg, IDC_EDIT_OUTPUT, tStr);
+			break;
+
+		case IDC_BUTTON_DELETE:
+			SetDlgItemText(hDlg, IDC_EDIT_INPUT, _T(""));
+			SetDlgItemText(hDlg, IDC_EDIT_OUTPUT, _T(""));
+			break;
+
+		case IDC_BTN_PRINT:
+			hdc = GetDC(hDlg);
+			SetBkMode(hdc, TRANSPARENT);	// 배경 투명
+			TextOut(hdc, 10, 10, _T("Hello Dialog"), 12);
+			ReleaseDC(hDlg, hdc);
+			break;
+
+		case IDC_BTN_EXIT:
+			EndDialog(hDlg, 0);
+			break;
+
+		case IDCANCEL:
+			EndDialog(hDlg, 0);
+			break;
+
+		default:
+			break;
 		}
 		break;
 	}
