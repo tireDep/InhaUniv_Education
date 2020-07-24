@@ -132,10 +132,11 @@ BOOL InitInstance(HINSTANCE hInstance, int nCmdShow)
 RECT rect;
 LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 {
-    switch (message)
+	switch (message)
     {
 	case WM_CREATE:
 		GetWindowRect(hWnd, &rect);
+
 		break;
 
     case WM_COMMAND:
@@ -209,16 +210,30 @@ BOOL CALLBACK Dlg6_1Proc(HWND hDlg, UINT iMsg, WPARAM wParam, LPARAM lParam)
 	HDC hdc;
 	TCHAR tStr[256];
 
+	// >>
+
+	static int check[3], radio;
+	TCHAR hobby[][30] = { _T("독서"), _T("음악감상"), _T("게임") };
+	TCHAR sex[][30] = { _T("여자"),_T("남자") };
+	TCHAR output[200];
+
+	// <<
+
 	int width = (dlgRect.right - dlgRect.left);
 	int height = (dlgRect.bottom - dlgRect.top);
 	switch (iMsg)
 	{
 	case WM_INITDIALOG:
 		{
-			HWND hButton;
-			hButton = GetDlgItem(hDlg, IDC_BTN_PRINT);
-			EnableWindow(hButton, FALSE);
-			SetWindowPos(hDlg, NULL, (rect.right + rect.left) * 0.5 - width * 0.5, (rect.bottom + rect.top) * 0.5 - height * 0.5, 0, 0, SWP_NOSIZE);
+			//HWND hButton;
+			//hButton = GetDlgItem(hDlg, IDC_BTN_PRINT);
+			//EnableWindow(hButton, FALSE);
+			//SetWindowPos(hDlg, NULL, (rect.right + rect.left) * 0.5 - width * 0.5, (rect.bottom + rect.top) * 0.5 - height * 0.5, 0, 0, SWP_NOSIZE);
+
+			// >>
+			// CheckRadioButton(hDlg, IDC_RADIO_WOMAN, IDC_RADIO_MAN, IDC_RADIO_MAN);	// 라디오 버튼은 미리 하나 체크되어있어야 함
+		CheckRadioButton(hDlg, IDC_RADIO_WOMAN, IDC_RADIO_MAN, IDC_RADIO_WOMAN);
+			// <<
 		}
 		return (INT_PTR)TRUE;
 
@@ -249,6 +264,38 @@ BOOL CALLBACK Dlg6_1Proc(HWND hDlg, UINT iMsg, WPARAM wParam, LPARAM lParam)
 		case IDCANCEL:
 			EndDialog(hDlg, 0);
 			break;
+
+		// >>
+
+		case IDC_CHECK_READING:
+			check[0] = 1 - check[0];	// 0, 1
+			break;
+
+		case IDC_CHECK_MUSIC:
+			check[1] = 1 - check[1];	// 0, 1
+			break;
+
+		case IDC_CHECK_GAME:
+			check[2] = 1 - check[2];	// 0, 1
+			break;
+
+		case IDC_RADIO_WOMAN:
+			radio = 0;
+			break;
+
+		case IDC_RADIO_MAN:
+			radio = 1;
+			break;
+
+		case IDC_BUTTON_PRINT:
+			_stprintf_s(output, _T("선택한 취미는 %s %s %s 입니다.\r\n선택한 성별은 %s 입니다."),
+				check[0] ? hobby[0] : _T(""), 
+				check[1] ? hobby[1] : _T(""), 
+				check[2] ? hobby[2] : _T(""), 
+				sex[radio]);
+			SetDlgItemText(hDlg, IDC_EDIT_SAMPLE, output);
+			break;
+		// <<
 
 		default:
 			break;
