@@ -17,6 +17,7 @@ struct Node
 void ResetNode(Node *node);
 void AddNode(Node **tree);
 void DeleteNode(Node **tree);
+void Search(Node *tree);
 Node *SearchNode(Node *deleteNode, int removeNum);
 Node *SearchParentNode(Node **deleteNode, int removeNum);
 
@@ -32,11 +33,11 @@ int main()
 	while (1)
 	{
 		cout << "[메인 메뉴]\n";
-		cout << "1. 노드 추가\n2. 노드 삭제\n3. 노드 출력\n4. 화면 삭제\n5. 프로그램 종료\n";
-		cout << "메뉴 선택 : ";
+		cout << "1. 노드 추가\n2. 노드 삭제\n3. 노드 출력\n4. 검색\n5. 화면 삭제\n6. 프로그램 종료\n";
+		cout << "\n메뉴 선택 : ";
 		cin >> inputNum;
 
-		if (inputNum == 5)
+		if (inputNum == 6)
 		{
 			cout << "\n프로그램 종료\n";
 			break;
@@ -58,6 +59,10 @@ int main()
 			cout << endl;
 			break;
 		case 4:
+			cout << "\n[검색]\n";
+			Search(tree);
+			break;
+		case 5:
 			cout << "\n[화면 삭제]\n";
 			Sleep(200);
 			system("cls");
@@ -147,6 +152,7 @@ void DeleteNode(Node **tree)
 	cout << "삭제할 번호 입력 : ";
 	cin >> inputNum;
 
+	bool isRemove = false;
 	Node *removeNode = SearchNode(deleteNode, inputNum);
 	if (removeNode == NULL)
 	{
@@ -162,13 +168,18 @@ void DeleteNode(Node **tree)
 		{
 			if (deleteNode->left == removeNode)
 			{
-				delete(removeNode);
 				deleteNode->left = NULL;
+				isRemove = true;
 			}
 			else if (deleteNode->right == removeNode)
 			{
-				delete(removeNode);
 				deleteNode->right = NULL;
+				isRemove = true;
+			}
+			else
+			{
+				ResetNode(*tree);	// 루트노드
+				isRemove = true;
 			}
 		}	// 지우려는 노드에 자식노드 존재 x
 
@@ -176,39 +187,43 @@ void DeleteNode(Node **tree)
 		{
 			if (removeNode->left!=NULL)
 			{
-				if (deleteNode->left == removeNode)
+				if (removeNode == deleteNode)
+				{
+					(*tree) = removeNode->left;
+					isRemove = true;
+				}
+				else if (deleteNode->left == removeNode)
 				{
 					deleteNode->left = removeNode->left;
-					delete(removeNode);
 					deleteNode->left->left = NULL;
+					isRemove = true;
 				}
 				else if (deleteNode->right == removeNode)
 				{
 					deleteNode->right = removeNode->left;
-					delete(removeNode);
 					deleteNode->right->left = NULL;
-				}
-				else
-				{
-					deleteNode = removeNode->left;
-					delete(removeNode);
-					deleteNode->left = NULL;
+					isRemove = true;
 				}
 			}	// 지우려는 노드의 왼쪽 자식노드 존재
 
 			else
 			{
-				if (deleteNode->left == removeNode)
+				if (removeNode == deleteNode)
+				{
+					(*tree) = removeNode->right;
+					isRemove = true;
+				}
+				else if (deleteNode->left == removeNode)
 				{
 					deleteNode->left = removeNode->right;
-					delete(removeNode);
 					deleteNode->left->right = NULL;
+					isRemove = true;
 				}
 				else if (deleteNode->right == removeNode)
 				{
 					deleteNode->right = removeNode->right;
-					delete(removeNode);
 					deleteNode->right->right = NULL;
+					isRemove = true;
 				}
 			}	// 지우려는 노드의 오른쪽 자식노드 존재
 
@@ -228,15 +243,14 @@ void DeleteNode(Node **tree)
 			{
 				tempNode->right = (*tree)->right;
 				(*tree) = tempNode;
-				delete removeNode;
+				isRemove = true;
 			}
 			else if (pNode == removeNode)
 			{
 				pNode = removeNode->left;
 				pNode->left = NULL;
 				pNode->right = removeNode->right;
-			
-				delete removeNode;
+				isRemove = true;
 			}
 			else
 			{
@@ -255,14 +269,20 @@ void DeleteNode(Node **tree)
 
 				tempNode->left = removeNode->left;
 				tempNode->right = removeNode->right;
-
-				delete removeNode;
+				isRemove = true;
 			}
 
 
 		}// 지우려는 노드에 자식노드가 양쪽 모두 존재
 
 	}	// else
+
+	if (isRemove)
+	{
+		cout << "\n[삭제 완료]\n";
+		cout << "삭제한 값 : " << removeNode->num << ", " << removeNode->name << endl << endl;
+		delete removeNode;
+	}
 
 	return;
 }
@@ -300,6 +320,22 @@ Node *SearchParentNode(Node **deleteNode, int removeNum)
 	}
 
 	return NULL;
+}
+
+void Search(Node *tree)
+{
+	int inputNum;
+	cout << "검색할 번호 입력 : ";
+	cin >> inputNum;
+
+	Node *searchNode = SearchNode(tree, inputNum);
+	if (searchNode != NULL)
+	{
+		cout << "\n[검색결과]\n";
+		cout << searchNode->num << ", " << searchNode->name << endl << endl;
+	}
+	else
+		cout << "\n[해당 값이 존재하지 않음]\n\n";
 }
 
 void PrintNode(const Node *node)
