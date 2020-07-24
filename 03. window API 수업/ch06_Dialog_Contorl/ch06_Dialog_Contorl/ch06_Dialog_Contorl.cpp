@@ -219,6 +219,12 @@ BOOL CALLBACK Dlg6_1Proc(HWND hDlg, UINT iMsg, WPARAM wParam, LPARAM lParam)
 
 	// <<
 
+	// >>
+	static HWND hCombo;
+	static int selection;
+	TCHAR name[30];
+	// <<
+
 	int width = (dlgRect.right - dlgRect.left);
 	int height = (dlgRect.bottom - dlgRect.top);
 	switch (iMsg)
@@ -231,8 +237,11 @@ BOOL CALLBACK Dlg6_1Proc(HWND hDlg, UINT iMsg, WPARAM wParam, LPARAM lParam)
 			//SetWindowPos(hDlg, NULL, (rect.right + rect.left) * 0.5 - width * 0.5, (rect.bottom + rect.top) * 0.5 - height * 0.5, 0, 0, SWP_NOSIZE);
 
 			// >>
-			// CheckRadioButton(hDlg, IDC_RADIO_WOMAN, IDC_RADIO_MAN, IDC_RADIO_MAN);	// 라디오 버튼은 미리 하나 체크되어있어야 함
-		CheckRadioButton(hDlg, IDC_RADIO_WOMAN, IDC_RADIO_MAN, IDC_RADIO_WOMAN);
+			CheckRadioButton(hDlg, IDC_RADIO_WOMAN, IDC_RADIO_MAN, IDC_RADIO_MAN);	// 라디오 버튼은 미리 하나 체크되어있어야 함
+			// <<
+
+			// >>
+			hCombo = GetDlgItem(hDlg, IDC_COMBO_LIST);
 			// <<
 		}
 		return (INT_PTR)TRUE;
@@ -294,6 +303,26 @@ BOOL CALLBACK Dlg6_1Proc(HWND hDlg, UINT iMsg, WPARAM wParam, LPARAM lParam)
 				check[2] ? hobby[2] : _T(""), 
 				sex[radio]);
 			SetDlgItemText(hDlg, IDC_EDIT_SAMPLE, output);
+			break;
+		// <<
+
+		// >>
+		case IDC_BUTTON_INSERT:
+			GetDlgItemText(hDlg, IDC_EDIT_NAME, name, 20);
+			if (_tcscmp(name, _T("")))
+			{
+				SendMessage(hCombo, CB_ADDSTRING, 0, (LPARAM)name);	// 콤보 박스에 추가
+				return 0;
+			}
+			break;
+
+		case IDC_BUTTON_REMOVE:
+			SendMessage(hCombo, CB_DELETESTRING, selection, 0);	// 콤보박스에서 현재 선택된 것 삭제
+			break;
+
+		case IDC_COMBO_LIST:
+			if (HIWORD(wParam) == CBN_SELCHANGE)
+				selection = SendMessage(hCombo, CB_GETCURSEL, 0, 0);
 			break;
 		// <<
 
