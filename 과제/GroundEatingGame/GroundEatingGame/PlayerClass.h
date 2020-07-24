@@ -10,7 +10,9 @@ class Player
 private:
 	POINT playerPos;
 	POINT centerPos;
-	PlayerMap playerMap;
+
+	PlayerMap moveLine;
+	//PlayerMap playerMap;
 
 	int preTurn;
 	int playerTurn;

@@ -14,7 +14,7 @@ PlayerMap::~PlayerMap()
 void PlayerMap::DrawPolygon(HDC hdc)
 {
 	HPEN hPen, oldPen;
-	hPen = CreatePen(BS_SOLID, 5, RGB(255, 0, 0));
+	hPen = CreatePen(2, 1, RGB(0, 0, 255));
 	oldPen = (HPEN)SelectObject(hdc, hPen);
 	
 	if (mapPos.size() > 0)

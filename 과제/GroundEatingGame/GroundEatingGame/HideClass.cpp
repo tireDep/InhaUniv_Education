@@ -12,9 +12,9 @@ HideMap::~HideMap()
 }
 
 void HideMap::DrawPolygon(HDC hdc)
-{
+{	
 	POINT *printMap = new POINT[mapPos.size()];
-
+	
 	for (int i = 0; i < mapPos.size(); i++)
 	{
 		printMap[i].x = mapPos[i].x;
@@ -22,8 +22,6 @@ void HideMap::DrawPolygon(HDC hdc)
 	}
 
 	Polygon(hdc, printMap, sizeof(printMap));
-	
-	delete[] printMap;
 }
 
 void HideMap::AddSpot(POINT addSpot)

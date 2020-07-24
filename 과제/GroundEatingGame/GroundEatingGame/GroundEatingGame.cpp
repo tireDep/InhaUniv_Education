@@ -130,9 +130,16 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 		PAINTSTRUCT ps;
 		HDC hdc = BeginPaint(hWnd, &ps);
 
-		Rectangle(hdc, -5, -5, eWinWidth, eWinHeight);	
-		// 임시 배경
-		// 후에 윈도우 배경색 자체 변경
+		// 더블버퍼링
+		RECT rectView;		
+		HDC memDc;
+		HBITMAP hBit, oldBit;
+
+		GetClientRect(hWnd, &rectView);
+		memDc = CreateCompatibleDC(hdc);
+		hBit = CreateCompatibleBitmap(hdc, rectView.right, rectView.bottom);
+		oldBit = (HBITMAP)SelectObject(memDc, hBit);
+		PatBlt(memDc, rectView.left, rectView.top, rectView.right, rectView.bottom, WHITENESS);
 
 		// todo : 클래스화
 		map.AddSpot({ ePosLeft, ePosTop });
@@ -140,11 +147,17 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 		map.AddSpot({ ePosRight, ePosBottom });
 		map.AddSpot({ ePosLeft, ePosBottom });
 
-		map.DrawPolygon(hdc);
+		map.DrawPolygon(memDc);
 		// todo : 클래스화
 
-		player.DrawPlayer(hdc);
+		player.DrawPlayer(memDc);
 		// 플레이어 위치
+
+		BitBlt(hdc, 0, 0, rectView.right, rectView.bottom, memDc, 0, 0, SRCCOPY);
+
+		SelectObject(memDc, oldBit);
+		DeleteObject(hBit);
+		DeleteDC(memDc);
 
 		EndPaint(hWnd, &ps);
 	}

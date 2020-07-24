@@ -26,21 +26,17 @@ void Player::CheckPlayerPos(int _moveSpeed, int turnPos)
 {
 	CalcCenterPos();
 	preTurn = playerTurn;	// 기존 방향 저장
-	playerMap.AddSpot(centerPos);
+	moveLine.AddSpot(centerPos);
 
 	switch (turnPos)
 	{
 	case eLeft:
 		playerTurn = eLeft;
 		MovePlayerX(_moveSpeed);
-		if (preTurn != playerTurn)
-		{
-
-		}
-		else
-		{
-		
-		}
+		// if (preTurn != playerTurn)
+		// 	playerMap.AddSpot(centerPos);
+		// else
+		// { }
 		break;
 
 	case eUp:
@@ -65,8 +61,7 @@ void Player::CheckPlayerPos(int _moveSpeed, int turnPos)
 
 void Player::DrawPlayer(HDC hdc)
 {
-	playerMap.DrawPolygon(hdc);
-
+	moveLine.DrawPolygon(hdc);
 	Ellipse(hdc, playerPos.x, playerPos.y, playerPos.x + eNum15, playerPos.y + eNum15);
 }
 
