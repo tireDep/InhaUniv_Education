@@ -3,6 +3,7 @@
 
 #include "stdafx.h"
 #include "GroundEatingGame.h"
+#include "PlayerClass.h"
 
 #define MAX_LOADSTRING 100
 
@@ -55,13 +56,6 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
     return (int) msg.wParam;
 }
 
-
-
-//
-//  FUNCTION: MyRegisterClass()
-//
-//  PURPOSE: Registers the window class.
-//
 ATOM MyRegisterClass(HINSTANCE hInstance)
 {
     WNDCLASSEXW wcex;
@@ -83,22 +77,12 @@ ATOM MyRegisterClass(HINSTANCE hInstance)
     return RegisterClassExW(&wcex);
 }
 
-//
-//   FUNCTION: InitInstance(HINSTANCE, int)
-//
-//   PURPOSE: Saves instance handle and creates main window
-//
-//   COMMENTS:
-//
-//        In this function, we save the instance handle in a global variable and
-//        create and display the main program window.
-//
 BOOL InitInstance(HINSTANCE hInstance, int nCmdShow)
 {
    hInst = hInstance; // Store instance handle in our global variable
 
    HWND hWnd = CreateWindowW(szWindowClass, szTitle, WS_OVERLAPPEDWINDOW,
-      CW_USEDEFAULT, 0, CW_USEDEFAULT, 0, nullptr, nullptr, hInstance, nullptr);
+	   eWinPosX, eWinPosY, eWinWidth, eWinHeight, nullptr, nullptr, hInstance, nullptr);
 
    if (!hWnd)
    {
@@ -111,20 +95,60 @@ BOOL InitInstance(HINSTANCE hInstance, int nCmdShow)
    return TRUE;
 }
 
-//
-//  FUNCTION: WndProc(HWND, UINT, WPARAM, LPARAM)
-//
-//  PURPOSE:  Processes messages for the main window.
-//
-//  WM_COMMAND  - process the application menu
-//  WM_PAINT    - Paint the main window
-//  WM_DESTROY  - post a quit message and return
-//
-//
 LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 {
+	static Player player(eStartposX, eStartPosY);
+
     switch (message)
     {
+	case WM_CREATE:
+		// SetTimer(hWnd, 0, 100, KeyStateProc);
+		break;
+
+	case WM_KEYDOWN:
+	{
+		if (wParam == 'A' || wParam == 'a' || wParam == VK_LEFT)
+			player.CheckPlayerPos(-emoveSpeed, TRUE);
+		else if (wParam == 'W' || wParam == 'w' || wParam == VK_UP)
+			player.CheckPlayerPos(-emoveSpeed, FALSE);
+		else if (wParam == 'D' || wParam == 'd' || wParam == VK_RIGHT)
+			player.CheckPlayerPos(emoveSpeed, TRUE);
+		else if (wParam == 'S' || wParam == 's' || wParam == VK_DOWN)
+			player.CheckPlayerPos(emoveSpeed, FALSE);
+
+		InvalidateRect(hWnd, NULL, FALSE);
+	}
+		break;
+
+	case WM_PAINT:
+	{
+		PAINTSTRUCT ps;
+		HDC hdc = BeginPaint(hWnd, &ps);
+
+		Rectangle(hdc, -5, -5, eWinWidth, eWinHeight);	
+		// 임시 배경
+		// 후에 윈도우 배경색 자체 변경
+
+		// todo : 클래스화
+		POINT testRectangle[4] = 
+		{
+			{ePosLeft, ePosTop},
+			{ePosRight, ePosTop},
+			{ePosRight, ePosBottom},
+			{ePosLeft, ePosBottom}
+		};
+		
+		Polygon(hdc, testRectangle, 4);
+		// todo : 클래스화
+
+		POINT playerPos = player.GetPosPoint();
+		Ellipse(hdc, playerPos.x, playerPos.y, playerPos.x + eNum15, playerPos.y + eNum15);
+		// 플레이어 위치
+
+		EndPaint(hWnd, &ps);
+	}
+	break;
+
     case WM_COMMAND:
         {
             int wmId = LOWORD(wParam);
@@ -142,24 +166,17 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
             }
         }
         break;
-    case WM_PAINT:
-        {
-            PAINTSTRUCT ps;
-            HDC hdc = BeginPaint(hWnd, &ps);
-            // TODO: Add any drawing code that uses hdc here...
-            EndPaint(hWnd, &ps);
-        }
-        break;
+   
     case WM_DESTROY:
         PostQuitMessage(0);
         break;
+
     default:
         return DefWindowProc(hWnd, message, wParam, lParam);
     }
     return 0;
 }
 
-// Message handler for about box.
 INT_PTR CALLBACK About(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam)
 {
     UNREFERENCED_PARAMETER(lParam);
@@ -177,4 +194,25 @@ INT_PTR CALLBACK About(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam)
         break;
     }
     return (INT_PTR)FALSE;
+}
+
+VOID CALLBACK KeyStateProc(HWND hWnd, UINT uMsg, UINT idEvent, DWORD dwTime)
+{
+	if (GetKeyState('A') & 0x8000)
+	{
+		
+	}
+	else if (GetKeyState('S') & 0x8000)
+	{
+		
+	}
+	else if (GetKeyState('D') & 0x8000)
+	{
+		
+	}
+	else if (GetKeyState('W') & 0x8000)
+	{
+		
+	}
+
 }
