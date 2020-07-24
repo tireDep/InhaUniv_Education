@@ -4,6 +4,7 @@
 #include "stdafx.h"
 #include "GroundEatingGame.h"
 #include "PlayerClass.h"
+#include "MapClass.h"
 
 #define MAX_LOADSTRING 100
 
@@ -98,6 +99,8 @@ BOOL InitInstance(HINSTANCE hInstance, int nCmdShow)
 LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 {
 	static Player player(eStartposX, eStartPosY);
+	
+	static HideMap map;
 
     switch (message)
     {
@@ -107,14 +110,16 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 
 	case WM_KEYDOWN:
 	{
+		// 그리기 모드
 		if (wParam == 'A' || wParam == 'a' || wParam == VK_LEFT)
-			player.CheckPlayerPos(-emoveSpeed, TRUE);
+			player.CheckPlayerPos(-emoveSpeed, eLeft);
 		else if (wParam == 'W' || wParam == 'w' || wParam == VK_UP)
-			player.CheckPlayerPos(-emoveSpeed, FALSE);
+			player.CheckPlayerPos(-emoveSpeed, eUp);
 		else if (wParam == 'D' || wParam == 'd' || wParam == VK_RIGHT)
-			player.CheckPlayerPos(emoveSpeed, TRUE);
+			player.CheckPlayerPos(emoveSpeed, eRight);
 		else if (wParam == 'S' || wParam == 's' || wParam == VK_DOWN)
-			player.CheckPlayerPos(emoveSpeed, FALSE);
+			player.CheckPlayerPos(emoveSpeed, eDown);
+		// 그리기 모드
 
 		InvalidateRect(hWnd, NULL, FALSE);
 	}
@@ -130,19 +135,15 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 		// 후에 윈도우 배경색 자체 변경
 
 		// todo : 클래스화
-		POINT testRectangle[4] = 
-		{
-			{ePosLeft, ePosTop},
-			{ePosRight, ePosTop},
-			{ePosRight, ePosBottom},
-			{ePosLeft, ePosBottom}
-		};
-		
-		Polygon(hdc, testRectangle, 4);
+		map.AddSpot({ ePosLeft, ePosTop });
+		map.AddSpot({ ePosRight, ePosTop });
+		map.AddSpot({ ePosRight, ePosBottom });
+		map.AddSpot({ ePosLeft, ePosBottom });
+
+		map.DrawPolygon(hdc);
 		// todo : 클래스화
 
-		POINT playerPos = player.GetPosPoint();
-		Ellipse(hdc, playerPos.x, playerPos.y, playerPos.x + eNum15, playerPos.y + eNum15);
+		player.DrawPlayer(hdc);
 		// 플레이어 위치
 
 		EndPaint(hWnd, &ps);
