@@ -28,6 +28,7 @@ public:
 
 	void AddSpot(POINT addSpot);
 	void RemoveSpot();
+	vector<POINT> GetHideMapPos();
 };
 
 class PlayerMap : public Map
@@ -43,4 +44,5 @@ public:
 
 	void AddSpot(POINT addSpot);
 	void RemoveSpot();
+	void RemoveAllSpot();
 };

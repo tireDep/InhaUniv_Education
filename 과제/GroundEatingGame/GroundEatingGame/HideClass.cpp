@@ -33,3 +33,8 @@ void HideMap::RemoveSpot()
 {
 	mapPos.pop_back();
 }
+
+vector<POINT> HideMap::GetHideMapPos()
+{
+	return mapPos;
+}

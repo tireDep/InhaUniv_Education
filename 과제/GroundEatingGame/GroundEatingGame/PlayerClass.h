@@ -22,7 +22,7 @@ public:
 	Player(int posx, int posy);
 	~Player();
 
-	void CheckPlayerPos(int _moveSpeed, int turnPos);
+	void CheckPlayerPos(int _moveSpeed, int turnPos, HideMap hideMap);
 	void MovePlayerX(int _moveSpeed);
 	void MovePlayerY(int _moveSpeed);
 
@@ -32,4 +32,5 @@ public:
 	void SetPosY(int addPos);
 
 	void CalcCenterPos();
+	bool CheckSpotOnTheLine(HideMap hideMap);
 };

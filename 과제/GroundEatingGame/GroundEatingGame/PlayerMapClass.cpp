@@ -39,3 +39,19 @@ void PlayerMap::RemoveSpot()
 {
 	mapPos.pop_back();
 }
+
+void PlayerMap::RemoveAllSpot()
+{
+	vector<POINT>::iterator it;
+	POINT *temp;
+	for(it = mapPos.begin();it<mapPos.end(); )
+	{
+		if (it -> x > -1)	// 좌표값이 음수가 나올 수 x
+		{
+			it = mapPos.erase(it);
+		}
+		else it++;
+	}
+
+	// mapPos.clear();	// 메모리는 남아있음
+}

@@ -105,21 +105,21 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
     switch (message)
     {
 	case WM_CREATE:
-		// SetTimer(hWnd, 0, 100, KeyStateProc);
-		break;
+		// SetTimer(hWnd, 0, 100, NULL);
+
+	//case WM_TIMER:
+	//	break;
 
 	case WM_KEYDOWN:
 	{
-		// 그리기 모드
 		if (wParam == 'A' || wParam == 'a' || wParam == VK_LEFT)
-			player.CheckPlayerPos(-emoveSpeed, eLeft);
+			player.CheckPlayerPos(-emoveSpeed, eLeft, map);
 		else if (wParam == 'W' || wParam == 'w' || wParam == VK_UP)
-			player.CheckPlayerPos(-emoveSpeed, eUp);
+			player.CheckPlayerPos(-emoveSpeed, eUp, map);
 		else if (wParam == 'D' || wParam == 'd' || wParam == VK_RIGHT)
-			player.CheckPlayerPos(emoveSpeed, eRight);
+			player.CheckPlayerPos(emoveSpeed, eRight, map);
 		else if (wParam == 'S' || wParam == 's' || wParam == VK_DOWN)
-			player.CheckPlayerPos(emoveSpeed, eDown);
-		// 그리기 모드
+			player.CheckPlayerPos(emoveSpeed, eDown, map);
 
 		InvalidateRect(hWnd, NULL, FALSE);
 	}
