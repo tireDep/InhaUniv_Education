@@ -21,7 +21,7 @@ void HideMap::DrawPolygon(HDC hdc)
 		printMap[i].y = mapPos[i].y;
 	}
 
-	Polygon(hdc, printMap, sizeof(printMap));
+	Polygon(hdc, printMap, mapPos.size());
 }
 
 void HideMap::AddSpot(POINT addSpot)
@@ -37,4 +37,12 @@ void HideMap::RemoveSpot()
 vector<POINT> HideMap::GetHideMapPos()
 {
 	return mapPos;
+}
+
+void HideMap::AddSpot()
+{
+	if (mapPos.size() % 2 != 0)
+	{
+		mapPos.push_back({ mapPos[mapPos.size() - 1].x, mapPos[0].y });
+	}
 }

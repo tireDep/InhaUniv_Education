@@ -127,6 +127,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 
 	case WM_PAINT:
 	{
+		static int test = 0;
 		PAINTSTRUCT ps;
 		HDC hdc = BeginPaint(hWnd, &ps);
 
@@ -142,11 +143,21 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 		PatBlt(memDc, rectView.left, rectView.top, rectView.right, rectView.bottom, WHITENESS);
 
 		// todo : 클래스화
-		map.AddSpot({ ePosLeft, ePosTop });
-		map.AddSpot({ ePosRight, ePosTop });
-		map.AddSpot({ ePosRight, ePosBottom });
-		map.AddSpot({ ePosLeft, ePosBottom });
-
+		if (test == 0)
+		{
+			//map.AddSpot({ ePosLeft + 50,ePosTop });
+			//map.AddSpot({ ePosRight, ePosTop });
+			//map.AddSpot({ ePosRight, ePosBottom });
+			//map.AddSpot({ ePosLeft, ePosBottom });
+			//map.AddSpot({ ePosLeft,ePosTop + 50 });
+			//map.AddSpot({ ePosLeft + 50,ePosTop + 50 });
+		
+			map.AddSpot({ ePosLeft, ePosTop });
+			map.AddSpot({ ePosRight, ePosTop });
+			map.AddSpot({ ePosRight, ePosBottom });
+			map.AddSpot({ ePosLeft, ePosBottom });
+		}
+		test++;
 		map.DrawPolygon(memDc);
 		// todo : 클래스화
 

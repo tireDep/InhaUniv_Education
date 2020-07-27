@@ -12,10 +12,11 @@ private:
 	POINT centerPos;
 
 	PlayerMap moveLine;
-	//PlayerMap playerMap;
+	HideMap playerMap;
 
 	int preTurn;
 	int playerTurn;
+	bool preCheckLine;
 
 public:
 	Player();
@@ -23,8 +24,8 @@ public:
 	~Player();
 
 	void CheckPlayerPos(int _moveSpeed, int turnPos, HideMap hideMap);
-	void MovePlayerX(int _moveSpeed);
-	void MovePlayerY(int _moveSpeed);
+	void MovePlayerX(int _moveSpeed, HideMap hideMap);
+	void MovePlayerY(int _moveSpeed, HideMap hideMap);
 
 	void DrawPlayer(HDC hdc);
 
