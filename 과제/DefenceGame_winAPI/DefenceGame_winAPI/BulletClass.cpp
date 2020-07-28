@@ -4,60 +4,58 @@
 #include "WeaponClass.h"
 #include "Function.h"
 
-enum { eStartBulletSpped = 25, eBulletDecimal = 13 };
+enum { eStartBulletSpped = 25, eBulletDecimal = 10 };
 
 Bullet::Bullet()
 {
-	for (int i = 0; i < 4; i++)
-	{
-		tempBulletPos[i] = { 0,0 };
-		bulletPos[i] = { 0,0 };
-	}
 
-	centerPos.x = 0;
-	centerPos.y = 0;
-	nowDegree = 0;
 }
 
-Bullet::Bullet(POINT _centerPos, int _nowDegree)
+Bullet::Bullet(POINT _BarrelPos0, POINT _BarrelPos1, int degree)
 {
-	bulletPos[0] = { 244,569 };
-	bulletPos[1] = { 257,569 };
-	bulletPos[2] = { 257,582 };
-	bulletPos[3] = { 244,582 };
+	nowDegree = degree + 90;
 
-	for (int i = 0; i < 4; i++)
-		tempBulletPos[i] = bulletPos[i];
+	int tempX = _BarrelPos0.x - _BarrelPos1.x;
+	int tempY = _BarrelPos0.y - _BarrelPos1.y;
 
-	nowDegree = _nowDegree;
-
-	if (nowDegree != 0)
+	if (tempX == 0)
 	{
-		for (int i = 0; i < 4; i++)
-			bulletPos[i] = PointRotate(_centerPos.x, _centerPos.y, _nowDegree, &tempBulletPos[i]);
+		if (degree == 90 || degree == -90)
+			movePos.y = 0;
+		else
+			movePos.y = -1;
+
+		if (degree == 0)
+			movePos.x = 0;
+		else
+			movePos.x = -1;
+
+		bulletPos.x = _BarrelPos0.x;
+		bulletPos.y = _BarrelPos0.y;
 	}
-
-	centerPos.x = (bulletPos[0].x + bulletPos[1].x) / 2;
-	centerPos.y = (bulletPos[0].y + bulletPos[1].y) / 2;
-	// 총알 중점
-
-	if (nowDegree == 90 || nowDegree == -90)
+	else if(tempY == -1)
+	{
+		if (tempX < 0)
+			movePos.x = -1;
+		else
+			movePos.x = 1;
 		movePos.y = 0;
-	else
-		movePos.y = -1;
 
-	if (nowDegree == 0)
-		movePos.x = 0;
-	else if (nowDegree > 0)
-		movePos.x = 1;
+		bulletPos.x = _BarrelPos0.x;
+		bulletPos.y = _BarrelPos0.y;
+	}
 	else
-		movePos.x = -1;
-	// 방향
+	{
+		movePos.x = tempX / abs(tempX);
+		movePos.y = -1;
+		bulletPos.x = _BarrelPos0.x;
+		bulletPos.y = _BarrelPos0.y;
+	}
 
 	bulletSpped = eStartBulletSpped;
 	// 속도
 
-	radius = (bulletPos[1].x - bulletPos[0].x) / 2;
+	radius = eBulletDecimal;
 	// 반지름
 }
 
@@ -75,12 +73,7 @@ void Bullet::DrawWeapon(HDC hdc)
 	SetColor(hdc, hPen, oldPen, 200, 200, 200);
 	SetColor(hdc, hBrush, oldBrush, 200, 200, 200);
 
-	if (nowDegree == 0)
-		Ellipse(hdc, bulletPos[0].x, bulletPos[0].y, bulletPos[0].x + eBulletDecimal, bulletPos[0].y + eBulletDecimal - 1);
-	else if (nowDegree > 0)
-		Ellipse(hdc, bulletPos[0].x, bulletPos[0].y, bulletPos[0].x - eBulletDecimal, bulletPos[0].y + eBulletDecimal - 1);
-	else
-		Ellipse(hdc, bulletPos[0].x, bulletPos[0].y, bulletPos[0].x + eBulletDecimal, bulletPos[0].y - eBulletDecimal - 1);
+	Ellipse(hdc, bulletPos.x - eBulletDecimal, bulletPos.y - eBulletDecimal, bulletPos.x + eBulletDecimal, bulletPos.y + eBulletDecimal);
 
 	DeleteColor(hdc, hPen, oldPen);
 	DeleteColor(hdc, hBrush, oldBrush);
@@ -109,36 +102,30 @@ void Bullet::MoveBullet(vector<Bullet *> &bullet)
 {
 	for (int i = 0; i < bullet.size(); i++)
 	{
-		for (int j = 0; j < 4; j++)
-		{
-			bullet[i]->bulletPos[j].x += bullet[i]->movePos.x * bulletSpped;
-			bullet[i]->bulletPos[j].y += bullet[i]->movePos.y * bulletSpped;
-
-			bullet[i]->centerPos.x += bullet[i]->movePos.x * bulletSpped;
-			bullet[i]->centerPos.y += bullet[i]->movePos.y * bulletSpped;
-		}
-	}
+		bullet[i]->bulletPos.x += bullet[i]->movePos.x * bulletSpped * cos(bullet[i]->nowDegree*M_PI / 180);
+		bullet[i]->bulletPos.y -= bullet[i]->movePos.y * bulletSpped * -sin(bullet[i]->nowDegree*M_PI / 180);
+	}	
 }
 
 void Bullet::CheckBulletOutScreen(vector<Bullet *> &bullet, RECT viewRect)
 {
 	for (int i = 0; i < bullet.size(); i++)
 	{
-		if (viewRect.right <= bullet[i]->bulletPos[1].x || viewRect.left >= bullet[i]->bulletPos[0].x)
+		if (viewRect.right <= bullet[i]->bulletPos.x || viewRect.left >= bullet[i]->bulletPos.x)
 			bullet.erase(bullet.begin() + i);
-		else if (viewRect.top >= bullet[i]->bulletPos[3].y)
+		else if (viewRect.top >= bullet[i]->bulletPos.y)
 			bullet.erase(bullet.begin() + i);
 	}
 }
 
 double Bullet::GetCenterPosX()
 {
-	return (bulletPos[0].x + bulletPos[1].x) / 2;
+	return (bulletPos.x - eBulletDecimal + bulletPos.x + eBulletDecimal) / 2;
 }
 
 double Bullet::GetCenterPosY()
 {
-	return (bulletPos[1].y + bulletPos[2].y) / 2;
+	return (bulletPos.y - eBulletDecimal + bulletPos.y + eBulletDecimal) / 2;
 }
 
 int Bullet::GetRadius()

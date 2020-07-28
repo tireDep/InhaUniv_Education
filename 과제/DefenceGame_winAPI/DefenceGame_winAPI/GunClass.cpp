@@ -84,7 +84,12 @@ int Gun::GetAddDegree()
 	return addDegree;
 }
 
-POINT Gun::GetCenterPos()
+POINT Gun::GetBarrelPos0()
 {
-	return barrelCenter;
+	return barrelPos[0];
+}
+
+POINT Gun::GetBarrelPos1()
+{
+	return barrelPos[1];
 }

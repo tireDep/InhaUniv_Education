@@ -353,7 +353,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 				{
 					if (bulletList.size() == 0 || bulletList.size() < eBulletLimteCnt)
 					{
-						Bullet *bullet = new Bullet(gun.GetCenterPos(), gun.GetNowDegree());
+						Bullet *bullet = new Bullet(gun.GetBarrelPos0(), gun.GetBarrelPos1(), gun.GetNowDegree());
 						bulletList.push_back(bullet);
 					}
 				}
@@ -548,7 +548,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 					gameMode = eResult;
 					
 					vector<Obstacle *>::iterator hIt;
-					for (hIt = hitEffect.begin(); hIt < hitEffect.end(); hIt++)
+					for (hIt = hitEffect.begin(); hIt < hitEffect.end();)
 					{
 						if ((*hIt))
 						{
@@ -561,7 +561,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 					}
 
 					vector<Obstacle *>::iterator dIt;
-					for (dIt = hitEffect.begin(); dIt < hitEffect.end(); dIt++)
+					for (dIt = deleteEffect.begin(); dIt < deleteEffect.end();)
 					{
 						if ((*dIt))
 						{

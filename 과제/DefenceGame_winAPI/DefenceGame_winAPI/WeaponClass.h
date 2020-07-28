@@ -29,7 +29,8 @@ public:
 	void MoveBarrel(int inputKey);
 	void DrawWeapon(HDC hdc);
 
-	POINT GetCenterPos();
+	POINT GetBarrelPos0();
+	POINT GetBarrelPos1();
 	int GetNowDegree();
 	int GetAddDegree();
 };
@@ -37,7 +38,7 @@ public:
 class Bullet : public Gun
 {
 private:
-	POINT bulletPos[4];
+	POINT bulletPos;
 	POINT tempBulletPos[4];
 	POINT centerPos;
 	POINT movePos;
@@ -48,7 +49,7 @@ private:
 
 public:
 	Bullet();
-	Bullet(POINT _centerPos, int _nowDegree);
+	Bullet(POINT _BarrelPos1, POINT _BarrelPos2, int degree);
 	~Bullet();
 
 	void DrawWeapon(HDC hdc);
