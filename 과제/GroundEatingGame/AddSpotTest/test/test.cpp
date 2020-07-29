@@ -127,6 +127,7 @@ using std::pair;
 using std::iterator;
 
 bool AddPolygonSpot_RightBottom(vector<POINT>preRect, vector<POINT>newRect, POINT *test);
+bool AddPolygonSpot_LeftUp(vector<POINT>preRect, vector<POINT>newRect, POINT *test);
 
 LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 {
@@ -141,53 +142,100 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 		vector<POINT> rect2;
 
 		POINT temp;
-		temp = { 0,0 };
-		rectPos.push_back(temp);
-		temp = { 100,0 };
+		// temp = { 100,100 };
+		// rectPos.push_back(temp);
+		// temp = { 200,100 };
+		// rectPos.push_back(temp);
+		// temp = { 200,200 };
+		// rectPos.push_back(temp);
+		// temp = { 100,200 };
+		// rectPos.push_back(temp);
+
+		//temp = { 200,150 };
+		//rect2.push_back(temp);
+		//temp = { 250,150 };
+		//rect2.push_back(temp);
+		//temp = { 250,250 };
+		//rect2.push_back(temp);
+		//temp = { 150,250 };
+		//rect2.push_back(temp);
+		//temp = { 150,200 };
+		//rect2.push_back(temp);
+
+		//temp = { 200, 200 };
+		//rect2.push_back(temp);
+		//temp = { 200,250 };
+		//rect2.push_back(temp);
+		//temp = { 100,250 };
+		//rect2.push_back(temp);
+
+		//temp = { 200, 100 };
+		//rect2.push_back(temp);
+		//temp = { 300, 100 };
+		//rect2.push_back(temp);
+		//temp = { 300, 200 };
+		//rect2.push_back(temp);
+
+		// temp = { 200, 120 };
+		// rect2.push_back(temp);
+		// temp = { 300, 120 };
+		// rect2.push_back(temp);
+		// temp = { 300, 150 };
+		// rect2.push_back(temp);
+		// temp = { 200, 150 };
+		// rect2.push_back(temp);
+
+		// 우측, 하단 판정 가능
+
+		temp = { 200,100 };
 		rectPos.push_back(temp);
 		temp = { 100,100 };
 		rectPos.push_back(temp);
-		temp = { 0,100 };
+		temp = { 100,200 };
+		rectPos.push_back(temp);
+		temp = { 200,200 };
 		rectPos.push_back(temp);
 
-		// temp = { 100,50 };
+
+		// temp = { 150, 100 };
 		// rect2.push_back(temp);
-		// temp = { 150,50 };
+		// temp = { 150, 0 };
 		// rect2.push_back(temp);
-		// temp = { 150,150 };
+		// temp = { 0, 0 };
 		// rect2.push_back(temp);
-		// temp = { 50,150 };
+		// temp = { 0, 150 };
 		// rect2.push_back(temp);
-		// temp = { 50,100 };
+		// temp = { 100, 150 };
 		// rect2.push_back(temp);
 
-		//temp = { 100, 100 };
-		//rect2.push_back(temp);
-		//temp = { 100,150 };
-		//rect2.push_back(temp);
-		//temp = { 0,150 };
-		//rect2.push_back(temp);
+		// temp = { 100, 100 };
+		// rect2.push_back(temp);
+		// temp = { 0, 100 };
+		// rect2.push_back(temp);
+		// temp = { 0, 200 };
+		// rect2.push_back(temp);
+		// temp = { 100, 200 };
+		// rect2.push_back(temp);
 
-		//temp = { 100, 0 };
-		//rect2.push_back(temp);
-		//temp = { 200, 0 };
-		//rect2.push_back(temp);
-		//temp = { 200,100 };
-		//rect2.push_back(temp);
-
-		//temp = { 100, 20 };
-		//rect2.push_back(temp);
-		//temp = { 200, 20 };
-		//rect2.push_back(temp);
-		//temp = { 200,50 };
-		//rect2.push_back(temp);
-		//temp = { 100,50};
-		//rect2.push_back(temp);
+		temp = { 200, 100 };
+		rect2.push_back(temp);
+		temp = { 200, 0 };
+		rect2.push_back(temp);
+		temp = { 100, 0 };
+		rect2.push_back(temp);
+		temp = { 100, 100 };
+		rect2.push_back(temp);
 
 		POINT *test = new POINT[rectPos.size() + rect2.size()];
-		AddPolygonSpot_RightBottom(rectPos, rect2, test);
-		Polygon(hdc, test, rectPos.size() + rect2.size());
-		//Polygon(hdc, &rect2[0], rect2.size());
+		if (AddPolygonSpot_RightBottom(rectPos, rect2, test))
+			Polygon(hdc, test, rectPos.size() + rect2.size());
+		else
+		{
+			if(AddPolygonSpot_LeftUp(rectPos, rect2, test))
+				Polygon(hdc, test, rectPos.size() + rect2.size());
+			else
+				Ellipse(hdc, 100, 100, 200, 200);
+		}
 
 		EndPaint(hWnd, &ps);
 	}
@@ -276,11 +324,65 @@ bool AddPolygonSpot_RightBottom(vector<POINT>preRect, vector<POINT>newRect, POIN
 			test[i] = test[0];
 			return true;
 		}
-		else if (k == preRect.size() && j != newRect.size())
+		else if (k + 1 == preRect.size() && j != newRect.size())
 			return false;
 
 
 		if (preRect[k].x <= newRect[j].x && preRect[k + 1].x >= newRect[j].x && preRect[k].y <= newRect[j].y && preRect[k + 1].y >= newRect[j].y)
+		{
+			test[i] = preRect[k++];
+			test[++i] = newRect[j++];
+			i++;
+		}
+		else
+		{
+			test[i] = preRect[k];
+			test[++i] = preRect[++k];
+		}
+	}
+}
+
+bool AddPolygonSpot_LeftUp(vector<POINT>preRect, vector<POINT>newRect, POINT *test)
+{
+	int k = 0;
+	int i = 0;
+	int j = 0;
+	int check = 0;
+	while (1)
+	{
+		if (j != 0)
+		{
+			while (newRect.size() > j)
+			{
+				test[i++] = newRect[j++];
+			}
+			while (k < preRect.size() && j == newRect.size())
+			{
+				if (check == 0)
+				{
+					if (preRect[k].x == newRect[j - 1].x && preRect[k].y >= newRect[j - 1].y)
+					{
+						test[i++] = preRect[k++];
+						check++;
+						continue;
+					}
+					else if (preRect[k].x <= newRect[j - 1].x || preRect[k].x >= newRect[j - 1].x && preRect[k].y <= newRect[j - 1].y)
+						k++;
+				}
+				test[i++] = preRect[k++];
+				check++;
+			}
+		}
+		if (k == preRect.size() && j == newRect.size())
+		{
+			test[i] = test[0];
+			return true;
+		}
+		else if (k + 1 == preRect.size() && j != newRect.size())
+			return false;
+
+
+		if (preRect[k].x >= newRect[j].x && preRect[k + 1].x <= newRect[j].x && preRect[k].y <= newRect[j].y && preRect[k + 1].y >= newRect[j].y)
 		{
 			test[i] = preRect[k++];
 			test[++i] = newRect[j++];
