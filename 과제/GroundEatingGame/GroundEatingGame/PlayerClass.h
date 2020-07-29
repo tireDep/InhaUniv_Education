@@ -3,8 +3,6 @@
 #include "GroundEatingGame.h"
 #include "MapClass.h"
 
-enum moveSpeed { emoveSpeed = 5 };
-
 class Player
 {
 private:

@@ -41,8 +41,11 @@ vector<POINT> HideMap::GetHideMapPos()
 
 void HideMap::AddSpot()
 {
-	if (mapPos.size() % 2 != 0)
+	if (mapPos.size() % 2 != 0)	// °¡Àå ¹Ù±ù ¼±(¿Ü°û¼± Ãæµ¹)
 	{
-		mapPos.push_back({ mapPos[mapPos.size() - 1].x, mapPos[0].y });
+		if (mapPos[mapPos.size() - 1].y == ePosTop || mapPos[mapPos.size() - 1].y == ePosBottom)
+			mapPos.push_back({ mapPos[0].x, mapPos[mapPos.size() - 1].y });
+		else if(mapPos[mapPos.size() - 1].x == ePosLeft || mapPos[mapPos.size() - 1].x == ePosRight)
+			mapPos.push_back({ mapPos[mapPos.size() - 1].x, mapPos[0].y });
 	}
 }

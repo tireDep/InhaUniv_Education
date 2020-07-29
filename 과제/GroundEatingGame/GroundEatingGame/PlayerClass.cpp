@@ -32,7 +32,6 @@ bool Player::CheckSpotOnTheLine(HideMap hideMap)
 	{
 		if (i == hideMapPos.size() - 1)
 		{
-
 			x1 = hideMapPos[0].x;
 			y1 = hideMapPos[0].y;
 			x2 = hideMapPos[i].x;
@@ -69,8 +68,11 @@ void Player::CheckPlayerPos(int _moveSpeed, int turnPos, HideMap hideMap)
 		if (preCheckLine != checkLine)	// 시작점 저장
 		{
 			POINT temp = centerPos;
-			if (centerPos.x == 95)	temp.x = 90;
-			if (centerPos.y == 95)	temp.y = 90;
+			if (centerPos.x == ePosTop + emoveSpeed )	temp.x = ePosTop;
+			else if (centerPos.x == ePosBottom - emoveSpeed)	temp.x = ePosBottom;
+
+			if (centerPos.y == ePosLeft + emoveSpeed)	temp.y = ePosLeft;
+			else if (centerPos.y == ePosRight - emoveSpeed)	temp.y = ePosRight;
 			// 라인에 딱 맞게 보정
 			playerMap.AddSpot(temp);
 		}
