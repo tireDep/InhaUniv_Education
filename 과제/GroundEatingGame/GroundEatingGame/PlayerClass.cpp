@@ -62,12 +62,16 @@ bool Player::CheckSpotOnTheLine(HideMap hideMap)
 void Player::CheckPlayerPos(int _moveSpeed, int turnPos, HideMap hideMap)
 {
 	CalcCenterPos();
+	bool a = false;
+	if(nowMap.size()!=0)
+		a = CheckSpotOnTheLine(nowMap[0]);
+	// 그린 선 위에 점 올라가는지 판별 테스트
 	bool checkLine = CheckSpotOnTheLine(hideMap);
-	if (!checkLine)
+	if (!checkLine && !a)
 	{
+		POINT temp = centerPos;
 		if (preCheckLine != checkLine)	// 시작점 저장
 		{
-			POINT temp = centerPos;
 			if (centerPos.x == ePosTop + emoveSpeed )	temp.x = ePosTop;
 			else if (centerPos.x == ePosBottom - emoveSpeed)	temp.x = ePosBottom;
 
@@ -76,7 +80,7 @@ void Player::CheckPlayerPos(int _moveSpeed, int turnPos, HideMap hideMap)
 			// 라인에 딱 맞게 보정
 			playerMap.AddSpot(temp);
 		}
-		moveLine.AddSpot(centerPos);
+		moveLine.AddSpot(temp);
 	}
 	else
 	{
@@ -84,8 +88,10 @@ void Player::CheckPlayerPos(int _moveSpeed, int turnPos, HideMap hideMap)
 		{
 			playerMap.AddSpot(centerPos);
 			playerMap.AddSpot();
+			nowMap.push_back(playerMap);
 		}
 		moveLine.RemoveAllSpot();
+		playerMap.RemoveAllSpot();
 	}
 	preTurn = playerTurn;	// 기존 방향 저장
 	preCheckLine = checkLine;	// 라인 체크 저장
@@ -128,9 +134,9 @@ void Player::DrawPlayer(HDC hdc)
 	hBrush = CreateSolidBrush(RGB(100, 100, 100));
 	oldBrush = (HBRUSH)SelectObject(hdc, hBrush);
 	
-	if(preCheckLine==true)
-	 	playerMap.DrawPolygon(hdc);
-
+	for (int i = 0; i < nowMap.size(); i++)
+		nowMap[i].DrawPolygon(hdc);
+	 	
 	SelectObject(hdc, oldBrush);
 	DeleteObject(hBrush);
 	// todo : 수정해야함

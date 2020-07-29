@@ -11,6 +11,7 @@ private:
 
 	PlayerMap moveLine;
 	HideMap playerMap;
+	vector<HideMap> nowMap;
 
 	int preTurn;
 	int playerTurn;
