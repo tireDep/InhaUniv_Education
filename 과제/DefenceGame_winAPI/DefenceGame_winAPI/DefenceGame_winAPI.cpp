@@ -127,9 +127,6 @@ BOOL InitInstance(HINSTANCE hInstance, int nCmdShow)
 //
 LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 {
-	_CrtSetDbgFlag(_CRTDBG_ALLOC_MEM_DF || _CRTDBG_LEAK_CHECK_DF);
-	//_CrtSetBreakAlloc(276);
-
 	srand((unsigned)time(NULL));
 
 	static multimap<int, string> playerData;
@@ -154,12 +151,14 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 	static vector<Obstacle *> hitEffect;
 	static vector<Obstacle *> deleteEffect;
 
+	static RECT rectView;
+
     switch (message)
     {
 	case WM_CREATE:
 		{
 			GetClientRect(hWnd, &viewRect);	// 창 크기
-			SetTimer(hWnd, eGame, 100, NULL);	// 게임 타이머
+			SetTimer(hWnd, eGame, 10, NULL);	// 게임 타이머
 			SetTimer(hWnd, eGame + 10, 1000, NULL);	// 게임 타이머_생성
 			SetTimer(hWnd, eGame + 75, 100, NULL);	// 이펙트 타이머
 			SetTimer(hWnd, eGame + 85, 100, NULL);
@@ -173,6 +172,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 			obstacle.push_back(temp);
 
 			ReadRanking(&playerData);
+			GetClientRect(hWnd, &rectView);
 		}
 		break;
 
@@ -317,12 +317,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 
 		}	// if
 
-		if (wParam == eGame + 85 && gameMode == eGame)
-		{
-			
-		}	// if
-
-			InvalidateRect(hWnd, NULL, TRUE);
+			InvalidateRect(hWnd, NULL, FALSE);
 		}
 		break;
 
@@ -369,20 +364,18 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 					break;
 			}
 		}
-		InvalidateRect(hWnd, NULL, TRUE);
+		InvalidateRect(hWnd, NULL, FALSE);
 		break;
 	
 	case WM_CHAR:
 	{
 		if (gameMode == eStart)
 		{
-			HDC hdc = GetDC(hWnd);
 			if (wParam == VK_BACK && nameCnt > 0) 
 				nameCnt--;
 			else 
 				playerName[nameCnt++] = wParam;
 			playerName[nameCnt] = NULL;
-			ReleaseDC(hWnd, hdc);
 		}
 	}
 	break;
@@ -423,8 +416,16 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 		{
 			PAINTSTRUCT ps;
 			HDC hdc = BeginPaint(hWnd, &ps);
-			
-			SetBkMode(hdc, TRANSPARENT);
+
+			HDC memDc;
+			HBITMAP hBit, oldBit;
+
+			memDc = CreateCompatibleDC(hdc);
+			hBit = CreateCompatibleBitmap(hdc, rectView.right, rectView.bottom);
+			oldBit = (HBITMAP)SelectObject(memDc, hBit);
+			PatBlt(memDc, rectView.left, rectView.top, rectView.right, rectView.bottom, WHITENESS);
+
+			SetBkMode(memDc, TRANSPARENT);
 			if (gameMode == eStart)
 			{
 				RECT startScreen;
@@ -433,33 +434,33 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 				startScreen.right = eViewW;
 				startScreen.bottom = eViewH;
 				
-				DrawText(hdc, _T("DeffenceGame"), _tcslen(_T("DeffenceGame")), &startScreen, DT_CENTER | DT_VCENTER);
+				DrawText(memDc, _T("DeffenceGame"), _tcslen(_T("DeffenceGame")), &startScreen, DT_CENTER | DT_VCENTER);
 
 				startScreen.left = 0;
 				startScreen.top = eViewH/2;
 				startScreen.right = eViewW;
 				startScreen.bottom = eViewH;
-				DrawText(hdc, _T("[ ID ]"), _tcslen(_T("[ ID ]")), &startScreen, DT_CENTER | DT_VCENTER);
+				DrawText(memDc, _T("[ ID ]"), _tcslen(_T("[ ID ]")), &startScreen, DT_CENTER | DT_VCENTER);
 
 				startScreen.top += 50;
-				DrawText(hdc, playerName, _tcslen(playerName), &startScreen, DT_CENTER | DT_VCENTER);
+				DrawText(memDc, playerName, _tcslen(playerName), &startScreen, DT_CENTER | DT_VCENTER);
 
 				RECT btn1 = { 208,500,308,550 };
 
 				HPEN hPen, oldPen;
 				HBRUSH hBrush, oldBrush;
 
-				SetTextColor(hdc, RGB(0, 0, 0));
-				SetColor(hdc, hPen, oldPen, 200, 200, 200);
-				SetColor(hdc, hBrush, oldBrush, 200, 200, 200);
+				SetTextColor(memDc, RGB(0, 0, 0));
+				SetColor(memDc, hPen, oldPen, 200, 200, 200);
+				SetColor(memDc, hBrush, oldBrush, 200, 200, 200);
 
-				Rectangle(hdc, btn1.left, btn1.top, btn1.right, btn1.bottom);
+				Rectangle(memDc, btn1.left, btn1.top, btn1.right, btn1.bottom);
 
-				DrawText(hdc, _T("Exit"), _tcslen(_T("Exit")), &btn1, DT_CENTER | DT_VCENTER | DT_SINGLELINE);
+				DrawText(memDc, _T("Exit"), _tcslen(_T("Exit")), &btn1, DT_CENTER | DT_VCENTER | DT_SINGLELINE);
 
-				SetTextColor(hdc, RGB(255, 255, 255));
-				DeleteColor(hdc, hPen, oldPen);
-				DeleteColor(hdc, hBrush, oldBrush);
+				SetTextColor(memDc, RGB(255, 255, 255));
+				DeleteColor(memDc, hPen, oldPen);
+				DeleteColor(memDc, hBrush, oldBrush);
 
 				vector<vector<Obstacle *>>::iterator iter;
 				vector<Obstacle *>::iterator iter2;
@@ -480,7 +481,6 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 				}
 				if(obstacle.size()!=0)
 					obstacle.erase(iter);
-				break;
 			}
 			else if (gameMode == eGame)
 			{
@@ -490,37 +490,42 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 				gameScreen.right = eViewW - 35;
 				gameScreen.bottom = eViewH;
 
-				DrawText(hdc, playerName, _tcslen(playerName), &gameScreen, DT_LEFT | DT_VCENTER);
+				DrawText(memDc, playerName, _tcslen(playerName), &gameScreen, DT_LEFT | DT_VCENTER);
 				_itot(playerScore, tcharScore, 10);
 
-				DrawText(hdc, tcharScore, _tcslen(tcharScore), &gameScreen, DT_CENTER | DT_VCENTER);
+				DrawText(memDc, tcharScore, _tcslen(tcharScore), &gameScreen, DT_CENTER | DT_VCENTER);
 				// DrawText(hdc, _T("TEMPLV"), _tcslen(_T("TEMPLV")), &gameScreen, DT_RIGHT | DT_VCENTER);
 				for (int i = 0; i < obstacle.size(); i++)
 				{
 					for (int j = 0; j < obstacle[i].size(); j++)
-						obstacle[i][j]->DrawObstacle(hdc);
+						obstacle[i][j]->DrawObstacle(memDc);
 				}
 
-				DrawHpBar(hdc, _loseHpPoint);
-				gun.DrawWeapon(hdc);
+				DrawHpBar(memDc, _loseHpPoint);
+				gun.DrawWeapon(memDc);
 
 				for (int i = 0; i < bulletList.size(); i++)
-					bulletList[i]->DrawWeapon(hdc);
+					bulletList[i]->DrawWeapon(memDc);
 
 				for (int i = 0; i < hitEffect.size(); i++)
-					hitEffect[i]->DrawObstacle(hdc);
+					hitEffect[i]->DrawObstacle(memDc);
 
 				for(int i=0;i<deleteEffect.size();i++)
-					deleteEffect[i]->DrawObstacle(hdc);
+					deleteEffect[i]->DrawObstacle(memDc);
 
 				if (_loseHpPoint >= 500)
 				{
 					vector<Bullet *>::iterator iter;
-					for (iter = bulletList.begin(); iter < bulletList.end(); iter++)
+					for (iter = bulletList.begin(); iter < bulletList.end();)
 					{
-						Bullet *dBul = (*iter);
-						iter = bulletList.erase(iter);
-						delete (*iter);
+						if ((*iter))
+						{
+							Bullet *dBul = *iter;
+							iter = bulletList.erase(iter);
+							delete dBul;
+						}
+						else
+							iter++;
 					}
 
 					vector<vector<Obstacle *>>::iterator it;
@@ -578,8 +583,14 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 			}
 			else if (gameMode == eResult)
 			{
-				ResultScreen(hdc, tcharScore, playerName, playerScore, &playerData);
+				ResultScreen(memDc, tcharScore, playerName, playerScore, &playerData);
 			}
+
+			BitBlt(hdc, 0, 0, rectView.right, rectView.bottom, memDc, 0, 0, SRCCOPY);
+
+			SelectObject(memDc, oldBit);
+			DeleteObject(hBit);
+			DeleteDC(memDc);
 
 			EndPaint(hWnd, &ps);
 		}
@@ -613,7 +624,6 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
         return DefWindowProc(hWnd, message, wParam, lParam);
     }
 
-	_CrtDumpMemoryLeaks();
     return 0;
 }
 

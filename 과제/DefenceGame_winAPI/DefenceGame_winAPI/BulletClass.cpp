@@ -4,7 +4,7 @@
 #include "WeaponClass.h"
 #include "Function.h"
 
-enum { eStartBulletSpped = 25, eBulletDecimal = 10 };
+enum { eStartBulletSpped = 25, eBulletDecimal = 7 };
 
 Bullet::Bullet()
 {
