@@ -121,16 +121,42 @@ BOOL InitInstance(HINSTANCE hInstance, int nCmdShow)
 //  WM_DESTROY  - post a quit message and return
 //
 //
+
+#define IDC_EDIT8_4 100
+void FileSave(HWND hWnd, LPTSTR fileName);
+void FileRead(HWND hWnd, LPTSTR fileName);
 LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 {
+	static HWND hEdit;
+	RECT rect;
+
     switch (message)
     {
+	case WM_CREATE:
+		GetClientRect(hWnd, &rect);
+		hEdit = CreateWindow(_T("Edit"), NULL, WS_CHILD | WS_VISIBLE | WS_HSCROLL | WS_VSCROLL | ES_AUTOHSCROLL | ES_AUTOVSCROLL | ES_MULTILINE, 0, 100, rect.right, rect.bottom, hWnd, (HMENU)IDC_EDIT8_4, hInst, NULL);
+		return 0;
+
+	case WM_SIZE:
+		GetClientRect(hWnd, &rect);
+		MoveWindow(hEdit, 0, 0, rect.right, rect.bottom, TRUE);
+		return 0;
+
     case WM_COMMAND:
         {
             int wmId = LOWORD(wParam);
             // Parse the menu selections:
             switch (wmId)
             {
+			case ID_FILE_OPEN:
+				FileRead(hEdit, _T("Test2.txt"));
+				break;
+
+			case ID_FILE_SAVE:
+				FileSave(hEdit, _T("Test2.txt"));
+				break;
+
+
             case IDM_ABOUT:
                 DialogBox(hInst, MAKEINTRESOURCE(IDD_ABOUTBOX), hWnd, About);
                 break;
@@ -177,4 +203,55 @@ INT_PTR CALLBACK About(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam)
         break;
     }
     return (INT_PTR)FALSE;
+}
+
+void FileRead(HWND hWnd, LPTSTR fileName)
+{
+	HANDLE hFile;
+	LPTSTR buffer;
+	DWORD size, charNum;
+	int fileSize;
+
+	hFile = CreateFile(fileName, GENERIC_READ, 0, 0, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, 0);
+
+	if (hFile == INVALID_HANDLE_VALUE)
+		return;
+
+	fileSize = GetFileSize(hFile, &size);
+	buffer = new TCHAR[(int)fileSize / sizeof(TCHAR) + 1];
+	memset(buffer, 0, fileSize);
+	
+	ReadFile(hFile, buffer, fileSize, &charNum, NULL);
+	buffer[(int)fileSize / sizeof(TCHAR)] = NULL;
+
+	SetWindowText(hWnd, buffer);
+	free(buffer);
+	CloseHandle(hFile);
+}
+
+void FileSave(HWND hWnd, LPTSTR fileName)
+{
+	HANDLE hFile;
+	LPTSTR buffer;
+	int size;
+
+#ifdef _UNICODE
+	WORD uni = 0xFEFF;
+	DWORD nSize;
+#endif // _UNICODE
+	hFile = CreateFile(fileName, GENERIC_WRITE, 0, 0, CREATE_ALWAYS, FILE_ATTRIBUTE_NORMAL, 0);
+
+#ifdef _UNICODE
+	WriteFile(hFile, &uni, 2, &nSize, NULL);
+#endif // _UNICODE
+	size = GetWindowTextLength(hWnd);
+	buffer = new TCHAR[size + 1];
+	memset(buffer, 0, (size + 1) * sizeof(TCHAR));
+	size = GetWindowText(hWnd, (LPTSTR)buffer, size + 1);
+	buffer[size] = NULL;
+	WriteFile(hFile, buffer, size * sizeof(TCHAR), (LPDWORD)&size, NULL);
+	free(buffer);
+	CloseHandle(hFile);
+
+
 }
