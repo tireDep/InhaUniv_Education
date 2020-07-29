@@ -127,9 +127,10 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 
 	HANDLE hFile;
 	TCHAR inBuff[1024];
-	TCHAR outBuff[128] = _T("API 프로그래밍을 못해도 사랑합니다.");
+	TCHAR outBuff[128] = _T("API Programming");
 	DWORD size;
 
+	RECT rt;
     switch (message)
     {
     case WM_COMMAND:
@@ -149,6 +150,20 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
             }
         }
         break;
+
+	case WM_LBUTTONDOWN:
+		hFile = CreateFile(_T("test.txt"), GENERIC_READ | GENERIC_WRITE, FILE_SHARE_READ | FILE_SHARE_WRITE, NULL, OPEN_EXISTING, 0, 0);
+		memset(inBuff, 0, sizeof(inBuff));
+		ReadFile(hFile, inBuff, 1024 * sizeof(TCHAR) - 1, &size, NULL);	// 뒤에 널 값]
+		hdc = GetDC(hWnd);
+		GetClientRect(hWnd, &rt);
+		DrawText(hdc, inBuff, (int)_tcslen(inBuff), &rt, DT_TOP | DT_LEFT);
+		ReleaseDC(hWnd, hdc);
+
+		WriteFile(hFile, outBuff, (DWORD)_tcslen(outBuff) * sizeof(TCHAR), &size, NULL);
+		CloseHandle(hFile);
+		break;
+
     case WM_PAINT:
         {
             PAINTSTRUCT ps;
