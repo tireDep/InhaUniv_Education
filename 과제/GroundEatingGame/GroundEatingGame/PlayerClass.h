@@ -22,9 +22,9 @@ public:
 	Player(int posx, int posy);
 	~Player();
 
-	void CheckPlayerPos(int _moveSpeed, int turnPos, HideMap hideMap);
-	void MovePlayerX(int _moveSpeed, HideMap hideMap);
-	void MovePlayerY(int _moveSpeed, HideMap hideMap);
+	void CheckPlayerPos(int movePos, int turnPos, HideMap hideMap);
+	void MovePlayerX(int movePos);
+	void MovePlayerY(int movePos);
 
 	void DrawPlayer(HDC hdc);
 
@@ -32,5 +32,9 @@ public:
 	void SetPosY(int addPos);
 
 	void CalcCenterPos();
+	void CalcCenterPos(POINT pos, POINT &cPos);
 	bool CheckSpotOnTheLine(HideMap hideMap);
+
+	bool CheckCanMoveX(POINT tempPlayerPos, POINT tempCenterPos);
+	bool CheckCanMoveY(POINT tempPlayerPos, POINT tempCenterPos);
 };
