@@ -62,12 +62,12 @@ bool Player::CheckSpotOnTheLine(HideMap hideMap)
 void Player::CheckPlayerPos(int _moveSpeed, int turnPos, HideMap hideMap)
 {
 	CalcCenterPos();
-	bool a = false;
-	if(nowMap.size()!=0)
-		a = CheckSpotOnTheLine(nowMap[0]);
-	// 그린 선 위에 점 올라가는지 판별 테스트
+	//bool a = false;
+	//if(nowMap.size()!=0)
+	//	a = CheckSpotOnTheLine(nowMap[0]);
+	//// 그린 선 위에 점 올라가는지 판별 테스트
 	bool checkLine = CheckSpotOnTheLine(hideMap);
-	if (!checkLine && !a)
+	if (!checkLine)
 	{
 		POINT temp = centerPos;
 		if (preCheckLine != checkLine)	// 시작점 저장
@@ -145,27 +145,54 @@ void Player::DrawPlayer(HDC hdc)
 
 void Player::MovePlayerX(int _moveSpeed, HideMap hideMap)
 {
-	if (playerPos.x >= eStartposX && playerPos.x <= ePosRight)// && CheckSpotOnTheLine(hideMap))
+	// 도형 외부인지 판별 필요
+	bool checkInside = false;
+	for (int i = 0; i < nowMap.size(); i++)
 	{
-		if (playerPos.x == eStartposX && _moveSpeed < 0)
-			playerPos.x = playerPos.x;
-		else if (playerPos.x == ePosRight - eSpotNum && _moveSpeed > 0)
-			playerPos.x = playerPos.x;
+		checkInside = nowMap[i].CheckMapInside(playerPos, centerPos);
+
+		if (checkInside == true)
+			break;
 		else
-			SetPosX(_moveSpeed);
+			continue;
+	}
+	if (!checkInside)
+	{
+		if (playerPos.x >= eStartposX && playerPos.x <= ePosRight)// && CheckSpotOnTheLine(hideMap))
+		{
+			if (playerPos.x == eStartposX && _moveSpeed < 0)
+				playerPos.x = playerPos.x;
+			else if (playerPos.x == ePosRight - eSpotNum && _moveSpeed > 0)
+				playerPos.x = playerPos.x;
+			else
+				SetPosX(_moveSpeed);
+		}
 	}
 }
 
 void Player::MovePlayerY(int _moveSpeed, HideMap hideMap)
 {
-	if (playerPos.y >= eStartPosY && playerPos.y <= ePosBottom)// && CheckSpotOnTheLine(hideMap))
+	bool checkInside = false;
+	for (int i = 0; i < nowMap.size(); i++)
 	{
-		if (playerPos.y == eStartPosY && _moveSpeed < 0)
-			playerPos.y = playerPos.y;
-		else if (playerPos.y == ePosRight - eSpotNum && _moveSpeed > 0)
-			playerPos.y = playerPos.y;
+		checkInside = nowMap[i].CheckMapInside(playerPos, centerPos);
+	
+		if (checkInside == true)
+			break;
 		else
-			SetPosY(_moveSpeed);
+			continue;
+	}
+	if (!checkInside)
+	{
+		if (playerPos.y >= eStartPosY && playerPos.y <= ePosBottom)// && CheckSpotOnTheLine(hideMap))
+		{
+			if (playerPos.y == eStartPosY && _moveSpeed < 0)
+				playerPos.y = playerPos.y;
+			else if (playerPos.y == ePosRight - eSpotNum && _moveSpeed > 0)
+				playerPos.y = playerPos.y;
+			else
+				SetPosY(_moveSpeed);
+		}
 	}
 }
 

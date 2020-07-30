@@ -29,10 +29,13 @@ public:
 	void DrawPolygon(HDC hdc);
 
 	void AddSpot(POINT addSpot);
-	void RemoveSpot();
-	vector<POINT> GetHideMapPos();
 	void AddSpot();
+	void RemoveSpot();
 	void RemoveAllSpot();
+
+	vector<POINT> GetHideMapPos();
+
+	bool CheckMapInside(POINT playerPos, POINT centerPos);
 };
 
 class PlayerMap : public Map

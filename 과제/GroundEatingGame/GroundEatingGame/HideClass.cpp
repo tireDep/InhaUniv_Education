@@ -65,3 +65,52 @@ void HideMap::RemoveAllSpot()
 
 	// mapPos.clear();	// 메모리는 남아있음
 }
+
+bool HideMap::CheckMapInside(POINT playerPos, POINT centerPos)
+{
+	int x1, y1, x2, y2;
+	int result;
+	for (int i = 0; i < mapPos.size(); i++)
+	{
+		if (i == mapPos.size() - 1)
+		{
+			x1 = mapPos[0].x;
+			y1 = mapPos[0].y;
+			x2 = mapPos[i].x;
+			y2 = mapPos[i].y;
+		}
+		else
+		{
+			x1 = mapPos[i].x;
+			y1 = mapPos[i].y;
+			x2 = mapPos[i + 1].x;
+			y2 = mapPos[i + 1].y;
+		}
+
+		result = (y1 - y2) * centerPos.x + (x2 - x1) * centerPos.y + x1 * y2 - x2 * y1;
+		// 직선 위에 점 존재하는지
+
+		if (result == 0)
+		{
+			if ((centerPos.x >= x1 && centerPos.x <= x2) && (centerPos.y >= y1 && centerPos.y <= y2)
+				|| (centerPos.x >= x2 && centerPos.x <= x1) && (centerPos.y >= y2 && centerPos.y <= y1))
+				return false;	// 직선의 시작과 끝 사이에 점이 존재하는지
+		}
+	}
+
+
+	int crosses = 0;
+	for (int i = 0; i < mapPos.size(); i++) 
+	{
+		int j = (i + 1) % mapPos.size();	//점 B가 선분 (p[i], p[j])의 y좌표 사이에 있음
+		if ((mapPos[i].y > playerPos.y) != (mapPos[j].y > playerPos.y)) 
+		{
+			//atX는 점 B를 지나는 수평선과 선분 (p[i], p[j])의 교점
+			double atX = (mapPos[j].x - mapPos[i].x)*(playerPos.y - mapPos[i].y) / (mapPos[j].y - mapPos[i].y) + mapPos[i].x;
+			//atX가 오른쪽 반직선과의 교점이 맞으면 교점의 개수를 증가시킨다.
+			if (playerPos.x < atX)
+				crosses++;
+		}
+	}
+	return crosses % 2 > 0;
+}
