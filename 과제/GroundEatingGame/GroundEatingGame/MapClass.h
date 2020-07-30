@@ -35,7 +35,7 @@ public:
 
 	vector<POINT> GetHideMapPos();
 
-	bool CheckMapInside(POINT playerPos, POINT centerPos);
+	bool CheckMapInside(POINT playerPos, POINT centerPos, int PlayerTurn);
 };
 
 class PlayerMap : public Map

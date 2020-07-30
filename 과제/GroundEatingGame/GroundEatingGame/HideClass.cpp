@@ -66,10 +66,12 @@ void HideMap::RemoveAllSpot()
 	// mapPos.clear();	// 메모리는 남아있음
 }
 
-bool HideMap::CheckMapInside(POINT playerPos, POINT centerPos)
+bool HideMap::CheckMapInside(POINT playerPos, POINT centerPos, int PlayerTurn)
 {
 	int x1, y1, x2, y2;
 	int result;
+
+
 	for (int i = 0; i < mapPos.size(); i++)
 	{
 		if (i == mapPos.size() - 1)
@@ -94,7 +96,39 @@ bool HideMap::CheckMapInside(POINT playerPos, POINT centerPos)
 		{
 			if ((centerPos.x >= x1 && centerPos.x <= x2) && (centerPos.y >= y1 && centerPos.y <= y2)
 				|| (centerPos.x >= x2 && centerPos.x <= x1) && (centerPos.y >= y2 && centerPos.y <= y1))
-				return false;	// 직선의 시작과 끝 사이에 점이 존재하는지
+			{
+				// if (mapPos[0].x == mapPos[1].x + emoveSpeed || mapPos[0].x + emoveSpeed == mapPos[1].x)
+				// {
+				// 	if ((playerPos.y != mapPos[0].y && playerPos.y != mapPos[2].y) && (eLeft == PlayerTurn || eRight == PlayerTurn))
+				// 		return true;
+				// 	else
+				// 		return false;
+				// }
+				// else if (mapPos[0].x == mapPos[2].x + emoveSpeed || mapPos[0].x + emoveSpeed == mapPos[2].x)
+				// {
+				// 	if ((playerPos.y != mapPos[0].y && playerPos.y != mapPos[2].y) && (eLeft == PlayerTurn || eRight == PlayerTurn))
+				// 		return true;
+				// 	else
+				// 		return false;
+				// }
+				// 
+				// if (mapPos[0].y == mapPos[2].y + emoveSpeed || mapPos[0].y + emoveSpeed == mapPos[2].y)
+				// {
+				// 	if ((playerPos.x != mapPos[0].x && playerPos.x != mapPos[2].x) && (eUp == PlayerTurn || eDown == PlayerTurn))
+				// 		return true;
+				// 	else
+				// 		return false;
+				// }
+				// else if (mapPos[0].y == mapPos[1].y + emoveSpeed || mapPos[0].y + emoveSpeed == mapPos[1].y)
+				// {
+				// 	if ((playerPos.x != mapPos[0].x && playerPos.x != mapPos[1].x) && (eUp == PlayerTurn || eDown == PlayerTurn))
+				// 		return true;
+				// 	else
+				// 		return false;
+				// }
+				// else
+					return false;	// 직선의 시작과 끝 사이에 점이 존재하는지
+			}
 		}
 	}
 

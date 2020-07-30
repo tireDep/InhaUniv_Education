@@ -28,6 +28,10 @@ bool Player::CheckSpotOnTheLine(HideMap hideMap)
 	vector<POINT>hideMapPos = hideMap.GetHideMapPos();
 	int x1, y1, x2, y2;
 	int result;
+
+	//if (hideMapPos[0].x + 260 == hideMapPos[1].x || hideMapPos[0].y + 260 == hideMapPos[2].y)
+	//	return false;
+
 	for (int i = 0; i < hideMapPos.size(); i++)
 	{
 		if (i == hideMapPos.size() - 1)
@@ -64,7 +68,7 @@ bool Player::CheckCanMoveX(POINT tempPlayerPos, POINT tempCenterPos)
 	bool checkInside = false;
 	for (int i = 0; i < nowMap.size(); i++)
 	{
-		checkInside = nowMap[i].CheckMapInside(tempCenterPos, tempCenterPos);
+		checkInside = nowMap[i].CheckMapInside(tempCenterPos, tempCenterPos, playerTurn);
 
 		if (checkInside == true)
 			break;
@@ -84,7 +88,7 @@ bool Player::CheckCanMoveY(POINT tempPlayerPos, POINT tempCenterPos)
 	bool checkInside = false;
 	for (int i = 0; i < nowMap.size(); i++)
 	{
-		checkInside = nowMap[i].CheckMapInside(tempCenterPos, tempCenterPos);
+		checkInside = nowMap[i].CheckMapInside(tempCenterPos, tempCenterPos, playerTurn);
 
 		if (checkInside == true)
 			break;
