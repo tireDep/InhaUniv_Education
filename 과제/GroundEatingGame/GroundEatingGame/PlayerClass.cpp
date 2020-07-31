@@ -165,7 +165,20 @@ void Player::CheckPlayerPos(int movePos, int turnPos, HideMap hideMap)
 				// 라인에 딱 맞게 보정
 				playerMap.AddSpot(temp);
 			}
-			moveLine.AddSpot(temp);
+			
+			if (moveLine.CheckMoveTwice(tempCenterPos))	// 지나간 길 판별
+			{
+				playerPos = playerMap.GetHideMapPos()[0];
+				playerPos.x -= eSpotNum;
+				playerPos.y -= eSpotNum;
+
+				preCheckLine != preCheckLine;
+				moveLine.RemoveAllSpot();
+				playerMap.RemoveAllSpot();
+				return;
+			}
+			else
+				moveLine.AddSpot(temp);
 		}
 		else
 		{

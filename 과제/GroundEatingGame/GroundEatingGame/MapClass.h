@@ -52,4 +52,15 @@ public:
 	void AddSpot(POINT addSpot);
 	void RemoveSpot();
 	void RemoveAllSpot();
+
+
+	bool CheckMoveTwice(POINT playerPos)
+	{
+		for (int i = 0; i < mapPos.size(); i++)
+		{
+			if (playerPos.x == mapPos[i].x && playerPos.y == mapPos[i].y)
+				return true;
+		}
+		return false;
+	}
 };
