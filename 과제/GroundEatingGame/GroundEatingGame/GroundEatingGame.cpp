@@ -6,6 +6,8 @@
 #include "PlayerClass.h"
 #include "MapClass.h"
 
+#pragma comment(lib, "msimg32.lib")
+
 #define MAX_LOADSTRING 100
 
 // Global Variables:
@@ -131,6 +133,17 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 		PAINTSTRUCT ps;
 		HDC hdc = BeginPaint(hWnd, &ps);
 
+		// test
+		HBRUSH hBrush, oldBrush;
+		hBrush = CreateSolidBrush(RGB(150, 255, 255));
+		oldBrush = (HBRUSH)SelectObject(hdc, hBrush);
+
+		Rectangle(hdc, 90, 90, 350, 350);	// 이미지 띄울 예정
+
+		SelectObject(hdc, oldBrush);
+		DeleteObject(hBrush);
+		// test
+
 		// 더블버퍼링
 		RECT rectView;		
 		HDC memDc;
@@ -141,6 +154,10 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 		hBit = CreateCompatibleBitmap(hdc, rectView.right, rectView.bottom);
 		oldBit = (HBITMAP)SelectObject(memDc, hBit);
 		PatBlt(memDc, rectView.left, rectView.top, rectView.right, rectView.bottom, WHITENESS);
+
+		// HBRUSH hBrush, oldBrush;
+		hBrush = CreateSolidBrush(RGB(255, 255, 255));
+		oldBrush = (HBRUSH)SelectObject(memDc, hBrush);
 
 		// todo : 클래스화
 		if (test == 0)
@@ -161,10 +178,21 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 		map.DrawPolygon(memDc);
 		// todo : 클래스화
 
+		SelectObject(memDc, oldBrush);
+		DeleteObject(hBrush);
+
+		//hBrush = CreateSolidBrush(RGB(100, 100, 100));
+		//oldBrush = (HBRUSH)SelectObject(memDc, hBrush);
+
 		player.DrawPlayer(memDc);
 		// 플레이어 위치
 
-		BitBlt(hdc, 0, 0, rectView.right, rectView.bottom, memDc, 0, 0, SRCCOPY);
+		//SelectObject(memDc, oldBrush);
+		//DeleteObject(hBrush);
+
+		TransparentBlt(hdc, 0, 0, rectView.right, rectView.bottom, memDc, 0, 0, rectView.right, rectView.bottom, RGB(100, 100, 100));
+
+		//BitBlt(hdc, 0, 0, rectView.right, rectView.bottom, memDc, 0, 0, SRCCOPY);
 
 		SelectObject(memDc, oldBit);
 		DeleteObject(hBit);

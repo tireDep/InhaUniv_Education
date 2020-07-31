@@ -199,8 +199,8 @@ void Player::DrawPlayer(HDC hdc)
 	moveLine.DrawPolygon(hdc);
 	// todo : 수정해야함
 	HBRUSH hBrush, oldBrush;
-	// hBrush = CreateSolidBrush(RGB(100, 100, 100));
-	hBrush = (HBRUSH)GetStockObject(NULL_BRUSH);
+	hBrush = CreateSolidBrush(RGB(100, 100, 100));
+	//hBrush = (HBRUSH)GetStockObject(NULL_BRUSH);
 	oldBrush = (HBRUSH)SelectObject(hdc, hBrush);
 	
 	for (int i = 0; i < nowMap.size(); i++)
