@@ -98,6 +98,14 @@ BOOL InitInstance(HINSTANCE hInstance, int nCmdShow)
    return TRUE;
 }
 
+
+HBITMAP hBackImage;
+BITMAP bitBack;
+
+void CreateBitmap();
+void DrawBitMap(HWND hWnd, HDC hdc);
+void DeleteBitmap();
+
 LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 {
 	static Player player(eStartposX, eStartPosY);
@@ -107,10 +115,8 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
     switch (message)
     {
 	case WM_CREATE:
-		// SetTimer(hWnd, 0, 100, NULL);
-
-	//case WM_TIMER:
-	//	break;
+		CreateBitmap();
+		break;
 
 	case WM_KEYDOWN:
 	{
@@ -133,21 +139,12 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 		PAINTSTRUCT ps;
 		HDC hdc = BeginPaint(hWnd, &ps);
 
-		// test
-		HBRUSH hBrush, oldBrush;
-		hBrush = CreateSolidBrush(RGB(150, 255, 255));
-		oldBrush = (HBRUSH)SelectObject(hdc, hBrush);
-
-		Rectangle(hdc, 90, 90, 350, 350);	// 이미지 띄울 예정
-
-		SelectObject(hdc, oldBrush);
-		DeleteObject(hBrush);
-		// test
-
-		// 더블버퍼링
 		RECT rectView;		
 		HDC memDc;
 		HBITMAP hBit, oldBit;
+
+		HDC finalDc;
+		HBITMAP fhBit, fhOldBit;
 
 		GetClientRect(hWnd, &rectView);
 		memDc = CreateCompatibleDC(hdc);
@@ -155,7 +152,14 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 		oldBit = (HBITMAP)SelectObject(memDc, hBit);
 		PatBlt(memDc, rectView.left, rectView.top, rectView.right, rectView.bottom, WHITENESS);
 
-		// HBRUSH hBrush, oldBrush;
+		finalDc = CreateCompatibleDC(hdc);
+		fhBit = CreateCompatibleBitmap(hdc, rectView.right, rectView.bottom);
+		fhOldBit = (HBITMAP)SelectObject(finalDc, fhBit);
+		PatBlt(finalDc, rectView.left, rectView.top, rectView.right, rectView.bottom, WHITENESS);
+
+		DrawBitMap(hWnd, finalDc);	// 배경사진
+
+		HBRUSH hBrush, oldBrush;
 		hBrush = CreateSolidBrush(RGB(255, 255, 255));
 		oldBrush = (HBRUSH)SelectObject(memDc, hBrush);
 
@@ -175,28 +179,25 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 			map.AddSpot({ ePosLeft, ePosBottom });
 		}
 		test++;
-		map.DrawPolygon(memDc);
+		map.DrawPolygon(memDc);	// 가림판
 		// todo : 클래스화
 
 		SelectObject(memDc, oldBrush);
 		DeleteObject(hBrush);
 
-		//hBrush = CreateSolidBrush(RGB(100, 100, 100));
-		//oldBrush = (HBRUSH)SelectObject(memDc, hBrush);
-
-		player.DrawPlayer(memDc);
+		player.DrawPlayer(memDc);	// 플레이어 및 색칠 영역
 		// 플레이어 위치
 
-		//SelectObject(memDc, oldBrush);
-		//DeleteObject(hBrush);
-
-		TransparentBlt(hdc, 0, 0, rectView.right, rectView.bottom, memDc, 0, 0, rectView.right, rectView.bottom, RGB(100, 100, 100));
-
-		//BitBlt(hdc, 0, 0, rectView.right, rectView.bottom, memDc, 0, 0, SRCCOPY);
+		TransparentBlt(finalDc, 0, 0, rectView.right, rectView.bottom, memDc, 0, 0, rectView.right, rectView.bottom, RGB(255, 65, 255)); // 투명 처리
+		BitBlt(hdc, 0, 0, rectView.right, rectView.bottom, finalDc, 0, 0, SRCCOPY);	// 더블버퍼링
 
 		SelectObject(memDc, oldBit);
 		DeleteObject(hBit);
 		DeleteDC(memDc);
+
+		SelectObject(finalDc, fhOldBit);
+		DeleteObject(fhBit);
+		DeleteDC(finalDc);
 
 		EndPaint(hWnd, &ps);
 	}
@@ -221,6 +222,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
         break;
    
     case WM_DESTROY:
+		DeleteBitmap();
         PostQuitMessage(0);
         break;
 
@@ -249,23 +251,38 @@ INT_PTR CALLBACK About(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam)
     return (INT_PTR)FALSE;
 }
 
-VOID CALLBACK KeyStateProc(HWND hWnd, UINT uMsg, UINT idEvent, DWORD dwTime)
+void CreateBitmap()
 {
-	if (GetKeyState('A') & 0x8000)
-	{
-		
-	}
-	else if (GetKeyState('S') & 0x8000)
-	{
-		
-	}
-	else if (GetKeyState('D') & 0x8000)
-	{
-		
-	}
-	else if (GetKeyState('W') & 0x8000)
-	{
-		
-	}
+	hBackImage = (HBITMAP)LoadImage(
+		NULL,
+		TEXT("../Image/test.bmp"),
+		IMAGE_BITMAP,
+		0,
+		0,
+		LR_LOADFROMFILE | LR_CREATEDIBSECTION
+	);
+	
+	GetObject(hBackImage, sizeof(BITMAP), &bitBack);
+}
 
+void DrawBitMap(HWND hWnd, HDC hdc)
+{
+	HDC hMemDc;
+	HBITMAP hOldBitmap;
+	int bx, by;
+
+	hMemDc = CreateCompatibleDC(hdc);
+	hOldBitmap = (HBITMAP)SelectObject(hMemDc, hBackImage);
+	bx = bitBack.bmWidth;
+	by = bitBack.bmHeight;
+
+	BitBlt(hdc, ePosLeft, ePosTop, bx, by, hMemDc, 0, 0, SRCCOPY);
+
+	SelectObject(hMemDc, hOldBitmap);
+	DeleteDC(hMemDc);
+}
+
+void DeleteBitmap()
+{
+	DeleteObject(hBackImage);
 }

@@ -136,7 +136,8 @@ void Player::CheckPlayerPos(int movePos, int turnPos, HideMap hideMap)
 	{
 		POINT trueCenter;	// 실제좌표
 		CalcCenterPos(playerPos, trueCenter);
-		centerPos = tempCenterPos;	// 이동좌표
+		// centerPos = tempCenterPos;	// 이동좌표
+		CalcCenterPos();
 
 		bool checkLine = CheckSpotOnTheLine(hideMap);
 
@@ -199,7 +200,7 @@ void Player::DrawPlayer(HDC hdc)
 	moveLine.DrawPolygon(hdc);
 	// todo : 수정해야함
 	HBRUSH hBrush, oldBrush;
-	hBrush = CreateSolidBrush(RGB(100, 100, 100));
+	hBrush = CreateSolidBrush(RGB(255, 65, 255));
 	//hBrush = (HBRUSH)GetStockObject(NULL_BRUSH);
 	oldBrush = (HBRUSH)SelectObject(hdc, hBrush);
 	
