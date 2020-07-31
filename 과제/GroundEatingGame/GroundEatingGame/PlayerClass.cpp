@@ -29,9 +29,6 @@ bool Player::CheckSpotOnTheLine(HideMap hideMap)
 	int x1, y1, x2, y2;
 	int result;
 
-	//if (hideMapPos[0].x + 260 == hideMapPos[1].x || hideMapPos[0].y + 260 == hideMapPos[2].y)
-	//	return false;
-
 	for (int i = 0; i < hideMapPos.size(); i++)
 	{
 		if (i == hideMapPos.size() - 1)
@@ -135,26 +132,35 @@ void Player::CheckPlayerPos(int movePos, int turnPos, HideMap hideMap)
 	}
 
 	// 이동 가능일 때
-	//bool a = false;
-	//if(nowMap.size()!=0)
-	//	a = CheckSpotOnTheLine(nowMap[0]);
-	//// 그린 선 위에 점 올라가는지 판별 테스트
 	if (isCanMove)
 	{
-		CalcCenterPos();
-		//centerPos = tempCenterPos;
-		//CalcCenterPos(tempPlayerPos, centerPos);
+		POINT trueCenter;	// 실제좌표
+		CalcCenterPos(playerPos, trueCenter);
+		centerPos = tempCenterPos;	// 이동좌표
+
 		bool checkLine = CheckSpotOnTheLine(hideMap);
-		if (!checkLine)
+
+		bool a = false;
+		//for (int i = 0; i < nowMap.size(); i++)
+		//{
+		//	a = CheckSpotOnTheLine(nowMap[i]);
+		//
+		//	if (a == true)
+		//		continue;
+		//	else
+		//		break;
+		//}
+
+		if (!checkLine && !a)
 		{
-			POINT temp = centerPos;
+			POINT temp = trueCenter;	// 시작점은 실제좌표 저장
 			if (preCheckLine != checkLine)	// 시작점 저장
 			{
-				if (centerPos.x == ePosTop + emoveSpeed)	temp.x = ePosTop;
-				else if (centerPos.x == ePosBottom - emoveSpeed)	temp.x = ePosBottom;
+				if (trueCenter.x == ePosTop + emoveSpeed)	temp.x = ePosTop;
+				else if (trueCenter.x == ePosBottom - emoveSpeed)	temp.x = ePosBottom;
 
-				if (centerPos.y == ePosLeft + emoveSpeed)	temp.y = ePosLeft;
-				else if (centerPos.y == ePosRight - emoveSpeed)	temp.y = ePosRight;
+				if (trueCenter.y == ePosLeft + emoveSpeed)	temp.y = ePosLeft;
+				else if (trueCenter.y == ePosRight - emoveSpeed)	temp.y = ePosRight;
 				// 라인에 딱 맞게 보정
 				playerMap.AddSpot(temp);
 			}
@@ -164,21 +170,21 @@ void Player::CheckPlayerPos(int movePos, int turnPos, HideMap hideMap)
 		{
 			if (preCheckLine != checkLine)	// 끝점 저장
 			{
-				playerMap.AddSpot(centerPos);
+				playerMap.AddSpot(centerPos);	// 끝점은 이동좌표 저장
 				playerMap.AddSpot();
 				nowMap.push_back(playerMap);
 			}
 			moveLine.RemoveAllSpot();
 			playerMap.RemoveAllSpot();
 		}
-		preCheckLine = checkLine;	// 라인 체크 저장
 
-		if (preTurn != playerTurn && !checkLine)	// 외부 존재, 방향 전환
+		if (preTurn != playerTurn && !preCheckLine)	// 외부 존재, 방향 전환
 		{
 			moveLine.AddSpot(centerPos);	// 꺽이는 부분 저장
-			playerMap.AddSpot(centerPos);
+			playerMap.AddSpot(trueCenter);
 		}
-			
+
+		preCheckLine = checkLine;	// 라인 체크 저장	
 		playerPos = tempPlayerPos;
 		if (turnPos == eLeft || turnPos == eRight)
 			MovePlayerX(movePos);
@@ -193,7 +199,8 @@ void Player::DrawPlayer(HDC hdc)
 	moveLine.DrawPolygon(hdc);
 	// todo : 수정해야함
 	HBRUSH hBrush, oldBrush;
-	hBrush = CreateSolidBrush(RGB(100, 100, 100));
+	// hBrush = CreateSolidBrush(RGB(100, 100, 100));
+	hBrush = (HBRUSH)GetStockObject(NULL_BRUSH);
 	oldBrush = (HBRUSH)SelectObject(hdc, hBrush);
 	
 	for (int i = 0; i < nowMap.size(); i++)
