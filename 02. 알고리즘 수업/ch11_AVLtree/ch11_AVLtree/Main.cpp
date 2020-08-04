@@ -23,6 +23,7 @@ Node *SearchParentNode(Node **deleteNode, int removeNum);
 
 void PrintNode(const Node *node);
 
+void CheckBalance(Node **tree, Node *goalNode);
 int CheckLeftNode(const Node *node, const Node *goalNode);
 int CheckRightNode(const Node *node, const Node *goalNode);
 
@@ -71,9 +72,11 @@ int main()
 			system("cls");
 			break;
 		case 6:
+		{
 			cout << "\n[밸런스 체크]\n";
-			//CheckLeftNode(tree, tree);
-			CheckRightNode(tree, tree);
+			CheckBalance(&tree, tree);
+			break;
+		}
 		default:
 			cout << "\n[잘못된 메뉴 입력. 재입력 필요]\n";
 			break;
@@ -82,6 +85,7 @@ int main()
 
 	delete tree;
 	return 0;
+
 }
 
 void ResetNode(Node *node)
@@ -362,16 +366,73 @@ void PrintNode(const Node *node)
 	return;
 }
 
+void CheckBalance(Node **tree, Node *goalNode)
+{
+	Node *balanceNode = *tree;
+	if (balanceNode->name == "")
+	{
+		cout << "\n[트리가 비어있음]\n\n";
+		return;
+	}
+
+	if (balanceNode->left != NULL)
+		CheckBalance(&balanceNode->left, goalNode);
+
+	int left = CheckLeftNode(balanceNode, balanceNode);
+	int right = CheckRightNode(balanceNode, balanceNode);
+
+	cout <<"left : " << left << ", right : " << right << endl;
+	
+	// 노드의 차가 2이상이면 변경필요
+	if (left - right >= 2)
+	{
+		cout << "왼쪽 밸런스 조정 필요" << endl;
+
+		balanceNode->left->right = balanceNode;
+
+		if (balanceNode == goalNode)	// 루트노드
+		{
+			(*tree) = balanceNode->left;
+			(*tree)->right->right = balanceNode->right;
+		}
+		else
+		{
+			balanceNode = balanceNode->left;
+			balanceNode->right = balanceNode;
+		}
+
+		balanceNode->left = NULL;
+	}
+	else if (left - right <= -2)
+	{
+		cout << "오른쪽 밸런스 조정 필요" << endl;
+
+		balanceNode->right->left = balanceNode;
+
+		if (balanceNode == goalNode)	// 루트노드
+		{
+			(*tree) = balanceNode->right;
+			(*tree)->left->left = balanceNode->left;
+		}
+		else
+		{
+			(*tree) = balanceNode->right;
+			(*tree)->left = balanceNode;
+		}
+
+		balanceNode->right = NULL;
+	}
+
+	if (balanceNode->right != NULL)
+		CheckBalance(&balanceNode->right, goalNode);
+
+	return;
+}
+
 int CheckLeftNode(const Node *node, const Node *goalNode)
 {
 	static int checkNum;
 	Node startNode = *goalNode;
-
-	if (node->name == "")
-	{
-		cout << "\n[트리가 비어있음]\n\n";
-		return INT_MIN;
-	}
 
 	if (node->left != NULL)
 	{
@@ -400,12 +461,6 @@ int CheckRightNode(const Node *node, const Node *goalNode)
 	static int checkNum;
 	Node startNode = *goalNode;
 
-	if (node->name == "")
-	{
-		cout << "\n[트리가 비어있음]\n\n";
-		return INT_MIN;
-	}
-
 	if (node->right != NULL)
 	{
 		checkNum++;
@@ -420,6 +475,7 @@ int CheckRightNode(const Node *node, const Node *goalNode)
 	}
 
 	cout << node->num << ", " << node->name << endl;
+
 	if (node->left != NULL)
 	{
 		checkNum++;
