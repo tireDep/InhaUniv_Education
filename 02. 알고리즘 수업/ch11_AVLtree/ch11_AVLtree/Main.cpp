@@ -23,6 +23,9 @@ Node *SearchParentNode(Node **deleteNode, int removeNum);
 
 void PrintNode(const Node *node);
 
+int CheckLeftNode(const Node *node, const Node *goalNode);
+int CheckRightNode(const Node *node, const Node *goalNode);
+
 int main()
 {
 	int inputNum;
@@ -33,11 +36,11 @@ int main()
 	while (1)
 	{
 		cout << "[메인 메뉴]\n";
-		cout << "1. 노드 추가\n2. 노드 삭제\n3. 노드 출력\n4. 검색\n5. 화면 삭제\n6. 프로그램 종료\n";
+		cout << "1. 노드 추가\n2. 노드 삭제\n3. 노드 출력\n4. 검색\n5. 화면 삭제\n6. 밸런스 체크\n7. 프로그램 종료\n";
 		cout << "\n메뉴 선택 : ";
 		cin >> inputNum;
 
-		if (inputNum == 6)
+		if (inputNum == 7)
 		{
 			cout << "\n프로그램 종료\n";
 			break;
@@ -67,6 +70,10 @@ int main()
 			Sleep(200);
 			system("cls");
 			break;
+		case 6:
+			cout << "\n[밸런스 체크]\n";
+			//CheckLeftNode(tree, tree);
+			CheckRightNode(tree, tree);
 		default:
 			cout << "\n[잘못된 메뉴 입력. 재입력 필요]\n";
 			break;
@@ -273,7 +280,6 @@ void DeleteNode(Node **tree)
 				isRemove = true;
 			}
 
-
 		}// 지우려는 노드에 자식노드가 양쪽 모두 존재
 
 	}	// else
@@ -354,4 +360,69 @@ void PrintNode(const Node *node)
 		PrintNode(node->right);
 
 	return;
+}
+
+int CheckLeftNode(const Node *node, const Node *goalNode)
+{
+	static int checkNum;
+	Node startNode = *goalNode;
+
+	if (node->name == "")
+	{
+		cout << "\n[트리가 비어있음]\n\n";
+		return INT_MIN;
+	}
+
+	if (node->left != NULL)
+	{
+		checkNum++;
+		CheckLeftNode(node->left, goalNode);
+	}
+
+	if (node->num == startNode.num)
+	{
+		int result = checkNum;
+		checkNum = 0;
+		return result;
+	}
+
+	cout << node->num << ", " << node->name << endl;
+
+	if (node->right != NULL)
+	{
+		checkNum++;
+		CheckLeftNode(node->right, goalNode);
+	}
+}
+
+int CheckRightNode(const Node *node, const Node *goalNode)
+{
+	static int checkNum;
+	Node startNode = *goalNode;
+
+	if (node->name == "")
+	{
+		cout << "\n[트리가 비어있음]\n\n";
+		return INT_MIN;
+	}
+
+	if (node->right != NULL)
+	{
+		checkNum++;
+		CheckRightNode(node->right, goalNode);
+	}
+
+	if (node->num == startNode.num)
+	{
+		int result = checkNum;
+		checkNum = 0;
+		return result;	// 시작노드 만날 경우
+	}
+
+	cout << node->num << ", " << node->name << endl;
+	if (node->left != NULL)
+	{
+		checkNum++;
+		CheckRightNode(node->left, goalNode);
+	}
 }
