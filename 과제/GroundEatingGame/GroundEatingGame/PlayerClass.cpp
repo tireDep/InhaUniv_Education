@@ -136,23 +136,20 @@ void Player::CheckPlayerPos(int movePos, int turnPos, HideMap hideMap)
 	{
 		POINT trueCenter;	// 실제좌표
 		CalcCenterPos(playerPos, trueCenter);
-		// centerPos = tempCenterPos;	// 이동좌표
-		CalcCenterPos();
+		centerPos = tempCenterPos;	// 이동좌표
+		//CalcCenterPos();
 
 		bool checkLine = CheckSpotOnTheLine(hideMap);
 
-		bool a = false;
-		//for (int i = 0; i < nowMap.size(); i++)
-		//{
-		//	a = CheckSpotOnTheLine(nowMap[i]);
-		//
-		//	if (a == true)
-		//		continue;
-		//	else
-		//		break;
-		//}
+		for (int i = 0; i < nowMap.size(); i++)
+		{
+			checkLine = CheckSpotOnTheLine(nowMap[i]);
+		
+			if (checkLine == true && preCheckLine != checkLine)
+				break;
+		}
 
-		if (!checkLine && !a)
+		if (!checkLine)// || !CheckSpotOnTheLine(hideMap))
 		{
 			POINT temp = trueCenter;	// 시작점은 실제좌표 저장
 			if (preCheckLine != checkLine)	// 시작점 저장
@@ -182,7 +179,7 @@ void Player::CheckPlayerPos(int movePos, int turnPos, HideMap hideMap)
 		}
 		else
 		{
-			if (preCheckLine != checkLine)	// 끝점 저장
+			if (preCheckLine != checkLine)// || !CheckSpotOnTheLine(hideMap))	// 끝점 저장
 			{
 				playerMap.AddSpot(centerPos);	// 끝점은 이동좌표 저장
 				playerMap.AddSpot();
@@ -214,11 +211,11 @@ void Player::DrawPlayer(HDC hdc)
 	// todo : 수정해야함
 	HBRUSH hBrush, oldBrush;
 	hBrush = CreateSolidBrush(RGB(255, 65, 255));
-	//hBrush = (HBRUSH)GetStockObject(NULL_BRUSH);
 	oldBrush = (HBRUSH)SelectObject(hdc, hBrush);
 	
-	for (int i = 0; i < nowMap.size(); i++)
-		nowMap[i].DrawPolygon(hdc);
+	vector<HideMap>::reverse_iterator it;
+	for (it = nowMap.rbegin(); it < nowMap.rend(); it++)
+		it->DrawPolygon(hdc);
 	 	
 	SelectObject(hdc, oldBrush);
 	DeleteObject(hBrush);

@@ -20,8 +20,14 @@ void HideMap::DrawPolygon(HDC hdc)
 		printMap[i].x = mapPos[i].x;
 		printMap[i].y = mapPos[i].y;
 	}
-
+	
 	Polygon(hdc, printMap, mapPos.size());
+
+	//vector<HideMap>::reverse_iterator it;
+	//for (it = mapPos.rbegin(); it < mapPos.rend(); it++)
+	//{
+	//	Polygon(hdc, &mapPos[0], mapPos.size());
+	//}
 }
 
 void HideMap::AddSpot(POINT addSpot)
@@ -41,13 +47,18 @@ vector<POINT> HideMap::GetHideMapPos()
 
 void HideMap::AddSpot()
 {
-	if (mapPos.size() % 2 != 0)	// °¡Àå ¹Ù±ù ¼±(¿Ü°û¼± Ãæµ¹)
-	{
-		if (mapPos[mapPos.size() - 1].y == ePosTop || mapPos[mapPos.size() - 1].y == ePosBottom)
-			mapPos.push_back({ mapPos[0].x, mapPos[mapPos.size() - 1].y });
-		else if(mapPos[mapPos.size() - 1].x == ePosLeft || mapPos[mapPos.size() - 1].x == ePosRight)
-			mapPos.push_back({ mapPos[mapPos.size() - 1].x, mapPos[0].y });
-	}
+	POINT temp;
+	if (mapPos[0].x < mapPos[mapPos.size() - 1].x)
+		temp.x = mapPos[0].x;
+	else
+		temp.x = mapPos[mapPos.size() - 1].x;
+
+	if (mapPos[0].y < mapPos[mapPos.size() - 1].y)
+		temp.y = mapPos[0].y;
+	else
+		temp.y = mapPos[mapPos.size() - 1].y;
+
+	mapPos.push_back(temp);
 }
 
 void HideMap::RemoveAllSpot()
