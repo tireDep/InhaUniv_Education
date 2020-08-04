@@ -2,7 +2,11 @@
 #include<string>
 #include<Windows.h>
 
+#include<queue>
+
 using namespace std;
+
+using std::queue;
 
 struct Node
 {
@@ -23,9 +27,11 @@ Node *SearchParentNode(Node **deleteNode, int removeNum);
 
 void PrintNode(const Node *node);
 
-void CheckBalance(Node **tree, Node *goalNode);
-int CheckLeftNode(const Node *node, const Node *goalNode);
-int CheckRightNode(const Node *node, const Node *goalNode);
+void CheckBalance(Node **tree, Node goalNode);
+int CheckLeftNode(const Node *node, const Node goalNode);
+int CheckRightNode(const Node *node, const Node goalNode);
+
+void PrintBalanceTree(Node tree);
 
 int main()
 {
@@ -52,10 +58,12 @@ int main()
 		case 1:
 			cout << "\n[노드 추가]\n";
 			AddNode(&tree);
+			CheckBalance(&tree, *tree);
 			break;
 		case 2:
 			cout << "\n[노드 삭제]\n";
 			DeleteNode(&tree);
+			CheckBalance(&tree, *tree);
 			break;
 		case 3:
 			cout << "\n[리스트 출력]\n출력 내역 : 번호, 이름\n";
@@ -74,7 +82,11 @@ int main()
 		case 6:
 		{
 			cout << "\n[밸런스 체크]\n";
-			CheckBalance(&tree, tree);
+			//cout << "[트리 출력]\n";
+			//PrintBalanceTree(*tree);
+			//CheckBalance(&tree, *tree);
+			cout << "\n\n[트리 출력]\n";
+			PrintBalanceTree(*tree);
 			break;
 		}
 		default:
@@ -366,7 +378,7 @@ void PrintNode(const Node *node)
 	return;
 }
 
-void CheckBalance(Node **tree, Node *goalNode)
+void CheckBalance(Node **tree, Node goalNode)
 {
 	Node *balanceNode = *tree;
 	if (balanceNode->name == "")
@@ -378,19 +390,19 @@ void CheckBalance(Node **tree, Node *goalNode)
 	if (balanceNode->left != NULL)
 		CheckBalance(&balanceNode->left, goalNode);
 
-	int left = CheckLeftNode(balanceNode, balanceNode);
-	int right = CheckRightNode(balanceNode, balanceNode);
+	int left = CheckLeftNode(balanceNode, *balanceNode);
+	int right = CheckRightNode(balanceNode, *balanceNode);
 
-	cout <<"left : " << left << ", right : " << right << endl;
+	//cout <<"left : " << left << ", right : " << right << endl;
 	
 	// 노드의 차가 2이상이면 변경필요
 	if (left - right >= 2)
 	{
-		cout << "왼쪽 밸런스 조정 필요" << endl;
+		//cout << "왼쪽 밸런스 조정 필요" << endl;
 
 		balanceNode->left->right = balanceNode;
 
-		if (balanceNode == goalNode)	// 루트노드
+		if (balanceNode == &goalNode)	// 루트노드
 		{
 			(*tree) = balanceNode->left;
 			(*tree)->right->right = balanceNode->right;
@@ -405,11 +417,11 @@ void CheckBalance(Node **tree, Node *goalNode)
 	}
 	else if (left - right <= -2)
 	{
-		cout << "오른쪽 밸런스 조정 필요" << endl;
+		//cout << "오른쪽 밸런스 조정 필요" << endl;
 
 		balanceNode->right->left = balanceNode;
 
-		if (balanceNode == goalNode)	// 루트노드
+		if (balanceNode == &goalNode)	// 루트노드
 		{
 			(*tree) = balanceNode->right;
 			(*tree)->left->left = balanceNode->left;
@@ -429,10 +441,10 @@ void CheckBalance(Node **tree, Node *goalNode)
 	return;
 }
 
-int CheckLeftNode(const Node *node, const Node *goalNode)
+int CheckLeftNode(const Node *node, const Node goalNode)
 {
 	static int checkNum;
-	Node startNode = *goalNode;
+	Node startNode = goalNode;
 
 	if (node->left != NULL)
 	{
@@ -447,7 +459,7 @@ int CheckLeftNode(const Node *node, const Node *goalNode)
 		return result;
 	}
 
-	cout << node->num << ", " << node->name << endl;
+//	cout << node->num << ", " << node->name << endl;
 
 	if (node->right != NULL)
 	{
@@ -456,10 +468,10 @@ int CheckLeftNode(const Node *node, const Node *goalNode)
 	}
 }
 
-int CheckRightNode(const Node *node, const Node *goalNode)
+int CheckRightNode(const Node *node, const Node goalNode)
 {
 	static int checkNum;
-	Node startNode = *goalNode;
+	Node startNode = goalNode;
 
 	if (node->right != NULL)
 	{
@@ -474,11 +486,53 @@ int CheckRightNode(const Node *node, const Node *goalNode)
 		return result;	// 시작노드 만날 경우
 	}
 
-	cout << node->num << ", " << node->name << endl;
+//	cout << node->num << ", " << node->name << endl;
 
 	if (node->left != NULL)
 	{
 		checkNum++;
 		CheckRightNode(node->left, goalNode);
 	}
+}
+
+void PrintBalanceTree(Node tree)
+{
+	int cnt = 0;
+	int checkNum = 0;
+	queue<char> checkChar;
+	queue<Node *> printQueue;
+	Node *tempData;
+
+	printQueue.push(&tree);
+	checkChar.push('C');
+	while (printQueue.size() != 0)
+	{
+		tempData = printQueue.front();
+		printQueue.pop();
+		cout << tempData->num << " | " << tempData->name << checkChar.front();
+		checkChar.pop();
+		if (tempData->left)
+		{
+			printQueue.push(tempData->left);
+			checkChar.push('L');
+		}
+		if (tempData->right)
+		{
+			printQueue.push(tempData->right);
+			checkChar.push('R');
+		}
+
+		if (cnt % 2 == checkNum)
+		{
+			checkNum = cnt * 2;
+			cout << endl;
+		}
+		else
+		{
+			cout << "\t";
+		}
+
+		cnt++;
+	}
+	cout << endl << endl;
 }
