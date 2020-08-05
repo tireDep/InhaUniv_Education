@@ -394,49 +394,54 @@ void CheckBalance(Node **tree, Node goalNode)
 	if (left - right >= 2)
 	{
 		cout << "왼쪽 밸런스 조정 필요" << endl;
-
-		Node *tempNode = new Node;
-		if (balanceNode->left->right != NULL) tempNode = balanceNode->left->right;
-		balanceNode->left->right = balanceNode;
-
-		if (balanceNode == &goalNode)	// 루트노드
+		Node *tempNode = balanceNode;
+		if (balanceNode->right == NULL && balanceNode->left->left != NULL)
 		{
 			(*tree) = balanceNode->left;
-			(*tree)->right->right = balanceNode->right;
+			(*tree)->right = balanceNode;
+			balanceNode->left = NULL;
 		}
 		else
 		{
-			(*tree) = balanceNode->left;
+			balanceNode = balanceNode->left;
+			(*tree)->left = balanceNode->right;
+			(*tree)->left->left = balanceNode;
+			balanceNode->right = NULL;
+			// 1차 회전
 
-			if((*tree)->right==NULL)
-				(*tree)->right = balanceNode;
-			else
-				(*tree)->right->left = tempNode;
+			(*tree) = tempNode->left;
+			(*tree)->right = tempNode;
+			tempNode->left = NULL;
+			// 2차 회전
 		}
-		//balanceNode->left = NULL;
 	}
 	else if (left - right <= -2)
 	{
 		cout << "오른쪽 밸런스 조정 필요" << endl;
 		
-		Node *tempNode = new Node;
-		if(balanceNode->right->left!=NULL) tempNode = balanceNode->right->left;
-		balanceNode->right->left = balanceNode;
-
-		if (balanceNode == &goalNode)	// 루트노드
+		Node *tempNode = balanceNode;
+		if (balanceNode->left == NULL && balanceNode->right->right != NULL)
 		{
-			(*tree) = balanceNode->right;
-			(*tree)->left->left = balanceNode->left;
+			// (*tree) = balanceNode->right;
+			// (*tree)->left = balanceNode;
+			balanceNode = tempNode->right;
+			balanceNode->left = tempNode;
+			tempNode->right = NULL;
 		}
 		else
 		{
-			(*tree) = balanceNode->right;
-			if ((*tree)->left == NULL)
-				(*tree)->left = balanceNode;
-			else
-				(*tree)->left->right = tempNode;
+			balanceNode = balanceNode->right;
+			(*tree)->right = balanceNode->left;
+			(*tree)->right->right = balanceNode;
+			balanceNode->left = NULL;
+			// 1차 회전
+
+			(*tree) = tempNode->right;
+			(*tree)->left = tempNode;
+			tempNode->right = NULL;
+			// 2차 회전
 		}
-		// balanceNode->right = NULL;
+
 	}
 
 	if (balanceNode->right != NULL)
@@ -464,7 +469,6 @@ int CheckLeftNode(const Node *node, const Node goalNode)
 
 	if (node->right != NULL)
 	{
-		checkNum++;
 		CheckLeftNode(node->right, goalNode);
 	}
 }
@@ -488,7 +492,6 @@ int CheckRightNode(const Node *node, const Node goalNode)
 
 	if (node->left != NULL)
 	{
-		checkNum++;
 		CheckRightNode(node->left, goalNode);
 	}
 }
