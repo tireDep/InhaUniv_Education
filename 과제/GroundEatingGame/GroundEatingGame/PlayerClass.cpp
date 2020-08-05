@@ -74,7 +74,12 @@ bool Player::CheckCanMoveX(POINT tempPlayerPos, POINT tempCenterPos)
 	}
 	if (!checkInside)
 	{
-		if (playerPos.x >= eStartposX && playerPos.x <= ePosRight)
+		if ((tempCenterPos.x <= eStartposX - eDecimal / 2 && playerTurn == eLeft)
+			|| (tempCenterPos.x >= ePosRight + eDecimal / 2 && playerTurn == eRight))
+			return false;
+
+		else if ((tempCenterPos.x <= ePosRight - eDecimal / 2 && playerTurn == eLeft)
+			|| (tempCenterPos.x >= eStartposX + eDecimal / 2 && playerTurn == eRight))
 			return true;
 	}
 	return false;
@@ -94,8 +99,13 @@ bool Player::CheckCanMoveY(POINT tempPlayerPos, POINT tempCenterPos)
 	}
 	if (!checkInside)
 	{
-		if (playerPos.y >= eStartPosY && playerPos.y <= ePosBottom)
-			return true;
+		if ((tempCenterPos.y <= eStartPosY - eDecimal / 2 && playerTurn == eUp)
+			|| (tempCenterPos.y >= ePosBottom + eDecimal / 2 && playerTurn == eDown))
+			return false;
+
+		else if ((tempCenterPos.y <= ePosBottom - eDecimal / 2 && playerTurn == eUp)
+			|| (tempCenterPos.y >= eStartPosY + eDecimal / 2 && playerTurn == eDown))
+			return true;	
 	}
 	return false;
 }
@@ -141,12 +151,16 @@ void Player::CheckPlayerPos(int movePos, int turnPos, HideMap hideMap)
 
 		bool checkLine = CheckSpotOnTheLine(hideMap);
 
-		for (int i = 0; i < nowMap.size(); i++)
+		if (!checkLine)	// 가장자리 선이 아닐 경우
 		{
-			checkLine = CheckSpotOnTheLine(nowMap[i]);
-		
-			if (checkLine == true && preCheckLine != checkLine)
-				break;
+			for (int i = 0; i < nowMap.size(); i++)
+			{
+				checkLine = CheckSpotOnTheLine(nowMap[i]);
+
+				if (checkLine == true)
+				//if (checkLine == true && preCheckLine != checkLine)
+					break;
+			}
 		}
 
 		if (!checkLine)// || !CheckSpotOnTheLine(hideMap))

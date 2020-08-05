@@ -12,22 +12,16 @@ HideMap::~HideMap()
 }
 
 void HideMap::DrawPolygon(HDC hdc)
-{	
+{
 	POINT *printMap = new POINT[mapPos.size()];
-	
+
 	for (int i = 0; i < mapPos.size(); i++)
 	{
 		printMap[i].x = mapPos[i].x;
 		printMap[i].y = mapPos[i].y;
 	}
-	
-	Polygon(hdc, printMap, mapPos.size());
 
-	//vector<HideMap>::reverse_iterator it;
-	//for (it = mapPos.rbegin(); it < mapPos.rend(); it++)
-	//{
-	//	Polygon(hdc, &mapPos[0], mapPos.size());
-	//}
+	Polygon(hdc, printMap, mapPos.size());
 }
 
 void HideMap::AddSpot(POINT addSpot)
@@ -48,17 +42,53 @@ vector<POINT> HideMap::GetHideMapPos()
 void HideMap::AddSpot()
 {
 	POINT temp;
-	if (mapPos[0].x < mapPos[mapPos.size() - 1].x)
-		temp.x = mapPos[0].x;
-	else
-		temp.x = mapPos[mapPos.size() - 1].x;
+	if (mapPos.size() != 2)
+	{
+		//if (mapPos[0].x <= mapPos[1].x)
+		if (mapPos[0].x < mapPos[mapPos.size() - 1].x)
+			temp.x = mapPos[0].x;
+		else
+			temp.x = mapPos[mapPos.size() - 1].x;
 
-	if (mapPos[0].y < mapPos[mapPos.size() - 1].y)
-		temp.y = mapPos[0].y;
-	else
-		temp.y = mapPos[mapPos.size() - 1].y;
+		//if (mapPos[0].y >= mapPos[2].y)
+		if (mapPos[0].y < mapPos[mapPos.size() - 1].y)
+			temp.y = mapPos[0].y;
+		else
+			temp.y = mapPos[mapPos.size() - 1].y;
 
-	mapPos.push_back(temp);
+		mapPos.push_back(temp);
+	}
+	else if (mapPos.size() == 2)
+	{
+		if (mapPos[0].y == mapPos[1].y)	// 좌우 직선
+		{
+			temp.x = mapPos[1].x;
+			if (mapPos[1].y <= (eStartPosY + ePosBottom) / 2)
+				temp.y = eStartPosY + eDecimal / 2;
+			else
+				temp.y = ePosBottom;
+			
+			//temp.y = eStartPosY + eDecimal / 2;
+
+			mapPos.push_back(temp);
+			temp.x = mapPos[0].x;
+			mapPos.push_back(temp);
+		}
+		else if (mapPos[0].x == mapPos[1].x)	// 상하 직선
+		{
+			temp.y = mapPos[1].y;
+			if (mapPos[1].x <= (eStartposX + ePosRight) / 2)
+				temp.x = eStartposX + eDecimal / 2;
+			else
+				temp.x = ePosBottom;
+
+			//temp.x = eStartposX + eDecimal / 2;
+
+			mapPos.push_back(temp);
+			temp.y = mapPos[0].y;
+			mapPos.push_back(temp);
+		}
+	}
 }
 
 void HideMap::RemoveAllSpot()
@@ -107,39 +137,7 @@ bool HideMap::CheckMapInside(POINT playerPos, POINT centerPos, int PlayerTurn)
 		{
 			if ((centerPos.x >= x1 && centerPos.x <= x2) && (centerPos.y >= y1 && centerPos.y <= y2)
 				|| (centerPos.x >= x2 && centerPos.x <= x1) && (centerPos.y >= y2 && centerPos.y <= y1))
-			{
-				// if (mapPos[0].x == mapPos[1].x + emoveSpeed || mapPos[0].x + emoveSpeed == mapPos[1].x)
-				// {
-				// 	if ((playerPos.y != mapPos[0].y && playerPos.y != mapPos[2].y) && (eLeft == PlayerTurn || eRight == PlayerTurn))
-				// 		return true;
-				// 	else
-				// 		return false;
-				// }
-				// else if (mapPos[0].x == mapPos[2].x + emoveSpeed || mapPos[0].x + emoveSpeed == mapPos[2].x)
-				// {
-				// 	if ((playerPos.y != mapPos[0].y && playerPos.y != mapPos[2].y) && (eLeft == PlayerTurn || eRight == PlayerTurn))
-				// 		return true;
-				// 	else
-				// 		return false;
-				// }
-				// 
-				// if (mapPos[0].y == mapPos[2].y + emoveSpeed || mapPos[0].y + emoveSpeed == mapPos[2].y)
-				// {
-				// 	if ((playerPos.x != mapPos[0].x && playerPos.x != mapPos[2].x) && (eUp == PlayerTurn || eDown == PlayerTurn))
-				// 		return true;
-				// 	else
-				// 		return false;
-				// }
-				// else if (mapPos[0].y == mapPos[1].y + emoveSpeed || mapPos[0].y + emoveSpeed == mapPos[1].y)
-				// {
-				// 	if ((playerPos.x != mapPos[0].x && playerPos.x != mapPos[1].x) && (eUp == PlayerTurn || eDown == PlayerTurn))
-				// 		return true;
-				// 	else
-				// 		return false;
-				// }
-				// else
 					return false;	// 직선의 시작과 끝 사이에 점이 존재하는지
-			}
 		}
 	}
 
