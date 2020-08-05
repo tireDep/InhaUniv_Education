@@ -168,11 +168,11 @@ void Player::CheckPlayerPos(int movePos, int turnPos, HideMap hideMap)
 			POINT temp = trueCenter;	// 시작점은 실제좌표 저장
 			if (preCheckLine != checkLine)	// 시작점 저장
 			{
-				if (trueCenter.x == ePosTop + emoveSpeed)	temp.x = ePosTop;
-				else if (trueCenter.x == ePosBottom - emoveSpeed)	temp.x = ePosBottom;
-
-				if (trueCenter.y == ePosLeft + emoveSpeed)	temp.y = ePosLeft;
-				else if (trueCenter.y == ePosRight - emoveSpeed)	temp.y = ePosRight;
+				//if (trueCenter.x == ePosTop + emoveSpeed)	temp.x = ePosTop;
+				//else if (trueCenter.x == ePosBottom - emoveSpeed)	temp.x = ePosBottom;
+				//
+				//if (trueCenter.y == ePosLeft + emoveSpeed)	temp.y = ePosLeft;
+				//else if (trueCenter.y == ePosRight - emoveSpeed)	temp.y = ePosRight;
 				// 라인에 딱 맞게 보정
 				playerMap.AddSpot(temp);
 			}
@@ -193,6 +193,12 @@ void Player::CheckPlayerPos(int movePos, int turnPos, HideMap hideMap)
 		}
 		else
 		{
+			if (preTurn != playerTurn && !preCheckLine)	// 외부 존재, 방향 전환
+			{
+				moveLine.AddSpot(centerPos);	// 꺽이는 부분 저장
+				playerMap.AddSpot(trueCenter);
+			}
+
 			if (preCheckLine != checkLine)// || !CheckSpotOnTheLine(hideMap))	// 끝점 저장
 			{
 				playerMap.AddSpot(centerPos);	// 끝점은 이동좌표 저장

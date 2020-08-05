@@ -5,7 +5,8 @@
 #include "GroundEatingGame.h"
 #include "PlayerClass.h"
 #include "MapClass.h"
-
+#include <stdio.h>
+#include<Windows.h>
 #pragma comment(lib, "msimg32.lib")
 
 #define MAX_LOADSTRING 100
@@ -116,6 +117,8 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
     {
 	case WM_CREATE:
 		CreateBitmap();
+		AllocConsole();
+		freopen("CONOUT$", "wt", stdout);
 		break;
 
 	case WM_KEYDOWN:
@@ -136,6 +139,11 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 	case WM_PAINT:
 	{
 		static int test = 0;
+
+		static int k = 0;
+		printf("%d\n", k);
+		k++;
+		// OutputDebugString(_T("test"));
 		PAINTSTRUCT ps;
 		HDC hdc = BeginPaint(hWnd, &ps);
 
@@ -223,6 +231,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
    
     case WM_DESTROY:
 		DeleteBitmap();
+		FreeConsole();
         PostQuitMessage(0);
         break;
 

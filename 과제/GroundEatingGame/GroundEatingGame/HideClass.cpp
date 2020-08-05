@@ -42,7 +42,7 @@ vector<POINT> HideMap::GetHideMapPos()
 void HideMap::AddSpot()
 {
 	POINT temp;
-	if (mapPos.size() != 2 && mapPos.size() != 4)
+	if (mapPos.size() != 2 && mapPos.size()%2 != 0)
 	{
 		// 1칸 이동시 버그 있음!!
 		 if (mapPos[0].x < mapPos[1].x && mapPos[0].y == mapPos[1].y && mapPos[1].y > mapPos[mapPos.size() - 1].y)
