@@ -44,23 +44,57 @@ void HideMap::AddSpot()
 	POINT temp;
 	if (mapPos.size() != 2)
 	{
-		//if (mapPos[0].x <= mapPos[1].x)
-		if (mapPos[0].x < mapPos[mapPos.size() - 1].x)
+		// 1Ä­ ÀÌµ¿½Ã ¹ö±× ÀÖÀ½!!
+		 if (mapPos[0].x < mapPos[1].x && mapPos[0].y == mapPos[1].y && mapPos[1].y > mapPos[mapPos.size() - 1].y)
+		 {
+		 	temp.x = mapPos[0].x;
+		 	temp.y = mapPos[mapPos.size() - 1].y;
+		 }	// ÁÂ¿ì»ó
+		 else if (mapPos[0].y < mapPos[1].y && mapPos[0].x == mapPos[1].x && mapPos[1].x > mapPos[mapPos.size() - 1].x)
+		 {
+		 	temp.x = mapPos[mapPos.size() - 1].x;
+		 	temp.y = mapPos[0].y;
+		 }	// ÇÏ¿ìÁÂ
+		 // ¿Þ»ó´Ü
+		else if (mapPos[0].x > mapPos[1].x && mapPos[0].y == mapPos[1].y && mapPos[1].y > mapPos[mapPos.size() - 1].y)
+		{
 			temp.x = mapPos[0].x;
-		else
-			temp.x = mapPos[mapPos.size() - 1].x;
-
-		//if (mapPos[0].y >= mapPos[2].y)
-		if (mapPos[0].y < mapPos[mapPos.size() - 1].y)
-			temp.y = mapPos[0].y;
-		else
 			temp.y = mapPos[mapPos.size() - 1].y;
+		}	// ¿ìÁÂ»ó == ÁÂ¿ì»ó
+		else if (mapPos[0].y < mapPos[1].y && mapPos[0].x == mapPos[1].x && mapPos[1].x < mapPos[mapPos.size() - 1].x)
+		{
+			temp.x = mapPos[mapPos.size() - 1].x;
+			temp.y = mapPos[0].y;
+		}	// ÇÏÁÂ¿ì == ÇÏ¿ìÁÂ
+		////¿ì»ó´Ü
+		else if (mapPos[0].x < mapPos[1].x && mapPos[0].y == mapPos[1].y && mapPos[1].y < mapPos[mapPos.size() - 1].y)
+		{
+			temp.x = mapPos[0].x;
+			temp.y = mapPos[mapPos.size() - 1].y;
+		}	// ÁÂ¿ìÇÏ
+		else if (mapPos[0].y > mapPos[1].y && mapPos[0].x == mapPos[1].x && mapPos[1].x > mapPos[mapPos.size() - 1].x)
+		{
+			temp.x = mapPos[mapPos.size() - 1].x;
+			temp.y = mapPos[0].y;
+		}	// »ó¿ìÁÂ
+		// ÁÂÇÏ´Ü
+		else if (mapPos[0].y > mapPos[1].y && mapPos[0].x == mapPos[1].x && mapPos[1].x < mapPos[mapPos.size() - 1].x)
+		{
+			temp.x = mapPos[mapPos.size() - 1].x;
+			temp.y = mapPos[0].y;
+		}	// »óÁÂ¿ì
+		else if (mapPos[0].x > mapPos[1].x && mapPos[0].y == mapPos[1].y && mapPos[1].y < mapPos[mapPos.size() - 1].y)
+		{
+			temp.x = mapPos[0].x;
+			temp.y = mapPos[mapPos.size() - 1].y;
+		}	// ¿ìÁÂÇÏ
+		// ¿ìÇÏ´Ü
 
 		mapPos.push_back(temp);
 	}
 	else if (mapPos.size() == 2)
 	{
-		if (mapPos[0].y == mapPos[1].y)	// ÁÂ¿ì Á÷¼±
+		if (mapPos[0].y == mapPos[mapPos.size() - 1].y)	// ÁÂ¿ì Á÷¼±
 		{
 			temp.x = mapPos[1].x;
 			if (mapPos[1].y <= (eStartPosY + ePosBottom) / 2)
