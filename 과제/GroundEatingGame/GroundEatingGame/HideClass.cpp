@@ -42,7 +42,7 @@ vector<POINT> HideMap::GetHideMapPos()
 void HideMap::AddSpot()
 {
 	POINT temp;
-	if (mapPos.size() != 2)
+	if (mapPos.size() != 2 && mapPos.size() != 4)
 	{
 		// 1칸 이동시 버그 있음!!
 		 if (mapPos[0].x < mapPos[1].x && mapPos[0].y == mapPos[1].y && mapPos[1].y > mapPos[mapPos.size() - 1].y)
@@ -89,6 +89,11 @@ void HideMap::AddSpot()
 			temp.y = mapPos[mapPos.size() - 1].y;
 		}	// 우좌하
 		// 우하단
+		else
+		{
+			temp.x = mapPos[mapPos.size()-1].x;
+			temp.y = mapPos[0].y;
+		}
 
 		mapPos.push_back(temp);
 	}
@@ -122,6 +127,27 @@ void HideMap::AddSpot()
 			temp.y = mapPos[0].y;
 			mapPos.push_back(temp);
 		}
+	}
+	else if(mapPos.size() % 2 == 0) //else if (mapPos.size() == 4)
+	{
+		if (mapPos[0].x == mapPos[1].x)
+		{
+			temp.x = mapPos[mapPos.size() - 1].x;
+			if (mapPos[0].y < mapPos[mapPos.size() - 1].y)
+				temp.y = mapPos[0].y;
+			else
+				temp.y = mapPos[mapPos.size() - 1].y;
+		}
+		else if (mapPos[0].y == mapPos[1].y)
+		{
+			temp.x = mapPos[0].x;
+			if(mapPos[0].y < mapPos[mapPos.size() - 1].y)
+				temp.y = mapPos[0].y;
+			else
+				temp.y = mapPos[mapPos.size() - 1].y;
+		}
+
+		mapPos.push_back(temp);
 	}
 }
 

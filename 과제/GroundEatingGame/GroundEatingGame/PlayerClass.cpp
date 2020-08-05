@@ -74,7 +74,7 @@ bool Player::CheckCanMoveX(POINT tempPlayerPos, POINT tempCenterPos)
 	}
 	if (!checkInside)
 	{
-		if ((tempCenterPos.x <= eStartposX - eDecimal / 2 && playerTurn == eLeft)
+		if ((tempCenterPos.x <= eStartposX && playerTurn == eLeft)
 			|| (tempCenterPos.x >= ePosRight + eDecimal / 2 && playerTurn == eRight))
 			return false;
 
@@ -99,7 +99,7 @@ bool Player::CheckCanMoveY(POINT tempPlayerPos, POINT tempCenterPos)
 	}
 	if (!checkInside)
 	{
-		if ((tempCenterPos.y <= eStartPosY - eDecimal / 2 && playerTurn == eUp)
+		if ((tempCenterPos.y <= eStartPosY && playerTurn == eUp)
 			|| (tempCenterPos.y >= ePosBottom + eDecimal / 2 && playerTurn == eDown))
 			return false;
 
