@@ -6,6 +6,14 @@ HideMap::HideMap()
 
 }
 
+HideMap::HideMap(int x1, int y1, int x2, int y2)
+{
+	this->AddSpot({ x1, y1 });
+	this->AddSpot({ x2, y1 });
+	this->AddSpot({ x2, y2 });
+	this->AddSpot({ x1, y2 });
+}
+
 HideMap::~HideMap()
 {
 
@@ -13,6 +21,8 @@ HideMap::~HideMap()
 
 void HideMap::DrawPolygon(HDC hdc)
 {
+	printf("HideMap : %f\n", CalcMapArea());
+
 	POINT *printMap = new POINT[mapPos.size()];
 
 	for (int i = 0; i < mapPos.size(); i++)

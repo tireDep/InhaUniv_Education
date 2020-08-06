@@ -5,7 +5,7 @@
 
 using std::vector;
 
-enum WindowSize { eWinPosX = 50, eWinPosY = 0, eWinWidth = 460, eWinHeight = 500 };
+enum WindowSize { eWinPosX = 50, eWinPosY = 0, eWinWidth = 460, eWinHeight = 450 };
 enum BaisPolygonSize { ePosLeft = 90, ePosTop = 90, ePosRight = 350, ePosBottom = 350 };		// test size
 
 enum AddNum { eSpotNum = 7, eNum5 = 5, eNum15 = 15 };

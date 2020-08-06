@@ -5,8 +5,7 @@
 #include "GroundEatingGame.h"
 #include "PlayerClass.h"
 #include "MapClass.h"
-#include <stdio.h>
-#include<Windows.h>
+
 #pragma comment(lib, "msimg32.lib")
 
 #define MAX_LOADSTRING 100
@@ -110,16 +109,39 @@ void DeleteBitmap();
 LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 {
 	static Player player(eStartposX, eStartPosY);
+	static HideMap map = { ePosLeft,ePosTop,ePosRight,ePosBottom };
 	
-	static HideMap map;
+	static time_t nowTime;
+	struct tm *tmTime = localtime(&nowTime);
+	static int lastSec;
+	static int countDownSec = 31;	// 로딩시간 +1초
+	static WCHAR wCountDown[256];
 
     switch (message)
     {
 	case WM_CREATE:
 		CreateBitmap();
-		AllocConsole();
-		freopen("CONOUT$", "wt", stdout);
+		//AllocConsole();
+		//freopen("CONOUT$", "wt", stdout);
+
+		SetTimer(hWnd, 0, 10, NULL);
+		time(&nowTime);
+		lastSec = tmTime->tm_hour;
 		break;
+
+	case WM_TIMER:
+	{
+		time(&nowTime);
+		if (lastSec != tmTime->tm_sec)
+		{
+			lastSec = tmTime->tm_sec;
+			countDownSec--;
+		}
+
+		swprintf(wCountDown, _TEXT("%s %d"), _T("LastSec : "), countDownSec);
+		InvalidateRect(hWnd, NULL, false);
+		break;
+	}
 
 	case WM_KEYDOWN:
 	{
@@ -138,12 +160,6 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 
 	case WM_PAINT:
 	{
-		static int test = 0;
-
-		static int k = 0;
-		printf("%d\n", k);
-		k++;
-		// OutputDebugString(_T("test"));
 		PAINTSTRUCT ps;
 		HDC hdc = BeginPaint(hWnd, &ps);
 
@@ -170,31 +186,31 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 		HBRUSH hBrush, oldBrush;
 		hBrush = CreateSolidBrush(RGB(255, 255, 255));
 		oldBrush = (HBRUSH)SelectObject(memDc, hBrush);
-
-		// todo : 클래스화
-		if (test == 0)
-		{
-			//map.AddSpot({ ePosLeft + 50,ePosTop });
-			//map.AddSpot({ ePosRight, ePosTop });
-			//map.AddSpot({ ePosRight, ePosBottom });
-			//map.AddSpot({ ePosLeft, ePosBottom });
-			//map.AddSpot({ ePosLeft,ePosTop + 50 });
-			//map.AddSpot({ ePosLeft + 50,ePosTop + 50 });
-		
-			map.AddSpot({ ePosLeft, ePosTop });
-			map.AddSpot({ ePosRight, ePosTop });
-			map.AddSpot({ ePosRight, ePosBottom });
-			map.AddSpot({ ePosLeft, ePosBottom });
-		}
-		test++;
+	
 		map.DrawPolygon(memDc);	// 가림판
-		// todo : 클래스화
 
 		SelectObject(memDc, oldBrush);
 		DeleteObject(hBrush);
 
 		player.DrawPlayer(memDc);	// 플레이어 및 색칠 영역
 		// 플레이어 위치
+
+		// DrawUI
+		RECT uiRect = { 20,0,430,35 };
+
+		DrawText(memDc, _T("playerName"), _tcslen(_T("playerName")), &uiRect, DT_BOTTOM | DT_LEFT | DT_SINGLELINE);
+
+		WCHAR wPlayerCnt[256];
+		swprintf(wPlayerCnt, _TEXT("%s %d"), _T("DrawCount : "), player.GetPlayerMapCnt());
+		DrawText(memDc, wPlayerCnt, _tcslen(wPlayerCnt), &uiRect, DT_BOTTOM | DT_RIGHT | DT_SINGLELINE);
+
+
+		uiRect.bottom += 30;
+		DrawText(memDc, wCountDown, _tcslen(wCountDown), &uiRect, DT_BOTTOM | DT_LEFT | DT_SINGLELINE);
+		DrawText(memDc, _T("playerScore"), _tcslen(_T("playerScore")), &uiRect, DT_BOTTOM | DT_RIGHT | DT_SINGLELINE);
+
+
+		// DrawUI
 
 		TransparentBlt(finalDc, 0, 0, rectView.right, rectView.bottom, memDc, 0, 0, rectView.right, rectView.bottom, RGB(255, 65, 255)); // 투명 처리
 		BitBlt(hdc, 0, 0, rectView.right, rectView.bottom, finalDc, 0, 0, SRCCOPY);	// 더블버퍼링
@@ -230,8 +246,9 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
         break;
    
     case WM_DESTROY:
+		// FreeConsole();
 		DeleteBitmap();
-		FreeConsole();
+		KillTimer(hWnd, 0);
         PostQuitMessage(0);
         break;
 

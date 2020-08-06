@@ -17,6 +17,8 @@ private:
 	int playerTurn;
 	bool preCheckLine;
 
+	float mapArea;
+
 public:
 	Player();
 	Player(int posx, int posy);
@@ -37,4 +39,18 @@ public:
 
 	bool CheckCanMoveX(POINT tempPlayerPos, POINT tempCenterPos);
 	bool CheckCanMoveY(POINT tempPlayerPos, POINT tempCenterPos);
+
+	int GetPlayerMapCnt()
+	{
+		return nowMap.size();
+	}
+
+	void CalcMapArea()
+	{
+		mapArea = 0;
+		for (int i = 0; i < nowMap.size(); i++)
+		{
+			mapArea += (nowMap[i].CalcMapArea() / 67600) * 100;
+		}
+	}
 };

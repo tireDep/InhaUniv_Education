@@ -4,6 +4,7 @@
 //
 
 #pragma once
+#define _CRT_NON_CONFORMING_SWPRINTFS
 #define _CRT_SECURE_NO_WARNINGS
 #include "targetver.h"
 
@@ -16,6 +17,9 @@
 #include <malloc.h>
 #include <memory.h>
 #include <tchar.h>
+#include <stdio.h>
+#include <wchar.h>
+#include <time.h>
 
 
 // TODO: reference additional headers your program requires here

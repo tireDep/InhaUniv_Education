@@ -24,6 +24,7 @@ private:
 
 public:
 	HideMap();
+	HideMap(int x1, int y1, int x2, int y2);
 	~HideMap();
 
 	void DrawPolygon(HDC hdc);
@@ -36,6 +37,42 @@ public:
 	vector<POINT> GetHideMapPos();
 
 	bool CheckMapInside(POINT playerPos, POINT centerPos, int PlayerTurn);
+
+	float CalcMapArea()
+	{
+		float calcX = 0;
+		float calcY = 0;
+		float result = 0;
+
+		for (int i = 0; i < mapPos.size(); i++)
+		{
+			if (i == mapPos.size() - 1)
+			{
+				calcX += mapPos[mapPos.size() - 1].x * mapPos[0].y;
+			}
+			else
+			{
+				calcX += mapPos[i].x * mapPos[i + 1].y;
+			}
+		}
+
+		for (int i = 0; i < mapPos.size(); i++)
+		{
+			if (i == mapPos.size() - 1)
+			{
+				calcY += mapPos[mapPos.size() - 1].y * mapPos[0].x;
+			}
+			else
+			{
+				calcY += mapPos[i].y * mapPos[i + 1].x;
+			}
+		}
+
+		result = (calcX - calcY) / 2;
+		if (result < 0) result *= -1;
+
+		return result;
+	}
 };
 
 class PlayerMap : public Map

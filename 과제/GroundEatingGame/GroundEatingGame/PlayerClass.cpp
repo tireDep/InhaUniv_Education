@@ -7,6 +7,7 @@ Player::Player()
 	playerPos.y = 0;
 	preTurn = eStart;
 	playerTurn = eStart;
+	mapArea = 0;
 }
 
 Player::Player(int posx, int posy)
@@ -16,6 +17,7 @@ Player::Player(int posx, int posy)
 	preTurn = eStart;
 	playerTurn = eStart;
 	preCheckLine = true;
+	mapArea = 0;
 }
 
 Player::~Player()
@@ -227,6 +229,9 @@ void Player::CheckPlayerPos(int movePos, int turnPos, HideMap hideMap)
 
 void Player::DrawPlayer(HDC hdc)
 {
+	CalcMapArea();
+	printf("%f\n", mapArea);
+
 	moveLine.DrawPolygon(hdc);
 	// todo : 수정해야함
 	HBRUSH hBrush, oldBrush;
@@ -237,6 +242,9 @@ void Player::DrawPlayer(HDC hdc)
 	for (it = nowMap.rbegin(); it < nowMap.rend(); it++)
 		it->DrawPolygon(hdc);
 	 	
+	// for (int i = 0; i < nowMap.size(); i++)
+	// 	nowMap[i].DrawPolygon(hdc);
+
 	SelectObject(hdc, oldBrush);
 	DeleteObject(hBrush);
 	// todo : 수정해야함
