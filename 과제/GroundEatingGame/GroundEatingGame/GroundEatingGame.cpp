@@ -111,9 +111,9 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 {
 	static Player player(eStartposX, eStartPosY);
 	static HideMap map = { ePosLeft,ePosTop,ePosRight,ePosBottom };
-	static UI playerUI;
+	UI *playerUI = UI::GetInstance();
 
-	int nowScreen = playerUI.GetScreenNum();
+	int nowScreen = playerUI->GetScreenNum();
     switch (message)
     {
 	case WM_CREATE:
@@ -125,7 +125,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 	{
 		if (eGameScreen == nowScreen)
 		{
-			playerUI.Update();
+			playerUI->Update();
 		}
 
 		InvalidateRect(hWnd, NULL, false);
@@ -135,14 +135,14 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 	case WM_CHAR:
 		if (eStartScreen == nowScreen)
 		{
-			playerUI.SetPlayerName(wParam);
+			playerUI->SetPlayerName(wParam);
 		}
 		break;
 
 	case WM_LBUTTONDOWN:
 		if (eResultScreen == nowScreen)
 		{
-			if (!playerUI.PushBtn(lParam, &player))
+			if (!playerUI->PushBtn(lParam, &player))
 				DestroyWindow(hWnd);
 		}
 		break;
@@ -187,11 +187,11 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 
 		if (eStartScreen == nowScreen)
 		{
-			playerUI.DrawStartUI(finalDc);
+			playerUI->DrawStartUI(finalDc);
 		}
 		else if (eGameScreen == nowScreen)
 		{
-			playerUI.DrawGameUI(memDc, player.GetPlayerMapCnt(), player.GetMapArea());
+			playerUI->DrawGameUI(memDc, player.GetPlayerMapCnt(), player.GetMapArea());
 
 			DrawBitMap(hWnd, finalDc);	// 배경사진
 
@@ -211,7 +211,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 		}
 		else if (eResultScreen == nowScreen)
 		{
-			playerUI.DrawResultUI(finalDc);
+			playerUI->DrawResultUI(finalDc);
 		}
 
 		BitBlt(hdc, 0, 0, rectView.right, rectView.bottom, finalDc, 0, 0, SRCCOPY);	// 더블버퍼링
@@ -251,6 +251,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 		// FreeConsole();
 		DeleteBitmap();
 		KillTimer(hWnd, 0);
+		playerUI->Destroy();
         PostQuitMessage(0);
         break;
 

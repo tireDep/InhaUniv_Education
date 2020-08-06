@@ -4,6 +4,8 @@
 class UI
 {
 private:
+	static UI *playerUI;
+
 	int playerScreen;
 
 	WCHAR wPlayerName[256];
@@ -20,9 +22,13 @@ private:
 	RECT restartBtnRect;
 	RECT exitBtnRect;
 
-public:
 	UI();
 	~UI();
+
+public:
+	static UI* GetInstance();
+	void Destroy();
+
 	void Update();
 	void CountDown();
 	void DrawStartUI(HDC hdc);
@@ -33,4 +39,6 @@ public:
 	
 	int GetScreenNum();
 	bool PushBtn(LPARAM lParam, Player *player);
+
+	void Reset();
 };

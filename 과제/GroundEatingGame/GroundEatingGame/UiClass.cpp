@@ -5,10 +5,25 @@
 
 #define COUNTDOWNSEC 10
 
+UI* UI::playerUI;	// static 변수 초기화
+
+UI* UI::GetInstance()
+{
+	if (playerUI == NULL)
+	{
+		playerUI = new UI();
+	}
+	return playerUI;
+}
+
+void UI::Destroy()
+{
+	delete this;
+}
+
 UI::UI()
 {
-	playerScreen = eStartScreen;
-	//playerScreen = eResultScreen;
+	playerScreen = eResultScreen;
 
 	time(&nowTime);
 	tmTime = localtime(&nowTime);
@@ -32,7 +47,7 @@ UI::UI()
 
 UI::~UI()
 {
-
+	
 }
 
 void UI::Update()
@@ -80,20 +95,25 @@ void UI::DrawGameUI(HDC hdc, int playerMapCnt, float mapArea)
 	uiRect.bottom += 30;
 	DrawText(hdc, wCountDown, _tcslen(wCountDown), &uiRect, DT_BOTTOM | DT_LEFT | DT_SINGLELINE);
 
-	swprintf(wMapArea, _TEXT("%s %.1lf%s"), _T("Area : "), mapArea, _T("%"));
-	DrawText(hdc, wMapArea, _tcslen(wMapArea), &uiRect, DT_BOTTOM | DT_RIGHT | DT_SINGLELINE);
+	// swprintf(wMapArea, _TEXT("%s %.1lf%s"), _T("Area : "), mapArea, _T("%"));
+	// DrawText(hdc, wMapArea, _tcslen(wMapArea), &uiRect, DT_BOTTOM | DT_RIGHT | DT_SINGLELINE);
+	// ※ : 넓이 중복있어서 일단 보류
 }
 
 void UI::DrawResultUI(HDC hdc)
 {
 	RECT uiRect = { 0,50,430,450 };
 
-	DrawText(hdc, _T("Result"), _tcslen(_T("Result")), &uiRect, DT_CENTER | DT_VCENTER);
+	// DrawText(hdc, _T("Result"), _tcslen(_T("Result")), &uiRect, DT_CENTER | DT_VCENTER);
+	// 
+	// uiRect.top += 50;
+	// DrawText(hdc, _T("YourScore"), _tcslen(_T("YourScore")), &uiRect, DT_CENTER | DT_VCENTER);
+	// ※ : 수정 예정
 
 	uiRect.top += 50;
-	DrawText(hdc, _T("YourScore"), _tcslen(_T("YourScore")), &uiRect, DT_CENTER | DT_VCENTER);
+	DrawText(hdc, _T("GameOver"), _tcslen(_T("GameOver")), &uiRect, DT_CENTER | DT_VCENTER);
 
-	RECT _btnRect = { uiRect.left + 50, uiRect.top + 175, 175, uiRect.top + 250 };
+	RECT _btnRect = { uiRect.left + 50, uiRect.top + 175, 175, uiRect.top + 225 };
 	Rectangle(hdc, _btnRect.left, _btnRect.top, _btnRect.right, _btnRect.bottom);
 	DrawText(hdc, _T("MAIN"), _tcslen(_T("MAIN")), &_btnRect, DT_CENTER | DT_VCENTER | DT_SINGLELINE);
 	restartBtnRect = _btnRect;
@@ -111,26 +131,8 @@ bool UI::PushBtn(LPARAM lParam, Player *player)
 
 	if (yPos >= restartBtnRect.top && yPos <= restartBtnRect.bottom && xPos >= restartBtnRect.left&&xPos <= restartBtnRect.right)
 	{
-		playerScreen = eStartScreen;
-
-		// resetUI
-		lastSec = 0;
-		countDownSec = COUNTDOWNSEC;
-
-		for (int i = 0; i < 256; i++)
-		{
-			wCountDown[i] = NULL;
-			wPlayerName[i] = NULL;
-			wPlayerCnt[i] = NULL;
-			wMapArea[i] = NULL;
-		}
-		for (int i = 0; i < 516; i++)
-			wName[i] = NULL;
-		// resetUI
-
-		// resetPlayer
-		player->Reset();
-		// resetPlayer
+		Reset();	// resetUI
+		player->Reset();	// resetPlayer
 	}
 	if (yPos >= exitBtnRect.top && yPos <= exitBtnRect.bottom && xPos >= exitBtnRect.left&&xPos <= exitBtnRect.right)
 		return false;
@@ -166,4 +168,22 @@ void UI::SetPlayerName(WPARAM wParam)
 int UI::GetScreenNum()
 {
 	return playerScreen;
+}
+
+void UI::Reset()
+{
+	playerScreen = eStartScreen;
+	lastSec = 0;
+	countDownSec = COUNTDOWNSEC;
+
+	for (int i = 0; i < 256; i++)
+	{
+		wCountDown[i] = NULL;
+		wPlayerName[i] = NULL;
+		wPlayerCnt[i] = NULL;
+		wMapArea[i] = NULL;
+	}
+
+	for (int i = 0; i < 516; i++)
+		wName[i] = NULL;
 }
