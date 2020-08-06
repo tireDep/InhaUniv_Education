@@ -227,3 +227,39 @@ bool HideMap::CheckMapInside(POINT playerPos, POINT centerPos, int PlayerTurn)
 	}
 	return crosses % 2 > 0;
 }
+
+float HideMap::CalcMapArea()
+{
+	float calcX = 0;
+	float calcY = 0;
+	float result = 0;
+
+	for (int i = 0; i < mapPos.size(); i++)
+	{
+		if (i == mapPos.size() - 1)
+		{
+			calcX += mapPos[mapPos.size() - 1].x * mapPos[0].y;
+		}
+		else
+		{
+			calcX += mapPos[i].x * mapPos[i + 1].y;
+		}
+	}
+
+	for (int i = 0; i < mapPos.size(); i++)
+	{
+		if (i == mapPos.size() - 1)
+		{
+			calcY += mapPos[mapPos.size() - 1].y * mapPos[0].x;
+		}
+		else
+		{
+			calcY += mapPos[i].y * mapPos[i + 1].x;
+		}
+	}
+
+	result = (calcX - calcY) / 2;
+	if (result < 0) result *= -1;
+
+	return result;
+}

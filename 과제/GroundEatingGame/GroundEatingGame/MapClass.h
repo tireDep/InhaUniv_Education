@@ -37,42 +37,7 @@ public:
 	vector<POINT> GetHideMapPos();
 
 	bool CheckMapInside(POINT playerPos, POINT centerPos, int PlayerTurn);
-
-	float CalcMapArea()
-	{
-		float calcX = 0;
-		float calcY = 0;
-		float result = 0;
-
-		for (int i = 0; i < mapPos.size(); i++)
-		{
-			if (i == mapPos.size() - 1)
-			{
-				calcX += mapPos[mapPos.size() - 1].x * mapPos[0].y;
-			}
-			else
-			{
-				calcX += mapPos[i].x * mapPos[i + 1].y;
-			}
-		}
-
-		for (int i = 0; i < mapPos.size(); i++)
-		{
-			if (i == mapPos.size() - 1)
-			{
-				calcY += mapPos[mapPos.size() - 1].y * mapPos[0].x;
-			}
-			else
-			{
-				calcY += mapPos[i].y * mapPos[i + 1].x;
-			}
-		}
-
-		result = (calcX - calcY) / 2;
-		if (result < 0) result *= -1;
-
-		return result;
-	}
+	float CalcMapArea();
 };
 
 class PlayerMap : public Map
@@ -90,14 +55,5 @@ public:
 	void RemoveSpot();
 	void RemoveAllSpot();
 
-
-	bool CheckMoveTwice(POINT playerPos)
-	{
-		for (int i = 0; i < mapPos.size(); i++)
-		{
-			if (playerPos.x == mapPos[i].x && playerPos.y == mapPos[i].y)
-				return true;
-		}
-		return false;
-	}
+	bool CheckMoveTwice(POINT playerPos);
 };

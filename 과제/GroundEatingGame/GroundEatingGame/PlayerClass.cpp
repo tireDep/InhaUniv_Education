@@ -289,3 +289,48 @@ void Player::CalcCenterPos(POINT pos, POINT &cPos)
 	cPos.x = (pos.x + pos.x + +eDecimal) / 2;
 	cPos.y = (pos.y + pos.y + +eDecimal) / 2;
 }
+
+void Player::CalcMapArea()
+{
+	mapArea = 0;
+	for (int i = 0; i < nowMap.size(); i++)
+	{
+		mapArea += (nowMap[i].CalcMapArea() / 67600) * 100;
+	}
+}
+
+void Player::Reset()
+{
+	playerPos.x = eStartposX;
+	playerPos.y = eStartPosY;
+	preTurn = eStart;
+	playerTurn = eStart;
+	preCheckLine = true;
+	mapArea = 0;
+
+	moveLine.RemoveAllSpot();
+
+	vector<HideMap>::iterator it;
+	for (int i = 0; i < nowMap.size(); i++)
+	{
+		nowMap[i].RemoveAllSpot();
+
+		for (it = nowMap.begin(); it<nowMap.end(); )
+		{
+			if ((&it))
+				it = nowMap.erase(it);
+			else it++;
+		}
+	}
+
+}
+
+int Player::GetPlayerMapCnt()
+{
+	return nowMap.size();
+}
+
+float Player::GetMapArea()
+{
+	return mapArea;
+}

@@ -15,3 +15,5 @@ enum PlayerSet {
 	emoveSpeed = 10, eDecimal = 15};
 
 enum { eLeft = 0, eUp= 1, eRight = 2, eDown = 3, eStart = -1 };
+
+enum { eStartScreen = 0, eGameScreen = 50, eResultScreen = 100 };

@@ -36,6 +36,9 @@
     <ClInclude Include="MapClass.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="UiClass.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -54,6 +57,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="PlayerMapClass.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="UiClass.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

@@ -5,6 +5,7 @@
 #include "GroundEatingGame.h"
 #include "PlayerClass.h"
 #include "MapClass.h"
+#include "UiClass.h"
 
 #pragma comment(lib, "msimg32.lib")
 
@@ -110,52 +111,55 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 {
 	static Player player(eStartposX, eStartPosY);
 	static HideMap map = { ePosLeft,ePosTop,ePosRight,ePosBottom };
-	
-	static time_t nowTime;
-	struct tm *tmTime = localtime(&nowTime);
-	static int lastSec;
-	static int countDownSec = 31;	// 로딩시간 +1초
-	static WCHAR wCountDown[256];
+	static UI playerUI;
 
+	int nowScreen = playerUI.GetScreenNum();
     switch (message)
     {
 	case WM_CREATE:
 		CreateBitmap();
-		//AllocConsole();
-		//freopen("CONOUT$", "wt", stdout);
-
 		SetTimer(hWnd, 0, 10, NULL);
-		time(&nowTime);
-		lastSec = tmTime->tm_hour;
 		break;
 
 	case WM_TIMER:
 	{
-		time(&nowTime);
-		if (lastSec != tmTime->tm_sec)
+		if (eGameScreen == nowScreen)
 		{
-			lastSec = tmTime->tm_sec;
-			countDownSec--;
+			playerUI.Update();
 		}
 
-		swprintf(wCountDown, _TEXT("%s %d"), _T("LastSec : "), countDownSec);
 		InvalidateRect(hWnd, NULL, false);
 		break;
 	}
 
-	case WM_KEYDOWN:
-	{
-		if (wParam == 'A' || wParam == 'a' || wParam == VK_LEFT)
-			player.CheckPlayerPos(-emoveSpeed, eLeft, map);
-		else if (wParam == 'W' || wParam == 'w' || wParam == VK_UP)
-			player.CheckPlayerPos(-emoveSpeed, eUp, map);
-		else if (wParam == 'D' || wParam == 'd' || wParam == VK_RIGHT)
-			player.CheckPlayerPos(emoveSpeed, eRight, map);
-		else if (wParam == 'S' || wParam == 's' || wParam == VK_DOWN)
-			player.CheckPlayerPos(emoveSpeed, eDown, map);
+	case WM_CHAR:
+		if (eStartScreen == nowScreen)
+		{
+			playerUI.SetPlayerName(wParam);
+		}
+		break;
 
+	case WM_LBUTTONDOWN:
+		if (eResultScreen == nowScreen)
+		{
+			if (!playerUI.PushBtn(lParam, &player))
+				DestroyWindow(hWnd);
+		}
+		break;
+
+	case WM_KEYDOWN:
+		if (eGameScreen == nowScreen)
+		{
+			if (wParam == 'A' || wParam == 'a' || wParam == VK_LEFT)
+				player.CheckPlayerPos(-emoveSpeed, eLeft, map);
+			else if (wParam == 'W' || wParam == 'w' || wParam == VK_UP)
+				player.CheckPlayerPos(-emoveSpeed, eUp, map);
+			else if (wParam == 'D' || wParam == 'd' || wParam == VK_RIGHT)
+				player.CheckPlayerPos(emoveSpeed, eRight, map);
+			else if (wParam == 'S' || wParam == 's' || wParam == VK_DOWN)
+				player.CheckPlayerPos(emoveSpeed, eDown, map);
+		}
 		InvalidateRect(hWnd, NULL, FALSE);
-	}
 		break;
 
 	case WM_PAINT:
@@ -163,7 +167,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 		PAINTSTRUCT ps;
 		HDC hdc = BeginPaint(hWnd, &ps);
 
-		RECT rectView;		
+		RECT rectView;
 		HDC memDc;
 		HBITMAP hBit, oldBit;
 
@@ -181,38 +185,35 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 		fhOldBit = (HBITMAP)SelectObject(finalDc, fhBit);
 		PatBlt(finalDc, rectView.left, rectView.top, rectView.right, rectView.bottom, WHITENESS);
 
-		DrawBitMap(hWnd, finalDc);	// 배경사진
+		if (eStartScreen == nowScreen)
+		{
+			playerUI.DrawStartUI(finalDc);
+		}
+		else if (eGameScreen == nowScreen)
+		{
+			playerUI.DrawGameUI(memDc, player.GetPlayerMapCnt(), player.GetMapArea());
 
-		HBRUSH hBrush, oldBrush;
-		hBrush = CreateSolidBrush(RGB(255, 255, 255));
-		oldBrush = (HBRUSH)SelectObject(memDc, hBrush);
-	
-		map.DrawPolygon(memDc);	// 가림판
+			DrawBitMap(hWnd, finalDc);	// 배경사진
 
-		SelectObject(memDc, oldBrush);
-		DeleteObject(hBrush);
+			HBRUSH hBrush, oldBrush;
+			hBrush = CreateSolidBrush(RGB(255, 255, 255));
+			oldBrush = (HBRUSH)SelectObject(memDc, hBrush);
 
-		player.DrawPlayer(memDc);	// 플레이어 및 색칠 영역
-		// 플레이어 위치
+			map.DrawPolygon(memDc);	// 가림판
 
-		// DrawUI
-		RECT uiRect = { 20,0,430,35 };
+			SelectObject(memDc, oldBrush);
+			DeleteObject(hBrush);
 
-		DrawText(memDc, _T("playerName"), _tcslen(_T("playerName")), &uiRect, DT_BOTTOM | DT_LEFT | DT_SINGLELINE);
+			player.DrawPlayer(memDc);	// 플레이어 및 색칠 영역
+										// 플레이어 위치
 
-		WCHAR wPlayerCnt[256];
-		swprintf(wPlayerCnt, _TEXT("%s %d"), _T("DrawCount : "), player.GetPlayerMapCnt());
-		DrawText(memDc, wPlayerCnt, _tcslen(wPlayerCnt), &uiRect, DT_BOTTOM | DT_RIGHT | DT_SINGLELINE);
+			TransparentBlt(finalDc, 0, 0, rectView.right, rectView.bottom, memDc, 0, 0, rectView.right, rectView.bottom, RGB(255, 65, 255)); // 투명 처리
+		}
+		else if (eResultScreen == nowScreen)
+		{
+			playerUI.DrawResultUI(finalDc);
+		}
 
-
-		uiRect.bottom += 30;
-		DrawText(memDc, wCountDown, _tcslen(wCountDown), &uiRect, DT_BOTTOM | DT_LEFT | DT_SINGLELINE);
-		DrawText(memDc, _T("playerScore"), _tcslen(_T("playerScore")), &uiRect, DT_BOTTOM | DT_RIGHT | DT_SINGLELINE);
-
-
-		// DrawUI
-
-		TransparentBlt(finalDc, 0, 0, rectView.right, rectView.bottom, memDc, 0, 0, rectView.right, rectView.bottom, RGB(255, 65, 255)); // 투명 처리
 		BitBlt(hdc, 0, 0, rectView.right, rectView.bottom, finalDc, 0, 0, SRCCOPY);	// 더블버퍼링
 
 		SelectObject(memDc, oldBit);
@@ -222,6 +223,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 		SelectObject(finalDc, fhOldBit);
 		DeleteObject(fhBit);
 		DeleteDC(finalDc);
+
 
 		EndPaint(hWnd, &ps);
 	}

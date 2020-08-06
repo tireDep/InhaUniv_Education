@@ -55,3 +55,13 @@ void PlayerMap::RemoveAllSpot()
 
 	// mapPos.clear();	// 메모리는 남아있음
 }
+
+bool PlayerMap::CheckMoveTwice(POINT playerPos)
+{
+	for (int i = 0; i < mapPos.size(); i++)
+	{
+		if (playerPos.x == mapPos[i].x && playerPos.y == mapPos[i].y)
+			return true;
+	}
+	return false;
+}
