@@ -203,12 +203,18 @@ void Player::CheckPlayerPos(int movePos, int turnPos, HideMap hideMap)
 
 			if (preCheckLine != checkLine)// || !CheckSpotOnTheLine(hideMap))	// 끝점 저장
 			{
-				playerMap.AddSpot(centerPos);	// 끝점은 이동좌표 저장
-				playerMap.AddSpot();
+				//playerMap.AddSpot(centerPos);	// 끝점은 이동좌표 저장
+				//playerMap.AddSpot();
+				moveLine.AddSpot(centerPos);	// 꺽이는 부분 저장
+				playerMap.RemoveAllSpot();
+				playerMap.SetMap(moveLine.GetMap());
+
 				nowMap.push_back(playerMap);
 			}
-			moveLine.RemoveAllSpot();
 			playerMap.RemoveAllSpot();
+			playerMap.SetMap(moveLine.GetMap());
+			moveLine.RemoveAllSpot();
+			
 		}
 
 		if (preTurn != playerTurn && !preCheckLine)	// 외부 존재, 방향 전환
@@ -232,7 +238,7 @@ void Player::DrawPlayer(HDC hdc)
 	CalcMapArea();
 	printf("%f\n", mapArea);
 
-	moveLine.DrawPolygon(hdc);
+	moveLine.DrawPolygon(hdc,0);
 	// todo : 수정해야함
 	HBRUSH hBrush, oldBrush;
 	hBrush = CreateSolidBrush(RGB(255, 65, 255));
@@ -240,8 +246,10 @@ void Player::DrawPlayer(HDC hdc)
 	
 	vector<HideMap>::reverse_iterator it;
 	for (it = nowMap.rbegin(); it < nowMap.rend(); it++)
-		it->DrawPolygon(hdc);
-	 	
+		it->DrawPolygon(hdc, 0);
+	 
+
+
 	// for (int i = 0; i < nowMap.size(); i++)
 	// 	nowMap[i].DrawPolygon(hdc);
 

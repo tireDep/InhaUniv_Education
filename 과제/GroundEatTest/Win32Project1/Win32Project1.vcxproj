@@ -19,9 +19,9 @@
     </ProjectConfiguration>
   </ItemGroup>
   <PropertyGroup Label="Globals">
-    <ProjectGuid>{3578B8E9-D287-45BA-9941-E9C59D3552E9}</ProjectGuid>
+    <ProjectGuid>{194E5E6E-8487-4F74-A8CC-FB8FAEC03687}</ProjectGuid>
     <Keyword>Win32Proj</Keyword>
-    <RootNamespace>GroundEatingGame</RootNamespace>
+    <RootNamespace>Win32Project1</RootNamespace>
     <WindowsTargetPlatformVersion>8.1</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
@@ -71,7 +71,6 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <LinkIncremental>true</LinkIncremental>
-    <IntDir>$(SolutionDir)\Debug_$(ProjectName)\</IntDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <LinkIncremental>true</LinkIncremental>
@@ -146,35 +145,26 @@
     <Text Include="ReadMe.txt" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="GroundEatingGame.h" />
-    <ClInclude Include="MapClass.h" />
-    <ClInclude Include="Obstacle.h" />
-    <ClInclude Include="PlayerClass.h" />
     <ClInclude Include="Resource.h" />
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="targetver.h" />
-    <ClInclude Include="UiClass.h" />
+    <ClInclude Include="Win32Project1.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="GroundEatingGame.cpp" />
-    <ClCompile Include="HideClass.cpp" />
-    <ClCompile Include="MapClass.cpp" />
-    <ClCompile Include="PlayerClass.cpp" />
-    <ClCompile Include="PlayerMapClass.cpp" />
     <ClCompile Include="stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
     </ClCompile>
-    <ClCompile Include="UiClass.cpp" />
+    <ClCompile Include="Win32Project1.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ResourceCompile Include="GroundEatingGame.rc" />
+    <ResourceCompile Include="Win32Project1.rc" />
   </ItemGroup>
   <ItemGroup>
-    <Image Include="GroundEatingGame.ico" />
     <Image Include="small.ico" />
+    <Image Include="Win32Project1.ico" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

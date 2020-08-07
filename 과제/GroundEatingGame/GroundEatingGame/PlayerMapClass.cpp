@@ -11,7 +11,7 @@ PlayerMap::~PlayerMap()
 
 }
 
-void PlayerMap::DrawPolygon(HDC hdc)
+void PlayerMap::DrawPolygon(HDC hdc, int i)
 {
 	HPEN hPen, oldPen;
 	hPen = CreatePen(2, 1, RGB(0, 0, 255));

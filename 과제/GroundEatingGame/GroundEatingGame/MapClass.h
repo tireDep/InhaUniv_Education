@@ -11,7 +11,7 @@ public:
 	virtual ~Map() = 0;
 	// 상속이 존재할 경우, 가상으로 선언해야함
 
-	virtual void DrawPolygon(HDC hdc) = 0;
+	virtual void DrawPolygon(HDC hdc, int i) = 0;
 	virtual void AddSpot(POINT addSpot) = 0;
 	virtual void RemoveSpot() = 0;
 	virtual void RemoveAllSpot() = 0;
@@ -27,7 +27,7 @@ public:
 	HideMap(int x1, int y1, int x2, int y2);
 	~HideMap();
 
-	void DrawPolygon(HDC hdc);
+	void DrawPolygon(HDC hdc, int i);
 
 	void AddSpot(POINT addSpot);
 	void AddSpot();
@@ -38,6 +38,18 @@ public:
 
 	bool CheckMapInside(POINT playerPos, POINT centerPos, int PlayerTurn);
 	float CalcMapArea();
+
+	void SetMap(vector<POINT> getMap)
+	{
+		mapPos = getMap;
+
+		mapPos.push_back({ ePosLeft, ePosTop });
+		mapPos.push_back({ ePosRight, ePosTop });
+		mapPos.push_back({ ePosRight, ePosBottom });
+		mapPos.push_back({ ePosLeft, ePosBottom });
+		mapPos.push_back({ ePosLeft, ePosTop });
+
+	}
 };
 
 class PlayerMap : public Map
@@ -49,11 +61,16 @@ public:
 	PlayerMap();
 	~PlayerMap();
 
-	void DrawPolygon(HDC hdc);
+	void DrawPolygon(HDC hdc, int i);
 
 	void AddSpot(POINT addSpot);
 	void RemoveSpot();
 	void RemoveAllSpot();
 
 	bool CheckMoveTwice(POINT playerPos);
+
+	vector<POINT> GetMap()
+	{
+		return mapPos;
+	}
 };

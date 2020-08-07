@@ -19,19 +19,53 @@ HideMap::~HideMap()
 
 }
 
-void HideMap::DrawPolygon(HDC hdc)
+void HideMap::DrawPolygon(HDC hdc, int i)
 {
 	printf("HideMap : %f\n", CalcMapArea());
 
 	POINT *printMap = new POINT[mapPos.size()];
 
-	for (int i = 0; i < mapPos.size(); i++)
+	// for (int i = 0; i < mapPos.size(); i++)
+	// {
+	// 	printMap[i].x = mapPos[i].x;
+	// 	printMap[i].y = mapPos[i].y;
+	// }
+	// 
+	// // Polygon(hdc, printMap, mapPos.size());
+	// MoveToEx(hdc, printMap[0].x, printMap[0].y, NULL);
+	// for (int i = 0; i < mapPos.size(); i++)
+	// {
+	// 	LineTo(hdc, printMap[i + 1].x, printMap[i + 1].y);
+	// }
+
+	for (int i = 0; i < mapPos.size() - 1; i++)
 	{
-		printMap[i].x = mapPos[i].x;
-		printMap[i].y = mapPos[i].y;
+		MoveToEx(hdc, mapPos[i].x, mapPos[i].y, NULL);
+		LineTo(hdc, mapPos[i+1].x, mapPos[i+1].y);
+	}
+	if (i == 1)
+	{
+		MoveToEx(hdc, mapPos[mapPos.size() - 1].x, mapPos[mapPos.size() - 1].y, NULL);
+		LineTo(hdc, mapPos[0].x, mapPos[0].y);
 	}
 
-	Polygon(hdc, printMap, mapPos.size());
+	HBRUSH hBrush, oldBrush;
+	if (i == 0)
+	{
+		hBrush = CreateSolidBrush(RGB(100, 150, 255));
+		
+	}
+	else
+	{
+		hBrush = CreateSolidBrush(RGB(10, 100, 0));
+
+	}
+	
+	ExtFloodFill(hdc, 83, 83, 0x00ffffff, FLOODFILLSURFACE);
+
+	oldBrush = (HBRUSH)SelectObject(hdc, hBrush);
+	SelectObject(hdc, oldBrush);
+	DeleteObject(hBrush);
 }
 
 void HideMap::AddSpot(POINT addSpot)

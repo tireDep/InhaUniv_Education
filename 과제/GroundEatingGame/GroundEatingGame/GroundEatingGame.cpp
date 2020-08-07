@@ -6,6 +6,7 @@
 #include "PlayerClass.h"
 #include "MapClass.h"
 #include "UiClass.h"
+#include "Obstacle.h"
 
 #pragma comment(lib, "msimg32.lib")
 
@@ -113,6 +114,9 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 	static HideMap map = { ePosLeft,ePosTop,ePosRight,ePosBottom };
 	UI *playerUI = UI::GetInstance();
 
+	Obstacle obstacle;
+	
+
 	int nowScreen = playerUI->GetScreenNum();
     switch (message)
     {
@@ -191,6 +195,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 		}
 		else if (eGameScreen == nowScreen)
 		{
+			obstacle.DrawObstacle(memDc);
 			playerUI->DrawGameUI(memDc, player.GetPlayerMapCnt(), player.GetMapArea());
 
 			DrawBitMap(hWnd, finalDc);	// 배경사진
@@ -199,7 +204,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 			hBrush = CreateSolidBrush(RGB(255, 255, 255));
 			oldBrush = (HBRUSH)SelectObject(memDc, hBrush);
 
-			map.DrawPolygon(memDc);	// 가림판
+			map.DrawPolygon(memDc, 1);	// 가림판
 
 			SelectObject(memDc, oldBrush);
 			DeleteObject(hBrush);

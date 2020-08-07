@@ -3,7 +3,7 @@
 #include "PlayerClass.h"
 #include "UiClass.h"
 
-#define COUNTDOWNSEC 30
+#define COUNTDOWNSEC 5000
 
 UI* UI::GetInstance()
 {
