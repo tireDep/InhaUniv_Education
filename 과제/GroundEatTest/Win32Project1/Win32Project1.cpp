@@ -154,26 +154,31 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 			LineTo(hdc, 100, 0);
 			LineTo(hdc, 0, 0);
 
-			MoveToEx(hdc, 50, 0, NULL);
-			LineTo(hdc, 50, 50);
-			LineTo(hdc, 0, 50);
+			//MoveToEx(hdc, 50, 0, NULL);
+			//LineTo(hdc, 50, 50);
+			//LineTo(hdc, 0, 50);
+			//
+			//MoveToEx(hdc, 50, 50, NULL);
+			//LineTo(hdc, 100, 50);
+			//LineTo(hdc, 100, 100);
+			//LineTo(hdc, 50, 100);
+			//LineTo(hdc, 50, 50);
+			//
+			//MoveToEx(hdc, 0, 75, NULL);
+			//LineTo(hdc, 0, 75);
+			//LineTo(hdc, 25, 75);
+			//LineTo(hdc, 25, 100);
 
-			MoveToEx(hdc, 50, 50, NULL);
-			LineTo(hdc, 100, 50);
-			LineTo(hdc, 100, 100);
-			LineTo(hdc, 50, 100);
-			LineTo(hdc, 50, 50);
-
-			MoveToEx(hdc, 0, 75, NULL);
-			LineTo(hdc, 0, 75);
-			LineTo(hdc, 25, 75);
-			LineTo(hdc, 25, 100);
+			MoveToEx(hdc, 0, 50, NULL);
+			LineTo(hdc, 30, 50);
+			LineTo(hdc, 30, 60);
+			LineTo(hdc, 100, 60);
 
 			HBRUSH hBrush, oldBrush;
 			hBrush = CreateSolidBrush(RGB(100,150,255));
 			oldBrush = (HBRUSH)SelectObject(hdc, hBrush);
 
-			ExtFloodFill(hdc, 5, 80, 0x00ffffff, FLOODFILLSURFACE);
+			ExtFloodFill(hdc, 5, 5, 0x00ffffff, FLOODFILLSURFACE);
 
 			SelectObject(hdc, oldBrush);
 			DeleteObject(hBrush);

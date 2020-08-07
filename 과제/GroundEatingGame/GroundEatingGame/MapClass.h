@@ -20,6 +20,7 @@ public:
 class HideMap : public Map
 {
 private:
+	static int test;
 	vector<POINT> mapPos;
 
 public:
@@ -43,11 +44,15 @@ public:
 	{
 		mapPos = getMap;
 
-		mapPos.push_back({ ePosLeft, ePosTop });
-		mapPos.push_back({ ePosRight, ePosTop });
-		mapPos.push_back({ ePosRight, ePosBottom });
-		mapPos.push_back({ ePosLeft, ePosBottom });
-		mapPos.push_back({ ePosLeft, ePosTop });
+		if (test == 0)
+		{
+			mapPos.push_back({ ePosLeft, ePosTop });
+			mapPos.push_back({ ePosRight, ePosTop });
+			mapPos.push_back({ ePosRight, ePosBottom });
+			mapPos.push_back({ ePosLeft, ePosBottom });
+			mapPos.push_back({ ePosLeft, ePosTop });
+			test++;
+		}
 
 	}
 };

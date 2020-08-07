@@ -185,7 +185,7 @@ void Player::CheckPlayerPos(int movePos, int turnPos, HideMap hideMap)
 				playerPos.x -= eSpotNum;
 				playerPos.y -= eSpotNum;
 
-				preCheckLine != preCheckLine;
+				preCheckLine = true;
 				moveLine.RemoveAllSpot();
 				playerMap.RemoveAllSpot();
 				return;
@@ -212,7 +212,7 @@ void Player::CheckPlayerPos(int movePos, int turnPos, HideMap hideMap)
 				nowMap.push_back(playerMap);
 			}
 			playerMap.RemoveAllSpot();
-			playerMap.SetMap(moveLine.GetMap());
+			//playerMap.SetMap(moveLine.GetMap());
 			moveLine.RemoveAllSpot();
 			
 		}
@@ -242,12 +242,20 @@ void Player::DrawPlayer(HDC hdc)
 	// todo : 수정해야함
 	HBRUSH hBrush, oldBrush;
 	hBrush = CreateSolidBrush(RGB(255, 65, 255));
+	//hBrush = CreateSolidBrush(RGB(255, 65, 100));
 	oldBrush = (HBRUSH)SelectObject(hdc, hBrush);
 	
 	vector<HideMap>::reverse_iterator it;
 	for (it = nowMap.rbegin(); it < nowMap.rend(); it++)
 		it->DrawPolygon(hdc, 0);
-	 
+
+	for (int i = 0; i < nowMap.size(); i++)
+	{
+		vector<POINT> temp = nowMap[i].GetHideMapPos();
+		// ExtFloodFill(hdc, temp[temp.size() - 1].x + 10, temp[temp.size() - 1].y + 10, 0x00ffffff, FLOODFILLSURFACE);
+		// ExtFloodFill(hdc, 83,83, 0x00ffffff, FLOODFILLSURFACE);
+		ExtFloodFill(hdc, temp[0].x + 10, temp[0].y + 10, 0x00ffffff, FLOODFILLSURFACE);
+	}
 
 
 	// for (int i = 0; i < nowMap.size(); i++)

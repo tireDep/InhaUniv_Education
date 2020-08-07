@@ -1,6 +1,8 @@
 #include "stdafx.h"
 #include "MapClass.h"
 
+int HideMap::test = 0;
+
 HideMap::HideMap()
 {
 
@@ -53,17 +55,19 @@ void HideMap::DrawPolygon(HDC hdc, int i)
 	if (i == 0)
 	{
 		hBrush = CreateSolidBrush(RGB(100, 150, 255));
-		
+		oldBrush = (HBRUSH)SelectObject(hdc, hBrush);
+		// ExtFloodFill(hdc, mapPos[0].x + 5, mapPos[0].y + 5, 0x00ffffff, FLOODFILLSURFACE);
+		//ExtFloodFill(hdc, 83, 83, 0x00ffffff, FLOODFILLSURFACE);
 	}
 	else
 	{
 		hBrush = CreateSolidBrush(RGB(10, 100, 0));
-
+		oldBrush = (HBRUSH)SelectObject(hdc, hBrush);
+		//ExtFloodFill(hdc, mapPos[0].x + 5, mapPos[0].y + 5, 0x00ffffff, FLOODFILLSURFACE);
 	}
 	
-	ExtFloodFill(hdc, 83, 83, 0x00ffffff, FLOODFILLSURFACE);
+	
 
-	oldBrush = (HBRUSH)SelectObject(hdc, hBrush);
 	SelectObject(hdc, oldBrush);
 	DeleteObject(hBrush);
 }
