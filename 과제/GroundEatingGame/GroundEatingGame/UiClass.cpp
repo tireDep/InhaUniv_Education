@@ -3,27 +3,17 @@
 #include "PlayerClass.h"
 #include "UiClass.h"
 
-#define COUNTDOWNSEC 10
-
-UI* UI::playerUI;	// static 변수 초기화
+#define COUNTDOWNSEC 30
 
 UI* UI::GetInstance()
 {
-	if (playerUI == NULL)
-	{
-		playerUI = new UI();
-	}
-	return playerUI;
-}
-
-void UI::Destroy()
-{
-	delete this;
+	static UI playerUI; // 상속을 받았을 경우 접근할 수 있기 때문에 지역변수로 선언
+	return &playerUI;
 }
 
 UI::UI()
 {
-	playerScreen = eResultScreen;
+	playerScreen = eStartScreen;
 
 	time(&nowTime);
 	tmTime = localtime(&nowTime);

@@ -4,8 +4,6 @@
 class UI
 {
 private:
-	static UI *playerUI;
-
 	int playerScreen;
 
 	WCHAR wPlayerName[256];
@@ -26,8 +24,7 @@ private:
 	~UI();
 
 public:
-	static UI* GetInstance();
-	void Destroy();
+	static UI *GetInstance();
 
 	void Update();
 	void CountDown();

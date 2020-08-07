@@ -251,7 +251,6 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 		// FreeConsole();
 		DeleteBitmap();
 		KillTimer(hWnd, 0);
-		playerUI->Destroy();
         PostQuitMessage(0);
         break;
 
