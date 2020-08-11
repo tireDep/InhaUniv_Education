@@ -44,15 +44,15 @@ public:
 	{
 		mapPos = getMap;
 
-		if (test == 0)
-		{
-			mapPos.push_back({ ePosLeft, ePosTop });
-			mapPos.push_back({ ePosRight, ePosTop });
-			mapPos.push_back({ ePosRight, ePosBottom });
-			mapPos.push_back({ ePosLeft, ePosBottom });
-			mapPos.push_back({ ePosLeft, ePosTop });
-			test++;
-		}
+		//if (test == 0)
+		//{
+		//	mapPos.push_back({ ePosLeft, ePosTop });
+		//	mapPos.push_back({ ePosRight, ePosTop });
+		//	mapPos.push_back({ ePosRight, ePosBottom });
+		//	mapPos.push_back({ ePosLeft, ePosBottom });
+		//	mapPos.push_back({ ePosLeft, ePosTop });
+		//	test++;
+		//}
 
 	}
 };

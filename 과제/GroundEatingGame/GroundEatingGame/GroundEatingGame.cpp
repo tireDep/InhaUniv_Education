@@ -8,6 +8,8 @@
 #include "UiClass.h"
 #include "Obstacle.h"
 
+#include <stdio.h>
+
 #pragma comment(lib, "msimg32.lib")
 
 #define MAX_LOADSTRING 100
@@ -123,6 +125,9 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 	case WM_CREATE:
 		CreateBitmap();
 		SetTimer(hWnd, 0, 10, NULL);
+
+		AllocConsole();
+		freopen("CONOUT$", "wt", stdout);
 		break;
 
 	case WM_TIMER:
@@ -201,10 +206,11 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 			DrawBitMap(hWnd, finalDc);	// 배경사진
 
 			HBRUSH hBrush, oldBrush;
-			hBrush = CreateSolidBrush(RGB(255, 255, 255));
+			hBrush = CreateSolidBrush(RGB(255, 100, 255));
 			oldBrush = (HBRUSH)SelectObject(memDc, hBrush);
 
 			map.DrawPolygon(memDc, 1);	// 가림판
+			//ExtFloodFill(memDc, 95, 95, 0x00ffffff, FLOODFILLSURFACE);
 
 			SelectObject(memDc, oldBrush);
 			DeleteObject(hBrush);
@@ -253,10 +259,11 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
         break;
    
     case WM_DESTROY:
-		// FreeConsole();
 		DeleteBitmap();
 		KillTimer(hWnd, 0);
         PostQuitMessage(0);
+
+		FreeConsole();
         break;
 
     default:

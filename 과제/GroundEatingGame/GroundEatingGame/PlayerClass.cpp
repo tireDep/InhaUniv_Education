@@ -239,31 +239,49 @@ void Player::DrawPlayer(HDC hdc)
 	printf("%f\n", mapArea);
 
 	moveLine.DrawPolygon(hdc,0);
+
 	// todo : 수정해야함
+	
 	HBRUSH hBrush, oldBrush;
 	hBrush = CreateSolidBrush(RGB(255, 65, 255));
-	//hBrush = CreateSolidBrush(RGB(255, 65, 100));
 	oldBrush = (HBRUSH)SelectObject(hdc, hBrush);
-	
+
+	HPEN hPen, oldPen;
+	hPen = CreatePen(PS_SOLID, 1, RGB(255, 65, 255));
+	oldPen = (HPEN)SelectObject(hdc, hPen);
+
 	vector<HideMap>::reverse_iterator it;
 	for (it = nowMap.rbegin(); it < nowMap.rend(); it++)
+	{
 		it->DrawPolygon(hdc, 0);
-
+	}
 	for (int i = 0; i < nowMap.size(); i++)
 	{
 		vector<POINT> temp = nowMap[i].GetHideMapPos();
-		// ExtFloodFill(hdc, temp[temp.size() - 1].x + 10, temp[temp.size() - 1].y + 10, 0x00ffffff, FLOODFILLSURFACE);
-		// ExtFloodFill(hdc, 83,83, 0x00ffffff, FLOODFILLSURFACE);
-		ExtFloodFill(hdc, temp[0].x + 10, temp[0].y + 10, 0x00ffffff, FLOODFILLSURFACE);
+		//ExtFloodFill(hdc, temp[0].x + 10, temp[0].y + 10, 0x00ffffff, FLOODFILLSURFACE);
+		//ExtFloodFill(hdc, 95, 95, 0x00ffffff, FLOODFILLSURFACE);
+		//ExtFloodFill(hdc, 345, 95, 0x00ffffff, FLOODFILLSURFACE);
+		ExtFloodFill(hdc, 345, 345, 0x00ffffff, FLOODFILLSURFACE);
 	}
 
-
-	// for (int i = 0; i < nowMap.size(); i++)
-	// 	nowMap[i].DrawPolygon(hdc);
+	SelectObject(hdc, oldPen);
+	DeleteObject(hPen);
 
 	SelectObject(hdc, oldBrush);
 	DeleteObject(hBrush);
 	// todo : 수정해야함
+
+	//SetROP2(hdc, R2_NOTMASKPEN);
+	//Rectangle(hdc, 90, 90, 350, 350);
+	
+
+	COLORREF color = GetPixel(hdc, 100, 100); 
+	int a = GetRValue(color);
+	int b = GetGValue(color);
+	int c = GetBValue(color);
+
+	printf("%d %d %d\n", a, b, c);
+
 	Ellipse(hdc, playerPos.x, playerPos.y, playerPos.x + eDecimal, playerPos.y + eDecimal);
 }
 
