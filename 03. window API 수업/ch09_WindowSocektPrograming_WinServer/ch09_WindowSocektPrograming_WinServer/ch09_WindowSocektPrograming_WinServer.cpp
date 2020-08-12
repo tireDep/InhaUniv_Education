@@ -142,6 +142,9 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 	int size, msgLen;
 	char buffer[100];
 
+	static TCHAR str[100];
+	static int count;
+
     switch (message)
     {
 	case WM_CREATE:
@@ -205,19 +208,38 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 		}
 		break;
 
-	case WM_KEYDOWN:
-		if (cs == INVALID_SOCKET)
-			break;
-
-		send(cs, "¹Ý°¡¿ö Client!", 15, 0);
-		break;
+	case WM_CHAR:
+		if (wParam == VK_RETURN)
+		{
+			if (cs == INVALID_SOCKET)
+				return 0;
+			else
+			{
+#ifdef  _UNICODE
+				msgLen = WideCharToMultiByte(CP_ACP, 0, str, -1, NULL, 0, NULL, NULL);
+				WideCharToMultiByte(CP_ACP, 0, str, -1, buffer, msgLen, NULL, NULL);
+#else
+				strcpy_s(buffer, str);
+#endif //  _UNICODE
+				send(cs, (LPSTR)buffer, strlen(buffer) + 1, 0);
+				count = 0;
+				return 0;
+			}
+		}
+			str[count++] = wParam;
+			str[count] = NULL;
+			InvalidateRgn(hWnd, NULL, false);
+		return 0;
 
     case WM_PAINT:
         {
             PAINTSTRUCT ps;
             HDC hdc = BeginPaint(hWnd, &ps);
             
-			TextOut(hdc, 0, 0, msg, (int)_tcslen(msg));
+			if (_tcscmp(msg, _T("")))
+				TextOut(hdc, 0, 30, msg, (int)_tcslen(msg));
+
+			TextOut(hdc, 0, 0, str, (int)_tcslen(str));
 
             EndPaint(hWnd, &ps);
         }
