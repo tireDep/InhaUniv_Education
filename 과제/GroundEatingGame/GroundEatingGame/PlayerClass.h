@@ -22,7 +22,7 @@ private:
 	float mapArea;
 
 	int preMapSize;
-	bool isColored[350][350];
+	bool isColored[351][351];
 
 public:
 	Player();

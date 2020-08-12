@@ -85,8 +85,8 @@ void UI::DrawGameUI(HDC hdc, int playerMapCnt, float mapArea)
 	uiRect.bottom += 30;
 	DrawText(hdc, wCountDown, _tcslen(wCountDown), &uiRect, DT_BOTTOM | DT_LEFT | DT_SINGLELINE);
 
-	// swprintf(wMapArea, _TEXT("%s %.1lf%s"), _T("Area : "), mapArea, _T("%"));
-	// DrawText(hdc, wMapArea, _tcslen(wMapArea), &uiRect, DT_BOTTOM | DT_RIGHT | DT_SINGLELINE);
+	swprintf(wMapArea, _TEXT("%s %.1lf%s"), _T("Area : "), mapArea, _T("%"));
+	DrawText(hdc, wMapArea, _tcslen(wMapArea), &uiRect, DT_BOTTOM | DT_RIGHT | DT_SINGLELINE);
 	// ※ : 넓이 중복있어서 일단 보류
 }
 

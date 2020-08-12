@@ -356,9 +356,9 @@ void Player::DrawPlayer(HDC hdc)
 	if (preMapSize != nowMap.size())
 	{
 		preMapSize = nowMap.size();
-		for (int i = 0; i < 350; i++)
+		for (int i = 0; i < 351; i++)
 		{
-			for (int j = 0; j < 350; j++)
+			for (int j = 0; j < 351; j++)
 			{
 				if (isColored[i][j] == true)
 					continue;
@@ -421,10 +421,23 @@ void Player::CalcCenterPos(POINT pos, POINT &cPos)
 void Player::CalcMapArea()
 {
 	mapArea = 0;
-	for (int i = 0; i < nowMap.size(); i++)
+	float divide = 1;
+	for (int i = 0; i < 350; i++)
 	{
-		mapArea += (nowMap[i].CalcMapArea() / 67600) * 100;
+		if (i < 90)
+			continue;
+
+		for (int j = 0; j < 350; j++)
+		{
+			if (j < 90)
+				continue; 
+
+			divide++;
+			if(isColored[i][j])
+				mapArea++;
+		}
 	}
+	mapArea = (mapArea / divide) * 100;
 }
 
 void Player::Reset()

@@ -38,7 +38,6 @@ public:
 	vector<POINT> GetHideMapPos();
 
 	bool CheckMapInside(POINT playerPos, POINT centerPos, int PlayerTurn);
-	float CalcMapArea();
 
 	void SetMap(vector<POINT> getMap)
 	{

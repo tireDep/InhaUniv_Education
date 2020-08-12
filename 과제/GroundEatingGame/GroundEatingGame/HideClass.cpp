@@ -23,8 +23,6 @@ HideMap::~HideMap()
 
 void HideMap::DrawPolygon(HDC hdc, int i)
 {
-	printf("HideMap : %f\n", CalcMapArea());
-
 	POINT *printMap = new POINT[mapPos.size()];
 
 	// for (int i = 0; i < mapPos.size(); i++)
@@ -66,8 +64,6 @@ void HideMap::DrawPolygon(HDC hdc, int i)
 		//ExtFloodFill(hdc, mapPos[0].x + 5, mapPos[0].y + 5, 0x00ffffff, FLOODFILLSURFACE);
 	}
 	
-	
-
 	SelectObject(hdc, oldBrush);
 	DeleteObject(hBrush);
 }
@@ -266,40 +262,4 @@ bool HideMap::CheckMapInside(POINT playerPos, POINT centerPos, int PlayerTurn)
 	// return crosses % 2 > 0;
 
 	return false;
-}
-
-float HideMap::CalcMapArea()
-{
-	float calcX = 0;
-	float calcY = 0;
-	float result = 0;
-
-	for (int i = 0; i < mapPos.size(); i++)
-	{
-		if (i == mapPos.size() - 1)
-		{
-			calcX += mapPos[mapPos.size() - 1].x * mapPos[0].y;
-		}
-		else
-		{
-			calcX += mapPos[i].x * mapPos[i + 1].y;
-		}
-	}
-
-	for (int i = 0; i < mapPos.size(); i++)
-	{
-		if (i == mapPos.size() - 1)
-		{
-			calcY += mapPos[mapPos.size() - 1].y * mapPos[0].x;
-		}
-		else
-		{
-			calcY += mapPos[i].y * mapPos[i + 1].x;
-		}
-	}
-
-	result = (calcX - calcY) / 2;
-	if (result < 0) result *= -1;
-
-	return result;
 }
