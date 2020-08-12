@@ -4,6 +4,10 @@
 #include<stdlib.h>
 #include<string>
 #include<WinSock2.h>
+#include<vector>
+
+using std::vector;
+using std::iterator;
 
 #pragma comment(lib, "ws2_32.lib");
 
@@ -41,6 +45,7 @@ void ServerCode()
 {
 	WSADATA wsaData;
 	SOCKET serverSocket, clientSocket;
+	vector<SOCKET> vClientSocket;
 	char msg[Buf_Size];
 	int strLength, i;
 
@@ -77,6 +82,9 @@ void ServerCode()
 	{
 		clientSocket = accept(serverSocket, 
 			(SOCKADDR*)&clientAddress, &clientAddressSize);
+		
+		vClientSocket.push_back(clientSocket);
+
 		Log("Accept()...");
 
 		if (clientSocket == SOCKET_ERROR)
