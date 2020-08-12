@@ -133,6 +133,11 @@ BOOL InitInstance(HINSTANCE hInstance, int nCmdShow)
 //  WM_DESTROY  - post a quit message and return
 //
 //
+
+#include <vector>
+using std::vector;
+using std::iterator;
+
 LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 {
 	static WSADATA wsaData;
@@ -144,6 +149,8 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 
 	static TCHAR str[100];
 	static int count;
+
+	static vector<TCHAR *> SaveMsg;
 
     switch (message)
     {
@@ -191,6 +198,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 			break;
 
 		case FD_READ:
+		{
 			msgLen = recv(cs, buffer, 99, 0);
 			buffer[msgLen] = NULL;
 #ifdef _UNICODE
@@ -200,15 +208,24 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 #else
 			strcpy_s(msg, buffer);
 #endif
-			InvalidateRgn(hWnd, NULL, false);
-			break;
+			TCHAR *temp = new TCHAR[200];
+ 			// _tcscpy(temp, _T("Server : "));
+			_tcscpy(temp, msg);
+			SaveMsg.push_back(temp);
 
+			if (SaveMsg.size() > 30)
+				SaveMsg.erase(SaveMsg.begin());
+
+			InvalidateRgn(hWnd, NULL, true);
+		}
+			break;
 		default:
 			break;
 		}
 		break;
 
 	case WM_CHAR:
+	{
 		if (wParam == VK_RETURN)
 		{
 			if (cs == INVALID_SOCKET)
@@ -220,24 +237,38 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 				WideCharToMultiByte(CP_ACP, 0, str, -1, buffer, msgLen, NULL, NULL);
 #else
 				strcpy_s(buffer, str);
+
 #endif //  _UNICODE
 				send(cs, (LPSTR)buffer, strlen(buffer) + 1, 0);
+
+				TCHAR *temp = new TCHAR[200];
+				_tcscpy(temp, _T("Server : "));
+				_tcscat(temp, str);
+				SaveMsg.push_back(temp);
+
+				if (SaveMsg.size() > 30)
+					SaveMsg.erase(SaveMsg.begin());
+
 				count = 0;
+				str[count] = NULL;
+				InvalidateRgn(hWnd, NULL, true);
 				return 0;
 			}
 		}
-			str[count++] = wParam;
-			str[count] = NULL;
-			InvalidateRgn(hWnd, NULL, false);
-		return 0;
+		str[count++] = wParam;
+		str[count] = NULL;
+	}
+	InvalidateRgn(hWnd, NULL, true);
+	break;
 
     case WM_PAINT:
         {
             PAINTSTRUCT ps;
             HDC hdc = BeginPaint(hWnd, &ps);
-            
-			if (_tcscmp(msg, _T("")))
-				TextOut(hdc, 0, 30, msg, (int)_tcslen(msg));
+			for (int i = 0; i < SaveMsg.size(); i++)
+			{
+				TextOut(hdc, 0, (i + 1) * 30, SaveMsg[i], (int)_tcslen(SaveMsg[i]));
+			}
 
 			TextOut(hdc, 0, 0, str, (int)_tcslen(str));
 
@@ -245,9 +276,25 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
         }
         break;
     case WM_DESTROY:
+	{
 		closesocket(s);
 		WSACleanup();
-        PostQuitMessage(0);
+
+		vector<TCHAR *>::iterator it;
+		for (it = SaveMsg.begin(); it != SaveMsg.end();)
+		{
+			TCHAR *temp = *it;
+			if (temp != NULL)
+			{
+				it = SaveMsg.erase(it);
+				delete temp;
+			}
+			else
+				it++;
+		}
+
+		PostQuitMessage(0);
+	}
         break;
     default:
         return DefWindowProc(hWnd, message, wParam, lParam);
