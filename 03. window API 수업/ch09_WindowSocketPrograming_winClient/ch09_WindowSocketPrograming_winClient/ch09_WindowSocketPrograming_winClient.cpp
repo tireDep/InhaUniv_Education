@@ -49,21 +49,21 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 
     HACCEL hAccelTable = LoadAccelerators(hInstance, MAKEINTRESOURCE(IDC_CH09_WINDOWSOCKETPROGRAMING_WINCLIENT));
 
-	return WinClient();
+	// return WinClient();
 
-   // MSG msg;
+	MSG msg;
 
-    //// Main message loop:
-    //while (GetMessage(&msg, nullptr, 0, 0))
-    //{
-    //    if (!TranslateAccelerator(msg.hwnd, hAccelTable, &msg))
-    //    {
-    //        TranslateMessage(&msg);
-    //        DispatchMessage(&msg);
-    //    }
-    //}
+    // Main message loop:
+    while (GetMessage(&msg, nullptr, 0, 0))
+    {
+        if (!TranslateAccelerator(msg.hwnd, hAccelTable, &msg))
+        {
+            TranslateMessage(&msg);
+            DispatchMessage(&msg);
+        }
+    }
 
-    //return (int) msg.wParam;
+    return (int) msg.wParam;
 }
 
 
@@ -134,8 +134,44 @@ BOOL InitInstance(HINSTANCE hInstance, int nCmdShow)
 //
 LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 {
+	static WSADATA wsaData;
+	static SOCKET s;
+	static SOCKADDR_IN addr = { 0 };
+
     switch (message)
     {
+
+	case WM_CREATE:
+		WSAStartup(MAKEWORD(2, 2), &wsaData);
+		s = socket(AF_INET, SOCK_STREAM, 0);
+		if (s == INVALID_SOCKET)
+		{
+			MessageBox(NULL, _T("Socket Fail"), _T("Error"), MB_OK);
+			return 0;
+		}
+		else
+		{
+			MessageBox(NULL, _T("Socket Success"), _T("Success"), MB_OK);
+		}
+
+		addr.sin_family = AF_INET;
+		addr.sin_port = 20;
+		addr.sin_addr.S_un.S_addr = inet_addr("127.0.0.1");
+
+		if (connect(s, (LPSOCKADDR)&addr, sizeof(addr)) == SOCKET_ERROR)
+		{
+			MessageBox(NULL, _T("Connect Fail"), _T("Error"), MB_OK);
+			return 0;
+		}
+		else
+		{
+			MessageBox(NULL, _T("Connect Success"), _T("Success"), MB_OK);
+		}
+		break;
+
+	case WM_KEYDOWN:
+		send(s, "æ»≥Á«œººø‰ Server!", 19, 0);
+		break;
     case WM_COMMAND:
         {
             int wmId = LOWORD(wParam);
@@ -162,6 +198,8 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
         }
         break;
     case WM_DESTROY:
+		closesocket(s);
+		WSACleanup();
         PostQuitMessage(0);
         break;
     default:
@@ -220,6 +258,7 @@ int WinClient()
 	else
 	{
 		MessageBox(NULL, _T("Connect Success"), _T("Success"), MB_OK);
+		send(s, "æ»≥Á«œººø‰ Server!", 19, 0);
 	}
 
 	closesocket(s);
