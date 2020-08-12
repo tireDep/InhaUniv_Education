@@ -159,14 +159,19 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 	case WM_KEYDOWN:
 		if (eGameScreen == nowScreen)
 		{
+			PAINTSTRUCT ps;
+			HDC hdc = BeginPaint(hWnd, &ps);
+
 			if (wParam == 'A' || wParam == 'a' || wParam == VK_LEFT)
-				player.CheckPlayerPos(-emoveSpeed, eLeft, map);
+				player.CheckPlayerPos(-emoveSpeed, eLeft, map, hdc);
 			else if (wParam == 'W' || wParam == 'w' || wParam == VK_UP)
-				player.CheckPlayerPos(-emoveSpeed, eUp, map);
+				player.CheckPlayerPos(-emoveSpeed, eUp, map, hdc);
 			else if (wParam == 'D' || wParam == 'd' || wParam == VK_RIGHT)
-				player.CheckPlayerPos(emoveSpeed, eRight, map);
+				player.CheckPlayerPos(emoveSpeed, eRight, map, hdc);
 			else if (wParam == 'S' || wParam == 's' || wParam == VK_DOWN)
-				player.CheckPlayerPos(emoveSpeed, eDown, map);
+				player.CheckPlayerPos(emoveSpeed, eDown, map, hdc);
+
+			DeleteDC(hdc);
 		}
 		InvalidateRect(hWnd, NULL, FALSE);
 		break;

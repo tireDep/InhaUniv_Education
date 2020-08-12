@@ -16,16 +16,20 @@ private:
 
 	int preTurn;
 	int playerTurn;
+
 	bool preCheckLine;
 
 	float mapArea;
+
+	int preMapSize;
+	bool isColored[350][350];
 
 public:
 	Player();
 	Player(int posx, int posy);
 	~Player();
 
-	void CheckPlayerPos(int movePos, int turnPos, HideMap hideMap);
+	void CheckPlayerPos(int movePos, int turnPos, HideMap hideMap, HDC hdc);
 	void MovePlayerX(int movePos);
 	void MovePlayerY(int movePos);
 
@@ -37,9 +41,6 @@ public:
 	void CalcCenterPos();
 	void CalcCenterPos(POINT pos, POINT &cPos);
 	bool CheckSpotOnTheLine(HideMap hideMap);
-
-	bool CheckCanMoveX(POINT tempPlayerPos, POINT tempCenterPos);
-	bool CheckCanMoveY(POINT tempPlayerPos, POINT tempCenterPos);
 
 	void CalcMapArea();
 	void Reset();

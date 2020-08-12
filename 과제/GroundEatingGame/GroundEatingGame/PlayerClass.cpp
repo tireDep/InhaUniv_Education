@@ -62,57 +62,7 @@ bool Player::CheckSpotOnTheLine(HideMap hideMap)
 	return false;
 }
 
-bool Player::CheckCanMoveX(POINT tempPlayerPos, POINT tempCenterPos)
-{
-	bool checkInside = false;
-	for (int i = 0; i < nowMap.size(); i++)
-	{
-		checkInside = nowMap[i].CheckMapInside(tempCenterPos, tempCenterPos, playerTurn);
-
-		if (checkInside == true)
-			break;
-		else
-			continue;
-	}
-	if (!checkInside)
-	{
-		if ((tempCenterPos.x <= eStartposX && playerTurn == eLeft)
-			|| (tempCenterPos.x >= ePosRight + eDecimal / 2 && playerTurn == eRight))
-			return false;
-
-		else if ((tempCenterPos.x <= ePosRight - eDecimal / 2 && playerTurn == eLeft)
-			|| (tempCenterPos.x >= eStartposX + eDecimal / 2 && playerTurn == eRight))
-			return true;
-	}
-	return false;
-}
-
-bool Player::CheckCanMoveY(POINT tempPlayerPos, POINT tempCenterPos)
-{
-	bool checkInside = false;
-	for (int i = 0; i < nowMap.size(); i++)
-	{
-		checkInside = nowMap[i].CheckMapInside(tempCenterPos, tempCenterPos, playerTurn);
-
-		if (checkInside == true)
-			break;
-		else
-			continue;
-	}
-	if (!checkInside)
-	{
-		if ((tempCenterPos.y <= eStartPosY && playerTurn == eUp)
-			|| (tempCenterPos.y >= ePosBottom + eDecimal / 2 && playerTurn == eDown))
-			return false;
-
-		else if ((tempCenterPos.y <= ePosBottom - eDecimal / 2 && playerTurn == eUp)
-			|| (tempCenterPos.y >= eStartPosY + eDecimal / 2 && playerTurn == eDown))
-			return true;	
-	}
-	return false;
-}
-
-void Player::CheckPlayerPos(int movePos, int turnPos, HideMap hideMap)
+void Player::CheckPlayerPos(int movePos, int turnPos, HideMap hideMap, HDC hdc)
 {
 	bool isCanMove;
 	POINT tempPlayerPos;
@@ -128,7 +78,17 @@ void Player::CheckPlayerPos(int movePos, int turnPos, HideMap hideMap)
 		playerTurn = turnPos;
 		tempPlayerPos.x += movePos;
 		CalcCenterPos(tempPlayerPos, tempCenterPos);
-		isCanMove = CheckCanMoveX(tempPlayerPos, tempCenterPos);
+		
+		if (isColored[tempCenterPos.x][tempCenterPos.y])
+			isCanMove = false;
+		else
+		{
+			if (tempCenterPos.x < ePosLeft || tempCenterPos.x > ePosRight)
+				isCanMove = false;
+			else
+				isCanMove = true;
+		}
+
 		break;
 
 	case eUp:
@@ -136,7 +96,16 @@ void Player::CheckPlayerPos(int movePos, int turnPos, HideMap hideMap)
 		playerTurn = turnPos;
 		tempPlayerPos.y += movePos;
 		CalcCenterPos(tempPlayerPos, tempCenterPos);
-		isCanMove = CheckCanMoveY(tempPlayerPos, tempCenterPos);
+		if (isColored[tempCenterPos.x][tempCenterPos.y])
+			isCanMove = false;
+		else
+		{
+			if (tempCenterPos.y < ePosTop || tempCenterPos.y > ePosBottom)
+				isCanMove = false;
+			else
+				isCanMove = true;
+		}
+
 		break;
 
 	default:
@@ -149,7 +118,6 @@ void Player::CheckPlayerPos(int movePos, int turnPos, HideMap hideMap)
 		POINT trueCenter;	// 실제좌표
 		CalcCenterPos(playerPos, trueCenter);
 		centerPos = tempCenterPos;	// 이동좌표
-		//CalcCenterPos();
 
 		bool checkLine = CheckSpotOnTheLine(hideMap);
 
@@ -160,12 +128,11 @@ void Player::CheckPlayerPos(int movePos, int turnPos, HideMap hideMap)
 				checkLine = CheckSpotOnTheLine(nowMap[i]);
 
 				if (checkLine == true)
-				//if (checkLine == true && preCheckLine != checkLine)
 					break;
 			}
 		}
 
-		if (!checkLine)// || !CheckSpotOnTheLine(hideMap))
+		if (!checkLine)
 		{
 			POINT temp = trueCenter;	// 시작점은 실제좌표 저장
 			if (preCheckLine != checkLine)	// 시작점 저장
@@ -177,6 +144,7 @@ void Player::CheckPlayerPos(int movePos, int turnPos, HideMap hideMap)
 				//else if (trueCenter.y == ePosRight - emoveSpeed)	temp.y = ePosRight;
 				// 라인에 딱 맞게 보정
 				playerMap.AddSpot(temp);
+				preMapSize = nowMap.size();
 			}
 			
 			if (moveLine.CheckMoveTwice(tempCenterPos))	// 지나간 길 판별
@@ -212,9 +180,7 @@ void Player::CheckPlayerPos(int movePos, int turnPos, HideMap hideMap)
 				nowMap.push_back(playerMap);
 			}
 			playerMap.RemoveAllSpot();
-			//playerMap.SetMap(moveLine.GetMap());
 			moveLine.RemoveAllSpot();
-			
 		}
 
 		if (preTurn != playerTurn && !preCheckLine)	// 외부 존재, 방향 전환
@@ -246,10 +212,6 @@ void Player::DrawPlayer(HDC hdc)
 	hBrush = CreateSolidBrush(RGB(255, 65, 255));
 	oldBrush = (HBRUSH)SelectObject(hdc, hBrush);
 
-	HPEN hPen, oldPen;
-	hPen = CreatePen(PS_SOLID, 1, RGB(255, 65, 255));
-	oldPen = (HPEN)SelectObject(hdc, hPen);
-
 	vector<HideMap>::reverse_iterator it;
 	for (it = nowMap.rbegin(); it < nowMap.rend(); it++)
 	{
@@ -258,29 +220,161 @@ void Player::DrawPlayer(HDC hdc)
 	for (int i = 0; i < nowMap.size(); i++)
 	{
 		vector<POINT> temp = nowMap[i].GetHideMapPos();
-		//ExtFloodFill(hdc, temp[0].x + 10, temp[0].y + 10, 0x00ffffff, FLOODFILLSURFACE);
-		//ExtFloodFill(hdc, 95, 95, 0x00ffffff, FLOODFILLSURFACE);
-		//ExtFloodFill(hdc, 345, 95, 0x00ffffff, FLOODFILLSURFACE);
-		ExtFloodFill(hdc, 345, 345, 0x00ffffff, FLOODFILLSURFACE);
-	}
+		//if (temp[0].x > temp[temp.size() - 1].x)
+		//{
+		//	//if (temp[0].x <= temp[temp.size() - 1].x)// && temp[0].y == temp[1].y)
+		//	//	x = 1;
+		//	//else
+		//	//	x = -1;
+		//	x = -1;
+		//}
+		//// ExtFloodFill(hdc, temp[0].x - 1, temp[0].y + 1, 0x00ffffff, FLOODFILLSURFACE);
+		//else if (temp[0].x < temp[temp.size() - 1].x)
+		//{
+		//	//if (temp[0].x <= temp[temp.size() - 1].x)//&& temp[0].y == temp[1].y)
+		//	//	x = 1;
+		//	//else
+		//	//	x = -1;
+		//	x = 1;
+		//}
+		//// ExtFloodFill(hdc, temp[0].x + 1, temp[0].y + 1, 0x00ffffff, FLOODFILLSURFACE);
+		//else
+		//{
+		//	x = temp[0].x - 90  * -1 < temp[0].x - 350 * -1 ? 1 : -1;
+		//	// 수정 필요
+		//}
+		//
+		//if (temp[0].y < temp[temp.size() - 1].y)
+		//{
+		//	//if (temp[0].y <= temp[temp.size()-1].y)// && temp[0].x == temp[1].x)
+		//	//	y = 1;
+		//	//else
+		//	//	y = -1;
+		//	y = 1;
+		//}
+		//else if (temp[0].y > temp[temp.size() - 1].y)
+		//{
+		//	//if (temp[0].y <= temp[1].y)// && temp[0].x <= temp[1].x)
+		//	//	y = -1;
+		//	//else
+		//	//	y = 1;
+		//	y = -1;
+		//}
+		//else
+		//	y = temp[0].y - 90 * -1 < temp[0].y - 350 * -1 ? -1 : 1;
+		//// 수정 필요
 
-	SelectObject(hdc, oldPen);
-	DeleteObject(hPen);
+		int x, y;
+		int straightX = 0;
+		int straightY = 0;
+
+		for (int i = 0; i < temp.size() - 1; i++)
+		{
+			if (temp[i].x == temp[i + 1].x) straightX++;
+			if (temp[i].y == temp[i + 1].y) straightY++;
+		}
+
+
+		if (temp.size() - 1 == straightX)
+		{
+			x = temp[0].x  < 260 ? -1 : 1;
+			if (temp[0].y > temp[1].y)
+				y = -1;
+			else
+				y = 1;
+		}	// 직선 판별
+		else if (temp.size() - 1 == straightY)
+		{
+			y = temp[0].y  < 260 ? -1 : 1;
+			if (temp[0].x > temp[1].x)
+				x = -1;
+			else
+				x = 1;
+		}	// 직선 판별
+		else
+		{
+			if (temp[0].x < temp[1].x && temp[0].y == temp[1].y && temp[1].y>temp[temp.size() - 1].y)
+			{
+				x = 1;
+				y = -1;
+			} // 좌우상
+			else if (temp[0].y < temp[1].y && temp[0].x == temp[1].x && temp[1].x > temp[temp.size() - 1].x)
+			{
+				x = -1;
+				y = 1;
+			} // 하우좌
+			  // 왼상단
+
+			else if (temp[0].x > temp[1].x && temp[0].y == temp[1].y && temp[1].y > temp[temp.size() - 1].y)
+			{
+				x = -1;
+				y = -1;
+			}	// 우좌상
+			else if (temp[0].y < temp[1].y && temp[0].x == temp[1].x && temp[1].x < temp[temp.size() - 1].x)
+			{
+				x = 1;
+				y = 1;
+			}	// 하좌우
+				// 우상단
+
+			else if (temp[0].x < temp[1].x && temp[0].y == temp[1].y && temp[1].y < temp[temp.size() - 1].y)
+			{
+				x = 1;
+				y = 1;
+			}	// 좌우하
+			else if (temp[0].y > temp[1].y && temp[0].x == temp[1].x && temp[1].x > temp[temp.size() - 1].x)
+			{
+				x = -1;
+				y = -1;
+			}	// 상우좌
+				// 좌하단
+
+			else if (temp[0].y > temp[1].y && temp[0].x == temp[1].x && temp[1].x < temp[temp.size() - 1].x)
+			{
+				x = 1;
+				y = -1;
+			}	// 상좌우
+			else if (temp[0].x > temp[1].x && temp[0].y == temp[1].y && temp[1].y < temp[temp.size() - 1].y)
+			{
+				x = -1;
+				y = 1;
+			}	// 우좌하
+				// 우하단
+			else
+			{
+				x = temp[0].x  < 260 ? 1 : -1;
+				y = temp[0].y  < 260 ? -1 : 1;
+			}
+		}
+
+		ExtFloodFill(hdc, temp[0].x + x, temp[0].y + y, 0x00ffffff, FLOODFILLSURFACE);
+	}
 
 	SelectObject(hdc, oldBrush);
 	DeleteObject(hBrush);
-	// todo : 수정해야함
 
-	//SetROP2(hdc, R2_NOTMASKPEN);
-	//Rectangle(hdc, 90, 90, 350, 350);
-	
+	if (preMapSize != nowMap.size())
+	{
+		preMapSize = nowMap.size();
+		for (int i = 0; i < 350; i++)
+		{
+			for (int j = 0; j < 350; j++)
+			{
+				if (isColored[i][j] == true)
+					continue;
 
-	COLORREF color = GetPixel(hdc, 100, 100); 
-	int a = GetRValue(color);
-	int b = GetGValue(color);
-	int c = GetBValue(color);
+				COLORREF color = GetPixel(hdc, i, j);
+				int a = GetRValue(color);
+				int b = GetGValue(color);
+				int c = GetBValue(color);
 
-	printf("%d %d %d\n", a, b, c);
+				if (RGB(a, b, c) != RGB(255, 65, 255))
+					isColored[i][j] = false;
+				else
+					isColored[i][j] = true;
+			}
+		}
+	}
 
 	Ellipse(hdc, playerPos.x, playerPos.y, playerPos.x + eDecimal, playerPos.y + eDecimal);
 }
