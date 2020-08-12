@@ -9,6 +9,7 @@
 #pragma comment(lib,"ws2_32.lib")
 
 #include <stdio.h>
+#define WM_ASYNC WM_USER+2
 // <<
 
 #define MAX_LOADSTRING 100
@@ -152,9 +153,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 			return 0;
 		}
 		else
-		{
 			MessageBox(NULL, _T("Socket Success"), _T("Success"), MB_OK);
-		}
 		addr.sin_family = AF_INET;
 		addr.sin_port = 20;
 		addr.sin_addr.S_un.S_addr = inet_addr("127.0.0.1");
@@ -166,9 +165,9 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 			return 0;
 		}
 		else
-		{
 			MessageBox(NULL, _T("Binding Success"), _T("Success"), MB_OK);
-		}
+
+		WSAAsyncSelect(s, hWnd, WM_ASYNC, FD_ACCEPT);
 
 		if (listen(s, 5) == -1)
 		{
@@ -176,45 +175,43 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 			return 0;
 		}
 		else
-		{
 			MessageBox(NULL, _T("Binding Success"), _T("Success"), MB_OK);
-		}
-
-		size = sizeof(c_addr);
-
-		do
+		break;
+	
+	case WM_ASYNC:
+		switch (lParam)
 		{
+		case FD_ACCEPT:
+			size = sizeof(c_addr);
 			cs = accept(s, (LPSOCKADDR)&c_addr, &size);
-		} while (cs == INVALID_SOCKET);
+			WSAAsyncSelect(cs, hWnd, WM_ASYNC, FD_READ);
+			break;
 
-		msgLen = recv(cs, buffer, 99, 0);
-		buffer[msgLen] = NULL;
-
+		case FD_READ:
+			msgLen = recv(cs, buffer, 99, 0);
+			buffer[msgLen] = NULL;
 #ifdef _UNICODE
 			msgLen = MultiByteToWideChar(CP_ACP, 0, buffer, strlen(buffer), NULL, NULL);
 			MultiByteToWideChar(CP_ACP, 0, buffer, strlen(buffer), msg, msgLen);
 			msg[msgLen] = NULL;
 #else
-		strcpy_s(msg, buffer);
+			strcpy_s(msg, buffer);
 #endif
+			InvalidateRgn(hWnd, NULL, false);
+			break;
+
+		default:
+			break;
+		}
 		break;
-    case WM_COMMAND:
-        {
-            int wmId = LOWORD(wParam);
-            // Parse the menu selections:
-            switch (wmId)
-            {
-            case IDM_ABOUT:
-                DialogBox(hInst, MAKEINTRESOURCE(IDD_ABOUTBOX), hWnd, About);
-                break;
-            case IDM_EXIT:
-                DestroyWindow(hWnd);
-                break;
-            default:
-                return DefWindowProc(hWnd, message, wParam, lParam);
-            }
-        }
-        break;
+
+	case WM_KEYDOWN:
+		if (cs == INVALID_SOCKET)
+			break;
+
+		send(cs, "¹Ý°¡¿ö Client!", 15, 0);
+		break;
+
     case WM_PAINT:
         {
             PAINTSTRUCT ps;

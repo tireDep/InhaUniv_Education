@@ -7,6 +7,8 @@
 // >>
 #include <WinSock2.h>
 #pragma comment(lib,"ws2_32.lib")
+
+#define WM_ASYNC WM_USER+2
 // <<
 
 #define MAX_LOADSTRING 100
@@ -132,15 +134,19 @@ BOOL InitInstance(HINSTANCE hInstance, int nCmdShow)
 //  WM_DESTROY  - post a quit message and return
 //
 //
+
 LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 {
 	static WSADATA wsaData;
 	static SOCKET s;
 	static SOCKADDR_IN addr = { 0 };
 
+	static TCHAR msg[200];
+	int msgLen;
+	char buffer[100];
+
     switch (message)
     {
-
 	case WM_CREATE:
 		WSAStartup(MAKEWORD(2, 2), &wsaData);
 		s = socket(AF_INET, SOCK_STREAM, 0);
@@ -150,13 +156,12 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 			return 0;
 		}
 		else
-		{
 			MessageBox(NULL, _T("Socket Success"), _T("Success"), MB_OK);
-		}
 
 		addr.sin_family = AF_INET;
 		addr.sin_port = 20;
 		addr.sin_addr.S_un.S_addr = inet_addr("127.0.0.1");
+
 
 		if (connect(s, (LPSOCKADDR)&addr, sizeof(addr)) == SOCKET_ERROR)
 		{
@@ -164,14 +169,36 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 			return 0;
 		}
 		else
-		{
 			MessageBox(NULL, _T("Connect Success"), _T("Success"), MB_OK);
+
+		WSAAsyncSelect(s, hWnd, WM_ASYNC, FD_READ);
+		break;
+
+	case WM_ASYNC:
+		switch (lParam)
+		{
+		case FD_READ:
+			msgLen = recv(s, buffer, 99, 0);
+			buffer[msgLen] = NULL;
+#ifdef _UNICODE
+			msgLen = MultiByteToWideChar(CP_ACP, 0, buffer, strlen(buffer), NULL, NULL);
+			MultiByteToWideChar(CP_ACP, 0, buffer, strlen(buffer), msg, msgLen);
+			msg[msgLen] = NULL;
+#else
+			strcpy_s(msg, buffer);
+#endif
+			InvalidateRgn(hWnd, NULL, false);
+			break;
+
+		default:
+			break;
 		}
 		break;
 
 	case WM_KEYDOWN:
-		send(s, "¾È³çÇÏ¼¼¿ä Server!", 19, 0);
+		send(s, "¾È³ç Server!", 12, 0);
 		break;
+
     case WM_COMMAND:
         {
             int wmId = LOWORD(wParam);
@@ -193,7 +220,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
         {
             PAINTSTRUCT ps;
             HDC hdc = BeginPaint(hWnd, &ps);
-            // TODO: Add any drawing code that uses hdc here...
+			TextOut(hdc, 0, 0, msg, (int)_tcslen(msg));
             EndPaint(hWnd, &ps);
         }
         break;
