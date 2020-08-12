@@ -62,7 +62,7 @@ bool Player::CheckSpotOnTheLine(HideMap hideMap)
 	return false;
 }
 
-void Player::CheckPlayerPos(int movePos, int turnPos, HideMap hideMap, HDC hdc)
+void Player::CheckPlayerPos(int movePos, int turnPos, HideMap hideMap)
 {
 	bool isCanMove;
 	POINT tempPlayerPos;
@@ -79,7 +79,7 @@ void Player::CheckPlayerPos(int movePos, int turnPos, HideMap hideMap, HDC hdc)
 		tempPlayerPos.x += movePos;
 		CalcCenterPos(tempPlayerPos, tempCenterPos);
 		
-		if (isColored[tempCenterPos.x][tempCenterPos.y])
+		if (isColoredArray[tempCenterPos.x][tempCenterPos.y])
 			isCanMove = false;
 		else
 		{
@@ -96,7 +96,7 @@ void Player::CheckPlayerPos(int movePos, int turnPos, HideMap hideMap, HDC hdc)
 		playerTurn = turnPos;
 		tempPlayerPos.y += movePos;
 		CalcCenterPos(tempPlayerPos, tempCenterPos);
-		if (isColored[tempCenterPos.x][tempCenterPos.y])
+		if (isColoredArray[tempCenterPos.x][tempCenterPos.y])
 			isCanMove = false;
 		else
 		{
@@ -136,16 +136,7 @@ void Player::CheckPlayerPos(int movePos, int turnPos, HideMap hideMap, HDC hdc)
 		{
 			POINT temp = trueCenter;	// 시작점은 실제좌표 저장
 			if (preCheckLine != checkLine)	// 시작점 저장
-			{
-				//if (trueCenter.x == ePosTop + emoveSpeed)	temp.x = ePosTop;
-				//else if (trueCenter.x == ePosBottom - emoveSpeed)	temp.x = ePosBottom;
-				//
-				//if (trueCenter.y == ePosLeft + emoveSpeed)	temp.y = ePosLeft;
-				//else if (trueCenter.y == ePosRight - emoveSpeed)	temp.y = ePosRight;
-				// 라인에 딱 맞게 보정
-				playerMap.AddSpot(temp);
 				preMapSize = nowMap.size();
-			}
 			
 			if (moveLine.CheckMoveTwice(tempCenterPos))	// 지나간 길 판별
 			{
@@ -165,14 +156,12 @@ void Player::CheckPlayerPos(int movePos, int turnPos, HideMap hideMap, HDC hdc)
 		{
 			if (preTurn != playerTurn && !preCheckLine)	// 외부 존재, 방향 전환
 			{
-				moveLine.AddSpot(centerPos);	// 꺽이는 부분 저장
-				playerMap.AddSpot(trueCenter);
+				// moveLine.AddSpot(centerPos);	// 꺽이는 부분 저장
+				moveLine.AddSpot(trueCenter);
 			}
 
-			if (preCheckLine != checkLine)// || !CheckSpotOnTheLine(hideMap))	// 끝점 저장
+			if (preCheckLine != checkLine)
 			{
-				//playerMap.AddSpot(centerPos);	// 끝점은 이동좌표 저장
-				//playerMap.AddSpot();
 				moveLine.AddSpot(centerPos);	// 꺽이는 부분 저장
 				playerMap.RemoveAllSpot();
 				playerMap.SetMap(moveLine.GetMap());
@@ -183,14 +172,9 @@ void Player::CheckPlayerPos(int movePos, int turnPos, HideMap hideMap, HDC hdc)
 			moveLine.RemoveAllSpot();
 		}
 
-		if (preTurn != playerTurn && !preCheckLine)	// 외부 존재, 방향 전환
-		{
-			moveLine.AddSpot(centerPos);	// 꺽이는 부분 저장
-			playerMap.AddSpot(trueCenter);
-		}
-
 		preCheckLine = checkLine;	// 라인 체크 저장	
 		playerPos = tempPlayerPos;
+
 		if (turnPos == eLeft || turnPos == eRight)
 			MovePlayerX(movePos);
 		if (turnPos == eUp || turnPos == eDown)
@@ -205,8 +189,6 @@ void Player::DrawPlayer(HDC hdc)
 	printf("%f\n", mapArea);
 
 	moveLine.DrawPolygon(hdc,0);
-
-	// todo : 수정해야함
 	
 	HBRUSH hBrush, oldBrush;
 	hBrush = CreateSolidBrush(RGB(255, 65, 255));
@@ -342,8 +324,8 @@ void Player::DrawPlayer(HDC hdc)
 				// 우하단
 			else
 			{
-				x = temp[0].x  < 260 ? 1 : -1;
-				y = temp[0].y  < 260 ? -1 : 1;
+				x = temp[0].x < 260 ? 1 : -1;
+				y = temp[0].y < 260 ? -1 : 1;
 			}
 		}
 
@@ -360,7 +342,7 @@ void Player::DrawPlayer(HDC hdc)
 		{
 			for (int j = 0; j < 351; j++)
 			{
-				if (isColored[i][j] == true)
+				if (isColoredArray[i][j] == true)
 					continue;
 
 				COLORREF color = GetPixel(hdc, i, j);
@@ -369,9 +351,9 @@ void Player::DrawPlayer(HDC hdc)
 				int c = GetBValue(color);
 
 				if (RGB(a, b, c) != RGB(255, 65, 255))
-					isColored[i][j] = false;
+					isColoredArray[i][j] = false;
 				else
-					isColored[i][j] = true;
+					isColoredArray[i][j] = true;
 			}
 		}
 	}
@@ -422,18 +404,18 @@ void Player::CalcMapArea()
 {
 	mapArea = 0;
 	float divide = 1;
-	for (int i = 0; i < 350; i++)
+	for (int i = 0; i < defColorSize; i++)
 	{
 		if (i < 90)
 			continue;
 
-		for (int j = 0; j < 350; j++)
+		for (int j = 0; j < defColorSize; j++)
 		{
 			if (j < 90)
 				continue; 
 
 			divide++;
-			if(isColored[i][j])
+			if(isColoredArray[i][j])
 				mapArea++;
 		}
 	}

@@ -6,7 +6,6 @@
 #include "PlayerClass.h"
 #include "MapClass.h"
 #include "UiClass.h"
-#include "Obstacle.h"
 
 #include <stdio.h>
 
@@ -115,10 +114,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 	static Player player(eStartposX, eStartPosY);
 	static HideMap map = { ePosLeft,ePosTop,ePosRight,ePosBottom };
 	UI *playerUI = UI::GetInstance();
-
-	Obstacle obstacle;
 	
-
 	int nowScreen = playerUI->GetScreenNum();
     switch (message)
     {
@@ -159,19 +155,14 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 	case WM_KEYDOWN:
 		if (eGameScreen == nowScreen)
 		{
-			PAINTSTRUCT ps;
-			HDC hdc = BeginPaint(hWnd, &ps);
-
 			if (wParam == 'A' || wParam == 'a' || wParam == VK_LEFT)
-				player.CheckPlayerPos(-emoveSpeed, eLeft, map, hdc);
+				player.CheckPlayerPos(-emoveSpeed, eLeft, map);
 			else if (wParam == 'W' || wParam == 'w' || wParam == VK_UP)
-				player.CheckPlayerPos(-emoveSpeed, eUp, map, hdc);
+				player.CheckPlayerPos(-emoveSpeed, eUp, map);
 			else if (wParam == 'D' || wParam == 'd' || wParam == VK_RIGHT)
-				player.CheckPlayerPos(emoveSpeed, eRight, map, hdc);
+				player.CheckPlayerPos(emoveSpeed, eRight, map);
 			else if (wParam == 'S' || wParam == 's' || wParam == VK_DOWN)
-				player.CheckPlayerPos(emoveSpeed, eDown, map, hdc);
-
-			DeleteDC(hdc);
+				player.CheckPlayerPos(emoveSpeed, eDown, map);
 		}
 		InvalidateRect(hWnd, NULL, FALSE);
 		break;
@@ -205,7 +196,6 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 		}
 		else if (eGameScreen == nowScreen)
 		{
-			obstacle.DrawObstacle(memDc);
 			playerUI->DrawGameUI(memDc, player.GetPlayerMapCnt(), player.GetMapArea());
 
 			DrawBitMap(hWnd, finalDc);	// 배경사진
@@ -215,7 +205,6 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 			oldBrush = (HBRUSH)SelectObject(memDc, hBrush);
 
 			map.DrawPolygon(memDc, 1);	// 가림판
-			//ExtFloodFill(memDc, 95, 95, 0x00ffffff, FLOODFILLSURFACE);
 
 			SelectObject(memDc, oldBrush);
 			DeleteObject(hBrush);

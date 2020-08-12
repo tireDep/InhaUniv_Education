@@ -148,7 +148,6 @@
   <ItemGroup>
     <ClInclude Include="GroundEatingGame.h" />
     <ClInclude Include="MapClass.h" />
-    <ClInclude Include="Obstacle.h" />
     <ClInclude Include="PlayerClass.h" />
     <ClInclude Include="Resource.h" />
     <ClInclude Include="stdafx.h" />

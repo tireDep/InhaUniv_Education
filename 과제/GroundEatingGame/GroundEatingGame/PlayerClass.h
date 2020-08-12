@@ -3,7 +3,6 @@
 #include "GroundEatingGame.h"
 #include "MapClass.h"
 
-
 class Player
 {
 private:
@@ -22,14 +21,14 @@ private:
 	float mapArea;
 
 	int preMapSize;
-	bool isColored[351][351];
+	bool isColoredArray[defColorSize + 1][defColorSize + 1];
 
 public:
 	Player();
 	Player(int posx, int posy);
 	~Player();
 
-	void CheckPlayerPos(int movePos, int turnPos, HideMap hideMap, HDC hdc);
+	void CheckPlayerPos(int movePos, int turnPos, HideMap hideMap);
 	void MovePlayerX(int movePos);
 	void MovePlayerY(int movePos);
 

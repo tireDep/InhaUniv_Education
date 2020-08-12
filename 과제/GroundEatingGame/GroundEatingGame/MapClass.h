@@ -31,13 +31,11 @@ public:
 	void DrawPolygon(HDC hdc, int i);
 
 	void AddSpot(POINT addSpot);
-	void AddSpot();
+	//void AddSpot();
 	void RemoveSpot();
 	void RemoveAllSpot();
 
 	vector<POINT> GetHideMapPos();
-
-	bool CheckMapInside(POINT playerPos, POINT centerPos, int PlayerTurn);
 
 	void SetMap(vector<POINT> getMap)
 	{
