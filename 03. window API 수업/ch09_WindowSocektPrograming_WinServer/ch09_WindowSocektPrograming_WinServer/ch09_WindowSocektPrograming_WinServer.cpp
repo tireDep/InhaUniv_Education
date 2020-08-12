@@ -138,6 +138,8 @@ BOOL InitInstance(HINSTANCE hInstance, int nCmdShow)
 using std::vector;
 using std::iterator;
 
+#define MAX_CLIENT 100
+
 LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 {
 	static WSADATA wsaData;
@@ -151,6 +153,9 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 	static int count;
 
 	static vector<TCHAR *> SaveMsg;
+
+	static SOCKET clientArray[MAX_CLIENT];
+	static int iClientCnt = 0;
 
     switch (message)
     {
@@ -194,13 +199,28 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 		case FD_ACCEPT:
 			size = sizeof(c_addr);
 			cs = accept(s, (LPSOCKADDR)&c_addr, &size);
-			WSAAsyncSelect(cs, hWnd, WM_ASYNC, FD_READ);
+			if (iClientCnt < MAX_CLIENT)
+			{
+				WSAAsyncSelect(cs, hWnd, WM_ASYNC, FD_READ);
+				clientArray[iClientCnt++] = cs;
+			}
+			else
+				closesocket(cs);
 			break;
 
 		case FD_READ:
 		{
-			msgLen = recv(cs, buffer, 99, 0);
-			buffer[msgLen] = NULL;
+			int csTemp;
+			for (int i = 0; i < iClientCnt; i++)
+			{
+				msgLen = recv(clientArray[i], buffer, 99, 0);
+				if (msgLen != -1)
+				{
+					csTemp = clientArray[i];
+					buffer[msgLen + 1] = NULL;
+					break;
+				}
+			}
 #ifdef _UNICODE
 			msgLen = MultiByteToWideChar(CP_ACP, 0, buffer, strlen(buffer), NULL, NULL);
 			MultiByteToWideChar(CP_ACP, 0, buffer, strlen(buffer), msg, msgLen);
@@ -208,9 +228,23 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 #else
 			strcpy_s(msg, buffer);
 #endif
+			char clientTemp[100];
+			char changeNum[100];
+			sprintf(changeNum, "%d", csTemp);
+
+			strcpy(clientTemp, "Client ");
+			strcat(clientTemp, changeNum);
+			strcat(clientTemp, " : ");
+			strcat(clientTemp, buffer);
+
+			for (int i = 0; i < iClientCnt; i++)
+				send(clientArray[i], (LPSTR)clientTemp, strlen(clientTemp) + 1, 0);
+
 			TCHAR *temp = new TCHAR[200];
- 			// _tcscpy(temp, _T("Server : "));
-			_tcscpy(temp, msg);
+			msgLen = MultiByteToWideChar(CP_ACP, 0, clientTemp, strlen(clientTemp), NULL, NULL);
+			MultiByteToWideChar(CP_ACP, MB_PRECOMPOSED, clientTemp, strlen(clientTemp), temp, msgLen);
+			temp[msgLen] = NULL;
+
 			SaveMsg.push_back(temp);
 
 			if (SaveMsg.size() > 30)
@@ -239,7 +273,11 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 				strcpy_s(buffer, str);
 
 #endif //  _UNICODE
-				send(cs, (LPSTR)buffer, strlen(buffer) + 1, 0);
+				char serverTemp[100] = "Server : ";
+				strcat(serverTemp, buffer);
+
+				for(int i=0; i < iClientCnt; i++)
+					send(clientArray[i], (LPSTR)serverTemp, strlen(serverTemp) + 1, 0);
 
 				TCHAR *temp = new TCHAR[200];
 				_tcscpy(temp, _T("Server : "));

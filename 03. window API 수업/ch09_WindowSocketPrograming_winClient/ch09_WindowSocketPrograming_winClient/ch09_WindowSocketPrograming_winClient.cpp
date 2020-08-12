@@ -229,13 +229,13 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 #endif //  _UNICODE
 				send(s, (LPSTR)buffer, strlen(buffer) + 1, 0);
 
-				TCHAR *temp = new TCHAR[200];
-				// _tcscpy(temp, _T("Clinet : "));
-				_tcscpy(temp, str);
-				SaveMsg.push_back(temp);
+				//TCHAR *temp = new TCHAR[200];
+				//// _tcscpy(temp, _T("Clinet : "));
+				//_tcscpy(temp, str);
+				//SaveMsg.push_back(temp);
 
-				if (SaveMsg.size() > 30)
-					SaveMsg.erase(SaveMsg.begin());
+				//if (SaveMsg.size() > 30)
+				//	SaveMsg.erase(SaveMsg.begin());
 
 				count = 0;
 				str[count] = NULL;
