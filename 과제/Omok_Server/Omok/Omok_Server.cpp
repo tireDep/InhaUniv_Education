@@ -124,6 +124,7 @@ BOOL InitInstance(HINSTANCE hInstance, int nCmdShow)
 #include <stdio.h>
 #include <vector>
 #include <WinSock2.h>
+#include "CheckOmok.h"
 
 #pragma comment(lib,"ws2_32.lib")
 #define WM_ASYNC WM_USER+2
@@ -136,6 +137,7 @@ using std::vector;
 LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 {
 	static int map[defArrSize][defArrSize];
+	static bool colorMap[defArrSize][defArrSize];
 
 	static vector<POINT> playerMark;
 	static vector<bool> playerColor;
@@ -158,8 +160,9 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
     switch (message)
     {
 	case WM_CREATE:
-		// AllocConsole();
-		// freopen("CONOUT$", "wt", stdout);
+		AllocConsole();
+		freopen("CONOUT$", "wt", stdout);
+		SetTimer(hWnd, 0, 10, NULL);
 		WSAStartup(MAKEWORD(2, 2), &wsaData);
 		s = socket(AF_INET, SOCK_STREAM, 0);
 		if (s == INVALID_SOCKET)
@@ -191,6 +194,11 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 		}
 		//else
 		//	MessageBox(NULL, _T("Binding Success"), _T("Success"), MB_OK);
+		break;
+
+	case WM_TIMER:
+		if (CheckOmok(map, colorMap))
+			printf("finish");
 		break;
 
 	case WM_ASYNC:
@@ -275,13 +283,15 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 
 				if (playerNum == 0)
 				{
-					map[tempSaveVal[0]][tempSaveVal[1]] = 1;
+					map[tempSaveVal[1]][tempSaveVal[0]] = 1;
+					colorMap[tempSaveVal[1]][tempSaveVal[0]] = 0;
 					playerColor.push_back(false);
 					strcat(buffer, "0");	// false
 				}
 				else
 				{
-					map[tempSaveVal[0]][tempSaveVal[1]] = -1;
+					map[tempSaveVal[1]][tempSaveVal[0]] = -1;
+					colorMap[tempSaveVal[1]][tempSaveVal[0]] = 1;
 					playerColor.push_back(true);
 					strcat(buffer, "1");	// true
 				}
@@ -294,6 +304,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 							send(clientArray[i], (LPSTR)"ERROR! : 중복위치", strlen("ERROR! : 중복위치") + 1, 0);
 						
 						playerColor.pop_back();
+						colorMap[tempSaveVal[0]][tempSaveVal[1]] = 0;
 						return 0;
 					}
 				}	// 중복 위치 체크
@@ -522,7 +533,8 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 
     case WM_DESTROY:
 	{
-		//FreeConsole();
+		FreeConsole();
+		KillTimer(hWnd, 0);
 		closesocket(s);
 		WSACleanup();
 
