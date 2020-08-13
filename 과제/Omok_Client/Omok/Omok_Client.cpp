@@ -135,11 +135,9 @@ using std::vector;
 LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 {
 	static int map[defArrSize][defArrSize];
-	// static bool colorMap[19][19];
 
 	static vector<POINT> playerMark;
-	static bool playerColor = false; // true;
-	// 2개 필요
+	static vector<bool> playerColor;
 
 	static WSADATA wsaData;
 	static SOCKET s;
@@ -200,13 +198,52 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 #else
 			strcpy_s(msg, buffer);
 #endif
-			TCHAR *temp = new TCHAR[200];
-			//_tcscpy(temp, _T("Clinet : "));
-			_tcscpy(temp, msg);
-			SaveMsg.push_back(temp);
+			// 파싱
+			char tempBuffer[100];
+			char *checkPakit;
+			int tempSaveVal[5];
+			int i = 0;
+			bool isPassing = false;
+			strcpy(tempBuffer, buffer);
+			checkPakit = strtok(tempBuffer, "!");
 
-			if (SaveMsg.size() > defMaxChat)
-				SaveMsg.erase(SaveMsg.begin());
+			if (atoi(buffer) == -1)
+			{
+				isPassing = true;
+				while (1)
+				{
+					checkPakit = strtok(NULL, "!");
+
+					if (checkPakit == NULL)
+						break;
+					else
+						tempSaveVal[i++] = atoi(checkPakit);
+				}
+
+				if (tempSaveVal[4] == 0)
+				{
+					map[tempSaveVal[0]][tempSaveVal[1]] = 1;
+					playerColor.push_back(false);
+					strcat(buffer, "0");	// false
+				}
+				else
+				{
+					map[tempSaveVal[0]][tempSaveVal[1]] = -1;
+					playerColor.push_back(true);
+					strcat(buffer, "1");	// true
+				}
+				playerMark.push_back({ tempSaveVal[2],tempSaveVal[3] });
+			}
+			// 파싱
+			else
+			{
+				TCHAR *temp = new TCHAR[200];
+				_tcscpy(temp, msg);
+				SaveMsg.push_back(temp);
+
+				if (SaveMsg.size() > defMaxChat)
+					SaveMsg.erase(SaveMsg.begin());
+			}
 			break;
 		}
 		default:
@@ -260,12 +297,32 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 				tempX = posX / eMarkDistance - 1;
 				tempY = posY / 19 / 2;
 
-				if(playerColor == false)
-					map[tempY][tempX] = 1;
-				else
-					map[tempY][tempX] = -1;
+				int saveX = tempX * eMarkDistance + eMarkLeft + eMarkDiameter;
+				int saveY = tempY * eMarkDistance + eMarkTop + eMarkDiameter;
 
-				playerMark.push_back({ tempX * eMarkDistance + eMarkLeft + eMarkDiameter, tempY * eMarkDistance + eMarkTop + eMarkDiameter });
+				// 클릭이벤트
+				int pakitCnt = 0;
+				char temp[10] = { 0 };
+
+				strcpy(buffer, "-1!!");	
+				_itoa(tempX, temp, 10);
+				strcat(buffer, temp);
+				strcat(buffer, "!!");
+
+				_itoa(tempY, temp, 10);
+				strcat(buffer, temp);
+				strcat(buffer, "!!");
+
+				_itoa(saveX, temp, 10);
+				strcat(buffer, temp);
+				strcat(buffer, "!!");
+
+				_itoa(saveY, temp, 10);
+				strcat(buffer, temp);
+				strcat(buffer, "!!");
+				// 클릭이벤트
+
+				send(s, (LPSTR)buffer, strlen(buffer) + 1, 0);
 			}
 			InvalidateRgn(hWnd, NULL, false);
 		}
@@ -342,7 +399,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 
 			for (int i = 0; i < playerMark.size(); i++)
 			{
-				if (playerColor == false)
+				if (playerColor[i] == false)
 				{
 					blackBrush = CreateSolidBrush(RGB(0, 0, 0));
 					oldBrush1 = (HBRUSH)SelectObject(memDc, blackBrush);
