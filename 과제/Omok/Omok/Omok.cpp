@@ -121,27 +121,50 @@ BOOL InitInstance(HINSTANCE hInstance, int nCmdShow)
 //  WM_DESTROY  - post a quit message and return
 //
 //
+#include <stdio.h>
+#include <vector>
+
+using std::vector;
+
 LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 {
+	static int map[defArrSize][defArrSize];
+	// static bool colorMap[19][19];
+
+	static vector<POINT> playerMark;
+	static bool playerColor = false; // true;
+	// 2개 필요
+
     switch (message)
     {
-    case WM_COMMAND:
-        {
-            int wmId = LOWORD(wParam);
-            // Parse the menu selections:
-            switch (wmId)
-            {
-            case IDM_ABOUT:
-                DialogBox(hInst, MAKEINTRESOURCE(IDD_ABOUTBOX), hWnd, About);
-                break;
-            case IDM_EXIT:
-                DestroyWindow(hWnd);
-                break;
-            default:
-                return DefWindowProc(hWnd, message, wParam, lParam);
-            }
-        }
-        break;
+	case WM_CREATE:
+		AllocConsole();
+		freopen("CONOUT$", "wt", stdout);
+		break;
+
+	case WM_LBUTTONDOWN:
+		{
+			int posX = LOWORD(lParam);
+			int posY = HIWORD(lParam);
+			int tempX, tempY;
+			int rangeDistance = eMarkDiameter / 2;
+
+			if ((posX >= eMapLeft - rangeDistance && posX <= eMapRight + rangeDistance)
+				&& (posY >= eMapTop - rangeDistance && posY <= eMapBottom + rangeDistance))
+			{
+				tempX = posX / eMarkDistance - 1;
+				tempY = posY / 19 / 2;
+
+				if(playerColor == false)
+					map[tempY][tempX] = 1;
+				else
+					map[tempY][tempX] = -1;
+
+				playerMark.push_back({ tempX * eMarkDistance + eMarkLeft + eMarkDiameter, tempY * eMarkDistance + eMarkTop + eMarkDiameter });
+			}
+			InvalidateRgn(hWnd, NULL, false);
+		}
+ 		break;
 
     case WM_PAINT:
         {
@@ -160,11 +183,6 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 			PatBlt(memDc, rectView.left, rectView.top, rectView.right, rectView.bottom, WHITENESS);
 			// 더블버퍼링
 
-			// 창 구역 set
-			//MoveToEx(hdc, 765, 0, NULL);
-			//LineTo(hdc, 765, 800);
-			// 창 구역 set
-
 			// 바둑판
 
 			int j = 0;
@@ -173,17 +191,17 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 			oldBrush = (HBRUSH)SelectObject(memDc, hBrush);
 			Rectangle(memDc, 0, 0, 765, 800);
 			Rectangle(memDc, 47, 35, 714, 705);
+
 			for (int i = 2; i < 19; i++)
 			{
 				MoveToEx(memDc, 47, 37 * i, NULL);
 				LineTo(memDc, 714, 37 * i);
 				// 가로줄
 			
-				MoveToEx(memDc, (42 * i)-(5 * j), 36, NULL);
+				MoveToEx(memDc, (42 * i) - (5 * j), 36, NULL);
 				LineTo(memDc, (42 * i) - (5 * j), 705);
 				j++;
 				// 세로줄
-			
 			}
 
 			SelectObject(memDc, oldBrush);
@@ -213,19 +231,35 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 
 			// 바둑판 점
 
-			// 바둑알 확인
-			Ellipse(memDc, 32, 20, 62, 50);
-			Ellipse(memDc, 32 + 37, 20, 62 + 37, 50);
-			Ellipse(memDc, 32 + 37 * 18, 20, 62 + 37 * 18, 50);
-			// 가로 확인
+			// playerDraw
+			HBRUSH blackBrush, oldBrush1;
+			HBRUSH whiteBrush, oldBrush2;
 
-			//Ellipse(hdc, 37, 25, 57, 45);
-			Ellipse(memDc, 32, 20, 62, 50);
-			Ellipse(memDc, 32, 20 + 37, 62, 50 + 37);
-			Ellipse(memDc, 32, 20 + 37 * 18, 62, 50 + 37 * 18);
-			// 세로 확인
+			for (int i = 0; i < playerMark.size(); i++)
+			{
+				if (playerColor == false)
+				{
+					blackBrush = CreateSolidBrush(RGB(0, 0, 0));
+					oldBrush1 = (HBRUSH)SelectObject(memDc, blackBrush);
 
-			// 바둑알 확인
+					Ellipse(memDc, playerMark[i].x - eMarkDiameter, playerMark[i].y - eMarkDiameter, playerMark[i].x + eMarkDiameter, playerMark[i].y + eMarkDiameter);
+
+					SelectObject(memDc, oldBrush1);
+					DeleteObject(blackBrush);
+				}
+				else
+				{
+					whiteBrush = CreateSolidBrush(RGB(255, 255, 255));
+					oldBrush2 = (HBRUSH)SelectObject(memDc, whiteBrush);
+
+					Ellipse(memDc, playerMark[i].x - eMarkDiameter, playerMark[i].y - eMarkDiameter, playerMark[i].x + eMarkDiameter, playerMark[i].y + eMarkDiameter);
+
+					SelectObject(memDc, oldBrush2);
+					DeleteObject(whiteBrush);
+				}
+			}
+
+			// playerDraw
 
 			// 더블버퍼링
 			BitBlt(hdc, 0, 0, rectView.right, rectView.bottom, memDc, 0, 0, SRCCOPY);
@@ -239,9 +273,29 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
         }
         break;
 
+	case WM_COMMAND:
+	{
+		int wmId = LOWORD(wParam);
+		// Parse the menu selections:
+		switch (wmId)
+		{
+		case IDM_ABOUT:
+			DialogBox(hInst, MAKEINTRESOURCE(IDD_ABOUTBOX), hWnd, About);
+			break;
+		case IDM_EXIT:
+			DestroyWindow(hWnd);
+			break;
+		default:
+			return DefWindowProc(hWnd, message, wParam, lParam);
+		}
+	}
+	break;
+
     case WM_DESTROY:
+		FreeConsole();
         PostQuitMessage(0);
         break;
+
     default:
         return DefWindowProc(hWnd, message, wParam, lParam);
     }
