@@ -136,11 +136,9 @@ using std::vector;
 LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 {
 	static int map[defArrSize][defArrSize];
-	// static bool colorMap[19][19];
 
 	static vector<POINT> playerMark;
-	static bool playerColor = false; // true;
-	// 2개 필요
+	static vector<bool> playerColor;
 
 	static WSADATA wsaData;
 	static SOCKET s, cs;
@@ -195,30 +193,6 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 		//	MessageBox(NULL, _T("Binding Success"), _T("Success"), MB_OK);
 		break;
 
-	case WM_LBUTTONDOWN:
-		{
-			int posX = LOWORD(lParam);
-			int posY = HIWORD(lParam);
-			int tempX, tempY;
-			int rangeDistance = eMarkDiameter / 2;
-
-			if ((posX >= eMapLeft - rangeDistance && posX <= eMapRight + rangeDistance)
-				&& (posY >= eMapTop - rangeDistance && posY <= eMapBottom + rangeDistance))
-			{
-				tempX = posX / eMarkDistance - 1;
-				tempY = posY / 19 / 2;
-
-				if(playerColor == false)
-					map[tempY][tempX] = 1;
-				else
-					map[tempY][tempX] = -1;
-
-				playerMark.push_back({ tempX * eMarkDistance + eMarkLeft + eMarkDiameter, tempY * eMarkDistance + eMarkTop + eMarkDiameter });
-			}
-			InvalidateRgn(hWnd, NULL, false);
-		}
- 		break;
-
 	case WM_ASYNC:
 		switch (lParam)
 		{
@@ -237,12 +211,14 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 		case FD_READ:
 		{
 			int csTemp;
+			int playerNum;
 			for (int i = 0; i < iClientCnt; i++)
 			{
 				msgLen = recv(clientArray[i], buffer, 99, 0);
 				if (msgLen != -1)
 				{
 					csTemp = clientArray[i];
+					playerNum = i;
 					buffer[msgLen + 1] = NULL;
 					break;
 				}
@@ -254,15 +230,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 #else
 			strcpy_s(msg, buffer);
 #endif
-			char clientTemp[100];
-			char changeNum[100];
-			sprintf(changeNum, "%d", csTemp);
-
-			strcpy(clientTemp, "Client ");
-			strcat(clientTemp, changeNum);
-			strcat(clientTemp, " : ");
-			strcat(clientTemp, buffer);
-
+			// 클라이언트 종료시
 			if (strcmp(buffer, "quit!") == 0)
 			{
 				bool isClose = false;
@@ -281,20 +249,90 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 				iClientCnt--;
 				return 0;
 			}
+			// 클라이언트 종료시
+
+			// 파싱
+			char tempBuffer[100];
+			char *checkPakit;
+			int tempSaveVal[4];
+			int i = 0;
+			bool isPassing = false;
+			strcpy(tempBuffer, buffer);
+			checkPakit = strtok(tempBuffer, "!");
+
+			if (atoi(buffer) == -1)
+			{
+				isPassing = true;
+				while (1)
+				{
+					checkPakit = strtok(NULL, "!");
+
+					if (checkPakit == NULL)
+						break;
+					else
+						tempSaveVal[i++] = atoi(checkPakit);
+				}
+
+				if (playerNum == 0)
+				{
+					map[tempSaveVal[0]][tempSaveVal[1]] = 1;
+					playerColor.push_back(false);
+					strcat(buffer, "0");	// false
+				}
+				else
+				{
+					map[tempSaveVal[0]][tempSaveVal[1]] = -1;
+					playerColor.push_back(true);
+					strcat(buffer, "1");	// true
+				}
+
+				for (int i = 0; i < playerMark.size(); i++)
+				{
+					if (playerMark[i].x == tempSaveVal[2] && playerMark[i].y == tempSaveVal[3])
+					{
+						for (int i = 0; i < iClientCnt; i++)
+							send(clientArray[i], (LPSTR)"ERROR! : 중복위치", strlen("ERROR! : 중복위치") + 1, 0);
+						
+						playerColor.pop_back();
+						return 0;
+					}
+				}	// 중복 위치 체크
+				playerMark.push_back({ tempSaveVal[2],tempSaveVal[3]});
+				// 중복위치가 아닐 경우 저장
+			}
+			// 파싱
+
+			else
+			{
+				char clientTemp[100];
+				char changeNum[100];
+				sprintf(changeNum, "%d", csTemp);
+
+				strcpy(clientTemp, "Client ");
+				strcat(clientTemp, changeNum);
+				strcat(clientTemp, " : ");
+				strcat(clientTemp, buffer);
+
+				strcpy(buffer, clientTemp);
+			}
 
 			for (int i = 0; i < iClientCnt; i++)
-				send(clientArray[i], (LPSTR)clientTemp, strlen(clientTemp) + 1, 0);
+				send(clientArray[i], (LPSTR)buffer, strlen(buffer) + 1, 0);
 
 			TCHAR *temp = new TCHAR[200];
-			msgLen = MultiByteToWideChar(CP_ACP, 0, clientTemp, strlen(clientTemp), NULL, NULL);
-			MultiByteToWideChar(CP_ACP, MB_PRECOMPOSED, clientTemp, strlen(clientTemp), temp, msgLen);
-			temp[msgLen] = NULL;
+			msgLen = MultiByteToWideChar(CP_ACP, 0, buffer, strlen(buffer), NULL, NULL);
 
-			SaveMsg.push_back(temp);
+			if (!isPassing)
+			{
+				MultiByteToWideChar(CP_ACP, MB_PRECOMPOSED, buffer, strlen(buffer), temp, msgLen);
+				temp[msgLen] = NULL;
 
-			if (SaveMsg.size() > defMaxChat)
-				SaveMsg.erase(SaveMsg.begin());
+				SaveMsg.push_back(temp);
 
+				if (SaveMsg.size() > defMaxChat)
+					SaveMsg.erase(SaveMsg.begin());
+			}
+			
 			InvalidateRgn(hWnd, NULL, false);
 		}
 		break;
@@ -419,7 +457,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 
 			for (int i = 0; i < playerMark.size(); i++)
 			{
-				if (playerColor == false)
+				if (playerColor[i] == false)
 				{
 					blackBrush = CreateSolidBrush(RGB(0, 0, 0));
 					oldBrush1 = (HBRUSH)SelectObject(memDc, blackBrush);
@@ -448,6 +486,9 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 				TextOut(memDc, 790, (i + 1) * 30, SaveMsg[i], (int)_tcslen(SaveMsg[i]));
 			}
 			TextOut(memDc, 790, 710, str, _tcslen(str));
+
+
+			TextOut(memDc, 0, 0, _T("Server!!"), _tcslen(_T("Server!!")));
 
 			// 더블버퍼링
 			BitBlt(hdc, 0, 0, rectView.right, rectView.bottom, memDc, 0, 0, SRCCOPY);
