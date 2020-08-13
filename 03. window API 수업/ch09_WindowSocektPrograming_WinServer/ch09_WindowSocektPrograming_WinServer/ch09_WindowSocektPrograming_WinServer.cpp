@@ -237,7 +237,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 			strcat(clientTemp, " : ");
 			strcat(clientTemp, buffer);
 
-			if (strcmp(buffer, "!Client__quit!") == 0)
+			if (strcmp(buffer, "quit!") == 0)
 			{
 				bool isClose = false;
 				for (int i = 0; i < 99; i++)
