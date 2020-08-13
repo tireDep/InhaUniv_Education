@@ -285,6 +285,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
         break;
     case WM_DESTROY:
 	{
+		send(s, "!Client__quit!", strlen("!Client__quit!") + 1, 0);
 		closesocket(s);
 		WSACleanup();
 
