@@ -4,6 +4,18 @@
 #include "stdafx.h"
 #include "ch10_MultiThread.h"
 
+#include <process.h>
+#include <time.h>
+
+#define THREAD_NUM 10
+
+HWND hWnd;
+int max;
+
+HANDLE hEvent;
+
+void ThreadProc(void *arg);
+
 #define MAX_LOADSTRING 100
 
 // Global Variables:
@@ -123,8 +135,29 @@ BOOL InitInstance(HINSTANCE hInstance, int nCmdShow)
 //
 LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 {
+	static HANDLE hThread[THREAD_NUM];
+	static int posX[THREAD_NUM];
+	int i;
+
     switch (message)
     {
+	case WM_CREATE:
+		max = 0;
+		for (i = 0; i < THREAD_NUM; i++)
+			posX[i] = i * 100;
+		break;
+
+	case WM_LBUTTONDOWN:
+		hEvent = CreateEvent(NULL, false, true, NULL);
+		for (i = 0; i < THREAD_NUM; i++)
+		{
+			hThread[i] = (HANDLE)_beginthreadex(NULL, 0, (unsigned int(__stdcall *)(void *))ThreadProc, (void *)&posX[i], 0, NULL);
+			Sleep(2000);
+		}
+		WaitForMultipleObjects(THREAD_NUM, hThread, true, INFINITE);
+		CloseHandle(hEvent);
+		break;
+
     case WM_COMMAND:
         {
             int wmId = LOWORD(wParam);
@@ -142,6 +175,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
             }
         }
         break;
+
     case WM_PAINT:
         {
             PAINTSTRUCT ps;
@@ -150,7 +184,11 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
             EndPaint(hWnd, &ps);
         }
         break;
+
     case WM_DESTROY:
+		for (i = 0; i < THREAD_NUM; i++)
+			CloseHandle(hThread[i]);
+
         PostQuitMessage(0);
         break;
     default:
@@ -177,4 +215,32 @@ INT_PTR CALLBACK About(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam)
         break;
     }
     return (INT_PTR)FALSE;
+}
+
+void ThreadProc(void *arg)
+{
+	HDC hdc;
+	int i;
+	int posX = *((int *)arg);
+
+	srand((unsigned)time(0));
+	hdc = GetDC(hWnd);
+	SelectObject(hdc, CreateSolidBrush(RGB(rand() % 256, rand() % 256, rand() % 256)));
+
+	for (i = 0; i <= 10; i++)
+	{
+		int num;
+		WaitForSingleObject(hEvent, INFINITE);
+		num = rand() % 500;
+		if (num > max)
+		{
+			Sleep(3000);
+			max = num;
+			Rectangle(hdc, posX, 0, posX + 20, num);
+		}
+		SetEvent(hEvent);
+	}
+	
+	ReleaseDC(hWnd, hdc);
+	return;
 }
