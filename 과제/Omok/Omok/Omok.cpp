@@ -148,23 +148,92 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
             PAINTSTRUCT ps;
             HDC hdc = BeginPaint(hWnd, &ps);
             
+			// 더블버퍼링
+			RECT rectView;
+			HDC memDc;
+			HBITMAP hBit, oldBit;
+
+			GetClientRect(hWnd, &rectView);
+			memDc = CreateCompatibleDC(hdc);
+			hBit = CreateCompatibleBitmap(hdc, rectView.right, rectView.bottom);
+			oldBit = (HBITMAP)SelectObject(memDc, hBit);
+			PatBlt(memDc, rectView.left, rectView.top, rectView.right, rectView.bottom, WHITENESS);
+			// 더블버퍼링
+
 			// 창 구역 set
-			MoveToEx(hdc, 750, 0, NULL);
-			LineTo(hdc, 750, 800);
+			//MoveToEx(hdc, 765, 0, NULL);
+			//LineTo(hdc, 765, 800);
 			// 창 구역 set
 
 			// 바둑판
-			Rectangle(hdc, 50, 40, 703, 693);
+
+			int j = 0;
+			HBRUSH hBrush, oldBrush;
+			hBrush = CreateSolidBrush(RGB(230, 186, 148));
+			oldBrush = (HBRUSH)SelectObject(memDc, hBrush);
+			Rectangle(memDc, 0, 0, 765, 800);
+			Rectangle(memDc, 47, 35, 714, 705);
 			for (int i = 2; i < 19; i++)
 			{
-				MoveToEx(hdc, 50, 40 * i, NULL);
-				LineTo(hdc, 703, 40 * i);
+				MoveToEx(memDc, 47, 37 * i, NULL);
+				LineTo(memDc, 714, 37 * i);
+				// 가로줄
 			
-				//MoveToEx(hdc, (50 * i) - (10 * i), 37, NULL);
-				//LineTo(hdc, (50 * i) - (10 * i), 703);
+				MoveToEx(memDc, (42 * i)-(5 * j), 36, NULL);
+				LineTo(memDc, (42 * i) - (5 * j), 705);
+				j++;
+				// 세로줄
 			
 			}
+
+			SelectObject(memDc, oldBrush);
+			DeleteObject(hBrush);
+
 			// 바둑판
+
+			// 바둑판 점
+
+			hBrush = CreateSolidBrush(RGB(0, 0, 0));
+			oldBrush = (HBRUSH)SelectObject(memDc, hBrush);
+
+			Ellipse(memDc, 42 + 37 * 3, 32 + 37 * 3, 52 + 37 * 3, 42 + 37 * 3);
+			Ellipse(memDc, 42 + 37 * 9, 32 + 37 * 3, 52 + 37 * 9, 42 + 37 * 3);
+			Ellipse(memDc, 42 + 37 * 15, 32 + 37 * 3, 52 + 37 * 15, 42 + 37 * 3);
+
+			Ellipse(memDc, 42 + 37 * 3, 32 + 37 * 9, 52 + 37 * 3, 42 + 37 * 9);
+			Ellipse(memDc, 42 + 37 * 9, 32 + 37 * 9, 52 + 37 * 9, 42 + 37 * 9);
+			Ellipse(memDc, 42 + 37 * 15, 32 + 37 * 9, 52 + 37 * 15, 42 + 37 * 9);
+
+			Ellipse(memDc, 42 + 37 * 3, 32 + 37 * 15, 52 + 37 * 3, 42 + 37 * 15);
+			Ellipse(memDc, 42 + 37 * 9, 32 + 37 * 15, 52 + 37 * 9, 42 + 37 * 15);
+			Ellipse(memDc, 42 + 37 * 15, 32 + 37 * 15, 52 + 37 * 15, 42 + 37 * 15);
+
+			SelectObject(memDc, oldBrush);
+			DeleteObject(hBrush);
+
+			// 바둑판 점
+
+			// 바둑알 확인
+			Ellipse(memDc, 32, 20, 62, 50);
+			Ellipse(memDc, 32 + 37, 20, 62 + 37, 50);
+			Ellipse(memDc, 32 + 37 * 18, 20, 62 + 37 * 18, 50);
+			// 가로 확인
+
+			//Ellipse(hdc, 37, 25, 57, 45);
+			Ellipse(memDc, 32, 20, 62, 50);
+			Ellipse(memDc, 32, 20 + 37, 62, 50 + 37);
+			Ellipse(memDc, 32, 20 + 37 * 18, 62, 50 + 37 * 18);
+			// 세로 확인
+
+			// 바둑알 확인
+
+			// 더블버퍼링
+			BitBlt(hdc, 0, 0, rectView.right, rectView.bottom, memDc, 0, 0, SRCCOPY);
+
+			SelectObject(memDc, oldBit);
+			DeleteObject(hBit);
+			DeleteDC(memDc);
+			// 더블버퍼링
 
             EndPaint(hWnd, &ps);
         }
