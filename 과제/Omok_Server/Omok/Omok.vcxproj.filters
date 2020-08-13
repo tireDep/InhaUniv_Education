@@ -30,6 +30,9 @@
     <ClInclude Include="Omok_Server.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="CheckOmok.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">

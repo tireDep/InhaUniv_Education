@@ -146,6 +146,7 @@
     <Text Include="ReadMe.txt" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="CheckOmok.h" />
     <ClInclude Include="Omok_Server.h" />
     <ClInclude Include="Resource.h" />
     <ClInclude Include="stdafx.h" />
