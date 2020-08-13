@@ -237,6 +237,25 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 			strcat(clientTemp, " : ");
 			strcat(clientTemp, buffer);
 
+			if (strcmp(buffer, "quit!") == 0)
+			{
+				bool isClose = false;
+				for (int i = 0; i < 99; i++)
+				{
+					if (csTemp == clientArray[i])
+					{
+						closesocket(clientArray[i]);
+						isClose = true;
+					}
+
+					if (isClose)
+						clientArray[i] = clientArray[i + 1];
+		
+				}
+				iClientCnt--;
+				return 0;
+			}
+
 			for (int i = 0; i < iClientCnt; i++)
 				send(clientArray[i], (LPSTR)clientTemp, strlen(clientTemp) + 1, 0);
 

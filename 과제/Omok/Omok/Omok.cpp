@@ -98,7 +98,7 @@ BOOL InitInstance(HINSTANCE hInstance, int nCmdShow)
    hInst = hInstance; // Store instance handle in our global variable
 
    HWND hWnd = CreateWindowW(szWindowClass, szTitle, WS_OVERLAPPEDWINDOW,
-      CW_USEDEFAULT, 0, CW_USEDEFAULT, 0, nullptr, nullptr, hInstance, nullptr);
+      CW_USEDEFAULT, 0, 1100, 800, nullptr, nullptr, hInstance, nullptr);
 
    if (!hWnd)
    {
@@ -142,14 +142,34 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
             }
         }
         break;
+
     case WM_PAINT:
         {
             PAINTSTRUCT ps;
             HDC hdc = BeginPaint(hWnd, &ps);
-            // TODO: Add any drawing code that uses hdc here...
+            
+			// 창 구역 set
+			MoveToEx(hdc, 750, 0, NULL);
+			LineTo(hdc, 750, 800);
+			// 창 구역 set
+
+			// 바둑판
+			Rectangle(hdc, 50, 40, 703, 693);
+			for (int i = 2; i < 19; i++)
+			{
+				MoveToEx(hdc, 50, 40 * i, NULL);
+				LineTo(hdc, 703, 40 * i);
+			
+				//MoveToEx(hdc, (50 * i) - (10 * i), 37, NULL);
+				//LineTo(hdc, (50 * i) - (10 * i), 703);
+			
+			}
+			// 바둑판
+
             EndPaint(hWnd, &ps);
         }
         break;
+
     case WM_DESTROY:
         PostQuitMessage(0);
         break;
