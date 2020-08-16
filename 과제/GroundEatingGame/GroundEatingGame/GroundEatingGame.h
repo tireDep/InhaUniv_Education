@@ -16,6 +16,6 @@ enum PlayerSet {
 
 enum { eLeft = 0, eUp= 1, eRight = 2, eDown = 3, eStart = -1 };
 
-enum { eStartScreen = 0, eGameScreen = 50, eResultScreen = 100 };
+enum { eStartScene = 0, eGameScene = 50, eResultScene = 100 };
 
 #define defColorSize 350

@@ -146,6 +146,8 @@
     <Text Include="ReadMe.txt" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Enemy.h" />
+    <ClInclude Include="GameManager.h" />
     <ClInclude Include="GroundEatingGame.h" />
     <ClInclude Include="MapClass.h" />
     <ClInclude Include="PlayerClass.h" />
@@ -155,6 +157,7 @@
     <ClInclude Include="UiClass.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="GameManager.cpp" />
     <ClCompile Include="GroundEatingGame.cpp" />
     <ClCompile Include="HideClass.cpp" />
     <ClCompile Include="MapClass.cpp" />

@@ -1,17 +1,9 @@
 #include "stdafx.h"
 #include "GameManager.h"
-#include "GroundEatingGame.h"
-
-
-GameManager* GameManager::GetInstance()
-{
-	static GameManager gameManager;
-	return &gameManager;
-}
 
 GameManager::GameManager()
 {
-	nowScene = eStartScene;
+	playerScene = eStartScene;
 }
 
 GameManager::~GameManager()
@@ -19,13 +11,18 @@ GameManager::~GameManager()
 
 }
 
-void GameManager::SetSceneNum(int sceneNum)
+GameManager* GameManager::GetInstance()
 {
-	nowScene = sceneNum;
+	static GameManager gameManger;
+	return &gameManger;
+}
+
+void GameManager::SetSceneNum(int setNum)
+{
+	playerScene = setNum;
 }
 
 int GameManager::GetSceneNum()
 {
-	return nowScene;
+	return playerScene;
 }
-

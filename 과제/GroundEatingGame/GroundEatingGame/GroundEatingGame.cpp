@@ -6,6 +6,8 @@
 #include "PlayerClass.h"
 #include "MapClass.h"
 #include "UiClass.h"
+#include "Enemy.h"
+#include "GameManager.h"
 
 #include <stdio.h>
 
@@ -109,13 +111,17 @@ void CreateBitmap();
 void DrawBitMap(HWND hWnd, HDC hdc);
 void DeleteBitmap();
 
+GameManager *gameManager = GameManager::GetInstance();
+
 LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 {
 	static Player player(eStartposX, eStartPosY);
 	static HideMap map = { ePosLeft,ePosTop,ePosRight,ePosBottom };
+	static Enemy enemy;
+
 	UI *playerUI = UI::GetInstance();
-	
-	int nowScreen = playerUI->GetScreenNum();
+	int nowScene = gameManager->GetSceneNum();
+
     switch (message)
     {
 	case WM_CREATE:
@@ -128,9 +134,10 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 
 	case WM_TIMER:
 	{
-		if (eGameScreen == nowScreen)
+		if (eGameScene == nowScene)
 		{
 			playerUI->Update();
+			enemy.Update(player);
 		}
 
 		InvalidateRect(hWnd, NULL, false);
@@ -138,14 +145,14 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 	}
 
 	case WM_CHAR:
-		if (eStartScreen == nowScreen)
+		if (eStartScene == nowScene)
 		{
 			playerUI->SetPlayerName(wParam);
 		}
 		break;
 
 	case WM_LBUTTONDOWN:
-		if (eResultScreen == nowScreen)
+		if (eResultScene == nowScene)
 		{
 			if (!playerUI->PushBtn(lParam, &player))
 				DestroyWindow(hWnd);
@@ -153,7 +160,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 		break;
 
 	case WM_KEYDOWN:
-		if (eGameScreen == nowScreen)
+		if (eGameScene == nowScene)
 		{
 			if (wParam == 'A' || wParam == 'a' || wParam == VK_LEFT)
 				player.CheckPlayerPos(-emoveSpeed, eLeft, map);
@@ -190,11 +197,11 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 		fhOldBit = (HBITMAP)SelectObject(finalDc, fhBit);
 		PatBlt(finalDc, rectView.left, rectView.top, rectView.right, rectView.bottom, WHITENESS);
 
-		if (eStartScreen == nowScreen)
+		if (eStartScene == nowScene)
 		{
 			playerUI->DrawStartUI(finalDc);
 		}
-		else if (eGameScreen == nowScreen)
+		else if (eGameScene == nowScene)
 		{
 			playerUI->DrawGameUI(memDc, player.GetPlayerMapCnt(), player.GetMapArea());
 
@@ -212,9 +219,10 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 			player.DrawPlayer(memDc);	// 플레이어 및 색칠 영역
 										// 플레이어 위치
 
+			enemy.DrawEnemy(memDc);
 			TransparentBlt(finalDc, 0, 0, rectView.right, rectView.bottom, memDc, 0, 0, rectView.right, rectView.bottom, RGB(255, 65, 255)); // 투명 처리
 		}
-		else if (eResultScreen == nowScreen)
+		else if (eResultScene == nowScene)
 		{
 			playerUI->DrawResultUI(finalDc);
 		}

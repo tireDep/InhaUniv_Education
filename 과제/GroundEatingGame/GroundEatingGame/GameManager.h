@@ -5,15 +5,14 @@
 class GameManager
 {
 private:
-	int nowScene;
+	int playerScene;
 
-public:
 	GameManager();
 	~GameManager();
-	static GameManager* GetInstance();
 
-	void SetSceneNum(int sceneNum);
+public:
+	static GameManager *GetInstance();
+
+	void SetSceneNum(int setNum);
 	int GetSceneNum();
-
-
 };

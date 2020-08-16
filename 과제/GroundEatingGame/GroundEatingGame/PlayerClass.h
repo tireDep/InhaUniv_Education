@@ -46,4 +46,8 @@ public:
 
 	int GetPlayerMapCnt();
 	float GetMapArea();
+
+	POINT GetPlayerPos();
+	bool GetCheckLine();
+	vector<POINT> GetPlayerMapPos();
 };

@@ -4,8 +4,6 @@
 class UI
 {
 private:
-	int playerScreen;
-
 	WCHAR wPlayerName[256];
 	WCHAR wName[516];
 
@@ -34,7 +32,6 @@ public:
 
 	void SetPlayerName(WPARAM wParam);
 	
-	int GetScreenNum();
 	bool PushBtn(LPARAM lParam, Player *player);
 
 	void Reset();

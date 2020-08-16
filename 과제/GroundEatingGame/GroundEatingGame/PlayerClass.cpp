@@ -140,7 +140,7 @@ void Player::CheckPlayerPos(int movePos, int turnPos, HideMap hideMap)
 			
 			if (moveLine.CheckMoveTwice(tempCenterPos))	// 지나간 길 판별
 			{
-				playerPos = playerMap.GetHideMapPos()[0];
+				playerPos = moveLine.GetPlayerMapPos()[0];
 				playerPos.x -= eSpotNum;
 				playerPos.y -= eSpotNum;
 
@@ -164,9 +164,17 @@ void Player::CheckPlayerPos(int movePos, int turnPos, HideMap hideMap)
 			{
 				moveLine.AddSpot(centerPos);	// 꺽이는 부분 저장
 				playerMap.RemoveAllSpot();
-				playerMap.SetMap(moveLine.GetMap());
 
-				nowMap.push_back(playerMap);
+				vector<POINT> check = moveLine.GetPlayerMapPos();
+				if (check[0].x == check[check.size() - 1].x && check[0].y == check[check.size() - 1].y)
+				{
+
+				}
+				else
+				{
+					playerMap.SetMap(moveLine.GetMap());
+					nowMap.push_back(playerMap);
+				}
 			}
 			playerMap.RemoveAllSpot();
 			moveLine.RemoveAllSpot();
@@ -190,6 +198,10 @@ void Player::DrawPlayer(HDC hdc)
 
 	moveLine.DrawPolygon(hdc,0);
 	
+	HPEN hPen, oldPen;
+	hPen = CreatePen(BS_SOLID, 1, RGB(100, 100, 100));
+	oldPen = (HPEN)SelectObject(hdc, hPen);
+
 	HBRUSH hBrush, oldBrush;
 	hBrush = CreateSolidBrush(RGB(255, 65, 255));
 	oldBrush = (HBRUSH)SelectObject(hdc, hBrush);
@@ -202,50 +214,6 @@ void Player::DrawPlayer(HDC hdc)
 	for (int i = 0; i < nowMap.size(); i++)
 	{
 		vector<POINT> temp = nowMap[i].GetHideMapPos();
-		//if (temp[0].x > temp[temp.size() - 1].x)
-		//{
-		//	//if (temp[0].x <= temp[temp.size() - 1].x)// && temp[0].y == temp[1].y)
-		//	//	x = 1;
-		//	//else
-		//	//	x = -1;
-		//	x = -1;
-		//}
-		//// ExtFloodFill(hdc, temp[0].x - 1, temp[0].y + 1, 0x00ffffff, FLOODFILLSURFACE);
-		//else if (temp[0].x < temp[temp.size() - 1].x)
-		//{
-		//	//if (temp[0].x <= temp[temp.size() - 1].x)//&& temp[0].y == temp[1].y)
-		//	//	x = 1;
-		//	//else
-		//	//	x = -1;
-		//	x = 1;
-		//}
-		//// ExtFloodFill(hdc, temp[0].x + 1, temp[0].y + 1, 0x00ffffff, FLOODFILLSURFACE);
-		//else
-		//{
-		//	x = temp[0].x - 90  * -1 < temp[0].x - 350 * -1 ? 1 : -1;
-		//	// 수정 필요
-		//}
-		//
-		//if (temp[0].y < temp[temp.size() - 1].y)
-		//{
-		//	//if (temp[0].y <= temp[temp.size()-1].y)// && temp[0].x == temp[1].x)
-		//	//	y = 1;
-		//	//else
-		//	//	y = -1;
-		//	y = 1;
-		//}
-		//else if (temp[0].y > temp[temp.size() - 1].y)
-		//{
-		//	//if (temp[0].y <= temp[1].y)// && temp[0].x <= temp[1].x)
-		//	//	y = -1;
-		//	//else
-		//	//	y = 1;
-		//	y = -1;
-		//}
-		//else
-		//	y = temp[0].y - 90 * -1 < temp[0].y - 350 * -1 ? -1 : 1;
-		//// 수정 필요
-
 		int x, y;
 		int straightX = 0;
 		int straightY = 0;
@@ -255,7 +223,6 @@ void Player::DrawPlayer(HDC hdc)
 			if (temp[i].x == temp[i + 1].x) straightX++;
 			if (temp[i].y == temp[i + 1].y) straightY++;
 		}
-
 
 		if (temp.size() - 1 == straightX)
 		{
@@ -331,6 +298,9 @@ void Player::DrawPlayer(HDC hdc)
 
 		ExtFloodFill(hdc, temp[0].x + x, temp[0].y + y, 0x00ffffff, FLOODFILLSURFACE);
 	}
+
+	SelectObject(hdc, oldPen);
+	DeleteObject(hPen);
 
 	SelectObject(hdc, oldBrush);
 	DeleteObject(hBrush);
@@ -446,6 +416,12 @@ void Player::Reset()
 		}
 	}
 
+	for (int i = 0; i < defColorSize + 2; i++)
+	{
+		for (int j = 0; j < defColorSize + 2; j++)
+			isColoredArray[i][j] = false;
+	}
+
 }
 
 int Player::GetPlayerMapCnt()
@@ -456,4 +432,19 @@ int Player::GetPlayerMapCnt()
 float Player::GetMapArea()
 {
 	return mapArea;
+}
+
+POINT Player::GetPlayerPos()
+{
+	return playerPos;
+}
+
+bool Player::GetCheckLine()
+{
+	return preCheckLine;
+}
+
+vector<POINT> Player::GetPlayerMapPos()
+{
+	return moveLine.GetPlayerMapPos();
 }

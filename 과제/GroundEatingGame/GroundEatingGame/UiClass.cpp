@@ -2,8 +2,11 @@
 #include "GroundEatingGame.h"
 #include "PlayerClass.h"
 #include "UiClass.h"
+#include "GameManager.h"
 
-#define COUNTDOWNSEC 5000
+#define COUNTDOWNSEC 30
+
+extern GameManager *gameManager;
 
 UI* UI::GetInstance()
 {
@@ -13,8 +16,6 @@ UI* UI::GetInstance()
 
 UI::UI()
 {
-	playerScreen = eStartScreen;
-
 	time(&nowTime);
 	tmTime = localtime(&nowTime);
 
@@ -37,7 +38,7 @@ UI::UI()
 
 UI::~UI()
 {
-	
+
 }
 
 void UI::Update()
@@ -45,7 +46,7 @@ void UI::Update()
 	CountDown();
 
 	if (countDownSec == -1)
-		playerScreen = eResultScreen;
+		gameManager->SetSceneNum(eResultScene);
 }
 
 void UI::CountDown()
@@ -87,7 +88,6 @@ void UI::DrawGameUI(HDC hdc, int playerMapCnt, float mapArea)
 
 	swprintf(wMapArea, _TEXT("%s %.1lf%s"), _T("Area : "), mapArea, _T("%"));
 	DrawText(hdc, wMapArea, _tcslen(wMapArea), &uiRect, DT_BOTTOM | DT_RIGHT | DT_SINGLELINE);
-	// ※ : 넓이 중복있어서 일단 보류
 }
 
 void UI::DrawResultUI(HDC hdc)
@@ -142,7 +142,7 @@ void UI::SetPlayerName(WPARAM wParam)
 	}
 
 	if (wParam == VK_RETURN)
-		playerScreen = eGameScreen;
+		gameManager->SetSceneNum(eGameScene);
 
 	if (wParam == VK_BACK && nameCnt > 0)
 		nameCnt--;
@@ -155,14 +155,9 @@ void UI::SetPlayerName(WPARAM wParam)
 	wcscat(wName, wPlayerName);
 }
 
-int UI::GetScreenNum()
-{
-	return playerScreen;
-}
-
 void UI::Reset()
 {
-	playerScreen = eStartScreen;
+	gameManager->SetSceneNum(eStartScene);
 	lastSec = 0;
 	countDownSec = COUNTDOWNSEC;
 

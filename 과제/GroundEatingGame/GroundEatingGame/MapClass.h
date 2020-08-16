@@ -75,4 +75,9 @@ public:
 	{
 		return mapPos;
 	}
+
+	vector<POINT> GetPlayerMapPos()
+	{
+		return mapPos;
+	}
 };
