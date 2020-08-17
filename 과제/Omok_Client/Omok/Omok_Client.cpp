@@ -137,7 +137,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 	static int map[defArrSize][defArrSize];
 
 	static vector<POINT> playerMark;
-	static vector<bool> playerColor;
+	static vector<int> playerColor;
 
 	static WSADATA wsaData;
 	static SOCKET s;
@@ -220,17 +220,17 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 						tempSaveVal[i++] = atoi(checkPakit);
 				}
 
-				if (tempSaveVal[4] == 0)
+				if (tempSaveVal[4] == 1)
 				{
 					map[tempSaveVal[0]][tempSaveVal[1]] = 1;
-					playerColor.push_back(false);
-					strcat(buffer, "0");	// false
+					playerColor.push_back(1);
+					strcat(buffer, "1");	// false
 				}
 				else
 				{
 					map[tempSaveVal[0]][tempSaveVal[1]] = -1;
-					playerColor.push_back(true);
-					strcat(buffer, "1");	// true
+					playerColor.push_back(-1);
+					strcat(buffer, "-1");	// true
 				}
 				playerMark.push_back({ tempSaveVal[2],tempSaveVal[3] });
 			}
@@ -399,7 +399,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 
 			for (int i = 0; i < playerMark.size(); i++)
 			{
-				if (playerColor[i] == false)
+				if (playerColor[i] == 1)
 				{
 					blackBrush = CreateSolidBrush(RGB(0, 0, 0));
 					oldBrush1 = (HBRUSH)SelectObject(memDc, blackBrush);

@@ -4,13 +4,13 @@
 
 enum { eMapSize = 19 };
 
-bool CheckOmok(int map[][eMapSize], bool playerColor[][eMapSize]);	// 오목 판정
+bool CheckOmok(int map[][eMapSize], int playerColor[][eMapSize]);	// 오목 판정
 
-bool CheckDirection(int map[][eMapSize], bool playerColor[][eMapSize], int i, int j, int &direction, bool isPlayerColor);	// 방향 판정
+bool CheckDirection(int map[][eMapSize], int playerColor[][eMapSize], int i, int j, int &direction, int isPlayerColor);	// 방향 판정
 void SetDirection(int &setDirection, int direction);	// 방향 설정
-bool CheckSpot(int map[][eMapSize], bool playerColor[][eMapSize], int i, int j, int direction, int &cnt, bool isPlayerColor);	// 5개인지 확인
+bool CheckSpot(int map[][eMapSize], int playerColor[][eMapSize], int i, int j, int direction, int &cnt, int isPlayerColor);	// 5개인지 확인
 
-bool CheckOmok(int map[][eMapSize], bool playerColor[][eMapSize])
+bool CheckOmok(int map[][eMapSize], int playerColor[][eMapSize])
 {
 	int cnt = 0;
 	int direction = 0;
@@ -25,10 +25,7 @@ bool CheckOmok(int map[][eMapSize], bool playerColor[][eMapSize])
 				if (CheckDirection(map, playerColor, i, j, direction, playerColor[i][j]))	// 실제 판정시 색상도 필요함
 				{
 					if (CheckSpot(map, playerColor, i, j, direction, cnt, playerColor[i][j]))
-					{
-						printf("오목완성 %d %d\n", j, i);	// x, y 반대
 						return true;
-					}
 				}
 
 			}	// if
@@ -39,7 +36,7 @@ bool CheckOmok(int map[][eMapSize], bool playerColor[][eMapSize])
 	return false;
 }
 
-bool CheckDirection(int map[][eMapSize], bool playerColor[][eMapSize], int i, int j, int &direction, bool isPlayerColor)
+bool CheckDirection(int map[][eMapSize], int playerColor[][eMapSize], int i, int j, int &direction, int isPlayerColor)
 {
 	for (int x = -1; x < 2; x++)
 	{
@@ -75,7 +72,7 @@ bool CheckDirection(int map[][eMapSize], bool playerColor[][eMapSize], int i, in
 	return false;
 }
 
-bool CheckSpot(int map[][eMapSize], bool playerColor[][eMapSize], int i, int j, int direction, int &cnt, bool isPlayerColor)
+bool CheckSpot(int map[][eMapSize], int playerColor[][eMapSize], int i, int j, int direction, int &cnt, int isPlayerColor)
 {
 	// 방향 체크
 	int checkY;

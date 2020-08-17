@@ -124,6 +124,7 @@ BOOL InitInstance(HINSTANCE hInstance, int nCmdShow)
 #include <stdio.h>
 #include <vector>
 #include <WinSock2.h>
+#include <string>
 #include "CheckOmok.h"
 
 #pragma comment(lib,"ws2_32.lib")
@@ -133,14 +134,16 @@ BOOL InitInstance(HINSTANCE hInstance, int nCmdShow)
 #define defMaxChat 22
 
 using std::vector;
+using std::string;
+using std::to_string;
 
 LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 {
 	static int map[defArrSize][defArrSize];
-	static bool colorMap[defArrSize][defArrSize];
+	static int colorMap[defArrSize][defArrSize];
 
 	static vector<POINT> playerMark;
-	static vector<bool> playerColor;
+	static vector<int> playerColor;
 
 	static WSADATA wsaData;
 	static SOCKET s, cs;
@@ -157,11 +160,13 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 	static SOCKET clientArray[MAX_CLIENT];
 	static int iClientCnt = 0;
 
+	static int nowPlayer;
+
     switch (message)
     {
 	case WM_CREATE:
-		AllocConsole();
-		freopen("CONOUT$", "wt", stdout);
+		// AllocConsole();
+		// freopen("CONOUT$", "wt", stdout);
 		SetTimer(hWnd, 0, 10, NULL);
 		WSAStartup(MAKEWORD(2, 2), &wsaData);
 		s = socket(AF_INET, SOCK_STREAM, 0);
@@ -198,7 +203,18 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 
 	case WM_TIMER:
 		if (CheckOmok(map, colorMap))
-			printf("finish");
+		{
+			static bool isWin = false;
+			string msg;
+			if (isWin == false)
+			{
+				isWin = true;
+				msg = "< 플레이어 " + to_string(nowPlayer) + " 의 승리 > ";
+
+				for (int i = 0; i < iClientCnt; i++)
+					send(clientArray[i], (LPSTR)msg.c_str(), msg.size() + 1, 0);
+			}
+		}
 		break;
 
 	case WM_ASYNC:
@@ -296,16 +312,16 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 				if (playerNum == 0)
 				{
 					map[tempSaveVal[1]][tempSaveVal[0]] = 1;
-					colorMap[tempSaveVal[1]][tempSaveVal[0]] = 0;
-					playerColor.push_back(false);
-					strcat(buffer, "0");	// false
+					colorMap[tempSaveVal[1]][tempSaveVal[0]] = 1;
+					playerColor.push_back(1);
+					strcat(buffer, "1");	// false
 				}
 				else
 				{
 					map[tempSaveVal[1]][tempSaveVal[0]] = -1;
-					colorMap[tempSaveVal[1]][tempSaveVal[0]] = 1;
-					playerColor.push_back(true);
-					strcat(buffer, "1");	// true
+					colorMap[tempSaveVal[1]][tempSaveVal[0]] = -1;
+					playerColor.push_back(-1);
+					strcat(buffer, "-1");	// true
 				}
 
 				for (int i = 0; i < playerMark.size(); i++)
@@ -313,7 +329,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 					if (playerMark[i].x == tempSaveVal[2] && playerMark[i].y == tempSaveVal[3])
 					{
 						for (int i = 0; i < iClientCnt; i++)
-							send(clientArray[i], (LPSTR)"ERROR! : 중복위치", strlen("ERROR! : 중복위치") + 1, 0);
+							send(clientArray[i], (LPSTR)"< ERROR! : 중복위치 >", strlen("< ERROR! : 중복위치 >") + 1, 0);
 
 						playerColor.pop_back();
 						colorMap[tempSaveVal[0]][tempSaveVal[1]] = 0;
@@ -328,6 +344,8 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 				else
 					playerPut = false;
 
+				nowPlayer = csTemp;
+
 				for (int i = 0; i < iClientCnt; i++)
 					send(clientArray[i], (LPSTR)buffer, strlen(buffer) + 1, 0);
 			}
@@ -335,7 +353,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 			
 			if (atoi(buffer) == -1 && ((playerNum == 0 && playerPut != false) || (playerNum == 1 && playerPut != true)))
 			{
-				send(csTemp, "Not Your Trun", strlen("Not Your Trun"), 0);
+				send(csTemp, "< 플레이어의 턴이 아님 >", strlen("< 플레이어의 턴이 아님 >"), 0);
 				// 클라이언트에서 다이얼로그 띄우기?
 			}
 
@@ -354,8 +372,6 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 				for (int i = 0; i < iClientCnt; i++)
 					send(clientArray[i], (LPSTR)buffer, strlen(buffer) + 1, 0);
 			}
-
-
 
 			TCHAR *temp = new TCHAR[200];
 			msgLen = MultiByteToWideChar(CP_ACP, 0, buffer, strlen(buffer), NULL, NULL);
@@ -495,7 +511,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 
 			for (int i = 0; i < playerMark.size(); i++)
 			{
-				if (playerColor[i] == false)
+				if (playerColor[i] == 1)
 				{
 					blackBrush = CreateSolidBrush(RGB(0, 0, 0));
 					oldBrush1 = (HBRUSH)SelectObject(memDc, blackBrush);
@@ -560,7 +576,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 
     case WM_DESTROY:
 	{
-		FreeConsole();
+		//FreeConsole();
 		KillTimer(hWnd, 0);
 		closesocket(s);
 		WSACleanup();
