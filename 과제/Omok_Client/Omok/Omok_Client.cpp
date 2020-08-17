@@ -242,7 +242,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 				SaveMsg.push_back(temp);
 
 				if (SaveMsg.size() > defMaxChat)
-					SaveMsg.erase(SaveMsg.begin());
+					SaveMsg.erase(SaveMsg.begin() + 1);
 			}
 			break;
 		}

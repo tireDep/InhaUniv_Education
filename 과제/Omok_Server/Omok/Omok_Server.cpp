@@ -214,12 +214,22 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 			}
 			else
 				closesocket(cs);
+
+			if (iClientCnt == 1)
+				send(cs, "[ Player 1 ]", strlen("[ Player 1 ]"), 0);
+			else if (iClientCnt == 2)
+				send(cs, "[ Player 2 ]", strlen("[ Player 2 ]"), 0);
+			else
+				send(cs, "[ Watcher ]", strlen("[ Watcher ]"), 0);
+
+
 			break;
 
 		case FD_READ:
 		{
 			int csTemp;
 			int playerNum;
+			static bool playerPut = false;
 			for (int i = 0; i < iClientCnt; i++)
 			{
 				msgLen = recv(clientArray[i], buffer, 99, 0);
@@ -265,12 +275,14 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 			int tempSaveVal[4];
 			int i = 0;
 			bool isPassing = false;
+
 			strcpy(tempBuffer, buffer);
 			checkPakit = strtok(tempBuffer, "!");
 
-			if (atoi(buffer) == -1)
+			if (atoi(buffer) == -1 && ((playerNum == 0 && playerPut == false) || (playerNum == 1 && playerPut == true)))
 			{
 				isPassing = true;
+
 				while (1)
 				{
 					checkPakit = strtok(NULL, "!");
@@ -302,18 +314,32 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 					{
 						for (int i = 0; i < iClientCnt; i++)
 							send(clientArray[i], (LPSTR)"ERROR! : 중복위치", strlen("ERROR! : 중복위치") + 1, 0);
-						
+
 						playerColor.pop_back();
 						colorMap[tempSaveVal[0]][tempSaveVal[1]] = 0;
 						return 0;
 					}
 				}	// 중복 위치 체크
-				playerMark.push_back({ tempSaveVal[2],tempSaveVal[3]});
+				playerMark.push_back({ tempSaveVal[2],tempSaveVal[3] });
 				// 중복위치가 아닐 경우 저장
+
+				if (playerNum == 0)
+					playerPut = true;
+				else
+					playerPut = false;
+
+				for (int i = 0; i < iClientCnt; i++)
+					send(clientArray[i], (LPSTR)buffer, strlen(buffer) + 1, 0);
 			}
 			// 파싱
+			
+			if (atoi(buffer) == -1 && ((playerNum == 0 && playerPut != false) || (playerNum == 1 && playerPut != true)))
+			{
+				send(csTemp, "Not Your Trun", strlen("Not Your Trun"), 0);
+				// 클라이언트에서 다이얼로그 띄우기?
+			}
 
-			else
+			else if(atoi(buffer) != -1)
 			{
 				char clientTemp[100];
 				char changeNum[100];
@@ -325,10 +351,11 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 				strcat(clientTemp, buffer);
 
 				strcpy(buffer, clientTemp);
+				for (int i = 0; i < iClientCnt; i++)
+					send(clientArray[i], (LPSTR)buffer, strlen(buffer) + 1, 0);
 			}
 
-			for (int i = 0; i < iClientCnt; i++)
-				send(clientArray[i], (LPSTR)buffer, strlen(buffer) + 1, 0);
+
 
 			TCHAR *temp = new TCHAR[200];
 			msgLen = MultiByteToWideChar(CP_ACP, 0, buffer, strlen(buffer), NULL, NULL);
