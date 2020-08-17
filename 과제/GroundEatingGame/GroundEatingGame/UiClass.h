@@ -28,7 +28,7 @@ public:
 	void CountDown();
 	void DrawStartUI(HDC hdc);
 	void DrawGameUI(HDC hdc, int playerMapCnt, float mapArea);
-	void DrawResultUI(HDC hdc);
+	void DrawResultUI(HDC hdc, float mapArea);
 
 	void SetPlayerName(WPARAM wParam);
 	

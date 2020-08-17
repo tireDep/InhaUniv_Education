@@ -4,7 +4,7 @@
 #include "UiClass.h"
 #include "GameManager.h"
 
-#define COUNTDOWNSEC 30
+#define COUNTDOWNSEC 60
 
 extern GameManager *gameManager;
 
@@ -90,20 +90,20 @@ void UI::DrawGameUI(HDC hdc, int playerMapCnt, float mapArea)
 	DrawText(hdc, wMapArea, _tcslen(wMapArea), &uiRect, DT_BOTTOM | DT_RIGHT | DT_SINGLELINE);
 }
 
-void UI::DrawResultUI(HDC hdc)
+void UI::DrawResultUI(HDC hdc, float mapArea)
 {
 	RECT uiRect = { 0,50,430,450 };
 
-	// DrawText(hdc, _T("Result"), _tcslen(_T("Result")), &uiRect, DT_CENTER | DT_VCENTER);
-	// 
-	// uiRect.top += 50;
-	// DrawText(hdc, _T("YourScore"), _tcslen(_T("YourScore")), &uiRect, DT_CENTER | DT_VCENTER);
-	// ※ : 수정 예정
+	DrawText(hdc, _T("Result"), _tcslen(_T("Result")), &uiRect, DT_CENTER | DT_VCENTER);
+	
+	uiRect.top += 75;
+	DrawText(hdc, _T("AreaPercent"), _tcslen(_T("AreaPercent")), &uiRect, DT_CENTER | DT_VCENTER);
 
-	uiRect.top += 50;
-	DrawText(hdc, _T("GameOver"), _tcslen(_T("GameOver")), &uiRect, DT_CENTER | DT_VCENTER);
+	uiRect.top += 30;
+	swprintf(wMapArea, _TEXT("%.1lf%s"), mapArea, _T("%"));
+	DrawText(hdc, wMapArea, _tcslen(wMapArea), &uiRect, DT_CENTER | DT_VCENTER);
 
-	RECT _btnRect = { uiRect.left + 50, uiRect.top + 175, 175, uiRect.top + 225 };
+	RECT _btnRect = { uiRect.left + 50, uiRect.top + 150, 175, uiRect.top + 200 };
 	Rectangle(hdc, _btnRect.left, _btnRect.top, _btnRect.right, _btnRect.bottom);
 	DrawText(hdc, _T("MAIN"), _tcslen(_T("MAIN")), &_btnRect, DT_CENTER | DT_VCENTER | DT_SINGLELINE);
 	restartBtnRect = _btnRect;

@@ -128,8 +128,8 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 		CreateBitmap();
 		SetTimer(hWnd, 0, 10, NULL);
 
-		AllocConsole();
-		freopen("CONOUT$", "wt", stdout);
+		// AllocConsole();
+		// freopen("CONOUT$", "wt", stdout);
 		break;
 
 	case WM_TIMER:
@@ -224,7 +224,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 		}
 		else if (eResultScene == nowScene)
 		{
-			playerUI->DrawResultUI(finalDc);
+			playerUI->DrawResultUI(finalDc, player.GetMapArea());
 		}
 
 		BitBlt(hdc, 0, 0, rectView.right, rectView.bottom, finalDc, 0, 0, SRCCOPY);	// 더블버퍼링
@@ -265,7 +265,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 		KillTimer(hWnd, 0);
         PostQuitMessage(0);
 
-		FreeConsole();
+		// FreeConsole();
         break;
 
     default:
