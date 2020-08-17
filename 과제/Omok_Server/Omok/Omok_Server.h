@@ -14,3 +14,6 @@ enum mapNum
 };
 
 #define defArrSize 19
+
+#define MAX_CLIENT 100
+#define defMaxChat 22

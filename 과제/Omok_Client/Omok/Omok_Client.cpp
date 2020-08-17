@@ -123,6 +123,7 @@ BOOL InitInstance(HINSTANCE hInstance, int nCmdShow)
 //
 #include <stdio.h>
 #include <vector>
+#include "OmokClass.h"
 
 #include <WinSock2.h>
 #pragma comment(lib,"ws2_32.lib")
@@ -134,11 +135,6 @@ using std::vector;
 
 LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 {
-	static int map[defArrSize][defArrSize];
-
-	static vector<POINT> playerMark;
-	static vector<int> playerColor;
-
 	static WSADATA wsaData;
 	static SOCKET s;
 	static SOCKADDR_IN addr = { 0 };
@@ -152,22 +148,18 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 
 	static vector<TCHAR *> SaveMsg;
 
+	Omok *omok = Omok::GetInstance();
+
     switch (message)
     {
 	case WM_CREATE:
-		//AllocConsole();
-		//freopen("CONOUT$", "wt", stdout);
-
 		WSAStartup(MAKEWORD(2, 2), &wsaData);
 		s = socket(AF_INET, SOCK_STREAM, 0);
 		if (s == INVALID_SOCKET)
 		{
-			//MessageBox(NULL, _T("Socket Fail"), _T("Error"), MB_OK);
 			return 0;
 		}
-		//else
-		//	MessageBox(NULL, _T("Socket Success"), _T("Success"), MB_OK);
-
+	
 		addr.sin_family = AF_INET;
 		addr.sin_port = 20;
 		addr.sin_addr.S_un.S_addr = inet_addr("127.0.0.1");
@@ -175,11 +167,8 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 
 		if (connect(s, (LPSOCKADDR)&addr, sizeof(addr)) == SOCKET_ERROR)
 		{
-		//	MessageBox(NULL, _T("Connect Fail"), _T("Error"), MB_OK);
 			return 0;
 		}
-		//else
-		//	MessageBox(NULL, _T("Connect Success"), _T("Success"), MB_OK);
 
 		WSAAsyncSelect(s, hWnd, WM_ASYNC, FD_READ);
 		break;
@@ -222,19 +211,26 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 
 				if (tempSaveVal[4] == 1)
 				{
-					map[tempSaveVal[0]][tempSaveVal[1]] = 1;
-					playerColor.push_back(1);
+					omok->SetPlayerOmok(tempSaveVal, 1);
 					strcat(buffer, "1");	// false
 				}
 				else
 				{
-					map[tempSaveVal[0]][tempSaveVal[1]] = -1;
-					playerColor.push_back(-1);
+					omok->SetPlayerOmok(tempSaveVal, -1);
 					strcat(buffer, "-1");	// true
 				}
-				playerMark.push_back({ tempSaveVal[2],tempSaveVal[3] });
+				omok->AddPlayerMark(tempSaveVal);
 			}
 			// 파싱
+			else if (atoi(buffer) == 9999)
+			{
+				TCHAR *temp = new TCHAR[200];
+				MultiByteToWideChar(CP_ACP, 0, "게임종료", strlen("게임종료"), msg, msgLen);
+				msg[msgLen] = NULL;
+				_tcscpy(temp, msg);
+
+				SaveMsg.push_back(temp);
+			}
 			else
 			{
 				TCHAR *temp = new TCHAR[200];
@@ -345,83 +341,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 			PatBlt(memDc, rectView.left, rectView.top, rectView.right, rectView.bottom, WHITENESS);
 			// 더블버퍼링
 
-			// 바둑판
-
-			int j = 0;
-			HBRUSH hBrush, oldBrush;
-			hBrush = CreateSolidBrush(RGB(230, 186, 148));
-			oldBrush = (HBRUSH)SelectObject(memDc, hBrush);
-			Rectangle(memDc, 0, 0, 765, 741);
-			Rectangle(memDc, 47, 35, 714, 705);
-
-			for (int i = 2; i < 19; i++)
-			{
-				MoveToEx(memDc, 47, 37 * i, NULL);
-				LineTo(memDc, 714, 37 * i);
-				// 가로줄
-			
-				MoveToEx(memDc, (42 * i) - (5 * j), 36, NULL);
-				LineTo(memDc, (42 * i) - (5 * j), 705);
-				j++;
-				// 세로줄
-			}
-
-			SelectObject(memDc, oldBrush);
-			DeleteObject(hBrush);
-
-			// 바둑판
-
-			// 바둑판 점
-
-			hBrush = CreateSolidBrush(RGB(0, 0, 0));
-			oldBrush = (HBRUSH)SelectObject(memDc, hBrush);
-
-			Ellipse(memDc, 42 + 37 * 3, 32 + 37 * 3, 52 + 37 * 3, 42 + 37 * 3);
-			Ellipse(memDc, 42 + 37 * 9, 32 + 37 * 3, 52 + 37 * 9, 42 + 37 * 3);
-			Ellipse(memDc, 42 + 37 * 15, 32 + 37 * 3, 52 + 37 * 15, 42 + 37 * 3);
-
-			Ellipse(memDc, 42 + 37 * 3, 32 + 37 * 9, 52 + 37 * 3, 42 + 37 * 9);
-			Ellipse(memDc, 42 + 37 * 9, 32 + 37 * 9, 52 + 37 * 9, 42 + 37 * 9);
-			Ellipse(memDc, 42 + 37 * 15, 32 + 37 * 9, 52 + 37 * 15, 42 + 37 * 9);
-
-			Ellipse(memDc, 42 + 37 * 3, 32 + 37 * 15, 52 + 37 * 3, 42 + 37 * 15);
-			Ellipse(memDc, 42 + 37 * 9, 32 + 37 * 15, 52 + 37 * 9, 42 + 37 * 15);
-			Ellipse(memDc, 42 + 37 * 15, 32 + 37 * 15, 52 + 37 * 15, 42 + 37 * 15);
-
-			SelectObject(memDc, oldBrush);
-			DeleteObject(hBrush);
-
-			// 바둑판 점
-
-			// playerDraw
-			HBRUSH blackBrush, oldBrush1;
-			HBRUSH whiteBrush, oldBrush2;
-
-			for (int i = 0; i < playerMark.size(); i++)
-			{
-				if (playerColor[i] == 1)
-				{
-					blackBrush = CreateSolidBrush(RGB(0, 0, 0));
-					oldBrush1 = (HBRUSH)SelectObject(memDc, blackBrush);
-
-					Ellipse(memDc, playerMark[i].x - eMarkDiameter, playerMark[i].y - eMarkDiameter, playerMark[i].x + eMarkDiameter, playerMark[i].y + eMarkDiameter);
-
-					SelectObject(memDc, oldBrush1);
-					DeleteObject(blackBrush);
-				}
-				else
-				{
-					whiteBrush = CreateSolidBrush(RGB(255, 255, 255));
-					oldBrush2 = (HBRUSH)SelectObject(memDc, whiteBrush);
-
-					Ellipse(memDc, playerMark[i].x - eMarkDiameter, playerMark[i].y - eMarkDiameter, playerMark[i].x + eMarkDiameter, playerMark[i].y + eMarkDiameter);
-
-					SelectObject(memDc, oldBrush2);
-					DeleteObject(whiteBrush);
-				}
-			}
-
-			// playerDraw
+			omok->DrawOmok(memDc);
 
 			for (int i = 0; i < SaveMsg.size(); i++)
 			{
@@ -464,6 +384,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
     case WM_DESTROY:
 	{
 		send(s, "quit!", strlen("quit!") + 1, 0);
+
 		closesocket(s);
 		WSACleanup();
 
