@@ -52,11 +52,13 @@ public:
 	cMatrix Transpose();	// 전치 행렬
 	cMatrix Inverse(OUT float& fDeterminant);	// 역행렬
 
-	float Determinent(float detNum);
+	float Determinent();
 	cMatrix Adjoint();
-	float Cofactor(int nRow, int nCol);
-	float MinorMatrix(int nRow, int nCol);	// 해당 행렬의 행렬식 구하는 목적
+	cMatrix Cofactor();
+	cMatrix MinorMatrix(int nRow, int nCol);	// 해당 행렬의 행렬식 구하는 목적
 
 	bool CheckSameDimension(cMatrix &mat);
 	void SetZero();
+
+	void SetVal();
 };

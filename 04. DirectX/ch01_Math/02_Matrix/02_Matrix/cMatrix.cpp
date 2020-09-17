@@ -1,6 +1,8 @@
 #include "cMatrix.h"
 #include <ctime>
 
+#define dEpsilon 0.00001
+
 cMatrix::cMatrix()
 {
 
@@ -22,6 +24,7 @@ void cMatrix::Print()
 	{
 		for (int j = 0; j < GetDimension(); j++)
 		{
+			// if (cCol[i][j] == -0) cCol[i][j] = 0;
 			cout << cCol[i][j] << " ";
 		}
 		cout << endl;
@@ -178,18 +181,14 @@ cMatrix cMatrix::operator*(cMatrix & mat)
 			for (int i = 0; i < GetDimension(); i++)
 			{
 				for (int j = 0; j < GetDimension(); j++)
+				{
 					result[k][i] += cCol[k][j] * mat[j][i];
+				}
+				if (result[k][i] < dEpsilon)
+					result[k][i] = 0;	// 값 보정 필요!
 			}
 		}
 		// << !!
-	}
-	else
-	{
-		for (int i = 0; i < GetDimension(); i++)
-		{
-			for (int j = 0; j < GetDimension(); j++)
-				result[i][j] = -9999;
-		}
 	}
 
 	return result;
@@ -213,82 +212,83 @@ cMatrix cMatrix::Inverse(OUT float & fDeterminant)	// 역행렬
 	cMatrix result(GetDimension());
 	result.SetZero();
 
-	float _determinete = Determinent(0);
+	float _determinete = fDeterminant;
+	if (_determinete == 0)
+		return result;
 
-	return result;
+	return Adjoint() * (1/_determinete);
 }
 
-float cMatrix::Determinent(float detNum)
+float cMatrix::Determinent()
 {
-	float result = detNum;
+	float result = 0;
 
-	if (GetDimension() == 2)
-	{
-		result = cCol[0][0] * cCol[1][1] - cCol[0][1] * cCol[1][0];
-		return result;
-	}
+	if (GetDimension() < 0)
+		return 0;
+	else if (GetDimension() == 1)
+		return cCol[0][0];
+	else if (GetDimension() == 2)
+		return cCol[0][0] * cCol[1][1] - cCol[0][1] * cCol[1][0];
 	else
 	{
-		cMatrix calc(GetDimension() - 1);
-		calc.SetZero();
-
-		int limitX = 0, limitY = 0;
-		int indexX = 0, indexY = 0;
-		int cnt = 0;
-
-		while (cnt++ <= calc.GetDimension())
-		{
-			for (int i = 0; i < GetDimension(); i++)
-			{
-				if (limitX == i)
-					continue;
-
-				for (int j = 0; j < GetDimension(); j++)
-				{
-					if (limitY == j)
-						continue;
-
-					calc[indexY][indexX++] = cCol[i][j];
-
-					if (indexX == calc.GetDimension())
-					{
-						indexX = 0;
-						indexY++;
-						if (indexY == calc.GetDimension())
-							indexY = 0;
-					}
-				}
-			}
-			limitY++;
-
-			calc.Print();
-
-			//if (limitY < GetDimension())
-			result += calc.Determinent(result) * pow(-1, 1 + limitY) * cCol[0][limitY - 1];
-			//else
-			//	calc.Determinent(result);
-
-			cout << "limitY : " << limitY << endl;
-			cout << "pow : " << pow(-1, 1 + limitY) << endl;
-			cout << "result : " << result << endl;
-		}
+		for (int i = 0; i < GetDimension(); i++)
+			result += MinorMatrix(i, 0).Determinent() * pow(-1, 1 + (1+i)) * cCol[0][i];
 	}
+
 	return result;
 }
 
 cMatrix cMatrix::Adjoint()
 {
-	return cMatrix();
+	return Cofactor().Transpose();
 }
 
-float cMatrix::Cofactor(int nRow, int nCol)
+cMatrix cMatrix::Cofactor()
 {
-	return 0.0f;
+	int dimension = GetDimension();
+	cMatrix result(dimension);
+	result.SetZero();
+
+	for (int i = 0; i < dimension; i++)
+	{
+		for (int j = 0; j < dimension; j++)
+		{
+			result[i][j] = MinorMatrix(j, i).Determinent() * pow(-1, (1 + i) + (1 + j));
+			// >> row, col
+		}
+	}
+
+	return result;
 }
 
-float cMatrix::MinorMatrix(int nRow, int nCol)
+cMatrix cMatrix::MinorMatrix(int nRow, int nCol)
 {
-	return 0.0f;
+	cMatrix calc(GetDimension() - 1);
+	calc.SetZero();
+
+	int indexX = 0, indexY = 0;
+	for (int i = 0; i < GetDimension(); i++)
+	{
+		if (nCol == i)
+			continue;
+
+		for (int j = 0; j < GetDimension(); j++)
+		{
+			if (nRow == j)
+				continue;
+
+			calc[indexY][indexX++] = cCol[i][j];
+
+			if (indexX == calc.GetDimension())
+			{
+				indexX = 0;
+				indexY++;
+				if (indexY == calc.GetDimension())
+					indexY = 0;
+			}
+		}
+	}
+	return calc;
 }
 
 bool cMatrix::CheckSameDimension(cMatrix & mat)
@@ -305,6 +305,20 @@ void cMatrix::SetZero()
 	{
 		for (int j = 0; j < GetDimension(); j++)
 			cCol[i][j] = 0;
+	}
+}
+
+void cMatrix::SetVal()
+{
+	int dimension = GetDimension();
+	SetZero();
+	for (int i = 0; i < dimension; i++)
+	{
+		for (int j = 0; j < dimension; j++)
+		{
+			cout << "값 입력 : ";
+			cin >> cCol[i][j];
+		}
 	}
 }
 
