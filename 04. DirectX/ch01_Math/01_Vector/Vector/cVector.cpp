@@ -34,10 +34,9 @@ bool cVector3::operator==(cVector3 & vec)
 bool cVector3::operator!=(cVector3 & vec)
 {
 	if (vec.x != x || vec.y != y || vec.z != z)
-		return false;
-	else
 		return true;
-		
+	else
+		return false;
 }
 
 cVector3 cVector3::operator+(cVector3 & vec)
@@ -147,4 +146,24 @@ cVector3 cVector3::Normalize()
 void cVector3::PrintValue()
 {
 	cout << x << ", " << y << ", " << z << endl;
+}
+
+float cVector3::GetDegree(cVector3 & v1, cVector3 & v2)
+{
+	cVector3 result;
+
+	result.x = v1.x*v2.x;
+	result.y = v1.y*v2.y;
+	result.z = v1.z*v2.z;
+
+	float v1Lenght = v1.Length();
+	float v2Lenght = v2.Length();
+
+	float cosTheta = (result.x + result.y + result.z) / (v1Lenght * v2Lenght);
+	// >> cos(θ) 구하는 법
+	// 벡터 내적 / (벡터 크기1 * 벡터 크기2)
+
+	float degree = acos(cosTheta) * (180 / 3.14);	// 라디안 -> 각도
+
+	return degree;
 }

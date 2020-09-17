@@ -26,4 +26,6 @@ public:
 	cVector3 Normalize();
 
 	void PrintValue();
+
+	static float GetDegree(cVector3& v1, cVector3& v2);
 };
