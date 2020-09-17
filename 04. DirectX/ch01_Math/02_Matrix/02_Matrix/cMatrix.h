@@ -12,18 +12,23 @@ private:
 	class cRow
 	{
 	private:
-		vector<float> m_vecData;
-
+		vector<float> vMatData;
+	
 	public:
 		cRow();
 		cRow(int nDimension);
 		~cRow();
-
-		void Resize(int nDimension);
+	
+		void ReSize(int nDimension);
 		float& operator[](int nIndex);
+
+		void SetRanNum(int nDimension);
 	};
 
+	vector<cRow> cCol;
+
 public:
+	cMatrix();
 	cMatrix(int nDimension);	// 랜덤 생성
 	~cMatrix();
 
@@ -35,6 +40,7 @@ public:
 	cRow& operator[](int nIndex);
 
 	// ==============================================================================
+
 	bool operator ==(cMatrix &mat);
 	bool operator !=(cMatrix &mat);
 
@@ -50,4 +56,7 @@ public:
 	cMatrix Adjoint();
 	float Cofactor(int nRow, int nCol);
 	float MinorMatrix(int nRow, int nCol);	// 해당 행렬의 행렬식 구하는 목적
+
+	bool CheckSameDimension(cMatrix &mat);
+	void SetZero();
 };
