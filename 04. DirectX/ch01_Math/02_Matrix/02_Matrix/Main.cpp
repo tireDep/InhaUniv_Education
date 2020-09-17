@@ -20,7 +20,7 @@ int main()
 	// cMatrix m3 = m1*m2;
 	// m3.Print();
 	// m3.Identity(5).Print();
-	m1.Determinent();
+	m1.Determinent(0);
 
 
 	return 0;

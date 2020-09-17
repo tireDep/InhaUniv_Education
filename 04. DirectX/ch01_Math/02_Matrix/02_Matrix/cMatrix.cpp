@@ -213,14 +213,14 @@ cMatrix cMatrix::Inverse(OUT float & fDeterminant)	// ¿ªÇà·Ä
 	cMatrix result(GetDimension());
 	result.SetZero();
 
-	float _determinete = Determinent();
+	float _determinete = Determinent(0);
 
 	return result;
 }
 
-float cMatrix::Determinent()
+float cMatrix::Determinent(float detNum)
 {
-	float result = 0;
+	float result = detNum;
 
 	if (GetDimension() == 2)
 	{
@@ -263,13 +263,17 @@ float cMatrix::Determinent()
 
 			calc.Print();
 
-			result += calc.Determinent() * pow(-1, 1 + limitY);
+			//if (limitY < GetDimension())
+			result += calc.Determinent(result) * pow(-1, 1 + limitY) * cCol[0][limitY - 1];
+			//else
+			//	calc.Determinent(result);
 
 			cout << "limitY : " << limitY << endl;
 			cout << "pow : " << pow(-1, 1 + limitY) << endl;
 			cout << "result : " << result << endl;
 		}
 	}
+	return result;
 }
 
 cMatrix cMatrix::Adjoint()
