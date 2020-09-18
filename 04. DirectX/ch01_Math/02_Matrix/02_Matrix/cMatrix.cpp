@@ -1,7 +1,7 @@
 #include "cMatrix.h"
 #include <ctime>
 
-#define dEpsilon 0.00001
+#define dEpsilon 0.00001f
 
 cMatrix::cMatrix()
 {
@@ -24,7 +24,6 @@ void cMatrix::Print()
 	{
 		for (int j = 0; j < GetDimension(); j++)
 		{
-			// if (cCol[i][j] == -0) cCol[i][j] = 0;
 			cout << cCol[i][j] << " ";
 		}
 		cout << endl;
@@ -74,7 +73,9 @@ bool cMatrix::operator==(cMatrix & mat)
 		{
 			for (int j = 0; j < GetDimension(); j++)
 			{
-				if (mat[i][j] != cCol[i][j])
+				if ((*this)[i][j] - dEpsilon > mat[i][j])
+					return false;
+				if ((*this)[i][j] + dEpsilon < mat[i][j])
 					return false;
 			}
 		}
@@ -87,21 +88,7 @@ bool cMatrix::operator==(cMatrix & mat)
 
 bool cMatrix::operator!=(cMatrix & mat)
 {
-	if (CheckSameDimension(mat))
-	{
-		for (int i = 0; i < GetDimension(); i++)
-		{
-			for (int j = 0; j < GetDimension(); j++)
-			{
-				if (mat[i][j] != cCol[i][j])
-					return true;
-			}
-		}
-
-		return false;
-	}
-	else
-		return false;
+	return !((*this) == mat);
 }
 
 cMatrix cMatrix::operator+(cMatrix & mat)
@@ -212,11 +199,10 @@ cMatrix cMatrix::Inverse(OUT float & fDeterminant)	// ¿ªÇà·Ä
 	cMatrix result(GetDimension());
 	result.SetZero();
 
-	float _determinete = fDeterminant;
-	if (_determinete == 0)
+	if (-dEpsilon < fDeterminant && fDeterminant < dEpsilon)
 		return result;
 
-	return Adjoint() * (1/_determinete);
+	return Adjoint() * (1/fDeterminant);
 }
 
 float cMatrix::Determinent()
