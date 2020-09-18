@@ -1,6 +1,9 @@
+#include "stdafx.h"
 #include "cVector.h"
 #include <iostream>
 #include <cmath>
+
+#define dEpsilon 0.0001f
 
 using namespace std;
 
@@ -25,7 +28,9 @@ cVector3::~cVector3()
 
 bool cVector3::operator==(cVector3 & vec)
 {
-	if (vec.x == x && vec.y == y && vec.z == z)
+	if (x - dEpsilon <= vec.x && x <= vec.x + dEpsilon
+		&& y - dEpsilon <= vec.y && y <= vec.y + dEpsilon
+		&& z - dEpsilon <= vec.z && z <= vec.z + dEpsilon)
 		return true;
 	else
 		return false;
@@ -33,10 +38,7 @@ bool cVector3::operator==(cVector3 & vec)
 
 bool cVector3::operator!=(cVector3 & vec)
 {
-	if (vec.x != x || vec.y != y || vec.z != z)
-		return true;
-	else
-		return false;
+	return !(*this == vec);
 }
 
 cVector3 cVector3::operator+(cVector3 & vec)

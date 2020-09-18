@@ -17,5 +17,12 @@
 #include <memory.h>
 #include <tchar.h>
 
-
 // TODO: reference additional headers your program requires here
+#include "cVector.h"
+#include "cMatrix.h"
+
+#include <iostream>
+#include <vector>
+#include <cmath>
+
+using namespace std;
