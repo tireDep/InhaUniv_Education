@@ -3,6 +3,7 @@
 #include <ctime>
 
 #define dEpsilon 0.00001f
+#define dArrSize 4
 
 cMatrix::cMatrix()
 {
@@ -150,7 +151,12 @@ cMatrix cMatrix::operator*(float num)
 	for (int i = 0; i < GetDimension(); i++)
 	{
 		for (int j = 0; j < GetDimension(); j++)
+		{
 			result[i][j] = cCol[i][j] * num;
+
+			// if (result[i][j] < dEpsilon)
+			// 	result[i][j] = 0;	// 값 보정 필요!
+		}
 	}
 
 	return result;
@@ -295,7 +301,7 @@ void cMatrix::SetZero()
 	}
 }
 
-void cMatrix::SetVal()
+void cMatrix::SetValInput()
 {
 	int dimension = GetDimension();
 	SetZero();
@@ -308,6 +314,174 @@ void cMatrix::SetVal()
 		}
 	}
 }
+
+void cMatrix::SetVal(cVector3 v, cMatrix &calcMat, int col)
+{
+	for (int i = 0; i < dArrSize; i++)
+	{
+		float num = 0;
+
+		if (i == 0)num = v.GetVectorX();
+		else if (i == 1)num = v.GetVectorY();
+		else if (i == 2)num = v.GetVectorZ();
+
+		calcMat[col][i] = num;
+	}
+}
+
+// >> ------------------------------------------------------------------------
+cMatrix cMatrix::Translation(float x, float y, float z)
+{
+	cMatrix resMat=cMatrix::Identity(dArrSize);
+
+	resMat[dArrSize - 1][0] = x;
+	resMat[dArrSize - 1][1] = y;
+	resMat[dArrSize - 1][2] = z;
+
+	return resMat;
+}
+
+cMatrix cMatrix::Translation(cVector3 & v)
+{
+	cMatrix resMat = cMatrix::Identity(dArrSize);
+
+	resMat[dArrSize - 1][0] = v.GetVectorX();
+	resMat[dArrSize - 1][1] = v.GetVectorY();
+	resMat[dArrSize - 1][2] = v.GetVectorZ();
+
+	return resMat;
+}
+
+cMatrix cMatrix::RotationX(cVector3 & v)
+{
+	cMatrix resMat = cMatrix::Identity(dArrSize);
+
+	float angle = v.GetVectorX(); // 라디안
+
+	resMat[1][1] = cos(angle);
+	resMat[1][2] = sin(angle);
+	resMat[2][1] = -sin(angle);
+	resMat[2][2] = cos(angle);
+
+	return resMat;
+}
+
+cMatrix cMatrix::RotationY(cVector3 & v)
+{
+	cMatrix resMat = cMatrix::Identity(dArrSize);
+
+	float angle = 30 * (3.14 / 180); // 라디안
+
+	resMat[0][0] = cos(angle);
+	resMat[0][2] = -sin(angle);
+	resMat[2][0] = sin(angle);
+	resMat[2][2] = cos(angle);
+
+	return resMat;
+}
+
+cMatrix cMatrix::RotationZ(cVector3 & v)
+{
+	cMatrix resMat = cMatrix::Identity(dArrSize);
+
+	float angle = 30 * (3.14 / 180); // 라디안
+
+	resMat[0][0] = cos(angle);
+	resMat[0][1] = sin(angle);
+	resMat[1][0] = -sin(angle);
+	resMat[1][1] = cos(angle);
+
+	return resMat;
+}
+
+cMatrix cMatrix::View(cVector3 & vEye, cVector3 & vLookAt, cVector3 & vUp)
+{
+	/*
+	eye, look at, up
+	l = look vector
+	r = right vector 
+	u = up vector (0,1,0)
+
+	up vector x look Vector = right vector
+	right vector x look vector = up vector
+
+	r.x					u.x					l.x					0
+	r.y					u.y					l.y					0
+	r.z					u.z					l.z					0
+	-r dotPro eye		-u dotPro eye		-l dotPro eye		0 
+	==> geoMatrix
+	*/
+
+	cVector3 sight = vLookAt - vEye;
+	cVector3 right =  cVector3::Cross(vUp, sight);
+	vUp = cVector3::Cross(sight, right);
+
+	cMatrix resMat(dArrSize);
+	resMat.SetZero();
+
+	SetVal(right, resMat, 0);
+	SetVal(vUp, resMat, 1);
+	SetVal(sight, resMat, 2);
+
+	resMat[3][0] = cVector3::Dot(right * -1, vEye);
+	resMat[3][1] = cVector3::Dot(vUp * -1, vEye);
+	resMat[3][2] = cVector3::Dot(sight * -1, vEye);
+
+	return resMat;
+}
+
+cMatrix cMatrix::Projection(float fFovY, float fAspect, float fNearZ, float fFalZ)
+{
+	/*
+	sy = cot(fovy/2)  =>  1.0f / tanf(fFovY / 2.0f)
+	sx = sy / aspect(비율)
+
+	sx		0		0					0
+	0		sy		0					0
+	0		0		fz/(fz-nz)			1
+	0		0		-fz*nz / (fz-nz)	0				
+	fz : falZ
+	nz : nearZ
+	*/
+
+	float sy = 1.0f / tanf(fFovY / 2.0f);
+	float sx = sy / fAspect;
+
+	cMatrix resMat(dArrSize);
+	resMat.SetZero();
+
+	resMat[0][0] = sx;
+	resMat[1][1] = sy;
+	resMat[2][2] = fFalZ / (fFalZ - fNearZ);
+	resMat[2][3] = 1;
+	resMat[3][2] = -fFalZ * fNearZ / (fFalZ - fNearZ);
+
+	return resMat;
+}
+
+cMatrix cMatrix::ViewPort(float x, float y, float w, float h, float minZ, float maxZ)
+{
+	/*
+	w/2.0f			0				0				0
+	0				-h/2.0f			0				0
+	0				0				maxZ - minZ		0
+	x+(w/2.0f)		y+(h/2.0f)		minZ			1
+	
+	default => maxZ = 1, minZ = 0
+	*/
+
+	cMatrix resMat = cMatrix::Identity(dArrSize);
+	resMat[0][0] = w/2.0f;
+	resMat[1][1] = -h/2.0f;
+	resMat[2][2] = maxZ - minZ;
+
+	resMat[3][0] = x + (w / 2.0f);
+	resMat[3][1] = y + (h / 2.0f);
+	resMat[3][2] = minZ;
+
+	return resMat;
+}
+// >> ------------------------------------------------------------------------
 
 // -------------------------------------------------------------------
 

@@ -4,6 +4,7 @@
 #include <cmath>
 
 #define dEpsilon 0.0001f
+#define dArrSize 4
 
 using namespace std;
 
@@ -168,4 +169,42 @@ float cVector3::GetDegree(cVector3 & v1, cVector3 & v2)
 	float degree = acos(cosTheta) * (180 / 3.14);	// 라디안 -> 각도
 
 	return degree;
+}
+
+float cVector3::GetVectorX()
+{
+	return x;
+}
+
+float cVector3::GetVectorY()
+{
+	return y;
+}
+
+float cVector3::GetVectorZ()
+{
+	return z;
+}
+
+cVector3 cVector3::TransformCoord(cVector3 & v, cMatrix & mat)
+{
+	float a = mat[0][0] * v.GetVectorX() + mat[1][0] * v.GetVectorY() + mat[2][0] * v.GetVectorZ() + mat[3][0] * 1;
+	float b = mat[0][1] * v.GetVectorX() + mat[1][1] * v.GetVectorY() + mat[2][1] * v.GetVectorZ() + mat[3][1] * 1;
+	float c = mat[0][2] * v.GetVectorX() + mat[1][2] * v.GetVectorY() + mat[2][2] * v.GetVectorZ() + mat[3][2] * 1;
+	float d = mat[0][3] * v.GetVectorX() + mat[1][3] * v.GetVectorY() + mat[2][3] * v.GetVectorZ() + mat[3][3] * 1;
+
+	cVector3 retVec(a / d, b / d, c / d);
+
+	return retVec;
+}
+
+cVector3 cVector3::TransformNormal(cVector3 & v, cMatrix & mat)
+{
+	float a = mat[0][0] * v.GetVectorX() + mat[1][0] * v.GetVectorY() + mat[2][0] * v.GetVectorZ();
+	float b = mat[0][1] * v.GetVectorX() + mat[1][1] * v.GetVectorY() + mat[2][1] * v.GetVectorZ();
+	float c = mat[0][2] * v.GetVectorX() + mat[1][2] * v.GetVectorY() + mat[2][2] * v.GetVectorZ();
+
+	cVector3 retVec(a, b, c);
+
+	return retVec;
 }

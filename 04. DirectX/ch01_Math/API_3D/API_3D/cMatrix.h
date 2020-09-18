@@ -60,5 +60,31 @@ public:
 	bool CheckSameDimension(cMatrix &mat);
 	void SetZero();
 
-	void SetVal();
+	void SetValInput();
+
+	static void SetVal(cVector3 v, cMatrix &calcMat, int col);
+
+	// >> ----------------------------------------------------------------
+
+	static cMatrix Translation(float x, float y, float z);
+	static cMatrix Translation(cVector3& v);
+	// >> 이동
+	
+	static cMatrix RotationX(cVector3& v);
+	static cMatrix RotationY(cVector3& v);
+	static cMatrix RotationZ(cVector3& v);
+	// >> 회전
+
+	static cMatrix View(cVector3& vEye, cVector3& vLookAt, cVector3& vUp);
+	// >> 눈의 위치, 어디를 바라보고 있는지(눈 위치 - 바라보는 것(?)), 하늘 바라보는 상태
+	// >> vUp으로 rightVector 구함 => lookAt, right 직교 => 정확한 vUp 설정
+
+	static cMatrix Projection(float fFovY, float fAspect, float fNearZ, float fFalZ);
+	// >> 투사 함수(원근감)
+	// >> 시야각(라디안), 종횡비 = 너비 / 높이, 가까운 평면까지 거리, 먼 평면까지의 거리
+
+	static cMatrix ViewPort(float x, float y, float w, float h, float minZ, float maxZ);
+	// >> 화면 그리는 함수
+
+	// << ----------------------------------------------------------------
 };
