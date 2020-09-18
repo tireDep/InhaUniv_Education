@@ -325,7 +325,7 @@ void cMatrix::SetVal(cVector3 v, cMatrix &calcMat, int col)
 		else if (i == 1)num = v.GetVectorY();
 		else if (i == 2)num = v.GetVectorZ();
 
-		calcMat[col][i] = num;
+		calcMat[i][col] = num;
 	}
 }
 
@@ -413,8 +413,13 @@ cMatrix cMatrix::View(cVector3 & vEye, cVector3 & vLookAt, cVector3 & vUp)
 	*/
 
 	cVector3 sight = vLookAt - vEye;
+	sight = sight.Normalize();
+
 	cVector3 right =  cVector3::Cross(vUp, sight);
+	right = right.Normalize();
+
 	vUp = cVector3::Cross(sight, right);
+	vUp = vUp.Normalize();
 
 	cMatrix resMat(dArrSize);
 	resMat.SetZero();

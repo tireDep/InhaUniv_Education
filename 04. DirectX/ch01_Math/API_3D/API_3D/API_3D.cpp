@@ -132,7 +132,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 		freopen("CONOUT$", "wb", stdout);
 		freopen("CONOUT$", "wb", stderr);
 
-		GetClientRect(hWnd, &rectView);
+		GetWindowRect(hWnd, &rectView);
 		break;
 
     case WM_COMMAND:
@@ -158,7 +158,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
             PAINTSTRUCT ps;
             HDC hdc = BeginPaint(hWnd, &ps);
 
-			cVector3 eye(0.0f,5.0f,10.0f);
+			cVector3 eye(0.0f, 0.5f, 10.0f);
 			cVector3 lookAt(0.0f, 0.0f, 0.0f);
 			cVector3 up(0, 1, 0); 
 
@@ -194,8 +194,8 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 			worldMat = worldMat.Identity(4);
 
 			cMatrix viewMat = cMatrix::View(eye, lookAt, up);
-			cMatrix projecMat = cMatrix::Projection(3.14 * 0.5f, rectView.right / rectView.bottom, 1, 1000);
-			cMatrix viewPortMat = cMatrix::ViewPort(0, 0, 640, 480, 0, 1);
+			cMatrix projecMat = cMatrix::Projection(45*(3.14/180), (float)rectView.right / rectView.bottom, 1, 1000);
+			cMatrix viewPortMat = cMatrix::ViewPort(0, 0, 300, 480, 0, 1);
 
 			cVector3 v1(1, 1, 1);
 			cVector3 v2(1, 1, -1);
@@ -207,47 +207,35 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 			cVector3 v7(-1, -1, -1);
 			cVector3 v8(-1, -1, 1);
 
-			// cVector3 v5(2, -2, 2);
-			// cVector3 v6(2, -2, -2);
-			// cVector3 v7(-2, -2, -2);
-			// cVector3 v8(-2, -2, 2);
-
-			cMatrix resultMat = (worldMat * viewMat) * (projecMat * viewPortMat);	// s * r * t
-			resultMat.Print();
+			cMatrix resultMat = worldMat * viewMat * projecMat * viewPortMat;	// s * r * t
 
 			v1 = cVector3::TransformCoord(v1, resultMat);
-			//v1 = cVector3::TransformCoord(v1, viewPortMat);
-
 			v2 = cVector3::TransformCoord(v2, resultMat);
-			//v2 = cVector3::TransformCoord(v2, viewPortMat);
-
 			v3 = cVector3::TransformCoord(v3, resultMat);
-			//v3 = cVector3::TransformCoord(v3, viewPortMat);
-
 			v4 = cVector3::TransformCoord(v4, resultMat);
-			//v4 = cVector3::TransformCoord(v4, viewPortMat);
 
 			v5 = cVector3::TransformCoord(v5, resultMat);
-			//v5 = cVector3::TransformCoord(v5, viewPortMat);
-
 			v6 = cVector3::TransformCoord(v6, resultMat);
-			//v6 = cVector3::TransformCoord(v6, viewPortMat);
+			v7 = cVector3::TransformCoord(v7, resultMat);
+			v8 = cVector3::TransformCoord(v8, resultMat);
 
-			MoveToEx(hdc, v1.GetVectorX(), v1.GetVectorY(), NULL);
-			LineTo(hdc, v2.GetVectorX(), v2.GetVectorY());
+			// MoveToEx(hdc, v1.GetVectorX(), v1.GetVectorY(), NULL);
+			// LineTo(hdc, v3.GetVectorX(), v3.GetVectorY());
+			// 
+			// MoveToEx(hdc, v2.GetVectorX(), v2.GetVectorY(), NULL);
+			// LineTo(hdc, v3.GetVectorX(), v3.GetVectorY());
+			// 
+			// MoveToEx(hdc, v3.GetVectorX(), v3.GetVectorY(), NULL);
+			// LineTo(hdc, v2.GetVectorX(), v2.GetVectorY());
+			// 
+			// MoveToEx(hdc, v4.GetVectorX(), v4.GetVectorY(), NULL);
+			// LineTo(hdc, v1.GetVectorX(), v1.GetVectorY());
 
-			MoveToEx(hdc, v2.GetVectorX(), v2.GetVectorY(), NULL);
-			LineTo(hdc, v3.GetVectorX(), v3.GetVectorY());
+			// MoveToEx(hdc, v5.GetVectorX(), v5.GetVectorY(), NULL);
+			// LineTo(hdc, v6.GetVectorX(), v6.GetVectorY());
 
-			MoveToEx(hdc, v3.GetVectorX(), v3.GetVectorY(), NULL);
-			LineTo(hdc, v4.GetVectorX(), v4.GetVectorY());
-
-			MoveToEx(hdc, v4.GetVectorX(), v4.GetVectorY(), NULL);
-			LineTo(hdc, v1.GetVectorX(), v1.GetVectorY());
-
-			MoveToEx(hdc, v5.GetVectorX(), v5.GetVectorY(), NULL);
-			LineTo(hdc, v6.GetVectorX(), v6.GetVectorY());
-
+			Rectangle(hdc, (int)v1.GetVectorX(), (int)v2.GetVectorY(), (int)v3.GetVectorX(), (int)v4.GetVectorY());
+			Rectangle(hdc, v5.GetVectorX(), v6.GetVectorY(), v7.GetVectorX(), v8.GetVectorY());
 
 			// Rectangle(hdc, 100, 100, 250, 250);
 
