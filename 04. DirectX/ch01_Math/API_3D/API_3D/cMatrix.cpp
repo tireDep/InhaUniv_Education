@@ -178,8 +178,10 @@ cMatrix cMatrix::operator*(cMatrix & mat)
 				{
 					result[k][i] += cCol[k][j] * mat[j][i];
 				}
-				if (result[k][i] < dEpsilon)
-					result[k][i] = 0;	// 값 보정 필요!
+
+				if (abs(result[k][i]) <= dEpsilon)
+					result[k][i] = 0;
+				// 음수 주의!! 음수가 들어가지 않는 문제 발생할 수 있음!
 			}
 		}
 		// << !!
@@ -418,19 +420,19 @@ cMatrix cMatrix::View(cVector3 & vEye, cVector3 & vLookAt, cVector3 & vUp)
 	cVector3 right =  cVector3::Cross(vUp, sight);
 	right = right.Normalize();
 
-	vUp = cVector3::Cross(sight, right);
-	vUp = vUp.Normalize();
+	cVector3 up = cVector3::Cross(sight, right);
+	up = up.Normalize();
 
 	cMatrix resMat(dArrSize);
 	resMat.SetZero();
 
 	SetVal(right, resMat, 0);
-	SetVal(vUp, resMat, 1);
+	SetVal(up, resMat, 1);
 	SetVal(sight, resMat, 2);
 
-	resMat[3][0] = cVector3::Dot(right * -1, vEye);
-	resMat[3][1] = cVector3::Dot(vUp * -1, vEye);
-	resMat[3][2] = cVector3::Dot(sight * -1, vEye);
+	resMat[3][0] = -cVector3::Dot(right, vEye);
+	resMat[3][1] = -cVector3::Dot(up, vEye);
+	resMat[3][2] = -cVector3::Dot(sight, vEye);
 
 	return resMat;
 }
