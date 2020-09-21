@@ -36,6 +36,12 @@
     <ClInclude Include="cVector.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="PipeLineClass.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="ObjectClass.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -48,6 +54,12 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="cVector.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="PipeLineClass.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="ObjectClass.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

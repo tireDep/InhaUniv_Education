@@ -35,6 +35,10 @@ public:
 	float GetVectorY();
 	float GetVectorZ();
 
+	void SetValue(float setX, float setY, float setZ);
+
+	cVector3 GetcVector();
+
 	// >> --------------------------------------------------------
 	static cVector3 TransformCoord(cVector3& v, cMatrix& mat);
 	// 점에 대한 이동

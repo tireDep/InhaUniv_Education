@@ -186,6 +186,18 @@ float cVector3::GetVectorZ()
 	return z;
 }
 
+void cVector3::SetValue(float setX, float setY, float setZ)
+{
+	x = setX;
+	y = setY;
+	z = setZ;
+}
+
+cVector3 cVector3::GetcVector()
+{
+	return cVector3();
+}
+
 cVector3 cVector3::TransformCoord(cVector3 & v, cMatrix & mat)
 {
 	float a = mat[0][0] * v.GetVectorX() + mat[1][0] * v.GetVectorY() + mat[2][0] * v.GetVectorZ() + mat[3][0] * 1;

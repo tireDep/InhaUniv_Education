@@ -171,8 +171,8 @@ cMatrix cMatrix::operator*(cMatrix & mat)
 				{
 					result[k][i] += cCol[k][j] * mat[j][i];
 				}
-				if (result[k][i] < dEpsilon)
-					result[k][i] = 0;	// 값 보정 필요!
+				if (abs(result[k][i]) < dEpsilon)
+					result[k][i] = 0;	// 음수값 주의!
 			}
 		}
 		// << !!
