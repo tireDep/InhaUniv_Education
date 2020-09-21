@@ -167,11 +167,11 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 			HDC memDc;
 			memDc = GetDC(hWnd);
 
-			cVector3 eye(0.0f, 5.0f, 10.0f);
+			cVector3 eye(0.0f, -5.0f, 1.0f);
 			cVector3 lookAt(0.0f, 0.0f, 0.0f);
 			cVector3 up(0, 1, 0); 
 
-			float radian = 90 * (3.14 / 180);
+			float radian = 30 * (3.14 / 180);
 			float aspect = (float)rectView.right / rectView.bottom;
 
 			// // >> world
