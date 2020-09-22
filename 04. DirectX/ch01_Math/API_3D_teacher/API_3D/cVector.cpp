@@ -171,6 +171,21 @@ float cVector3::GetDegree(cVector3 & v1, cVector3 & v2)
 	return degree;
 }
 
+void cVector3::SetVectorY(float set)
+{
+	y = set;
+}
+
+void cVector3::SetVectorZ(float set)
+{
+	z = set;
+}
+
+void cVector3::SetVectorX(float set)
+{
+	x = set;
+}
+
 float cVector3::GetVectorX()
 {
 	return x;

@@ -362,10 +362,10 @@ cMatrix cMatrix::RotationX(float angle)
 {
 	cMatrix resMat = cMatrix::Identity(dArrSize);
 
-	resMat[1][1] = cosf(angle);
-	resMat[1][2] = sinf(angle);
-	resMat[2][1] = -sinf(angle);
-	resMat[2][2] = cosf(angle);
+	resMat[1][1] = cos(angle);
+	resMat[1][2] = sin(angle);
+	resMat[2][1] = -sin(angle);
+	resMat[2][2] = cos(angle);
 
 	return resMat;
 }
@@ -374,10 +374,10 @@ cMatrix cMatrix::RotationY(float angle)
 {
 	cMatrix resMat = cMatrix::Identity(dArrSize);
 
-	resMat[0][0] = cosf(angle);
-	resMat[0][2] = -sinf(angle);
-	resMat[2][0] = sinf(angle);
-	resMat[2][2] = cosf(angle);
+	resMat[0][0] = cos(angle);
+	resMat[0][2] = -sin(angle);
+	resMat[2][0] = sin(angle);
+	resMat[2][2] = cos(angle);
 
 	return resMat;
 }
@@ -386,10 +386,10 @@ cMatrix cMatrix::RotationZ(float angle)
 {
 	cMatrix resMat = cMatrix::Identity(dArrSize);
 
-	resMat[0][0] = cosf(angle);
-	resMat[0][1] = sinf(angle);
-	resMat[1][0] = -sinf(angle);
-	resMat[1][1] = cosf(angle);
+	resMat[0][0] = cos(angle);
+	resMat[0][1] = sin(angle);
+	resMat[1][0] = -sin(angle);
+	resMat[1][1] = cos(angle);
 
 	return resMat;
 }
@@ -413,8 +413,9 @@ cMatrix cMatrix::View(cVector3 & vEye, cVector3 & vLookAt, cVector3 & vUp)
 	*/
 
 	cVector3 look = (vLookAt - vEye).Normalize();
-	cVector3 right =  cVector3::Cross(vUp, look).Normalize();
+	cVector3 right =  cVector3::Cross(look, vUp).Normalize();
 	cVector3 up = cVector3::Cross(look, right).Normalize();
+	// >> 외적 순서 주의! 
 
 	cMatrix resMat = cMatrix::Identity(dArrSize);
 

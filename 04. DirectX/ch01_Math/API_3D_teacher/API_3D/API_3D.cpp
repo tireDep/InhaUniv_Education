@@ -172,6 +172,48 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 
 		break;
 
+	case WM_KEYDOWN:
+	{
+		static float angleY = 0;
+		if (GetAsyncKeyState(0x41) & 0x8000)
+		{
+			angleY += 5;
+			g_pMainGame->SetRotateYDegree(angleY);
+		}
+
+		else if (GetAsyncKeyState(0x44) & 0x8000)
+		{
+			angleY -= 5;
+			g_pMainGame->SetRotateYDegree(angleY);
+		}
+
+		static float angleZ = 0;
+		if (GetAsyncKeyState(0x57) & 0x8000)
+		{
+			angleZ += 5;
+			g_pMainGame->SetRotateZDegree(angleZ);
+		}
+
+		else if (GetAsyncKeyState(0x53) & 0x8000)
+		{
+			angleZ -= 5;
+			g_pMainGame->SetRotateZDegree(angleZ);
+		}
+
+		if (GetAsyncKeyState(VK_UP) & 0x8000 || GetAsyncKeyState(VK_UP) & 0x8001)
+			g_pMainGame->SetMoveZ(1);
+		if (GetAsyncKeyState(VK_DOWN) & 0x8000 || GetAsyncKeyState(VK_DOWN) & 0x8001)
+			g_pMainGame->SetMoveZ(-1);
+		if (GetAsyncKeyState(VK_RIGHT) & 0x8000 || GetAsyncKeyState(VK_RIGHT) & 0x8001)
+			g_pMainGame->SetMoveX(-1);
+		if (GetAsyncKeyState(VK_LEFT) & 0x8000 || GetAsyncKeyState(VK_LEFT) & 0x8001)
+			g_pMainGame->SetMoveX(1);
+
+
+		InvalidateRect(g_hWnd, NULL, false);
+	}
+		break;
+
     case WM_COMMAND:
         {
             int wmId = LOWORD(wParam);

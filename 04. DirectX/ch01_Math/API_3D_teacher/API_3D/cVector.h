@@ -31,6 +31,10 @@ public:
 
 	static float GetDegree(cVector3& v1, cVector3& v2);
 
+	void SetVectorX(float set);
+	void SetVectorY(float set);
+	void SetVectorZ(float set);
+
 	float GetVectorX();
 	float GetVectorY();
 	float GetVectorZ();
