@@ -203,9 +203,18 @@ cVector3 cVector3::TransformCoord(cVector3 & v, cMatrix & mat)
 	float a = mat[0][0] * v.GetVectorX() + mat[1][0] * v.GetVectorY() + mat[2][0] * v.GetVectorZ() + mat[3][0] * 1;
 	float b = mat[0][1] * v.GetVectorX() + mat[1][1] * v.GetVectorY() + mat[2][1] * v.GetVectorZ() + mat[3][1] * 1;
 	float c = mat[0][2] * v.GetVectorX() + mat[1][2] * v.GetVectorY() + mat[2][2] * v.GetVectorZ() + mat[3][2] * 1;
-	float d = mat[0][3] * v.GetVectorX() + mat[1][3] * v.GetVectorY() + mat[2][3] * v.GetVectorZ() + mat[3][3] * 1;
+	float w = mat[0][3] * v.GetVectorX() + mat[1][3] * v.GetVectorY() + mat[2][3] * v.GetVectorZ() + mat[3][3] * 1;
 
-	cVector3 retVec(a / d, b / d, c / d);
+	if (-dEpsilon > w || w > dEpsilon)
+	{
+		// >> 0 x
+		a /= w;
+		b /= w;
+		c /= w;
+		// w /= w; // 실제 사용 x
+	}
+
+	cVector3 retVec(a, b, c);
 
 	return retVec;
 }

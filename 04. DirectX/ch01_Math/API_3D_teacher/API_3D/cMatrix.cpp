@@ -334,6 +334,7 @@ void cMatrix::SetVal(cVector3 v, cMatrix &calcMat, int col)
 // >> ------------------------------------------------------------------------
 cMatrix cMatrix::Translation(float x, float y, float z)
 {
+	// 이동행렬_점
 	cMatrix resMat=cMatrix::Identity(dArrSize);
 
 	resMat[dArrSize - 1][0] = x;
@@ -345,6 +346,7 @@ cMatrix cMatrix::Translation(float x, float y, float z)
 
 cMatrix cMatrix::Translation(cVector3 & v)
 {
+	// 이동행렬_벡터
 	cMatrix resMat = cMatrix::Identity(dArrSize);
 
 	resMat[dArrSize - 1][0] = v.GetVectorX();
@@ -354,14 +356,16 @@ cMatrix cMatrix::Translation(cVector3 & v)
 	return resMat;
 }
 
+// >> 회전을 각 축에 대해서 실행해야 함
+// 합쳐서 계산 x
 cMatrix cMatrix::RotationX(float angle)
 {
 	cMatrix resMat = cMatrix::Identity(dArrSize);
 
-	resMat[1][1] = cos(angle);
-	resMat[1][2] = sin(angle);
-	resMat[2][1] = -sin(angle);
-	resMat[2][2] = cos(angle);
+	resMat[1][1] = cosf(angle);
+	resMat[1][2] = sinf(angle);
+	resMat[2][1] = -sinf(angle);
+	resMat[2][2] = cosf(angle);
 
 	return resMat;
 }
@@ -370,10 +374,10 @@ cMatrix cMatrix::RotationY(float angle)
 {
 	cMatrix resMat = cMatrix::Identity(dArrSize);
 
-	resMat[0][0] = cos(angle);
-	resMat[0][2] = -sin(angle);
-	resMat[2][0] = sin(angle);
-	resMat[2][2] = cos(angle);
+	resMat[0][0] = cosf(angle);
+	resMat[0][2] = -sinf(angle);
+	resMat[2][0] = sinf(angle);
+	resMat[2][2] = cosf(angle);
 
 	return resMat;
 }
@@ -382,10 +386,10 @@ cMatrix cMatrix::RotationZ(float angle)
 {
 	cMatrix resMat = cMatrix::Identity(dArrSize);
 
-	resMat[0][0] = cos(angle);
-	resMat[0][1] = sin(angle);
-	resMat[1][0] = -sin(angle);
-	resMat[1][1] = cos(angle);
+	resMat[0][0] = cosf(angle);
+	resMat[0][1] = sinf(angle);
+	resMat[1][0] = -sinf(angle);
+	resMat[1][1] = cosf(angle);
 
 	return resMat;
 }
@@ -404,28 +408,27 @@ cMatrix cMatrix::View(cVector3 & vEye, cVector3 & vLookAt, cVector3 & vUp)
 	r.x					u.x					l.x					0
 	r.y					u.y					l.y					0
 	r.z					u.z					l.z					0
-	-r dotPro eye		-u dotPro eye		-l dotPro eye		0 
+	-r dotPro eye		-u dotPro eye		-l dotPro eye		1 
 	==> geoMatrix
 	*/
 
-	cVector3 sight = vLookAt - vEye;
-	sight = sight.Normalize();
-
-	cVector3 right =  cVector3::Cross(vUp, sight);
-	right = right.Normalize();
-
-	cVector3 up = cVector3::Cross(sight, right);
-	up = up.Normalize();
+	cVector3 look = (vLookAt - vEye).Normalize();
+	cVector3 right =  cVector3::Cross(vUp, look).Normalize();
+	cVector3 up = cVector3::Cross(look, right).Normalize();
 
 	cMatrix resMat = cMatrix::Identity(dArrSize);
 
 	SetVal(right, resMat, 0);
 	SetVal(up, resMat, 1);
-	SetVal(sight, resMat, 2);
+	SetVal(look, resMat, 2);
+
+	// resMat[0][0] = right.GetVectorX(); resMat[0][1] = up.GetVectorX(); resMat[0][2] = look.GetVectorX();
+	// resMat[1][0] = right.GetVectorY(); resMat[1][1] = up.GetVectorY(); resMat[1][2] = look.GetVectorY();
+	// resMat[2][0] = right.GetVectorZ(); resMat[1][1] = up.GetVectorZ(); resMat[2][2] = look.GetVectorZ();
 
 	resMat[3][0] = -cVector3::Dot(right, vEye);
 	resMat[3][1] = -cVector3::Dot(up, vEye);
-	resMat[3][2] = -cVector3::Dot(sight, vEye);
+	resMat[3][2] = -cVector3::Dot(look, vEye);
 
 	return resMat;
 }

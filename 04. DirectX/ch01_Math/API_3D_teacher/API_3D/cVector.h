@@ -1,5 +1,7 @@
 #pragma once
 
+class cMatrix;
+
 class cVector3
 {
 private:
@@ -28,4 +30,20 @@ public:
 	void PrintValue();
 
 	static float GetDegree(cVector3& v1, cVector3& v2);
+
+	float GetVectorX();
+	float GetVectorY();
+	float GetVectorZ();
+
+	void SetValue(float setX, float setY, float setZ);
+
+	cVector3 GetcVector();
+
+	// >> --------------------------------------------------------
+	static cVector3 TransformCoord(cVector3& v, cMatrix& mat);
+	// 점에 대한 이동
+
+	static cVector3 TransformNormal(cVector3& v, cMatrix& mat);
+	// 벡터에 대한 이동
+	// << --------------------------------------------------------
 };
