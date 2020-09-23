@@ -35,6 +35,8 @@ private:
 	float fBoxRotY;	// y축 회전(박스 회전)
 
 	cVector3 vecBoxDirect;	// 박스 전방방향
+
+	float fScale;
 	// <<
 
 public:
@@ -50,6 +52,7 @@ public:
 	void SetGrid();
 	void DrawGrid();
 
+	void Update_Scale();
 	void Update_Move();
 	void Update_Rotation();
 	// <<

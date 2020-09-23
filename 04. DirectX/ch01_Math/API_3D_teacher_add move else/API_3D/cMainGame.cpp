@@ -4,6 +4,7 @@
 #include "cMatrix.h"
 
 #define dMatSize 4
+#define dEpsilon 0.0001f
 
 cMainGame::cMainGame() 
 	: hBitmap(NULL)
@@ -16,6 +17,7 @@ cMainGame::cMainGame()
 	, vecCamRotAngle(0,0,0)
 	, fBoxRotY(0.0f)
 	, vecBoxDirect(0,0,1)
+	, fScale(1.0f)
 {
 	ptPreveMouse = { 0,0 };
 }
@@ -120,12 +122,16 @@ void cMainGame::SetUp()
 
 void cMainGame::Update()
 {
-	// Update_Scale();
+	Update_Scale();		// S
 	Update_Rotation();	// R
-	Update_Move();	// T
+	Update_Move();		// T
 
 	RECT rc;
 	GetClientRect(g_hWnd, &rc);
+
+	cMatrix matScale = cMatrix::Scale(cVector3(fScale, fScale, fScale));
+	matScale.Print();
+	// >> 크기 변환
 
 	cMatrix matRX = cMatrix::RotationX(vecCamRotAngle.GetVectorX());
 	cMatrix matRY = cMatrix::RotationY(vecCamRotAngle.GetVectorY());
@@ -146,7 +152,7 @@ void cMainGame::Update()
 	vecBoxDirect = cVector3::TransformNormal(vecBoxDirect,matR);
 	// >> 회전 수치
 
-	matWorld = matR * cMatrix::Translation(vecPos); // 회전 * 이동
+	matWorld = matScale * matR * cMatrix::Translation(vecPos); // 회전 * 이동
 
 	matView = cMatrix::View(vecEye, vecLookAt, vecUp);
 	matProj = cMatrix::Projection(M_PI_4, rc.right / (float)rc.bottom, 1.0f, 1000.0f);
@@ -240,9 +246,9 @@ void cMainGame::Render(HDC hdc)
 
 		cVector3 backFaceCulling = cVector3::Cross(minusVec1, minusVec2);
 
-		vecEye.PrintValue();
-		if ((cVector3::GetDegree(vecEye, backFaceCulling) < 90 && vecEye.GetVectorZ() <= 0.0001f)	// z축_음수
-			|| (cVector3::GetDegree(vecEye, backFaceCulling) >= 90 && vecEye.GetVectorZ() >= 0.0001f))	// z축_양수
+		//vecEye.PrintValue();
+		if ((cVector3::GetDegree(vecEye, backFaceCulling) < 90 && vecEye.GetVectorZ() <= dEpsilon)	// z축_음수
+			|| (cVector3::GetDegree(vecEye, backFaceCulling) >= 90 && vecEye.GetVectorZ() >= dEpsilon))	// z축_양수
 			// >> 1안
 
 			// (backFaceCulling.GetVectorZ() < 0) // 깊이
@@ -305,11 +311,11 @@ void cMainGame::WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 			vecCamRotAngle.SetVectorY(vecCamRotAngle.GetVectorY() + fDelatX / 100.0f);	// 마우스는 x 기준, 축은 y
 			vecCamRotAngle.SetVectorX(vecCamRotAngle.GetVectorX() + fDelatY / 100.0f);	// 마우스는 y 기준, 축은 x
 
-			if (vecCamRotAngle.GetVectorX() < -M_PI / 2.0f + 0.0001f)
-				vecCamRotAngle.SetVectorX(-M_PI / 2.0f + 0.0001f);
+			if (vecCamRotAngle.GetVectorX() < -M_PI / 2.0f + dEpsilon)
+				vecCamRotAngle.SetVectorX(-M_PI / 2.0f + dEpsilon);
 
-			if (vecCamRotAngle.GetVectorX() > M_PI / 2.0f - 0.0001f)
-				vecCamRotAngle.SetVectorX(M_PI / 2.0f - 0.0001f);
+			if (vecCamRotAngle.GetVectorX() > M_PI / 2.0f - dEpsilon)
+				vecCamRotAngle.SetVectorX(M_PI / 2.0f - dEpsilon);
 
 			ptPreveMouse = ptCurMouse;
 
@@ -319,8 +325,8 @@ void cMainGame::WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 	case WM_MOUSEWHEEL:
 		fCameraDistance -= (GET_WHEEL_DELTA_WPARAM(wParam) / 30.0f);
 
-		if (fCameraDistance < 0.0001f)
-			fCameraDistance = 0.0001f;
+		if (fCameraDistance < dEpsilon)
+			fCameraDistance = dEpsilon;
 		break;
 
 	default:
@@ -388,6 +394,14 @@ void cMainGame::DrawGrid()
 	v = vecAxisZTextPos;
 	v = cVector3::TransformCoord(v, mat);
 	TextOut(memDc, v.GetVectorX(), v.GetVectorY(), (LPCWSTR)"Z", 1);
+}
+
+void cMainGame::Update_Scale()
+{
+	if (GetKeyState('1') & 0x8000)
+		fScale = fScale + 0.1f >= 10 ? fScale : fScale + 0.1f; // fScale += 0.1f;
+	if (GetKeyState('2') & 0x8000)
+		fScale = fScale - 0.1f <= dEpsilon ? fScale : fScale - 0.1f;// fScale -= 0.1f;
 }
 
 void cMainGame::Update_Move()

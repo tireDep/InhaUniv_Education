@@ -331,6 +331,28 @@ void cMatrix::SetVal(cVector3 v, cMatrix &calcMat, int col)
 	}
 }
 
+cMatrix cMatrix::Scale(float x, float y, float z)
+{
+	cMatrix resMat = cMatrix::Identity(dArrSize);
+
+	resMat[0][0] = x;
+	resMat[1][1] = y;
+	resMat[2][2] = z;
+
+	return resMat;
+}
+
+cMatrix cMatrix::Scale(cVector3 & v)
+{
+	cMatrix resMat = cMatrix::Identity(dArrSize);
+
+	resMat[0][0] = v.GetVectorX();
+	resMat[1][1] = v.GetVectorY();
+	resMat[2][2] = v.GetVectorZ();
+
+	return resMat;
+}
+
 // >> ------------------------------------------------------------------------
 cMatrix cMatrix::Translation(float x, float y, float z)
 {

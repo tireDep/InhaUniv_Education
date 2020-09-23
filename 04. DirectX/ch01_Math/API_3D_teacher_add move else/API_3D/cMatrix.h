@@ -65,6 +65,9 @@ public:
 	static void SetVal(cVector3 v, cMatrix &calcMat, int col);
 
 	// >> ----------------------------------------------------------------
+	static cMatrix Scale(float x, float y, float z);
+	static cMatrix Scale(cVector3& v);
+	// >> Å©±â
 
 	static cMatrix Translation(float x, float y, float z);
 	static cMatrix Translation(cVector3& v);
