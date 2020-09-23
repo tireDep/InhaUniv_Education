@@ -250,12 +250,38 @@ void cMainGame::WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 	switch (message)
 	{
 	case WM_LBUTTONDOWN:
+		ptPreveMouse.x = LOWORD(lParam);
+		ptPreveMouse.y = HIWORD(lParam);
+		
+		isLButtonDown = true;
 		break;
 
 	case WM_LBUTTONUP:
+		isLButtonDown = false;
 		break;
 
 	case WM_MOUSEMOVE:
+		if (isLButtonDown)
+		{
+			POINT ptCurMouse;
+			ptCurMouse.x = LOWORD(lParam);
+			ptCurMouse.y = HIWORD(lParam);
+
+			float fDelatX = (float)ptCurMouse.x - ptPreveMouse.x;
+			float fDelatY = (float)ptCurMouse.y - ptPreveMouse.y;
+
+			vecCamRotAngle.SetVectorY(vecCamRotAngle.GetVectorY() + fDelatX / 100.0f);	// 마우스는 x 기준, 축은 y
+			vecCamRotAngle.SetVectorX(vecCamRotAngle.GetVectorX() + fDelatY / 100.0f);	// 마우스는 y 기준, 축은 x
+
+			if (vecCamRotAngle.GetVectorX() < -M_PI / 2.0f + 0.0001f)
+				vecCamRotAngle.SetVectorX(-M_PI / 2.0f + 0.0001f);
+
+			if (vecCamRotAngle.GetVectorX() > M_PI / 2.0f - 0.0001f)
+				vecCamRotAngle.SetVectorX(M_PI / 2.0f - 0.0001f);
+
+			ptPreveMouse = ptCurMouse;
+
+		}
 		break;
 
 	case WM_MOUSEWHEEL:
