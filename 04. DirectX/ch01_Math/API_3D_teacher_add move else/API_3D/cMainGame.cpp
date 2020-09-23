@@ -234,12 +234,45 @@ void cMainGame::Render(HDC hdc)
 		v2 = cVector3::TransformCoord(v2, matViewPort);
 		v3 = cVector3::TransformCoord(v3, matViewPort);
 
-		MoveToEx(memDc, v1.GetVectorX(), v1.GetVectorY(), NULL);
-		LineTo(memDc, v2.GetVectorX(), v2.GetVectorY());
-		LineTo(memDc, v3.GetVectorX(), v3.GetVectorY());
-		LineTo(memDc, v1.GetVectorX(), v1.GetVectorY());
+		// >> backFaceCulling
+		cVector3 minusVec1 = v2 - v1;
+		cVector3 minusVec2 = v3 - v1;
+
+		cVector3 backFaceCulling = cVector3::Cross(minusVec1, minusVec2);
+
+		vecEye.PrintValue();
+		if ((cVector3::GetDegree(vecEye, backFaceCulling) < 90 && vecEye.GetVectorZ() <= 0.0001f)	// z축_음수
+			|| (cVector3::GetDegree(vecEye, backFaceCulling) >= 90 && vecEye.GetVectorZ() >= 0.0001f))	// z축_양수
+			// >> 1안
+
+			// (backFaceCulling.GetVectorZ() < 0) // 깊이
+			// >> 2안
+		{
+			MoveToEx(memDc, v1.GetVectorX(), v1.GetVectorY(), NULL);
+			LineTo(memDc, v2.GetVectorX(), v2.GetVectorY());
+			LineTo(memDc, v3.GetVectorX(), v3.GetVectorY());
+			LineTo(memDc, v1.GetVectorX(), v1.GetVectorY());
+		}
+		// << backFaceCulling
 	}
 
+	// >> 위치 표시
+	cVector3 v = vecVertex[0];
+	v = cVector3::TransformCoord(v, matWVP * matViewPort);
+	TextOut(memDc, v.GetVectorX(), v.GetVectorY(), (LPCWSTR)"B", 1);
+
+	v = vecVertex[3];
+	v = cVector3::TransformCoord(v, matWVP * matViewPort);
+	TextOut(memDc, v.GetVectorX(), v.GetVectorY(), (LPCWSTR)"B", 1);
+
+	v = vecVertex[5];
+	v = cVector3::TransformCoord(v, matWVP * matViewPort);
+	TextOut(memDc, v.GetVectorX(), v.GetVectorY(), (LPCWSTR)"F", 1);
+
+	v = vecVertex[6];
+	v = cVector3::TransformCoord(v, matWVP * matViewPort);
+	TextOut(memDc, v.GetVectorX(), v.GetVectorY(), (LPCWSTR)"F", 1);
+	// << 위치 표시
 
 	BitBlt(hdc, 0, 0, rc.right, rc.bottom, memDc, 0, 0, SRCCOPY);
 }
