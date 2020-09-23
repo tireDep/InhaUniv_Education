@@ -224,8 +224,6 @@ void cMainGame::Render(HDC hdc)
 
 	DrawGrid();
 
-	matWVP = matWorld * matView * matProj;
-
 	for (size_t i = 0; i < vecIndex.size(); i += 3)
 	{
 		cVector3 v1 = vecVertex[vecIndex[i + 0]];
@@ -236,29 +234,18 @@ void cMainGame::Render(HDC hdc)
 		v2 = cVector3::TransformCoord(v2, matWVP);
 		v3 = cVector3::TransformCoord(v3, matWVP);
 
+		if (IsBackFace(v1, v2, v3))
+			continue; 
+		// >> 그릴 필요가 없는 경우 continue
+
 		v1 = cVector3::TransformCoord(v1, matViewPort);
 		v2 = cVector3::TransformCoord(v2, matViewPort);
 		v3 = cVector3::TransformCoord(v3, matViewPort);
 
-		// >> backFaceCulling
-		cVector3 minusVec1 = v2 - v1;
-		cVector3 minusVec2 = v3 - v1;
-
-		cVector3 backFaceCulling = cVector3::Cross(minusVec1, minusVec2);
-
-		//vecEye.PrintValue();
-		if ((cVector3::GetDegree(vecEye, backFaceCulling) < 90 && vecEye.GetVectorZ() <= dEpsilon)	// z축_음수
-			|| (cVector3::GetDegree(vecEye, backFaceCulling) >= 90 && vecEye.GetVectorZ() >= dEpsilon))	// z축_양수
-			// >> 1안
-
-			// (backFaceCulling.GetVectorZ() < 0) // 깊이
-			// >> 2안
-		{
-			MoveToEx(memDc, v1.GetVectorX(), v1.GetVectorY(), NULL);
-			LineTo(memDc, v2.GetVectorX(), v2.GetVectorY());
-			LineTo(memDc, v3.GetVectorX(), v3.GetVectorY());
-			LineTo(memDc, v1.GetVectorX(), v1.GetVectorY());
-		}
+		MoveToEx(memDc, v1.GetVectorX(), v1.GetVectorY(), NULL);
+		LineTo(memDc, v2.GetVectorX(), v2.GetVectorY());
+		LineTo(memDc, v3.GetVectorX(), v3.GetVectorY());
+		LineTo(memDc, v1.GetVectorX(), v1.GetVectorY());
 		// << backFaceCulling
 	}
 
@@ -418,4 +405,19 @@ void cMainGame::Update_Rotation()
 		fBoxRotY -= 0.1f;
 	if (GetKeyState('D') & 0x8000) // if (GetAsyncKeyState(0x44) & 0x8000)
 		fBoxRotY += 0.1f;
+}
+
+bool cMainGame::IsBackFace(cVector3 & v1, cVector3 & v2, cVector3 & v3)
+{
+	cVector3 v12 = v2 - v1;
+	cVector3 v13 = v3 - v1;
+	// vector 계산
+	
+	cVector3 n = cVector3::Cross(v12, v13);
+	// normal vector
+
+	if (cVector3::Dot(n, cVector3(0, 0, 1)) > 0)	// projection 까지 한 상태, 내가 바라보는 방향
+		return false;
+	else
+		return true;
 }

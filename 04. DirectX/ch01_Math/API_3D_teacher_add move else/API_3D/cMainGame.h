@@ -55,5 +55,7 @@ public:
 	void Update_Scale();
 	void Update_Move();
 	void Update_Rotation();
+
+	bool IsBackFace(cVector3 & v1, cVector3 & v2, cVector3 & v3);
 	// <<
 };
