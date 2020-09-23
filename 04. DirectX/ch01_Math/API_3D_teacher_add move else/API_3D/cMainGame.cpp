@@ -132,8 +132,8 @@ void cMainGame::Update()
 	cMatrix matR = matRX * matRY;
 	// >> x, y 마우스 컨트롤
 
-	// vecEye = cVector3(0.0f, -fCameraDistance, -fCameraDistance);
-	vecEye = cVector3(0.0f, 5.0f, -fCameraDistance);	// 곡선으로 빠짐
+	vecEye = cVector3(0.0f, fCameraDistance, -fCameraDistance);
+	// vecEye = cVector3(0.0f, 5.0f, -fCameraDistance);	// 곡선으로 빠짐
 	vecEye = cVector3::TransformCoord(vecEye, matR);
 	// >> 기본위치 회전
 	
@@ -145,7 +145,6 @@ void cMainGame::Update()
 	vecBoxDirect = cVector3(0, 0, 1);
 	vecBoxDirect = cVector3::TransformNormal(vecBoxDirect,matR);
 	// >> 회전 수치
-	vecBoxDirect.PrintValue();
 
 	matWorld = matR * cMatrix::Translation(vecPos); // 회전 * 이동
 
@@ -285,6 +284,10 @@ void cMainGame::WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 		break;
 
 	case WM_MOUSEWHEEL:
+		fCameraDistance -= (GET_WHEEL_DELTA_WPARAM(wParam) / 30.0f);
+
+		if (fCameraDistance < 0.0001f)
+			fCameraDistance = 0.0001f;
 		break;
 
 	default:
