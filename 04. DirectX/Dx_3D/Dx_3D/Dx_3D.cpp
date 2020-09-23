@@ -4,6 +4,13 @@
 #include "stdafx.h"
 #include "Dx_3D.h"
 
+// >>
+#include "cMainGame.h"
+
+cMainGame * g_pMainGame;
+HWND g_hWnd;
+// <<
+
 #define MAX_LOADSTRING 100
 
 // Global Variables:
@@ -40,17 +47,39 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 
     HACCEL hAccelTable = LoadAccelerators(hInstance, MAKEINTRESOURCE(IDC_DX_3D));
 
+	// >>
+	g_pMainGame = new cMainGame;
+	g_pMainGame->SetUp();
+	//<<
+
     MSG msg;
 
     // Main message loop:
-    while (GetMessage(&msg, nullptr, 0, 0))
+	// >>
+    while(true) // while (GetMessage(&msg, nullptr, 0, 0))
     {
-        if (!TranslateAccelerator(msg.hwnd, hAccelTable, &msg))
-        {
-            TranslateMessage(&msg);
-            DispatchMessage(&msg);
-        }
+		if (PeekMessage(&msg, nullptr, 0, 0, PM_REMOVE))
+		{
+			if (msg.message == WM_QUIT)
+			{
+				break;
+			}
+			else
+			{
+				TranslateMessage(&msg);
+				DispatchMessage(&msg);
+			}
+		}
+		else
+		{
+			g_pMainGame->Update();
+			g_pMainGame->Render();
+		}
     }
+
+	if (g_pMainGame)
+		delete g_pMainGame;
+	// <<
 
     return (int) msg.wParam;
 }
@@ -99,6 +128,8 @@ BOOL InitInstance(HINSTANCE hInstance, int nCmdShow)
 
    HWND hWnd = CreateWindowW(szWindowClass, szTitle, WS_OVERLAPPEDWINDOW,
       CW_USEDEFAULT, 0, CW_USEDEFAULT, 0, nullptr, nullptr, hInstance, nullptr);
+
+   g_hWnd = hWnd;
 
    if (!hWnd)
    {

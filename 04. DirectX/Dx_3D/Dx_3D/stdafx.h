@@ -19,3 +19,13 @@
 
 
 // TODO: reference additional headers your program requires here
+
+// >>
+#include <d3dx9.h>
+#pragma comment(lib, "d3d9.lib")
+#pragma comment(lib, "d3dx9.lib")
+
+extern HWND g_hWnd;
+
+#define Safe_Release(p) { if(p) p->Release(); p = NULL; }
+// <<
