@@ -38,10 +38,24 @@ int main()
 
 	cin >> iPeople >> fMulNum >> fTime;
 
-	long long int fResult = iPeople * pow(fMulNum, fTime);
+	// long long int fResult = iPeople * pow(fMulNum, fTime);
+	// long long int fDivide = pow(10, 9) + 7;
+	
+	long long int fResult = iPeople;
 	long long int fDivide = pow(10, 9) + 7;
+	for (int i = 0; i < fTime; i++)
+	{
+		if (fResult * fMulNum <= 0)
+		{
+			fResult /= fDivide;
+			cout << "testtesttestttest" << endl;
+			cout << i << endl;
+		}
+		fResult *= fMulNum;
+	}
 
-	cout << "result : " << fResult % fDivide << endl;
+	cout << fResult << endl;
+	// cout << "result : " << fResult % fDivide << endl;
 
 	return 0;
 }
