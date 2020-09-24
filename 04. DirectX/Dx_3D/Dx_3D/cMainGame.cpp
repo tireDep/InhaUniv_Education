@@ -2,9 +2,19 @@
 #include "cMainGame.h"
 #include <time.h>
 
-cMainGame::cMainGame()
+cMainGame::cMainGame() :
+	movePos(0, 0, 0),
+	cubeDirect(0, 0, 1),
+	fRotY(0.0f),
+	fCamDistance(5.0f),
+	camPos(0, 0, 5),
+	camAngle(0,0,0)
 {
 	srand((unsigned)time(NULL));
+
+	startPos = { 0,0 };
+	D3DXMatrixIdentity(&matWorld);	// 항등 행렬
+	D3DXMatrixIdentity(&matRot);
 }
 
 cMainGame::~cMainGame()
@@ -17,15 +27,44 @@ void cMainGame::WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 	switch (message)
 	{
 	case WM_LBUTTONDOWN:
+		startPos.x = LOWORD(lParam);
+		startPos.y = HIWORD(lParam);
+
+		isLBtnDown = true;
 		break;
 
 	case WM_LBUTTONUP:
+		isLBtnDown = false;
 		break;
 
 	case WM_MOUSEMOVE:
+		if (isLBtnDown)
+		{
+			POINT ptCurMouse;
+			ptCurMouse.x = LOWORD(lParam);
+			ptCurMouse.y = HIWORD(lParam);
+		
+			float fDelatX = (float)ptCurMouse.x - startPos.x;
+			float fDelatY = (float)ptCurMouse.y - startPos.y;
+
+			camAngle.y = camAngle.y + fDelatX / 100.0f;
+			camAngle.x = camAngle.x + fDelatY / 100.0f;
+
+			if (camAngle.x < -D3DX_PI / 2.0f + 0.0001f)
+				camAngle.x = -D3DX_PI / 2.0f + 0.0001f;
+
+			if (camAngle.x > D3DX_PI / 2.0f - 0.0001f)
+				camAngle.x = D3DX_PI / 2.0f - 0.0001f;
+
+			startPos = ptCurMouse;
+		}
 		break;
 
 	case WM_MOUSEWHEEL:
+		fCamDistance -= (GET_WHEEL_DELTA_WPARAM(wParam) / 30.0f);
+		
+		if (fCamDistance < 0.0001f)
+			fCamDistance = 0.0001f;
 		break;
 
 	default:
@@ -39,6 +78,7 @@ void cMainGame::SetUp()
 	// SetUp_Triangle();
 	SetUp_Grid();
 	SetUp_Cube();
+	SetUp_Gizmo();
 
 	g_pD3DDevice->SetRenderState(D3DRS_LIGHTING, false);
 	// >> 조명 Off
@@ -46,15 +86,24 @@ void cMainGame::SetUp()
 
 void cMainGame::Update()
 {
+	Update_Rotaion();
 	Update_Move();
+}
+
+void cMainGame::Update_Rotaion()
+{
+	if (GetKeyState('A') & 0x8000)
+		fRotY -= 0.1f;
+	if (GetKeyState('D') & 0x8000)
+		fRotY += 0.1f;
 }
 
 void cMainGame::Update_Move()
 {
-	// if (GetAsyncKeyState(0x57) & 0x8000)
-	// 	vecPos = vecPos + (vecBoxDirect * 0.1f);
-	//if (GetAsyncKeyState(0x53) & 0x8000)
-	//	vecPos = vecPos + (vecBoxDirect * -0.1f);
+	if (GetAsyncKeyState(0x57) & 0x8000)
+		movePos = movePos + (cubeDirect * 0.1f);
+	if (GetAsyncKeyState(0x53) & 0x8000)
+		movePos = movePos - (cubeDirect * 0.1f);
 }
 
 void cMainGame::Render()
@@ -62,8 +111,10 @@ void cMainGame::Render()
 	RECT rc;
 	GetClientRect(g_hWnd, &rc);
 
-	D3DXVECTOR3 vEye = D3DXVECTOR3(5.0f, -5.0f, -5.0f);
-	D3DXVECTOR3 vLookAt = D3DXVECTOR3(0, 0, 0);
+	D3DXVECTOR3 vEye = D3DXVECTOR3(0.0f, fCamDistance, -fCamDistance);
+	D3DXVec3TransformCoord(&vEye, &vEye, &matRot);
+
+	D3DXVECTOR3 vLookAt = D3DXVECTOR3(0,0,0);
 	D3DXVECTOR3 vUp = D3DXVECTOR3(0, 1, 0);
 
 	D3DXMATRIXA16 matView;
@@ -83,6 +134,7 @@ void cMainGame::Render()
 	// Draw_Triangle();
 	Draw_Grid();
 	Draw_Cube();
+	Draw_Gizmo();
 
 	g_pD3DDevice->EndScene();
 
@@ -103,7 +155,6 @@ void cMainGame::SetUp_Line()
 
 void cMainGame::Draw_Line()
 {
-	D3DXMATRIXA16 matWorld;
 	D3DXMatrixIdentity(&matWorld);	// 항등 행렬
 
 	g_pD3DDevice->SetTransform(D3DTS_WORLD, &matWorld);
@@ -130,7 +181,6 @@ void cMainGame::SetUp_Triangle()
 
 void cMainGame::Draw_Triangle()
 {
-	D3DXMATRIXA16 matWorld;
 	D3DXMatrixIdentity(&matWorld);	// 항등 행렬
 
 	D3DXVECTOR3 vPosition = D3DXVECTOR3(0, 0, 5);
@@ -148,6 +198,7 @@ void cMainGame::SetUp_Grid()
 
 	int cnt = 0;
 	int nMaxNum = 5;
+	float interval = 1.0f;
 	for (float i = -nMaxNum; i <= nMaxNum; i += 0.5)
 	{
 		if (cnt == 0)
@@ -161,20 +212,26 @@ void cMainGame::SetUp_Grid()
 			cnt--;
 		}
 
-		v.p = D3DXVECTOR3(nMaxNum, i, 0);
+		v.p = D3DXVECTOR3(-nMaxNum * interval, 0, i * interval);
 		m_vecGridVertex.push_back(v);
-		v.p = D3DXVECTOR3(-nMaxNum, i, 0);
+		v.p = D3DXVECTOR3(nMaxNum * interval, 0, i * interval);
 		m_vecGridVertex.push_back(v);
 		// 가로선
 
-		v.p = D3DXVECTOR3(i, nMaxNum, 0);
+		v.p = D3DXVECTOR3(-nMaxNum * interval, 0, -i * interval);
 		m_vecGridVertex.push_back(v);
-		v.p = D3DXVECTOR3(i, -nMaxNum, 0);
+		v.p = D3DXVECTOR3(nMaxNum * interval, 0, -i * interval);
+		m_vecGridVertex.push_back(v);
+		// 세로선
+
+		v.p = D3DXVECTOR3(-i * interval, 0, -nMaxNum * interval);
+		m_vecGridVertex.push_back(v);
+		v.p = D3DXVECTOR3(-i * interval, 0, nMaxNum * interval);
 		m_vecGridVertex.push_back(v);
 		// 세로선
 	}
 
-	v.c = D3DCOLOR_XRGB(0, 0, 255);
+	v.c = D3DCOLOR_XRGB(0, 255, 0);
 	v.p = D3DXVECTOR3(0, nMaxNum, 0);
 	m_vecGridVertex.push_back(v);
 	v.p = D3DXVECTOR3(0, -nMaxNum, 0);
@@ -188,7 +245,7 @@ void cMainGame::SetUp_Grid()
 	m_vecGridVertex.push_back(v);
 	// x축
 
-	v.c = D3DCOLOR_XRGB(0, 255, 0);
+	v.c = D3DCOLOR_XRGB(0, 0, 255);
 	v.p = D3DXVECTOR3(0, 0, nMaxNum);
 	m_vecGridVertex.push_back(v);
 	v.p = D3DXVECTOR3(0, 0, -nMaxNum);
@@ -198,8 +255,17 @@ void cMainGame::SetUp_Grid()
 
 void cMainGame::Draw_Grid()
 {
-	D3DXMATRIXA16 matWorld;
 	D3DXMatrixIdentity(&matWorld);	// 항등 행렬
+
+	D3DXMATRIXA16 matRx;
+	//D3DXMatrixIdentity(&matRx);
+	D3DXMatrixRotationX(&matRx, camAngle.x);
+
+	D3DXMATRIXA16 matRy;
+	D3DXMatrixIdentity(&matRy);
+	D3DXMatrixRotationY(&matRy, camAngle.y);
+
+	matWorld = matRx * matRy;
 
 	g_pD3DDevice->SetTransform(D3DTS_WORLD, &matWorld);
 	g_pD3DDevice->SetFVF(stPC_Vertex::eFVF);
@@ -298,11 +364,181 @@ void cMainGame::SetUp_Cube()
 
 void cMainGame::Draw_Cube()
 {
+	D3DXMATRIXA16 tempMove;
+	D3DXMatrixIdentity(&tempMove);
+	D3DXMatrixTranslation(&tempMove, movePos.x, movePos.y, movePos.z);
+
+	D3DXMatrixIdentity(&matRot);
+	D3DXMatrixRotationY(&matRot, fRotY);
+
+	cubeDirect = { 0, 0, 1 };
+	D3DXVec3TransformNormal(&cubeDirect, &cubeDirect, &matRot);
+
+	D3DXMatrixIdentity(&matWorld);
+	matWorld = matWorld  * matRot * tempMove;
+
+	g_pD3DDevice->SetTransform(D3DTS_WORLD, &matWorld);
+	g_pD3DDevice->SetFVF(stPC_Vertex::eFVF);
+	g_pD3DDevice->DrawPrimitiveUP(D3DPT_TRIANGLELIST, m_vecCube.size() / 3, &m_vecCube[0], sizeof(stPC_Vertex));
+}
+
+void cMainGame::SetUp_Gizmo()
+{
+	stPC_Vertex v;
+	vector<stPC_Vertex> index;
+
+	{
+		// rec1
+		v.c = D3DCOLOR_XRGB(255, 0, 0);
+		v.p = D3DXVECTOR3(1.0f, 0.1f, -0.1f);
+		index.push_back(v);
+
+		v.p = D3DXVECTOR3(1.0f, 0.1f, 0.1f);
+		index.push_back(v);
+
+		v.p = D3DXVECTOR3(1.0f, -0.1f, 0.1f);
+		index.push_back(v);
+		// rec1
+
+		// rec2
+		v.p = D3DXVECTOR3(1.0f, -0.1f, -0.1f);
+		index.push_back(v);
+
+		v.p = D3DXVECTOR3(1.0f, 0.1f, -0.1f);
+		index.push_back(v);
+
+		v.p = D3DXVECTOR3(1.0f, -0.1f, 0.1f);
+		index.push_back(v);
+		// rec2
+
+		// 1
+		v.p = D3DXVECTOR3(0.0f, 0.0f, 0.0f);
+		index.push_back(v);
+
+		v.p = D3DXVECTOR3(1.0f, 0.1f, -0.1f);
+		index.push_back(v);
+
+		v.p = D3DXVECTOR3(1.0f, 0.1f, 0.1f);
+		index.push_back(v);
+		// 1
+
+		// 2
+		v.p = D3DXVECTOR3(0.0f, 0.0f, 0.0f);
+		index.push_back(v);
+
+		v.p = D3DXVECTOR3(1.0f, -0.1f, -0.1f);
+		index.push_back(v);
+
+		v.p = D3DXVECTOR3(1.0f, -0.1f, 0.1f);
+		index.push_back(v);
+		// 2
+
+		// 3
+		v.p = D3DXVECTOR3(0.0f, 0.0f, 0.0f);
+		index.push_back(v);
+
+		v.p = D3DXVECTOR3(1.0f, 0.1f, -0.1f);
+		index.push_back(v);
+
+		v.p = D3DXVECTOR3(1.0f, -0.1f, -0.1f);
+		index.push_back(v);
+		// 3
+
+		// 4
+		v.p = D3DXVECTOR3(0.0f, 0.0f, 0.0f);
+		index.push_back(v);
+
+		v.p = D3DXVECTOR3(1.0f, 0.1f, 0.1f);
+		index.push_back(v);
+
+		v.p = D3DXVECTOR3(1.0f, -0.1f, 0.1f);
+		index.push_back(v);
+		// 4
+	}
+	/*
+	{
+		// rec1
+		v.c = D3DCOLOR_XRGB(0, 255, 0);
+		v.p = D3DXVECTOR3(1.0f, 0.1f, -0.1f);
+		index.push_back(v);
+
+		v.p = D3DXVECTOR3(1.0f, 0.1f, 0.1f);
+		index.push_back(v);
+
+		v.p = D3DXVECTOR3(1.0f, -0.1f, 0.1f);
+		index.push_back(v);
+		// rec1
+
+		// rec2
+		v.p = D3DXVECTOR3(1.0f, -0.1f, -0.1f);
+		index.push_back(v);
+
+		v.p = D3DXVECTOR3(1.0f, 0.1f, -0.1f);
+		index.push_back(v);
+
+		v.p = D3DXVECTOR3(1.0f, -0.1f, 0.1f);
+		index.push_back(v);
+		// rec2
+
+		// 1
+		v.p = D3DXVECTOR3(0.0f, 0.0f, 0.0f);
+		index.push_back(v);
+
+		v.p = D3DXVECTOR3(1.0f, 0.1f, -0.1f);
+		index.push_back(v);
+
+		v.p = D3DXVECTOR3(1.0f, 0.1f, 0.1f);
+		index.push_back(v);
+		// 1
+
+		// 2
+		v.p = D3DXVECTOR3(0.0f, 0.0f, 0.0f);
+		index.push_back(v);
+
+		v.p = D3DXVECTOR3(1.0f, -0.1f, -0.1f);
+		index.push_back(v);
+
+		v.p = D3DXVECTOR3(1.0f, -0.1f, 0.1f);
+		index.push_back(v);
+		// 2
+
+		// 3
+		v.p = D3DXVECTOR3(0.0f, 0.0f, 0.0f);
+		index.push_back(v);
+
+		v.p = D3DXVECTOR3(1.0f, 0.1f, -0.1f);
+		index.push_back(v);
+
+		v.p = D3DXVECTOR3(1.0f, -0.1f, -0.1f);
+		index.push_back(v);
+		// 3
+
+		// 4
+		v.p = D3DXVECTOR3(0.0f, 0.0f, 0.0f);
+		index.push_back(v);
+
+		v.p = D3DXVECTOR3(1.0f, 0.1f, 0.1f);
+		index.push_back(v);
+
+		v.p = D3DXVECTOR3(1.0f, -0.1f, 0.1f);
+		index.push_back(v);
+		// 4
+	}
+	*/
+	for (int i = 0; i < index.size(); i++)
+	{
+		m_vecZGizmo.push_back(index[i]);
+	}
+}
+
+void cMainGame::Draw_Gizmo()
+{
 	D3DXMATRIXA16 matWorld;
 	D3DXMatrixIdentity(&matWorld);	// 항등 행렬
 
+	g_pD3DDevice->SetTransform(D3DTS_WORLD, &matWorld);
 	g_pD3DDevice->SetFVF(stPC_Vertex::eFVF);
-	g_pD3DDevice->DrawPrimitiveUP(D3DPT_TRIANGLELIST, m_vecCube.size() / 3, &m_vecCube[0], sizeof(stPC_Vertex));
+	g_pD3DDevice->DrawPrimitiveUP(D3DPT_TRIANGLELIST, m_vecZGizmo.size() / 3, &m_vecZGizmo[0], sizeof(stPC_Vertex));
 }
 
 void cMainGame::SetColor(vector<stPC_Vertex>& vec, int r, int g, int b)
