@@ -27,5 +27,7 @@
 
 extern HWND g_hWnd;
 
-#define Safe_Release(p) { if(p) p->Release(); p = NULL; }
+#define SafeRelease(p) { if(p) p->Release(); p = NULL; }	// 인터페이스 해제
+
+#define SafeDelete(p)	{ if(p) delete p; } // 실제 삭제
 // <<
