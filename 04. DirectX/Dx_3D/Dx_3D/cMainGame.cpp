@@ -1,9 +1,10 @@
 #include "stdafx.h"
 #include "cMainGame.h"
+#include <time.h>
 
 cMainGame::cMainGame()
 {
-
+	srand((unsigned)time(NULL));
 }
 
 cMainGame::~cMainGame()
@@ -11,10 +12,33 @@ cMainGame::~cMainGame()
 
 }
 
+void cMainGame::WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
+{
+	switch (message)
+	{
+	case WM_LBUTTONDOWN:
+		break;
+
+	case WM_LBUTTONUP:
+		break;
+
+	case WM_MOUSEMOVE:
+		break;
+
+	case WM_MOUSEWHEEL:
+		break;
+
+	default:
+		break;
+	}
+}
+
 void cMainGame::SetUp()
 {
-	SetUp_Line();
-	SetUp_Triangle();
+	// SetUp_Line();
+	// SetUp_Triangle();
+	SetUp_Grid();
+	SetUp_Cube();
 
 	g_pD3DDevice->SetRenderState(D3DRS_LIGHTING, false);
 	// >> 조명 Off
@@ -22,7 +46,15 @@ void cMainGame::SetUp()
 
 void cMainGame::Update()
 {
-	
+	Update_Move();
+}
+
+void cMainGame::Update_Move()
+{
+	// if (GetAsyncKeyState(0x57) & 0x8000)
+	// 	vecPos = vecPos + (vecBoxDirect * 0.1f);
+	//if (GetAsyncKeyState(0x53) & 0x8000)
+	//	vecPos = vecPos + (vecBoxDirect * -0.1f);
 }
 
 void cMainGame::Render()
@@ -30,7 +62,7 @@ void cMainGame::Render()
 	RECT rc;
 	GetClientRect(g_hWnd, &rc);
 
-	D3DXVECTOR3 vEye = D3DXVECTOR3(0, 0, -5.0f);
+	D3DXVECTOR3 vEye = D3DXVECTOR3(5.0f, -5.0f, -5.0f);
 	D3DXVECTOR3 vLookAt = D3DXVECTOR3(0, 0, 0);
 	D3DXVECTOR3 vUp = D3DXVECTOR3(0, 1, 0);
 
@@ -47,8 +79,10 @@ void cMainGame::Render()
 
 	g_pD3DDevice->BeginScene();
 	
-	Draw_Line();
-	Draw_Triangle();
+	// Draw_Line();
+	// Draw_Triangle();
+	Draw_Grid();
+	Draw_Cube();
 
 	g_pD3DDevice->EndScene();
 
@@ -106,4 +140,173 @@ void cMainGame::Draw_Triangle()
 	g_pD3DDevice->SetTransform(D3DTS_WORLD, &matWorld);
 	g_pD3DDevice->SetFVF(stPC_Vertex::eFVF);
 	g_pD3DDevice->DrawPrimitiveUP(D3DPT_TRIANGLELIST, m_verTriangleVertex.size() / 3, &m_verTriangleVertex[0], sizeof(stPC_Vertex));
+}
+
+void cMainGame::SetUp_Grid()
+{
+	stPC_Vertex v;
+
+	int cnt = 0;
+	int nMaxNum = 5;
+	for (float i = -nMaxNum; i <= nMaxNum; i += 0.5)
+	{
+		if (cnt == 0)
+		{
+			v.c = D3DCOLOR_XRGB(255, 255, 255);
+			cnt = 4;
+		}
+		else
+		{
+			v.c = D3DCOLOR_XRGB(200, 200, 200);
+			cnt--;
+		}
+
+		v.p = D3DXVECTOR3(nMaxNum, i, 0);
+		m_vecGridVertex.push_back(v);
+		v.p = D3DXVECTOR3(-nMaxNum, i, 0);
+		m_vecGridVertex.push_back(v);
+		// 가로선
+
+		v.p = D3DXVECTOR3(i, nMaxNum, 0);
+		m_vecGridVertex.push_back(v);
+		v.p = D3DXVECTOR3(i, -nMaxNum, 0);
+		m_vecGridVertex.push_back(v);
+		// 세로선
+	}
+
+	v.c = D3DCOLOR_XRGB(0, 0, 255);
+	v.p = D3DXVECTOR3(0, nMaxNum, 0);
+	m_vecGridVertex.push_back(v);
+	v.p = D3DXVECTOR3(0, -nMaxNum, 0);
+	m_vecGridVertex.push_back(v);
+	// z축
+
+	v.c = D3DCOLOR_XRGB(255, 0, 0);
+	v.p = D3DXVECTOR3(nMaxNum, 0, 0);
+	m_vecGridVertex.push_back(v);
+	v.p = D3DXVECTOR3(-nMaxNum, 0, 0);
+	m_vecGridVertex.push_back(v);
+	// x축
+
+	v.c = D3DCOLOR_XRGB(0, 255, 0);
+	v.p = D3DXVECTOR3(0, 0, nMaxNum);
+	m_vecGridVertex.push_back(v);
+	v.p = D3DXVECTOR3(0, 0, -nMaxNum);
+	m_vecGridVertex.push_back(v);
+	// y축
+}
+
+void cMainGame::Draw_Grid()
+{
+	D3DXMATRIXA16 matWorld;
+	D3DXMatrixIdentity(&matWorld);	// 항등 행렬
+
+	g_pD3DDevice->SetTransform(D3DTS_WORLD, &matWorld);
+	g_pD3DDevice->SetFVF(stPC_Vertex::eFVF);
+	g_pD3DDevice->DrawPrimitiveUP(D3DPT_LINELIST, m_vecGridVertex.size() / 2, &m_vecGridVertex[0], sizeof(stPC_Vertex));
+}
+
+void cMainGame::SetUp_Cube()
+{
+	stPC_Vertex v;
+	vector<stPC_Vertex> index;
+	v.p = D3DXVECTOR3(-0.5f, -0.5f, -0.5f);
+	index.push_back(v);
+
+	v.p = D3DXVECTOR3(-0.5f, 0.5f, -0.5f);
+	index.push_back(v);
+
+	v.p = D3DXVECTOR3(0.5f, 0.5f, -0.5f);
+	index.push_back(v);
+
+	v.p = D3DXVECTOR3(0.5f, -0.5f, -0.5f);
+	index.push_back(v);
+
+	v.p = D3DXVECTOR3(-0.5f, -0.5f, 0.5f);
+	index.push_back(v);
+
+	v.p = D3DXVECTOR3(-0.5f, 0.5f, 0.5f);
+	index.push_back(v);
+
+	v.p = D3DXVECTOR3(0.5f, 0.5f, 0.5f);
+	index.push_back(v);
+
+	v.p = D3DXVECTOR3(0.5f, -0.5f, 0.5f);
+	index.push_back(v);
+
+
+	// front
+	SetColor(index, rand() % 256, rand() % 256, rand() % 256);
+	m_vecCube.push_back(index[0]);
+	m_vecCube.push_back(index[1]);
+	m_vecCube.push_back(index[2]);
+
+	m_vecCube.push_back(index[0]);
+	m_vecCube.push_back(index[2]);
+	m_vecCube.push_back(index[3]);
+
+	// back
+	SetColor(index, rand() % 256, rand() % 256, rand() % 256);
+	m_vecCube.push_back(index[4]);
+	m_vecCube.push_back(index[6]);
+	m_vecCube.push_back(index[5]);
+
+	m_vecCube.push_back(index[4]);
+	m_vecCube.push_back(index[7]);
+	m_vecCube.push_back(index[6]);
+
+	// left
+	SetColor(index, rand() % 256, rand() % 256, rand() % 256);
+	m_vecCube.push_back(index[4]);
+	m_vecCube.push_back(index[5]);
+	m_vecCube.push_back(index[1]);
+
+	m_vecCube.push_back(index[4]);
+	m_vecCube.push_back(index[1]);
+	m_vecCube.push_back(index[0]);
+
+	// right
+	SetColor(index, rand() % 256, rand() % 256, rand() % 256);
+	m_vecCube.push_back(index[3]);
+	m_vecCube.push_back(index[2]);
+	m_vecCube.push_back(index[6]);
+
+	m_vecCube.push_back(index[3]);
+	m_vecCube.push_back(index[6]);
+	m_vecCube.push_back(index[7]);
+
+	// up
+	SetColor(index, rand() % 256, rand() % 256, rand() % 256);
+	m_vecCube.push_back(index[1]);
+	m_vecCube.push_back(index[5]);
+	m_vecCube.push_back(index[6]);
+
+	m_vecCube.push_back(index[1]);
+	m_vecCube.push_back(index[6]);
+	m_vecCube.push_back(index[2]);
+
+	// down
+	SetColor(index, rand() % 256, rand() % 256, rand() % 256);
+	m_vecCube.push_back(index[4]);
+	m_vecCube.push_back(index[0]);
+	m_vecCube.push_back(index[3]);
+
+	m_vecCube.push_back(index[4]);
+	m_vecCube.push_back(index[3]);
+	m_vecCube.push_back(index[7]);
+}
+
+void cMainGame::Draw_Cube()
+{
+	D3DXMATRIXA16 matWorld;
+	D3DXMatrixIdentity(&matWorld);	// 항등 행렬
+
+	g_pD3DDevice->SetFVF(stPC_Vertex::eFVF);
+	g_pD3DDevice->DrawPrimitiveUP(D3DPT_TRIANGLELIST, m_vecCube.size() / 3, &m_vecCube[0], sizeof(stPC_Vertex));
+}
+
+void cMainGame::SetColor(vector<stPC_Vertex>& vec, int r, int g, int b)
+{
+	for (int i = 0; i<vec.size(); i++)
+		vec[i].c = D3DCOLOR_XRGB(r, g, b);
 }
