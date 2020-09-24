@@ -6,10 +6,12 @@
 
 // >>
 #include "cMainGame.h"
+#include "cDeviceManager.h"
 
 cMainGame * g_pMainGame;
 HWND g_hWnd;
 // <<
+
 
 #define MAX_LOADSTRING 100
 
@@ -76,9 +78,9 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 			g_pMainGame->Render();
 		}
     }
+	
+	SafeDelete(g_pMainGame);
 
-	if (g_pMainGame)
-		delete g_pMainGame;
 	// <<
 
     return (int) msg.wParam;
@@ -129,7 +131,9 @@ BOOL InitInstance(HINSTANCE hInstance, int nCmdShow)
    HWND hWnd = CreateWindowW(szWindowClass, szTitle, WS_OVERLAPPEDWINDOW,
       CW_USEDEFAULT, 0, CW_USEDEFAULT, 0, nullptr, nullptr, hInstance, nullptr);
 
+   // >>
    g_hWnd = hWnd;
+   // <<
 
    if (!hWnd)
    {
@@ -154,6 +158,12 @@ BOOL InitInstance(HINSTANCE hInstance, int nCmdShow)
 //
 LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 {
+	// >>
+	if (g_pMainGame)
+	{
+		g_pMainGame->WndProc(hWnd, message, wParam, lParam);
+	}
+	// <<
     switch (message)
     {
     case WM_COMMAND:

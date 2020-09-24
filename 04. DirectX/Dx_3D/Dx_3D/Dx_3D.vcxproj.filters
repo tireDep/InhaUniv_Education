@@ -33,6 +33,9 @@
     <ClInclude Include="Dx_3D.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="cDeviceManager.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -42,6 +45,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="cMainGame.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="cDeviceManager.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
