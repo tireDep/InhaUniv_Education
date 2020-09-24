@@ -14,6 +14,7 @@ cMainGame::~cMainGame()
 void cMainGame::SetUp()
 {
 	SetUp_Line();
+	SetUp_Triangle();
 
 	g_pD3DDevice->SetRenderState(D3DRS_LIGHTING, false);
 	// >> 조명 Off
@@ -47,6 +48,7 @@ void cMainGame::Render()
 	g_pD3DDevice->BeginScene();
 	
 	Draw_Line();
+	Draw_Triangle();
 
 	g_pD3DDevice->EndScene();
 
@@ -75,4 +77,33 @@ void cMainGame::Draw_Line()
 	g_pD3DDevice->DrawPrimitiveUP(D3DPT_LINELIST, m_vecLineVertex.size() / 2, &m_vecLineVertex[0], sizeof(stPC_Vertex));
 	// m_vecLineVertex.size() / 2 : 점 2개니까 선 하나 그림
 	// !! 찾아보기 !!
+}
+
+void cMainGame::SetUp_Triangle()
+{
+	stPC_Vertex v;
+	// v.c = D3DCOLOR_XRGB(rand() % 256, rand() % 256, rand() % 256);
+	v.c = D3DCOLOR_XRGB(255, 255, 255);
+	v.p = D3DXVECTOR3(-1.0f, -1.0f, 0.0f);
+	m_verTriangleVertex.push_back(v);
+
+	v.p = D3DXVECTOR3(-1.0f, 1.0f, 0.0f);
+	m_verTriangleVertex.push_back(v);
+
+	v.p = D3DXVECTOR3(1.0f, 1.0f, 0.0f);
+	m_verTriangleVertex.push_back(v);
+}
+
+void cMainGame::Draw_Triangle()
+{
+	D3DXMATRIXA16 matWorld;
+	D3DXMatrixIdentity(&matWorld);	// 항등 행렬
+
+	D3DXVECTOR3 vPosition = D3DXVECTOR3(0, 0, 5);
+	D3DXMatrixTranslation(&matWorld, vPosition.x, vPosition.y, vPosition.z);
+	// 삼각형 월드 좌표 이동
+
+	g_pD3DDevice->SetTransform(D3DTS_WORLD, &matWorld);
+	g_pD3DDevice->SetFVF(stPC_Vertex::eFVF);
+	g_pD3DDevice->DrawPrimitiveUP(D3DPT_TRIANGLELIST, m_verTriangleVertex.size() / 3, &m_verTriangleVertex[0], sizeof(stPC_Vertex));
 }

@@ -55,7 +55,7 @@ extern HWND g_hWnd;
 struct stPC_Vertex	// point, color
 {
 	D3DXVECTOR3 p;
-	D3DXCOLOR c;
+	D3DCOLOR c;
 
 	enum { eFVF = D3DFVF_XYZ | D3DFVF_DIFFUSE };	// 색 표현 정의
 };

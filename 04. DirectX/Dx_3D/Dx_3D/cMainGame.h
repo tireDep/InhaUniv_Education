@@ -5,6 +5,7 @@ class cMainGame
 {
 private:
 	vector<stPC_Vertex> m_vecLineVertex;
+	vector<stPC_Vertex> m_verTriangleVertex;
 
 public:
 	cMainGame();
@@ -16,4 +17,7 @@ public:
 
 	void SetUp_Line();
 	void Draw_Line();
+
+	void SetUp_Triangle();
+	void Draw_Triangle();
 };
