@@ -29,6 +29,8 @@ private:
 
 	D3DXVECTOR3 camAngle;
 
+	float fScale;
+
 public:
 	cMainGame();
 	~cMainGame();
@@ -38,6 +40,7 @@ public:
 	void SetUp();
 	void Update();
 
+	void Update_Scale();
 	void Update_Rotaion();
 	void Update_Move();
 

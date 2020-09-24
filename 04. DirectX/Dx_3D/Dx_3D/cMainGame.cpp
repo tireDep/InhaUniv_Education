@@ -8,7 +8,8 @@ cMainGame::cMainGame() :
 	fRotY(0.0f),
 	fCamDistance(5.0f),
 	camPos(0, 0, 5),
-	camAngle(0,0,0)
+	camAngle(0,0,0),
+	fScale(0.5f)
 {
 	srand((unsigned)time(NULL));
 
@@ -86,8 +87,23 @@ void cMainGame::SetUp()
 
 void cMainGame::Update()
 {
+	Update_Scale();
 	Update_Rotaion();
 	Update_Move();
+
+	cubeDirect = { 0, 0, 1 };
+	D3DXVec3TransformNormal(&cubeDirect, &cubeDirect, &matRot);
+
+	D3DXMatrixIdentity(&matRot);
+	D3DXMatrixRotationY(&matRot, fRotY);
+}
+
+void cMainGame::Update_Scale()
+{
+	if (GetKeyState('1') & 0x8000)
+		fScale = (fScale + 0.1f) > 10.0f ? fScale : fScale + 0.1f;
+	if (GetKeyState('2') & 0x8000)
+		fScale = (fScale - 0.1f - 0.0001f) < 0.5f ? 0.5f : fScale - 0.1f;
 }
 
 void cMainGame::Update_Rotaion()
@@ -111,10 +127,20 @@ void cMainGame::Render()
 	RECT rc;
 	GetClientRect(g_hWnd, &rc);
 
-	D3DXVECTOR3 vEye = D3DXVECTOR3(0.0f, fCamDistance, -fCamDistance);
-	D3DXVec3TransformCoord(&vEye, &vEye, &matRot);
+	D3DXMATRIXA16 matRx;
+	D3DXMatrixRotationX(&matRx, camAngle.x);
 
-	D3DXVECTOR3 vLookAt = D3DXVECTOR3(0,0,0);
+	D3DXMATRIXA16 matRy;
+	D3DXMatrixIdentity(&matRy);
+	D3DXMatrixRotationY(&matRy, camAngle.y);
+
+	D3DXVECTOR3 vEye = D3DXVECTOR3(0.0f, fCamDistance, -fCamDistance);
+	D3DXVec3TransformCoord(&vEye, &vEye, &(matRx * matRy));
+
+	// D3DXVECTOR3 vLookAt = D3DXVECTOR3(0,0,0);
+	D3DXVECTOR3 vLookAt = movePos;
+	vEye = vEye + movePos;
+
 	D3DXVECTOR3 vUp = D3DXVECTOR3(0, 1, 0);
 
 	D3DXMATRIXA16 matView;
@@ -197,9 +223,9 @@ void cMainGame::SetUp_Grid()
 	stPC_Vertex v;
 
 	int cnt = 0;
-	int nMaxNum = 5;
+	float nMaxNum = 7.5;
 	float interval = 1.0f;
-	for (float i = -nMaxNum; i <= nMaxNum; i += 0.5)
+	for (float i = -nMaxNum; i  <= nMaxNum; i += 0.5)
 	{
 		if (cnt == 0)
 		{
@@ -256,16 +282,6 @@ void cMainGame::SetUp_Grid()
 void cMainGame::Draw_Grid()
 {
 	D3DXMatrixIdentity(&matWorld);	// 항등 행렬
-
-	D3DXMATRIXA16 matRx;
-	//D3DXMatrixIdentity(&matRx);
-	D3DXMatrixRotationX(&matRx, camAngle.x);
-
-	D3DXMATRIXA16 matRy;
-	D3DXMatrixIdentity(&matRy);
-	D3DXMatrixRotationY(&matRy, camAngle.y);
-
-	matWorld = matRx * matRy;
 
 	g_pD3DDevice->SetTransform(D3DTS_WORLD, &matWorld);
 	g_pD3DDevice->SetFVF(stPC_Vertex::eFVF);
@@ -363,19 +379,16 @@ void cMainGame::SetUp_Cube()
 }
 
 void cMainGame::Draw_Cube()
-{
+{	
+	D3DXMATRIXA16 tempScale;
+	D3DXMatrixIdentity(&tempScale);
+	D3DXMatrixScaling(&tempScale, fScale, fScale, fScale);
+
 	D3DXMATRIXA16 tempMove;
 	D3DXMatrixIdentity(&tempMove);
 	D3DXMatrixTranslation(&tempMove, movePos.x, movePos.y, movePos.z);
 
-	D3DXMatrixIdentity(&matRot);
-	D3DXMatrixRotationY(&matRot, fRotY);
-
-	cubeDirect = { 0, 0, 1 };
-	D3DXVec3TransformNormal(&cubeDirect, &cubeDirect, &matRot);
-
-	D3DXMatrixIdentity(&matWorld);
-	matWorld = matWorld  * matRot * tempMove;
+	matWorld = tempScale * matRot * tempMove;
 
 	g_pD3DDevice->SetTransform(D3DTS_WORLD, &matWorld);
 	g_pD3DDevice->SetFVF(stPC_Vertex::eFVF);
