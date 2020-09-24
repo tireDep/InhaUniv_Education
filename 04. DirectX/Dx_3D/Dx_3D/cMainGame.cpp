@@ -62,10 +62,10 @@ void cMainGame::WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 		break;
 
 	case WM_MOUSEWHEEL:
-		fCamDistance -= (GET_WHEEL_DELTA_WPARAM(wParam) / 30.0f);
+		fCamDistance -= (GET_WHEEL_DELTA_WPARAM(wParam) / 100.0f);
 		
 		if (fCamDistance < 0.0001f)
-			fCamDistance = 0.0001f;
+			fCamDistance = 1.0f;
 		break;
 
 	default:
@@ -137,9 +137,11 @@ void cMainGame::Render()
 	D3DXVECTOR3 vEye = D3DXVECTOR3(0.0f, fCamDistance, -fCamDistance);
 	D3DXVec3TransformCoord(&vEye, &vEye, &(matRx * matRy));
 
-	// D3DXVECTOR3 vLookAt = D3DXVECTOR3(0,0,0);
 	D3DXVECTOR3 vLookAt = movePos;
 	vEye = vEye + movePos;
+	// todo : 뒤에 고정 따라가는 카메라 구현 ?
+	// D3DXVECTOR3 vLookAt = movePos + (cubeDirect * -1);
+	// vEye = vEye + movePos + (cubeDirect * -1);
 
 	D3DXVECTOR3 vUp = D3DXVECTOR3(0, 1, 0);
 
@@ -151,6 +153,11 @@ void cMainGame::Render()
 	D3DXMatrixPerspectiveFovLH(&matProj, D3DX_PI / 4.0f, rc.right / (float)rc.bottom, 1.0f, 1000.0f);
 	g_pD3DDevice->SetTransform(D3DTS_PROJECTION, &matProj);
 
+	// todo : BackFaceCulling ?
+	g_pD3DDevice->SetRenderState(D3DRS_CULLMODE, D3DCULL_CCW);
+	g_pD3DDevice->SetRenderState(D3DRS_CLIPPING, TRUE);
+	// todo : BackFaceCulling ?
+
 	g_pD3DDevice->Clear(NULL, NULL, D3DCLEAR_TARGET | D3DCLEAR_ZBUFFER, D3DCOLOR_XRGB(150, 150, 150), 1.0f, 0);
 	// 화면 삭제 및 그리기
 
@@ -159,8 +166,8 @@ void cMainGame::Render()
 	// Draw_Line();
 	// Draw_Triangle();
 	Draw_Grid();
-	Draw_Cube();
 	Draw_Gizmo();
+	Draw_Cube();
 
 	g_pD3DDevice->EndScene();
 
@@ -400,59 +407,60 @@ void cMainGame::SetUp_Gizmo()
 	stPC_Vertex v;
 	vector<stPC_Vertex> index;
 
+	// x Gizmo
 	{
 		// rec1
 		v.c = D3DCOLOR_XRGB(255, 0, 0);
 		v.p = D3DXVECTOR3(1.0f, 0.1f, -0.1f);
 		index.push_back(v);
-
+		
 		v.p = D3DXVECTOR3(1.0f, 0.1f, 0.1f);
 		index.push_back(v);
-
+		
 		v.p = D3DXVECTOR3(1.0f, -0.1f, 0.1f);
 		index.push_back(v);
 		// rec1
-
+		
 		// rec2
 		v.p = D3DXVECTOR3(1.0f, -0.1f, -0.1f);
 		index.push_back(v);
-
+		
 		v.p = D3DXVECTOR3(1.0f, 0.1f, -0.1f);
 		index.push_back(v);
-
+		
 		v.p = D3DXVECTOR3(1.0f, -0.1f, 0.1f);
 		index.push_back(v);
 		// rec2
-
+		
 		// 1
 		v.p = D3DXVECTOR3(0.0f, 0.0f, 0.0f);
 		index.push_back(v);
-
+		
 		v.p = D3DXVECTOR3(1.0f, 0.1f, -0.1f);
 		index.push_back(v);
-
+		
 		v.p = D3DXVECTOR3(1.0f, 0.1f, 0.1f);
 		index.push_back(v);
 		// 1
-
+		
 		// 2
 		v.p = D3DXVECTOR3(0.0f, 0.0f, 0.0f);
 		index.push_back(v);
-
+		
 		v.p = D3DXVECTOR3(1.0f, -0.1f, -0.1f);
 		index.push_back(v);
-
+		
 		v.p = D3DXVECTOR3(1.0f, -0.1f, 0.1f);
 		index.push_back(v);
 		// 2
-
+		
 		// 3
 		v.p = D3DXVECTOR3(0.0f, 0.0f, 0.0f);
 		index.push_back(v);
-
+		
 		v.p = D3DXVECTOR3(1.0f, 0.1f, -0.1f);
 		index.push_back(v);
-
+		
 		v.p = D3DXVECTOR3(1.0f, -0.1f, -0.1f);
 		index.push_back(v);
 		// 3
@@ -460,84 +468,41 @@ void cMainGame::SetUp_Gizmo()
 		// 4
 		v.p = D3DXVECTOR3(0.0f, 0.0f, 0.0f);
 		index.push_back(v);
-
+		
 		v.p = D3DXVECTOR3(1.0f, 0.1f, 0.1f);
 		index.push_back(v);
-
+		
 		v.p = D3DXVECTOR3(1.0f, -0.1f, 0.1f);
 		index.push_back(v);
 		// 4
 	}
-	/*
+
+	float radian = 90 * (float)(D3DX_PI / 180);
+	int cnt = index.size();
+	// z축 회전 -> y Gizmo
+	for (int i = 0; i < cnt; i++)
 	{
-		// rec1
-		v.c = D3DCOLOR_XRGB(0, 255, 0);
-		v.p = D3DXVECTOR3(1.0f, 0.1f, -0.1f);
-		index.push_back(v);
-
-		v.p = D3DXVECTOR3(1.0f, 0.1f, 0.1f);
-		index.push_back(v);
-
-		v.p = D3DXVECTOR3(1.0f, -0.1f, 0.1f);
-		index.push_back(v);
-		// rec1
-
-		// rec2
-		v.p = D3DXVECTOR3(1.0f, -0.1f, -0.1f);
-		index.push_back(v);
-
-		v.p = D3DXVECTOR3(1.0f, 0.1f, -0.1f);
-		index.push_back(v);
-
-		v.p = D3DXVECTOR3(1.0f, -0.1f, 0.1f);
-		index.push_back(v);
-		// rec2
-
-		// 1
-		v.p = D3DXVECTOR3(0.0f, 0.0f, 0.0f);
-		index.push_back(v);
-
-		v.p = D3DXVECTOR3(1.0f, 0.1f, -0.1f);
-		index.push_back(v);
-
-		v.p = D3DXVECTOR3(1.0f, 0.1f, 0.1f);
-		index.push_back(v);
-		// 1
-
-		// 2
-		v.p = D3DXVECTOR3(0.0f, 0.0f, 0.0f);
-		index.push_back(v);
-
-		v.p = D3DXVECTOR3(1.0f, -0.1f, -0.1f);
-		index.push_back(v);
-
-		v.p = D3DXVECTOR3(1.0f, -0.1f, 0.1f);
-		index.push_back(v);
-		// 2
-
-		// 3
-		v.p = D3DXVECTOR3(0.0f, 0.0f, 0.0f);
-		index.push_back(v);
-
-		v.p = D3DXVECTOR3(1.0f, 0.1f, -0.1f);
-		index.push_back(v);
-
-		v.p = D3DXVECTOR3(1.0f, -0.1f, -0.1f);
-		index.push_back(v);
-		// 3
-
-		// 4
-		v.p = D3DXVECTOR3(0.0f, 0.0f, 0.0f);
-		index.push_back(v);
-
-		v.p = D3DXVECTOR3(1.0f, 0.1f, 0.1f);
-		index.push_back(v);
-
-		v.p = D3DXVECTOR3(1.0f, -0.1f, 0.1f);
-		index.push_back(v);
-		// 4
+		stPC_Vertex temp;
+		temp.c = D3DCOLOR_XRGB(0, 255, 0);
+		temp.p.x = cos(radian) * index[i].p.x - sin(radian) * index[i].p.y;
+		temp.p.y = sin(radian) * index[i].p.x + cos(radian) * index[i].p.z;
+		temp.p.z = index[i].p.z;
+		
+		index.push_back(temp);
 	}
-	*/
+
+	// y축 회전 -> z Gizmo
+	for (int i = 0; i < cnt; i++)
+	{
+		stPC_Vertex temp;
+		temp.c = D3DCOLOR_XRGB(0, 0, 255);
+		temp.p.x = sin(radian) * index[i].p.z + cos(radian) * index[i].p.x;
+		temp.p.y = index[i].p.y;
+		temp.p.z = cos(radian) * index[i].p.z - sin(radian) * index[i].p.x;
+
+		index.push_back(temp);
+	}
+
 	for (int i = 0; i < index.size(); i++)
 	{
 		m_vecZGizmo.push_back(index[i]);
@@ -546,10 +511,10 @@ void cMainGame::SetUp_Gizmo()
 
 void cMainGame::Draw_Gizmo()
 {
-	D3DXMATRIXA16 matWorld;
-	D3DXMatrixIdentity(&matWorld);	// 항등 행렬
+	// D3DXMATRIXA16 matWorld;
+	// D3DXMatrixIdentity(&matWorld);	// 항등 행렬
 
-	g_pD3DDevice->SetTransform(D3DTS_WORLD, &matWorld);
+	// g_pD3DDevice->SetTransform(D3DTS_WORLD, &matWorld);
 	g_pD3DDevice->SetFVF(stPC_Vertex::eFVF);
 	g_pD3DDevice->DrawPrimitiveUP(D3DPT_TRIANGLELIST, m_vecZGizmo.size() / 3, &m_vecZGizmo[0], sizeof(stPC_Vertex));
 }
