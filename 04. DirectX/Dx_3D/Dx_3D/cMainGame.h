@@ -4,6 +4,7 @@
 class cMainGame
 {
 private:
+	vector<stPC_Vertex> m_vecLineVertex;
 
 public:
 	cMainGame();
@@ -13,4 +14,6 @@ public:
 	void Update();
 	void Render();
 
+	void SetUp_Line();
+	void Draw_Line();
 };
