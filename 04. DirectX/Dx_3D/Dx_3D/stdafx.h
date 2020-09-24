@@ -30,4 +30,20 @@ extern HWND g_hWnd;
 #define SafeRelease(p) { if(p) p->Release(); p = NULL; }	// 인터페이스 해제
 
 #define SafeDelete(p)	{ if(p) delete p; } // 실제 삭제
+
+// >>
+#define SingleTone(class_name)\
+	private :\
+		class_name(void);\
+		~class_name(void);\
+	public:\
+		static class_name* GetInstance()\
+		{\
+			static class_name instance;\
+			return &instance;\
+		}
+// 자동으로 싱글턴 생성하는 매크로 
+
+#include "cDeviceManager.h"
+
 // <<

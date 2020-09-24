@@ -6,6 +6,7 @@
 
 // >>
 #include "cMainGame.h"
+#include "cDeviceManager.h"
 
 cMainGame * g_pMainGame;
 HWND g_hWnd;
