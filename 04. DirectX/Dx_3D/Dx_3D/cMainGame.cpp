@@ -8,13 +8,11 @@ cMainGame::cMainGame()
 
 cMainGame::~cMainGame()
 {
-
+	g_pDeviceManager->Destroy();
 }
 
 void cMainGame::SetUp()
 {
-	SetUp_Line();
-	SetUp_Triangle();
 
 	g_pD3DDevice->SetRenderState(D3DRS_LIGHTING, false);
 	// >> Α¶Έν Off
@@ -47,8 +45,8 @@ void cMainGame::Render()
 
 	g_pD3DDevice->BeginScene();
 	
-	Draw_Line();
-	Draw_Triangle();
+	// Draw_Line();
+	// Draw_Triangle();
 
 	g_pD3DDevice->EndScene();
 
