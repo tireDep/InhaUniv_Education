@@ -300,6 +300,8 @@ void cMainGame::SetUp_Cube()
 	stPC_Vertex v;
 	float wSize = 0.1f;
 	float hSize = 0.15f;
+
+	float yLength = 0.0f;
 	vector<stPC_Vertex> index;
 
 	// >> leg1
@@ -330,37 +332,97 @@ void cMainGame::SetUp_Cube()
 		index.push_back(v);
 	}
 	AddCharacterPoly(index);
-	index.clear();
-
+	
 	// >> leg2
+	D3DXMATRIXA16 matTrans;
+	for (int i = 0; i < index.size(); i++)
 	{
-		v.p = D3DXVECTOR3(-wSize, 0, -hSize);
-		index.push_back(v);
+		D3DXMatrixIdentity(&matTrans);
 
-		v.p = D3DXVECTOR3(-wSize, 0.5f, -hSize);
-		index.push_back(v);
+		float z;
+		if (i < index.size() * 0.5f)
+			z = -hSize;
+		else
+			z = 0;
 
-		v.p = D3DXVECTOR3(wSize, 0.5f, -hSize);
-		index.push_back(v);
-
-		v.p = D3DXVECTOR3(wSize, 0, -hSize);
-		index.push_back(v);
-
-		v.p = D3DXVECTOR3(-wSize, 0, 0);
-		index.push_back(v);
-
-		v.p = D3DXVECTOR3(-wSize, 0.5f, 0);
-		index.push_back(v);
-
-		v.p = D3DXVECTOR3(wSize, 0.5f, 0);
-		index.push_back(v);
-
-		v.p = D3DXVECTOR3(wSize, 0, 0);
-		index.push_back(v);
+		D3DXMatrixTranslation(&matTrans, index[i].p.x, index[i].p.y, z);
+		D3DXVECTOR3 temp = D3DXVECTOR3(0, 0, 0);
+		D3DXVec3TransformCoord(&index[i].p, &temp, &matTrans);
 	}
 	AddCharacterPoly(index);
-	index.clear();
 
+	// todo : body
+
+	// >> arm1
+	yLength += 0.5f;
+	for (int i = 0; i < index.size(); i++)
+	{
+		D3DXMatrixIdentity(&matTrans);
+
+		D3DXMatrixTranslation(&matTrans, index[i].p.x, index[i].p.y + yLength, index[i].p.z - hSize);
+
+		D3DXVECTOR3 temp = D3DXVECTOR3(0, 0, 0);
+		D3DXVec3TransformCoord(&index[i].p, &temp, &matTrans);
+	}
+	AddCharacterPoly(index);
+
+	// >> arm2
+	for (int i = 0; i < index.size(); i++)
+	{
+		D3DXMatrixIdentity(&matTrans);
+		D3DXMatrixTranslation(&matTrans, index[i].p.x, index[i].p.y, index[i].p.z + hSize * 3);
+
+		D3DXVECTOR3 temp = D3DXVECTOR3(0, 0, 0);
+		D3DXVec3TransformCoord(&index[i].p, &temp, &matTrans);
+	}
+	AddCharacterPoly(index);
+	/*
+	// >> head
+	yLength = 0.5f;
+	D3DXMATRIXA16 matScale;
+	D3DXMATRIXA16 matLWorld;
+	int checkX = 0;
+	for (int i = 0; i < index.size(); i++)
+	{
+		D3DXMatrixIdentity(&matLWorld);
+
+		float z;
+		if (i < index.size()*0.5)
+			z = -hSize;
+		else
+			z = hSize;
+
+		float x;
+		if (checkX < 2)
+		{
+			x = -wSize;
+			checkX++;
+		}
+		else if (checkX < 4)
+		{
+			x = wSize;
+			checkX++;
+		}
+		
+		if(checkX == 4)
+			checkX = 0; 
+
+
+		D3DXMatrixIdentity(&matScale);
+		D3DXMatrixScaling(&matScale, x, 0.5, z + z);
+
+		D3DXMatrixIdentity(&matTrans);
+		D3DXMatrixTranslation(&matTrans, x, 1.0f, z);
+		
+		matLWorld = matScale * matTrans;
+
+		D3DXVec3TransformCoord(&index[i].p, &index[i].p, &matLWorld);
+	}
+	AddCharacterPoly(index);
+
+	*/
+	
+	index.clear();
 	// >> body
 	{
 		v.p = D3DXVECTOR3(-wSize, 0.5f, -hSize);
@@ -390,63 +452,6 @@ void cMainGame::SetUp_Cube()
 	AddCharacterPoly(index);
 	index.clear();
 
-	// >> arm1
-	{
-		v.p = D3DXVECTOR3(-wSize, 0.5f, -hSize - hSize);
-		index.push_back(v);
-
-		v.p = D3DXVECTOR3(-wSize, 1.0f, -hSize - hSize);
-		index.push_back(v);
-
-		v.p = D3DXVECTOR3(wSize, 1.0f, -hSize - hSize);
-		index.push_back(v);
-
-		v.p = D3DXVECTOR3(wSize, 0.5f, -hSize - hSize);
-		index.push_back(v);
-
-		v.p = D3DXVECTOR3(-wSize, 0.5f, -hSize);
-		index.push_back(v);
-
-		v.p = D3DXVECTOR3(-wSize, 1.0f, -hSize);
-		index.push_back(v);
-
-		v.p = D3DXVECTOR3(wSize, 1.0f, -hSize);
-		index.push_back(v);
-
-		v.p = D3DXVECTOR3(wSize, 0.5f, -hSize);
-		index.push_back(v);
-	}
-	AddCharacterPoly(index);
-	index.clear();
-
-	// >> arm2
-	{
-		v.p = D3DXVECTOR3(-wSize, 0.5f, hSize);
-		index.push_back(v);
-
-		v.p = D3DXVECTOR3(-wSize, 1.0f, hSize);
-		index.push_back(v);
-
-		v.p = D3DXVECTOR3(wSize, 1.0f, hSize);
-		index.push_back(v);
-
-		v.p = D3DXVECTOR3(wSize, 0.5f, hSize);
-		index.push_back(v);
-
-		v.p = D3DXVECTOR3(-wSize, 0.5f, hSize + hSize);
-		index.push_back(v);
-
-		v.p = D3DXVECTOR3(-wSize, 1.0f, hSize + hSize);
-		index.push_back(v);
-
-		v.p = D3DXVECTOR3(wSize, 1.0f, hSize + hSize);
-		index.push_back(v);
-
-		v.p = D3DXVECTOR3(wSize, 0.5f, hSize + hSize);
-		index.push_back(v);
-	}
-	AddCharacterPoly(index);
-	index.clear();
 
 	// >> head
 	{
