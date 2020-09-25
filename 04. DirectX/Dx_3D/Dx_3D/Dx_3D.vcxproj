@@ -160,6 +160,8 @@
     <ClCompile Include="cCamera.cpp" />
     <ClCompile Include="cCubePC.cpp" />
     <ClCompile Include="cDeviceManager.cpp" />
+    <ClCompile Include="cGizmo.cpp" />
+    <ClCompile Include="cGrid.cpp" />
     <ClCompile Include="cMainGame.cpp" />
     <ClCompile Include="Dx_3D.cpp" />
     <ClCompile Include="stdafx.cpp">

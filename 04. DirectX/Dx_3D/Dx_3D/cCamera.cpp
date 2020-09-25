@@ -40,7 +40,7 @@ void cCamera::Update()
 	matR = matRX * matRY;
 	// È¸Àü
 
-	m_vEye = D3DXVECTOR3(0, 0, -m_fCameraDistance);
+	m_vEye = D3DXVECTOR3(0, m_fCameraDistance, -m_fCameraDistance);
 	D3DXVec3TransformCoord(&m_vEye, &m_vEye, &matR);
 
 	if (m_pvTarget)
@@ -87,7 +87,7 @@ void cCamera::WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 			if (m_vCamRotAngle.x < -D3DX_PI / 2.0f + 0.0001f)
 				m_vCamRotAngle.x = -D3DX_PI / 2.0f + 0.0001f;
 
-			if (m_vCamRotAngle.x > -D3DX_PI / 2.0f - 0.0001f)
+			if (m_vCamRotAngle.x > D3DX_PI / 2.0f - 0.0001f)
 				m_vCamRotAngle.x = D3DX_PI / 2.0f - 0.0001f;
 
 			m_ptPrevMouse = ptCurMouse;

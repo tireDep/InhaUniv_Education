@@ -1,18 +1,37 @@
 #include "stdafx.h"
 #include "cMainGame.h"
 
-cMainGame::cMainGame()
+#include "cCubePC.h"
+#include "cCamera.h"
+#include "cGrid.h"
+
+cMainGame::cMainGame() :
+	m_pCubePc(NULL),
+	m_pCamera(NULL),
+	m_pGrid(NULL)
 {
 
 }
 
 cMainGame::~cMainGame()
 {
+	SafeDelete(m_pCubePc);
+	SafeDelete(m_pCamera);
+	SafeDelete(m_pGrid);
+
 	g_pDeviceManager->Destroy();
 }
 
 void cMainGame::SetUp()
 {
+	m_pCubePc = new cCubePC;
+	m_pCubePc->SetUp();
+
+	m_pCamera = new cCamera;
+	m_pCamera->SetUp(&m_pCubePc->GetPosition());
+
+	m_pGrid = new cGrid;
+	m_pGrid->SetUp();
 
 	g_pD3DDevice->SetRenderState(D3DRS_LIGHTING, false);
 	// >> 조명 Off
@@ -20,36 +39,43 @@ void cMainGame::SetUp()
 
 void cMainGame::Update()
 {
-	
+	if (m_pCamera)
+		m_pCamera->Update();
+
+	if (m_pCubePc)
+		m_pCubePc->Update();
 }
 
 void cMainGame::Render()
 {
 	RECT rc;
 	GetClientRect(g_hWnd, &rc);
-
-	D3DXVECTOR3 vEye = D3DXVECTOR3(0, 0, -5.0f);
-	D3DXVECTOR3 vLookAt = D3DXVECTOR3(0, 0, 0);
-	D3DXVECTOR3 vUp = D3DXVECTOR3(0, 1, 0);
-
-	D3DXMATRIXA16 matView;
-	D3DXMatrixLookAtLH(&matView, &vEye, &vLookAt, &vUp);
-	g_pD3DDevice->SetTransform(D3DTS_VIEW, &matView);
-
+	
+	// D3DXVECTOR3 vEye = D3DXVECTOR3(0, 0, -5.0f);
+	// D3DXVECTOR3 vLookAt = D3DXVECTOR3(0, 0, 0);
+	// D3DXVECTOR3 vUp = D3DXVECTOR3(0, 1, 0);
+	
+	// D3DXMATRIXA16 matView;
+	// D3DXMatrixLookAtLH(&matView, &vEye, &vLookAt, &vUp);
+	// g_pD3DDevice->SetTransform(D3DTS_VIEW, &matView);
+	
 	D3DXMATRIXA16 matProj;
 	D3DXMatrixPerspectiveFovLH(&matProj, D3DX_PI / 4.0f, rc.right / (float)rc.bottom, 1.0f, 1000.0f);
 	g_pD3DDevice->SetTransform(D3DTS_PROJECTION, &matProj);
-
+	
 	g_pD3DDevice->Clear(NULL, NULL, D3DCLEAR_TARGET | D3DCLEAR_ZBUFFER, D3DCOLOR_XRGB(150, 150, 150), 1.0f, 0);
 	// 화면 삭제 및 그리기
-
-	g_pD3DDevice->BeginScene();
 	
-	// Draw_Line();
-	// Draw_Triangle();
+	g_pD3DDevice->BeginScene(); 
 
+	if (m_pGrid)
+		m_pGrid->Render();
+
+	if (m_pCubePc)
+		m_pCubePc->Render();
+	
 	g_pD3DDevice->EndScene();
-
+	
 	g_pD3DDevice->Present(NULL, NULL, NULL, NULL);
 }
 
@@ -104,4 +130,10 @@ void cMainGame::Draw_Triangle()
 	g_pD3DDevice->SetTransform(D3DTS_WORLD, &matWorld);
 	g_pD3DDevice->SetFVF(stPC_Vertex::eFVF);
 	g_pD3DDevice->DrawPrimitiveUP(D3DPT_TRIANGLELIST, m_verTriangleVertex.size() / 3, &m_verTriangleVertex[0], sizeof(stPC_Vertex));
+}
+
+void cMainGame::WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
+{
+	if (m_pCamera)
+		m_pCamera->WndProc(hWnd, message, wParam, lParam);
 }
