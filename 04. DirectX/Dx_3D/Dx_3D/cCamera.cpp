@@ -27,6 +27,7 @@ void cCamera::SetUp(D3DXVECTOR3 * pvTarget)
 
 	D3DXMATRIXA16 matProj;
 	D3DXMatrixPerspectiveFovLH(&matProj, D3DX_PI / 4.0f, rc.right / (float)rc.bottom, 1.0f, 1000.0f);
+	g_pD3DDevice->SetTransform(D3DTS_PROJECTION, &matProj);
 }
 
 void cCamera::Update()

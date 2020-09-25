@@ -85,7 +85,7 @@ void cGrid::SetUp(int nNumHalfTile, float fInterval)
 	// z
 	pGizmo = new cGizmo;
 	D3DXMatrixRotationX(&matR, -D3DX_PI / 2.0f);
-	pGizmo->SetUp(D3DCOLOR_XRGB(0, 0,255), matR);
+	pGizmo->SetUp(D3DCOLOR_XRGB(0, 0, 255), matR);
 	m_vecGizmo.push_back(pGizmo);
 	// << gizmo
 }
