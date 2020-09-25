@@ -91,7 +91,7 @@ void cMainGame::Update()
 	Update_Rotaion();
 	Update_Move();
 
-	cubeDirect = { 0, 0, 1 };
+	cubeDirect = { 1, 0, 0 };
 	D3DXVec3TransformNormal(&cubeDirect, &cubeDirect, &matRot);
 
 	D3DXMatrixIdentity(&matRot);
@@ -166,7 +166,7 @@ void cMainGame::Render()
 	// Draw_Line();
 	// Draw_Triangle();
 	Draw_Grid();
-	Draw_Gizmo();
+	//Draw_Gizmo();
 	Draw_Cube();
 
 	g_pD3DDevice->EndScene();
@@ -298,91 +298,187 @@ void cMainGame::Draw_Grid()
 void cMainGame::SetUp_Cube()
 {
 	stPC_Vertex v;
+	float wSize = 0.1f;
+	float hSize = 0.15f;
 	vector<stPC_Vertex> index;
-	v.p = D3DXVECTOR3(-0.5f, -0.5f, -0.5f);
-	index.push_back(v);
 
-	v.p = D3DXVECTOR3(-0.5f, 0.5f, -0.5f);
-	index.push_back(v);
+	// >> leg1
+	{
+		hSize = 0.15f;
+		v.p = D3DXVECTOR3(-wSize, 0, 0);
+		index.push_back(v);
 
-	v.p = D3DXVECTOR3(0.5f, 0.5f, -0.5f);
-	index.push_back(v);
+		v.p = D3DXVECTOR3(-wSize, 0.5f, 0);
+		index.push_back(v);
 
-	v.p = D3DXVECTOR3(0.5f, -0.5f, -0.5f);
-	index.push_back(v);
+		v.p = D3DXVECTOR3(wSize, 0.5f, 0);
+		index.push_back(v);
 
-	v.p = D3DXVECTOR3(-0.5f, -0.5f, 0.5f);
-	index.push_back(v);
+		v.p = D3DXVECTOR3(wSize, 0, 0);
+		index.push_back(v);
 
-	v.p = D3DXVECTOR3(-0.5f, 0.5f, 0.5f);
-	index.push_back(v);
+		v.p = D3DXVECTOR3(-wSize, 0, hSize);
+		index.push_back(v);
 
-	v.p = D3DXVECTOR3(0.5f, 0.5f, 0.5f);
-	index.push_back(v);
+		v.p = D3DXVECTOR3(-wSize, 0.5f, hSize);
+		index.push_back(v);
 
-	v.p = D3DXVECTOR3(0.5f, -0.5f, 0.5f);
-	index.push_back(v);
+		v.p = D3DXVECTOR3(wSize, 0.5f, hSize);
+		index.push_back(v);
 
+		v.p = D3DXVECTOR3(wSize, 0, hSize);
+		index.push_back(v);
+	}
+	AddCharacterPoly(index);
+	index.clear();
 
-	// front
-	SetColor(index, rand() % 256, rand() % 256, rand() % 256);
-	m_vecCube.push_back(index[0]);
-	m_vecCube.push_back(index[1]);
-	m_vecCube.push_back(index[2]);
+	// >> leg2
+	{
+		v.p = D3DXVECTOR3(-wSize, 0, -hSize);
+		index.push_back(v);
 
-	m_vecCube.push_back(index[0]);
-	m_vecCube.push_back(index[2]);
-	m_vecCube.push_back(index[3]);
+		v.p = D3DXVECTOR3(-wSize, 0.5f, -hSize);
+		index.push_back(v);
 
-	// back
-	SetColor(index, rand() % 256, rand() % 256, rand() % 256);
-	m_vecCube.push_back(index[4]);
-	m_vecCube.push_back(index[6]);
-	m_vecCube.push_back(index[5]);
+		v.p = D3DXVECTOR3(wSize, 0.5f, -hSize);
+		index.push_back(v);
 
-	m_vecCube.push_back(index[4]);
-	m_vecCube.push_back(index[7]);
-	m_vecCube.push_back(index[6]);
+		v.p = D3DXVECTOR3(wSize, 0, -hSize);
+		index.push_back(v);
 
-	// left
-	SetColor(index, rand() % 256, rand() % 256, rand() % 256);
-	m_vecCube.push_back(index[4]);
-	m_vecCube.push_back(index[5]);
-	m_vecCube.push_back(index[1]);
+		v.p = D3DXVECTOR3(-wSize, 0, 0);
+		index.push_back(v);
 
-	m_vecCube.push_back(index[4]);
-	m_vecCube.push_back(index[1]);
-	m_vecCube.push_back(index[0]);
+		v.p = D3DXVECTOR3(-wSize, 0.5f, 0);
+		index.push_back(v);
 
-	// right
-	SetColor(index, rand() % 256, rand() % 256, rand() % 256);
-	m_vecCube.push_back(index[3]);
-	m_vecCube.push_back(index[2]);
-	m_vecCube.push_back(index[6]);
+		v.p = D3DXVECTOR3(wSize, 0.5f, 0);
+		index.push_back(v);
 
-	m_vecCube.push_back(index[3]);
-	m_vecCube.push_back(index[6]);
-	m_vecCube.push_back(index[7]);
+		v.p = D3DXVECTOR3(wSize, 0, 0);
+		index.push_back(v);
+	}
+	AddCharacterPoly(index);
+	index.clear();
 
-	// up
-	SetColor(index, rand() % 256, rand() % 256, rand() % 256);
-	m_vecCube.push_back(index[1]);
-	m_vecCube.push_back(index[5]);
-	m_vecCube.push_back(index[6]);
+	// >> body
+	{
+		v.p = D3DXVECTOR3(-wSize, 0.5f, -hSize);
+		index.push_back(v);
 
-	m_vecCube.push_back(index[1]);
-	m_vecCube.push_back(index[6]);
-	m_vecCube.push_back(index[2]);
+		v.p = D3DXVECTOR3(-wSize, 1.0f, -hSize);
+		index.push_back(v);
 
-	// down
-	SetColor(index, rand() % 256, rand() % 256, rand() % 256);
-	m_vecCube.push_back(index[4]);
-	m_vecCube.push_back(index[0]);
-	m_vecCube.push_back(index[3]);
+		v.p = D3DXVECTOR3(wSize, 1.0f, -hSize);
+		index.push_back(v);
 
-	m_vecCube.push_back(index[4]);
-	m_vecCube.push_back(index[3]);
-	m_vecCube.push_back(index[7]);
+		v.p = D3DXVECTOR3(wSize, 0.5f, -hSize);
+		index.push_back(v);
+
+		v.p = D3DXVECTOR3(-wSize, 0.5f, hSize);
+		index.push_back(v);
+
+		v.p = D3DXVECTOR3(-wSize, 1.0f, hSize);
+		index.push_back(v);
+
+		v.p = D3DXVECTOR3(wSize, 1.0f, hSize);
+		index.push_back(v);
+
+		v.p = D3DXVECTOR3(wSize, 0.5f, hSize);
+		index.push_back(v);
+	}
+	AddCharacterPoly(index);
+	index.clear();
+
+	// >> arm1
+	{
+		v.p = D3DXVECTOR3(-wSize, 0.5f, -hSize - hSize);
+		index.push_back(v);
+
+		v.p = D3DXVECTOR3(-wSize, 1.0f, -hSize - hSize);
+		index.push_back(v);
+
+		v.p = D3DXVECTOR3(wSize, 1.0f, -hSize - hSize);
+		index.push_back(v);
+
+		v.p = D3DXVECTOR3(wSize, 0.5f, -hSize - hSize);
+		index.push_back(v);
+
+		v.p = D3DXVECTOR3(-wSize, 0.5f, -hSize);
+		index.push_back(v);
+
+		v.p = D3DXVECTOR3(-wSize, 1.0f, -hSize);
+		index.push_back(v);
+
+		v.p = D3DXVECTOR3(wSize, 1.0f, -hSize);
+		index.push_back(v);
+
+		v.p = D3DXVECTOR3(wSize, 0.5f, -hSize);
+		index.push_back(v);
+	}
+	AddCharacterPoly(index);
+	index.clear();
+
+	// >> arm2
+	{
+		v.p = D3DXVECTOR3(-wSize, 0.5f, hSize);
+		index.push_back(v);
+
+		v.p = D3DXVECTOR3(-wSize, 1.0f, hSize);
+		index.push_back(v);
+
+		v.p = D3DXVECTOR3(wSize, 1.0f, hSize);
+		index.push_back(v);
+
+		v.p = D3DXVECTOR3(wSize, 0.5f, hSize);
+		index.push_back(v);
+
+		v.p = D3DXVECTOR3(-wSize, 0.5f, hSize + hSize);
+		index.push_back(v);
+
+		v.p = D3DXVECTOR3(-wSize, 1.0f, hSize + hSize);
+		index.push_back(v);
+
+		v.p = D3DXVECTOR3(wSize, 1.0f, hSize + hSize);
+		index.push_back(v);
+
+		v.p = D3DXVECTOR3(wSize, 0.5f, hSize + hSize);
+		index.push_back(v);
+	}
+	AddCharacterPoly(index);
+	index.clear();
+
+	// >> head
+	{
+		wSize = 0.2f;
+		hSize = 0.2f;
+
+		v.p = D3DXVECTOR3(-wSize, 1.0f, -hSize);
+		index.push_back(v);
+
+		v.p = D3DXVECTOR3(-wSize, 1.4f, -hSize);
+		index.push_back(v);
+
+		v.p = D3DXVECTOR3(wSize, 1.4f, -hSize);
+		index.push_back(v);
+
+		v.p = D3DXVECTOR3(wSize, 1.0f, -hSize);
+		index.push_back(v);
+
+		v.p = D3DXVECTOR3(-wSize, 1.0f, hSize);
+		index.push_back(v);
+
+		v.p = D3DXVECTOR3(-wSize, 1.4f, hSize);
+		index.push_back(v);
+
+		v.p = D3DXVECTOR3(wSize, 1.4f, hSize);
+		index.push_back(v);
+
+		v.p = D3DXVECTOR3(wSize, 1.0f, hSize);
+		index.push_back(v);
+	}
+	AddCharacterPoly(index);
+	index.clear();
 }
 
 void cMainGame::Draw_Cube()
@@ -395,11 +491,18 @@ void cMainGame::Draw_Cube()
 	D3DXMatrixIdentity(&tempMove);
 	D3DXMatrixTranslation(&tempMove, movePos.x, movePos.y, movePos.z);
 
+	D3DXMATRIXA16 tempRot;
+	D3DXMatrixRotationY(&tempRot, D3DX_PI / 2.0f);
+	matRot *= tempRot;
+
 	matWorld = tempScale * matRot * tempMove;
 
 	g_pD3DDevice->SetTransform(D3DTS_WORLD, &matWorld);
 	g_pD3DDevice->SetFVF(stPC_Vertex::eFVF);
-	g_pD3DDevice->DrawPrimitiveUP(D3DPT_TRIANGLELIST, m_vecCube.size() / 3, &m_vecCube[0], sizeof(stPC_Vertex));
+	// g_pD3DDevice->DrawPrimitiveUP(D3DPT_TRIANGLELIST, m_vecCube.size() / 3, &m_vecCube[0], sizeof(stPC_Vertex));
+	
+	for(int i=0;i<m_vecChar.size();i++)
+		g_pD3DDevice->DrawPrimitiveUP(D3DPT_TRIANGLELIST, m_vecChar[i].size()/3, &m_vecChar[i][0], sizeof(stPC_Vertex));
 }
 
 void cMainGame::SetUp_Gizmo()
@@ -523,4 +626,71 @@ void cMainGame::SetColor(vector<stPC_Vertex>& vec, int r, int g, int b)
 {
 	for (int i = 0; i<vec.size(); i++)
 		vec[i].c = D3DCOLOR_XRGB(r, g, b);
+}
+
+void cMainGame::AddCharacterPoly(vector<stPC_Vertex> &index)
+{
+	// front
+	SetColor(index, rand() % 256, rand() % 256, rand() % 256);
+	m_vecCube.push_back(index[0]);
+	m_vecCube.push_back(index[1]);
+	m_vecCube.push_back(index[2]);
+
+	m_vecCube.push_back(index[0]);
+	m_vecCube.push_back(index[2]);
+	m_vecCube.push_back(index[3]);
+
+	// back
+	SetColor(index, rand() % 256, rand() % 256, rand() % 256);
+	m_vecCube.push_back(index[4]);
+	m_vecCube.push_back(index[6]);
+	m_vecCube.push_back(index[5]);
+
+	m_vecCube.push_back(index[4]);
+	m_vecCube.push_back(index[7]);
+	m_vecCube.push_back(index[6]);
+
+	// left
+	SetColor(index, rand() % 256, rand() % 256, rand() % 256);
+	m_vecCube.push_back(index[4]);
+	m_vecCube.push_back(index[5]);
+	m_vecCube.push_back(index[1]);
+
+	m_vecCube.push_back(index[4]);
+	m_vecCube.push_back(index[1]);
+	m_vecCube.push_back(index[0]);
+
+	// right
+	SetColor(index, rand() % 256, rand() % 256, rand() % 256);
+	m_vecCube.push_back(index[3]);
+	m_vecCube.push_back(index[2]);
+	m_vecCube.push_back(index[6]);
+
+	m_vecCube.push_back(index[3]);
+	m_vecCube.push_back(index[6]);
+	m_vecCube.push_back(index[7]);
+
+	// up
+	SetColor(index, rand() % 256, rand() % 256, rand() % 256);
+	m_vecCube.push_back(index[1]);
+	m_vecCube.push_back(index[5]);
+	m_vecCube.push_back(index[6]);
+
+	m_vecCube.push_back(index[1]);
+	m_vecCube.push_back(index[6]);
+	m_vecCube.push_back(index[2]);
+
+	// down
+	SetColor(index, rand() % 256, rand() % 256, rand() % 256);
+	m_vecCube.push_back(index[4]);
+	m_vecCube.push_back(index[0]);
+	m_vecCube.push_back(index[3]);
+
+	m_vecCube.push_back(index[4]);
+	m_vecCube.push_back(index[3]);
+	m_vecCube.push_back(index[7]);
+
+
+	m_vecChar.push_back(m_vecCube);
+	// m_vecCube.clear();
 }

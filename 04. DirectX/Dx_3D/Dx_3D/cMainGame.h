@@ -31,6 +31,8 @@ private:
 
 	float fScale;
 
+	vector<vector<stPC_Vertex>> m_vecChar;
+
 public:
 	cMainGame();
 	~cMainGame();
@@ -62,4 +64,6 @@ public:
 	void Draw_Gizmo();
 
 	void SetColor(vector<stPC_Vertex> &vec, int r, int g, int b);
+
+	void AddCharacterPoly(vector<stPC_Vertex> &index);
 };
