@@ -39,11 +39,11 @@ void cMainGame::SetUp()
 
 void cMainGame::Update()
 {
-	if (m_pCamera)
-		m_pCamera->Update();
-
 	if (m_pCubePc)
 		m_pCubePc->Update();
+
+	if (m_pCamera)
+		m_pCamera->Update();
 }
 
 void cMainGame::Render()
