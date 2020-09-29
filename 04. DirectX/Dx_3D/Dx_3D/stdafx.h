@@ -60,6 +60,38 @@ struct stPC_Vertex	// point, color
 	enum { eFVF = D3DFVF_XYZ | D3DFVF_DIFFUSE };	// 색 표현 정의
 };
 
+struct stPNT_Vertext
+{
+	D3DXVECTOR3 p;	// Point
+	D3DXVECTOR3 n;	// Normal 
+	D3DXVECTOR2 t;	// Texture
+
+	enum { eFVF = D3DFVF_XYZ | D3DFVF_NORMAL | D3DFVF_TEX1 };	// 색 표현 정의
+};
+
+struct stPT_Vertext
+{
+	// 조명 빠진 구조체
+	D3DXVECTOR3 p;	// Point
+	D3DXVECTOR2 t;	// Texture
+
+	enum { eFVF = D3DFVF_XYZ | D3DFVF_NORMAL | D3DFVF_TEX1 };	// 색 표현 정의
+};
+
+
+#define Synthesize(varType, varName, funName) \
+protected : varType varName; \
+public : inline varType Get##funName(void) const { return varName; } \
+public : inline void Set##funName(varType var) { varName = var; }
+// ## : 함수 이름(funName)
+// >> GET, SET 함수 매크로
+
+#define Synthesize_pass_by_Ref(varType, varName, funName) \
+protected : varType varName; \
+public : inline varType& Get##funName(void) { return varName; } \
+public : inline void Set##funName(varType& var) { varName = var; }
+// >> GET, SET 함수 매크로
+
 #include "cDeviceManager.h"
 
 // <<

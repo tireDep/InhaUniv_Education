@@ -13,11 +13,8 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
-    <Filter Include="CubeMan Header">
-      <UniqueIdentifier>{63b46348-353f-448a-9b53-c28646c5096f}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="CubeMan Source">
-      <UniqueIdentifier>{4235fde8-6738-4ec5-8394-386d6cbcdc5e}</UniqueIdentifier>
+    <Filter Include="CubeMan">
+      <UniqueIdentifier>{d8fa7376-c585-4cac-8f75-b00590010d7e}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -33,10 +30,10 @@
     <ClInclude Include="Resource.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="cMainGame.h">
+    <ClInclude Include="DX3D.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Dx_3D.h">
+    <ClInclude Include="cMainGame.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="cDeviceManager.h">
@@ -51,7 +48,7 @@
     <ClInclude Include="cGrid.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="cGizmo.h">
+    <ClInclude Include="cPyramid.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="cCubePNT.h">
@@ -61,22 +58,22 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="cBody.h">
-      <Filter>CubeMan Header</Filter>
+      <Filter>CubeMan</Filter>
     </ClInclude>
     <ClInclude Include="cHead.h">
-      <Filter>CubeMan Header</Filter>
-    </ClInclude>
-    <ClInclude Include="cRightArm.h">
-      <Filter>CubeMan Header</Filter>
-    </ClInclude>
-    <ClInclude Include="cRightLeg.h">
-      <Filter>CubeMan Header</Filter>
+      <Filter>CubeMan</Filter>
     </ClInclude>
     <ClInclude Include="cLeftArm.h">
-      <Filter>CubeMan Header</Filter>
+      <Filter>CubeMan</Filter>
     </ClInclude>
     <ClInclude Include="cLeftLeg.h">
-      <Filter>CubeMan Header</Filter>
+      <Filter>CubeMan</Filter>
+    </ClInclude>
+    <ClInclude Include="cRightArm.h">
+      <Filter>CubeMan</Filter>
+    </ClInclude>
+    <ClInclude Include="cRightLeg.h">
+      <Filter>CubeMan</Filter>
     </ClInclude>
     <ClInclude Include="cCharacter.h">
       <Filter>Header Files</Filter>
@@ -89,7 +86,7 @@
     <ClCompile Include="stdafx.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Dx_3D.cpp">
+    <ClCompile Include="DX3D.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="cMainGame.cpp">
@@ -107,7 +104,7 @@
     <ClCompile Include="cGrid.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="cGizmo.cpp">
+    <ClCompile Include="cPyramid.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="cCubePNT.cpp">
@@ -117,22 +114,22 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="cBody.cpp">
-      <Filter>CubeMan Source</Filter>
+      <Filter>CubeMan</Filter>
     </ClCompile>
     <ClCompile Include="cHead.cpp">
-      <Filter>CubeMan Source</Filter>
+      <Filter>CubeMan</Filter>
     </ClCompile>
     <ClCompile Include="cLeftArm.cpp">
-      <Filter>CubeMan Source</Filter>
+      <Filter>CubeMan</Filter>
     </ClCompile>
     <ClCompile Include="cLeftLeg.cpp">
-      <Filter>CubeMan Source</Filter>
+      <Filter>CubeMan</Filter>
     </ClCompile>
     <ClCompile Include="cRightArm.cpp">
-      <Filter>CubeMan Source</Filter>
+      <Filter>CubeMan</Filter>
     </ClCompile>
     <ClCompile Include="cRightLeg.cpp">
-      <Filter>CubeMan Source</Filter>
+      <Filter>CubeMan</Filter>
     </ClCompile>
     <ClCompile Include="cCharacter.cpp">
       <Filter>Source Files</Filter>
@@ -142,7 +139,7 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ResourceCompile Include="Dx_3D.rc">
+    <ResourceCompile Include="DX3D.rc">
       <Filter>Resource Files</Filter>
     </ResourceCompile>
   </ItemGroup>
@@ -150,7 +147,7 @@
     <Image Include="small.ico">
       <Filter>Resource Files</Filter>
     </Image>
-    <Image Include="Dx_3D.ico">
+    <Image Include="DX3D.ico">
       <Filter>Resource Files</Filter>
     </Image>
   </ItemGroup>
