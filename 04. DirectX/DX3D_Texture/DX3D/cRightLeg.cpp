@@ -24,4 +24,36 @@ void cRightLeg::Setup()
 	}
 
 	m_vLocalPos.y = -0.3f;
+
+	float width = 0.125f;
+	float hWidth = width * 0.5f;
+
+	int k = 0;
+	int c = 0;
+	for (size_t i = 0; i < m_vecVertex.size(); i += 6)
+	{
+		if (i < 24)
+		{
+			m_vecVertex[i + 1].t = D3DXVECTOR2(hWidth * (k + 4), width * 6 + hWidth);
+			m_vecVertex[i + 0].t = D3DXVECTOR2(hWidth * (k + 4), width * 8);
+			m_vecVertex[i + 2].t = D3DXVECTOR2(hWidth * (k + 5), width * 6 + hWidth);
+
+			m_vecVertex[i + 3].t = D3DXVECTOR2(hWidth * (k + 4), width * 8);
+			m_vecVertex[i + 4].t = D3DXVECTOR2(hWidth * (k + 5), width * 6 + hWidth);
+			m_vecVertex[i + 5].t = D3DXVECTOR2(hWidth * (k + 5), width * 8);
+
+		}
+		else
+		{
+			m_vecVertex[i + 0].t = D3DXVECTOR2(hWidth * (c + 5), width * 6 + hWidth);
+			m_vecVertex[i + 1].t = D3DXVECTOR2(hWidth * (c + 5), width * 6);
+			m_vecVertex[i + 2].t = D3DXVECTOR2(hWidth * (c + 6), width * 6);
+
+			m_vecVertex[i + 3].t = D3DXVECTOR2(hWidth * (c + 5), width * 6 + hWidth);
+			m_vecVertex[i + 4].t = D3DXVECTOR2(hWidth * (c + 5), width * 6);
+			m_vecVertex[i + 5].t = D3DXVECTOR2(hWidth * (c + 6), width * 6 + hWidth);
+			c++;
+		}
+		k++;
+	}
 }
