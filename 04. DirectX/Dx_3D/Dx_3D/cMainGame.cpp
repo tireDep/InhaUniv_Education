@@ -5,10 +5,13 @@
 #include "cCamera.h"
 #include "cGrid.h"
 
+#include "cCubeMan.h"
+
 cMainGame::cMainGame() :
 	m_pCubePc(NULL),
 	m_pCamera(NULL),
-	m_pGrid(NULL)
+	m_pGrid(NULL),
+	m_pCubeMan(NULL)
 {
 
 }
@@ -19,6 +22,8 @@ cMainGame::~cMainGame()
 	SafeDelete(m_pCamera);
 	SafeDelete(m_pGrid);
 
+	SafeDelete(m_pCubeMan);
+
 	g_pDeviceManager->Destroy();
 }
 
@@ -27,20 +32,29 @@ void cMainGame::SetUp()
 	m_pCubePc = new cCubePC;
 	m_pCubePc->SetUp();
 
+	m_pCubeMan = new cCubeMan;
+	m_pCubeMan->SetUp();
+
 	m_pCamera = new cCamera;
-	m_pCamera->SetUp(&m_pCubePc->GetPosition());
+	m_pCamera->SetUp(&m_pCubeMan->GetPosition());
+	// m_pCamera->SetUp(&m_pCubePc->GetPosition());
 
 	m_pGrid = new cGrid;
 	m_pGrid->SetUp();
 
-	g_pD3DDevice->SetRenderState(D3DRS_LIGHTING, false);
+	// g_pD3DDevice->SetRenderState(D3DRS_LIGHTING, false);
 	// >> 조명 Off
+
+	Set_Light();
 }
 
 void cMainGame::Update()
 {
-	if (m_pCubePc)
-		m_pCubePc->Update();
+	// if (m_pCubePc)
+	// 	m_pCubePc->Update();
+
+	if (m_pCubeMan)
+		m_pCubeMan->Update();
 
 	if (m_pCamera)
 		m_pCamera->Update();
@@ -59,8 +73,11 @@ void cMainGame::Render()
 	if (m_pGrid)
 		m_pGrid->Render();
 
-	if (m_pCubePc)
-		m_pCubePc->Render();
+	// if (m_pCubePc)
+	// 	m_pCubePc->Render();
+
+	if (m_pCubeMan)
+		m_pCubeMan->Render();
 	
 	g_pD3DDevice->EndScene();
 	
@@ -124,4 +141,22 @@ void cMainGame::WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 {
 	if (m_pCamera)
 		m_pCamera->WndProc(hWnd, message, wParam, lParam);
+}
+
+void cMainGame::Set_Light()
+{
+	D3DLIGHT9 stLight;
+	ZeroMemory(&stLight, sizeof(D3DLIGHT9));
+
+	stLight.Type = D3DLIGHT_DIRECTIONAL; // 태양광
+	stLight.Ambient  = D3DXCOLOR(0.8f, 0.8f, 0.8f, 1.0f);
+	stLight.Diffuse  = D3DXCOLOR(0.8f, 0.8f, 0.8f, 1.0f);
+	stLight.Specular = D3DXCOLOR(0.8f, 0.8f, 0.8f, 1.0f);
+
+	D3DXVECTOR3 vDir(1.0f, -1.0f, 1.0f); // 빛이 향하는 방향
+	D3DXVec3Normalize(&vDir, &vDir);
+	stLight.Direction = vDir;
+
+	g_pD3DDevice->SetLight(0, &stLight);
+	g_pD3DDevice->LightEnable(0, true);
 }

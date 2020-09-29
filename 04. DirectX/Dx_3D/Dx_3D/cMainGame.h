@@ -4,6 +4,8 @@
 class cCubePC;
 class cCamera;
 class cGrid;
+
+class cCubeMan;
 // >> 어딘가에 선언되어 있음
 
 class cMainGame
@@ -17,6 +19,8 @@ private:
 	cCamera* m_pCamera;
 	cGrid* m_pGrid;
 	//<<
+
+	cCubeMan* m_pCubeMan;
 
 public:
 	cMainGame();
@@ -35,4 +39,6 @@ public:
 	// >>
 	void WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam);
 	// <<
+
+	void Set_Light();
 };
