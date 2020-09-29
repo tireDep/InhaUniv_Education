@@ -11,7 +11,8 @@ cMainGame::cMainGame() :
 	m_pCubePc(NULL),
 	m_pCamera(NULL),
 	m_pGrid(NULL),
-	m_pCubeMan(NULL)
+	m_pCubeMan(NULL),
+	m_pTexture(NULL)
 {
 
 }
@@ -23,6 +24,8 @@ cMainGame::~cMainGame()
 	SafeDelete(m_pGrid);
 
 	SafeDelete(m_pCubeMan);
+
+	SafeRelease(m_pTexture);
 
 	g_pDeviceManager->Destroy();
 }
@@ -44,6 +47,24 @@ void cMainGame::SetUp()
 
 	// g_pD3DDevice->SetRenderState(D3DRS_LIGHTING, false);
 	// >> 조명 Off
+
+	// >> texture
+	{
+		D3DXCreateTextureFromFile(g_pD3DDevice, L"aa.png", &m_pTexture);
+		stPT_Vertext v;
+		v.p = D3DXVECTOR3(0, 0, 0);
+		v.t = D3DXVECTOR2(0, 1);	// 좌하단
+		m_vecVertex.push_back(v);
+
+		v.p = D3DXVECTOR3(0, 1, 0);
+		v.t = D3DXVECTOR2(0, 0);	// 상단
+		m_vecVertex.push_back(v);
+
+		v.p = D3DXVECTOR3(1, 1, 0);
+		v.t = D3DXVECTOR2(1, 0);	// 우
+		m_vecVertex.push_back(v);
+	}
+	// << texture
 
 	Set_Light();
 }
@@ -76,8 +97,10 @@ void cMainGame::Render()
 	// if (m_pCubePc)
 	// 	m_pCubePc->Render();
 
-	if (m_pCubeMan)
-		m_pCubeMan->Render();
+	// if (m_pCubeMan)
+	// 	m_pCubeMan->Render();
+
+	Draw_Texture();
 	
 	g_pD3DDevice->EndScene();
 	
@@ -93,7 +116,6 @@ void cMainGame::SetUp_Line()
 
 	v.p = D3DXVECTOR3(0, -2, 0);
 	m_vecLineVertex.push_back(v);
-
 }
 
 void cMainGame::Draw_Line()
@@ -159,4 +181,19 @@ void cMainGame::Set_Light()
 
 	g_pD3DDevice->SetLight(0, &stLight);
 	g_pD3DDevice->LightEnable(0, true);
+}
+
+void cMainGame::Draw_Texture()
+{
+	g_pD3DDevice->SetRenderState(D3DRS_LIGHTING, false);
+
+	D3DXMATRIXA16 matWorld;
+	D3DXMatrixIdentity(&matWorld);
+	g_pD3DDevice->SetTransform(D3DTS_WORLD, &matWorld);
+
+	g_pD3DDevice->SetTexture(0, m_pTexture);
+
+	g_pD3DDevice->SetFVF(stPT_Vertext::eFVF);
+	g_pD3DDevice->DrawPrimitiveUP(D3DPT_TRIANGLELIST, m_vecVertex.size() / 3, &m_vecVertex[0], sizeof(stPT_Vertext));
+	g_pD3DDevice->SetTexture(0, NULL);
 }

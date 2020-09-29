@@ -69,6 +69,16 @@ struct stPNT_Vertext
 	enum { eFVF = D3DFVF_XYZ | D3DFVF_NORMAL | D3DFVF_TEX1 };	// 색 표현 정의
 };
 
+struct stPT_Vertext
+{
+	// 조명 빠진 구조체
+	D3DXVECTOR3 p;	// Point
+	D3DXVECTOR2 t;	// Texture
+
+	enum { eFVF = D3DFVF_XYZ | D3DFVF_NORMAL | D3DFVF_TEX1 };	// 색 표현 정의
+};
+
+
 #define Synthesize(varType, varName, funName) \
 protected : varType varName; \
 public : inline varType Get##funName(void) const { return varName; } \

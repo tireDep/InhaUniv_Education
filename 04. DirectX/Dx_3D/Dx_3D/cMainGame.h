@@ -22,6 +22,11 @@ private:
 
 	cCubeMan* m_pCubeMan;
 
+	LPDIRECT3DTEXTURE9 m_pTexture;
+	vector<stPT_Vertext> m_vecVertex;
+	// texture
+
+
 public:
 	cMainGame();
 	~cMainGame();
@@ -41,4 +46,6 @@ public:
 	// <<
 
 	void Set_Light();
+
+	void Draw_Texture();
 };
