@@ -67,7 +67,7 @@ void cCubeMan::Update()
 {
 	cCharacter::Update(); 
 	if (m_pRoot)
-		m_pRoot->Update(); 
+		m_pRoot->Update();	// cCubeNode -> Update() 
 }
 
 void cCubeMan::Render()
@@ -85,7 +85,7 @@ void cCubeMan::Render()
 		D3DXMatrixIdentity(&matWorld); 
 		g_pD3DDevice->SetTransform(D3DTS_WORLD, &matWorld); 
 		if (m_pRoot)
-			m_pRoot->Render(); 
+			m_pRoot->Render();	// cCubeNode -> Render()
 	}
 }
 
