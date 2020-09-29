@@ -13,6 +13,7 @@
 cCubeMan::cCubeMan()
 	: m_pRoot(NULL)
 {
+
 }
 
 
@@ -74,6 +75,8 @@ void cCubeMan::Render()
 	if (g_pD3DDevice)
 	{
 		g_pD3DDevice->SetRenderState(D3DRS_LIGHTING, true); 
+		// g_pD3DDevice->SetRenderState(D3DRS_LIGHTING, false);
+
 		g_pD3DDevice->SetMaterial(&m_stMtl); 
 
 		cCharacter::Render(); 
@@ -85,3 +88,4 @@ void cCubeMan::Render()
 			m_pRoot->Render(); 
 	}
 }
+

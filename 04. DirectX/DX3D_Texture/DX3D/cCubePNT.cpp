@@ -28,32 +28,6 @@ void cCubePNT::Setup()
 
 	std::vector<DWORD> vecIndex; 
 
-	// : front 
-	vecIndex.push_back(0); 
-	vecIndex.push_back(1); 
-	vecIndex.push_back(2);
-
-	vecIndex.push_back(0);
-	vecIndex.push_back(2);
-	vecIndex.push_back(3);
-
-	// : back 
-	vecIndex.push_back(4);
-	vecIndex.push_back(6);
-	vecIndex.push_back(5);
-
-	vecIndex.push_back(4);
-	vecIndex.push_back(7);
-	vecIndex.push_back(6);
-
-	// : left 
-	vecIndex.push_back(4);
-	vecIndex.push_back(5);
-	vecIndex.push_back(1);
-	vecIndex.push_back(4);
-	vecIndex.push_back(1);
-	vecIndex.push_back(0);
-
 	// : right 
 	vecIndex.push_back(3);
 	vecIndex.push_back(2);
@@ -62,7 +36,32 @@ void cCubePNT::Setup()
 	vecIndex.push_back(6);
 	vecIndex.push_back(7);
 
-	// : top 
+	// : front
+	vecIndex.push_back(7);
+	vecIndex.push_back(6);
+	vecIndex.push_back(5);
+
+	vecIndex.push_back(7);
+	vecIndex.push_back(5);
+	vecIndex.push_back(4);
+
+	// : left 
+	vecIndex.push_back(4);
+	vecIndex.push_back(5);
+	vecIndex.push_back(1);
+	vecIndex.push_back(4);
+	vecIndex.push_back(1);
+	vecIndex.push_back(0);
+	
+	// : back
+	vecIndex.push_back(0);
+	vecIndex.push_back(1);
+	vecIndex.push_back(2);
+	vecIndex.push_back(0);
+	vecIndex.push_back(2);
+	vecIndex.push_back(3);
+
+	// : top
 	vecIndex.push_back(1);
 	vecIndex.push_back(5);
 	vecIndex.push_back(6);
@@ -70,7 +69,7 @@ void cCubePNT::Setup()
 	vecIndex.push_back(6);
 	vecIndex.push_back(2);
 
-	// : bottom 
+	// : bottom
 	vecIndex.push_back(4);
 	vecIndex.push_back(0);
 	vecIndex.push_back(3);
@@ -100,6 +99,9 @@ void cCubePNT::Setup()
 		m_vecVertex[i + 1].n = n;
 		m_vecVertex[i + 2].n = n;
 	}
+
+	D3DXCreateTextureFromFile(g_pD3DDevice, L"../image/mkLink.png", &m_pTexture);
+
 }
 
 void cCubePNT::Update()
@@ -108,9 +110,20 @@ void cCubePNT::Update()
 
 void cCubePNT::Render()
 {
+	g_pD3DDevice->SetRenderState(D3DRS_LIGHTING, false);
+
 	g_pD3DDevice->SetFVF(ST_PNT_VERTEX::FVF); 
+	g_pD3DDevice->SetTexture(0, m_pTexture);
+
 	g_pD3DDevice->DrawPrimitiveUP(D3DPT_TRIANGLELIST,
 		m_vecVertex.size() / 3,
 		&m_vecVertex[0],
 		sizeof(ST_PNT_VERTEX)); 
+
+	// if (m_vecVertex_t.size() != 0)
+	// 	g_pD3DDevice->DrawPrimitiveUP(D3DPT_TRIANGLELIST, m_vecVertex_t.size() / 3, &m_vecVertex_t[0], sizeof(ST_PT_VERTEX));
+
+	// g_pD3DDevice->DrawPrimitiveUP(D3DPT_TRIANGLELIST, m_vecVertex_t.size() / 3, &m_vecVertex_t[0], sizeof(ST_PT_VERTEX));
+
+	g_pD3DDevice->SetTexture(0, NULL);
 }

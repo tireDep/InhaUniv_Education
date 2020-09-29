@@ -1,6 +1,8 @@
 #include "stdafx.h"
 #include "cHead.h"
+#include "cCubeMan.h"
 
+class cCubeMan;
 
 cHead::cHead()
 {
@@ -24,4 +26,36 @@ void cHead::Setup()
 	}
 	
 	m_vLocalPos.y = 0.5f; 
+	
+	// >> setTexture
+	float width = 0.125f;
+
+	int k = 0; 
+	int c = 1;
+	for (size_t i = 0; i < m_vecVertex.size(); i+=6)
+	{
+		if (i < 24)
+		{
+			m_vecVertex[i+0].t = D3DXVECTOR2(width * k, width * 2);
+			m_vecVertex[i+1].t = D3DXVECTOR2(width * k, width);
+			m_vecVertex[i+2].t = D3DXVECTOR2(width *(k+1), width);
+
+			m_vecVertex[i+3].t = D3DXVECTOR2(width * k, width * 2);
+			m_vecVertex[i+4].t = D3DXVECTOR2(width * (k + 1), width);
+			m_vecVertex[i + 5].t = D3DXVECTOR2(width * (k + 1), width * 2);
+		}
+		else
+		{
+			m_vecVertex[i + 0].t = D3DXVECTOR2(width * c, width);
+			m_vecVertex[i + 1].t = D3DXVECTOR2(width * c, 0);
+			m_vecVertex[i + 2].t = D3DXVECTOR2(width * (c + 1), 0);
+
+			m_vecVertex[i + 3].t = D3DXVECTOR2(width * c, width);
+			m_vecVertex[i + 4].t = D3DXVECTOR2(width * (c + 1), 0);
+			m_vecVertex[i + 5].t = D3DXVECTOR2(width * (c + 1), width);
+			c++;
+		}
+		k++;
+	}
+	// << setTexture
 }

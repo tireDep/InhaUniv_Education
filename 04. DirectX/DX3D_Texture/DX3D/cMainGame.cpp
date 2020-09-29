@@ -13,6 +13,7 @@ cMainGame::cMainGame()
 	, m_pCubeMan(NULL) 
 	, m_pTexture(NULL)
 {
+
 }
 
 
@@ -43,20 +44,18 @@ void cMainGame::Setup()
 
 	// >> : for texture  
 	{
-		D3DXCreateTextureFromFile(g_pD3DDevice, L"../image/¼öÁö.png", &m_pTexture); 
+		D3DXCreateTextureFromFile(g_pD3DDevice, L"../image/mkLink.png", &m_pTexture); 
 		ST_PT_VERTEX v; 
 		v.p = D3DXVECTOR3(0, 0, 0); 
-		v.t = D3DXVECTOR2(0, 1); 
+		v.t = D3DXVECTOR2(0, 0.5); 
 		m_vecVertex.push_back(v); 
 
-
 		v.p = D3DXVECTOR3(0, 2, 0);
-		v.t = D3DXVECTOR2(0, 0);
+		v.t = D3DXVECTOR2(0, 0.25);
 		m_vecVertex.push_back(v);
 
-
 		v.p = D3DXVECTOR3(2, 2, 0);
-		v.t = D3DXVECTOR2(1, 0);
+		v.t = D3DXVECTOR2(0.25, 0.25);
 		m_vecVertex.push_back(v);
 	}
 
@@ -90,8 +89,8 @@ void cMainGame::Render()
 
 	//if (m_pCubePC)
 	//	m_pCubePC->Render(); 
-	//if (m_pCubeMan)
-	//	m_pCubeMan->Render(); 
+	if (m_pCubeMan)
+		m_pCubeMan->Render(); 
 
 	Draw_Texture(); 
 
