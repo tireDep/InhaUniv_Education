@@ -13,6 +13,6 @@ public:
 	~PointLight();
 
 	void SetUp();
-
+	void Update();
 	void Render();
 };

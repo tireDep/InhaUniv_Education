@@ -132,6 +132,18 @@ void PointLight::SetUp()
 	m_vecVertex.push_back(v);
 }
 
+void PointLight::Update()
+{
+	if (GetKeyState('1') & 0x8000)
+		m_PointLight.Range += 0.05f;
+	if (GetKeyState('2') & 0x8000)
+		m_PointLight.Range = m_PointLight.Range - 0.05f < 0.00001f ? 0 : m_PointLight.Range - 0.05f;
+	if (GetKeyState('3') & 0x8000)
+		m_PointLight.Range = 5.0f;	// Reset
+
+	g_pD3DDevice->SetLight(2, &m_PointLight);
+}
+
 void PointLight::Render()
 {
 	D3DXMATRIXA16 matWorld;

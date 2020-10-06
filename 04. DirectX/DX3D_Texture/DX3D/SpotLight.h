@@ -8,6 +8,8 @@ private:
 
 	vector<ST_PC_VERTEX>	m_vecVertex;
 
+	D3DXVECTOR3 m_vRotation;
+
 public:
 	SpotLight();
 	~SpotLight();

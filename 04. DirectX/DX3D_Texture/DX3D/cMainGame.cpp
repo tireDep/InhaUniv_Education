@@ -95,6 +95,12 @@ void cMainGame::Update()
 
 	if (m_directLight)
 		m_directLight->Update();
+
+	if (m_SpotLight)
+		m_SpotLight->Update();
+
+	if (m_PointLight)
+		m_PointLight->Update();
 }
 
 void cMainGame::Render()
