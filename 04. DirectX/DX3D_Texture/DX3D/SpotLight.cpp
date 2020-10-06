@@ -1,7 +1,8 @@
 #include "stdafx.h"
 #include "SpotLight.h"
 
-SpotLight::SpotLight()
+SpotLight::SpotLight() :
+	m_vRotation(0.0f , 0.0f, 0.0f)
 {
 }
 
@@ -134,13 +135,38 @@ void SpotLight::SetUp()
 	m_vecVertex.push_back(v);
 	v.p = D3DXVECTOR3(x + addNum, y - addNum, z - addNum);
 	m_vecVertex.push_back(v);
-	v.p = D3DXVECTOR3(x + addNum, y - addNum, z + 0.25f);
+	v.p = D3DXVECTOR3(x + addNum, y - addNum, z + addNum);
 	m_vecVertex.push_back(v);
 }
 
 void SpotLight::Update()
 {
+	if (GetKeyState(VK_UP) & 0x8000)
+		m_vRotation.x += 0.05f;
+	if (GetKeyState(VK_DOWN) & 0x8000)
+		m_vRotation.x -= 0.05f;
 
+	if (GetKeyState(VK_LEFT) & 0x8000)
+		m_vRotation.z += 0.05f;
+	if (GetKeyState(VK_RIGHT) & 0x8000)
+		m_vRotation.z -= 0.05f;
+
+	if (GetKeyState(VK_ESCAPE) & 0x8000)
+		m_vRotation = D3DXVECTOR3(0, 0, 0);	// Reset
+
+	D3DXVECTOR3 dir(0, 1, 0);
+	D3DXMATRIXA16 matRx, matRz;
+	D3DXMatrixRotationZ(&matRz, m_vRotation.z);
+	D3DXMatrixRotationX(&matRx, m_vRotation.x);
+
+	D3DXMATRIXA16 matR = matRx * matRz;
+	D3DXVec3TransformCoord(&dir, &dir, &matR);
+	
+	D3DXVec3Normalize(&dir, &dir);
+
+	m_SpotLight.Direction = dir;
+
+	g_pD3DDevice->SetLight(1, &m_SpotLight);
 }
 
 void SpotLight::Render()
