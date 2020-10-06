@@ -5,6 +5,7 @@
 #include "cCubePC.h"
 #include "cGrid.h"
 #include "cCubeMan.h"
+#include "DirectionLight.h"
 
 cMainGame::cMainGame()
 	: m_pCubePC(NULL)
@@ -12,6 +13,7 @@ cMainGame::cMainGame()
 	, m_pGrid(NULL)
 	, m_pCubeMan(NULL) 
 	, m_pTexture(NULL)
+	, m_directLight(NULL)
 {
 
 }
@@ -24,6 +26,9 @@ cMainGame::~cMainGame()
 	SafeDelete(m_pGrid); 
 	SafeDelete(m_pCubeMan); 
 	SafeRelease(m_pTexture); 
+
+	SafeDelete(m_directLight);
+
 	g_pDeviceManager->Destroy();
 }
 
@@ -61,6 +66,10 @@ void cMainGame::Setup()
 
 
 	Set_Light(); 
+
+	m_directLight = new DirectionLight;
+	m_directLight->SetUp();
+	
 }
 
 void cMainGame::Update()
@@ -73,6 +82,9 @@ void cMainGame::Update()
 
 	if (m_pCamera)
 		m_pCamera->Update(); 
+
+	if (m_directLight)
+		m_directLight->Update();
 }
 
 void cMainGame::Render()
@@ -106,18 +118,18 @@ void cMainGame::WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 
 void cMainGame::Set_Light()
 {
-	D3DLIGHT9	stLight; 
-	ZeroMemory(&stLight, sizeof(D3DLIGHT9)); 
-	stLight.Type = D3DLIGHT_DIRECTIONAL; 
-	stLight.Ambient = D3DXCOLOR(0.8F, 0.8F, 0.8F, 1.0F); 
-	stLight.Diffuse = D3DXCOLOR(0.8F, 0.8F, 0.8F, 1.0F);
-	stLight.Specular = D3DXCOLOR(0.8F, 0.8F, 0.8F, 1.0F);
-
-	D3DXVECTOR3  vDir(1.0f, -1.0f, 1.0f); 
-	D3DXVec3Normalize(&vDir, &vDir); 
-	stLight.Direction = vDir; 
-	g_pD3DDevice->SetLight(0, &stLight); 
-	g_pD3DDevice->LightEnable(0, true); 
+	// D3DLIGHT9	stLight; 
+	// ZeroMemory(&stLight, sizeof(D3DLIGHT9)); 
+	// stLight.Type = D3DLIGHT_DIRECTIONAL; 
+	// stLight.Ambient = D3DXCOLOR(0.8F, 0.8F, 0.8F, 1.0F); 
+	// stLight.Diffuse = D3DXCOLOR(0.8F, 0.8F, 0.8F, 1.0F);
+	// stLight.Specular = D3DXCOLOR(0.8F, 0.8F, 0.8F, 1.0F);
+	// 
+	// D3DXVECTOR3  vDir(1.0f, -1.0f, 1.0f); 
+	// D3DXVec3Normalize(&vDir, &vDir); 
+	// stLight.Direction = vDir; 
+	// g_pD3DDevice->SetLight(0, &stLight); 
+	// g_pD3DDevice->LightEnable(0, true); 
 }
 
 void cMainGame::Draw_Texture()

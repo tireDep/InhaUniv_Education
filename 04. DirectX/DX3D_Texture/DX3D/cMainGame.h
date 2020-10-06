@@ -3,7 +3,7 @@ class cCubePC;
 class cCamera; 
 class cGrid; 
 class cCubeMan; 
-
+class DirectionLight;
 
 class cMainGame
 {
@@ -17,6 +17,8 @@ private :
 	cGrid*			m_pGrid; 
 
 	cCubeMan*		m_pCubeMan; 
+
+	DirectionLight* m_directLight;
 
 	// >> : for texture 
 	LPDIRECT3DTEXTURE9		m_pTexture; 

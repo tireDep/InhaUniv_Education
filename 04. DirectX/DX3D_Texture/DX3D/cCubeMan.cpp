@@ -25,6 +25,7 @@ cCubeMan::~cCubeMan()
 	SafeRelease(m_pTexture);
 }
 
+
 void cCubeMan::Setup()
 {
 	cCharacter::Setup(); 
@@ -89,12 +90,20 @@ void cCubeMan::Render()
 		D3DXMatrixIdentity(&matWorld); 
 		g_pD3DDevice->SetTransform(D3DTS_WORLD, &matWorld); 
 		
-		g_pD3DDevice->SetTexture(0, m_pTexture);
+		// g_pD3DDevice->SetTexture(0, m_pTexture);
 
 		if (m_pRoot)
 			m_pRoot->Render();	// cCubeNode -> Render()
 
-		g_pD3DDevice->SetTexture(0, NULL);
+		// g_pD3DDevice->SetTexture(0, NULL);
 	}
 }
 
+/*
+[ todo ]
+1. Grid : pn으로 변경, light 적용
+2. Directional Light : 해 뜨고 지는 것
+3. Spot Light : 키 입력에 따라 방향조정
+4. Point Light : 키 입력에 따라 범위 조정
+5. 각 라이트의 위치를 박스로 표시할 것
+*/
