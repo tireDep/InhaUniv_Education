@@ -4,6 +4,7 @@
 DirectionLight::DirectionLight() : 
 	radian(0.0f)
 {
+	SetUp();
 }
 
 DirectionLight::~DirectionLight()
@@ -16,10 +17,9 @@ void DirectionLight::SetUp()
 	ZeroMemory(&m_DirLight, sizeof(D3DLIGHT9));
 
 	m_DirLight.Type = D3DLIGHT_DIRECTIONAL;
-	m_DirLight.Diffuse = D3DXCOLOR(1.0f, 0, 0, 1.0f);
-	// m_DirLight.Specular = D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f) * 0.3f;
-	// 과하게 반짝여서 제외
-	m_DirLight.Ambient = D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f) * 0.6f;
+	m_DirLight.Diffuse = D3DXCOLOR(0.7f, 0.7f, 0.7f, 1.0f);
+	m_DirLight.Specular = D3DXCOLOR(0.7f, 0.7f, 0.7f, 1.0f) * 0.3f;
+	m_DirLight.Ambient = D3DXCOLOR(0.7f, 0.7f, 0.7f, 1.0f) * 0.5f;
 
 	D3DXVECTOR3 dir(0.0f, -1.0f, 1.0f);
 	D3DXVec3Normalize(&dir, &dir);
@@ -37,7 +37,7 @@ void DirectionLight::Update()
 {
 	D3DXMATRIXA16 matR;
 	D3DXMatrixIdentity(&matR);
-	D3DXMatrixRotationX(&matR, D3DX_PI / 180);
+	D3DXMatrixRotationX(&matR, D3DX_PI / 360);
 	// or D3DXMatrixRotationZ(&matR, D3DX_PI / 180);
 	
 	D3DXVECTOR3 calcDir = m_DirLight.Direction;
@@ -45,4 +45,8 @@ void DirectionLight::Update()
 	
 	m_DirLight.Direction = calcDir;
 	g_pD3DDevice->SetLight(0, &m_DirLight);
+}
+
+void DirectionLight::Render()
+{
 }

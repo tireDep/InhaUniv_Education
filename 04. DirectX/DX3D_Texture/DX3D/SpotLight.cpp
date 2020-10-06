@@ -4,32 +4,34 @@
 SpotLight::SpotLight() :
 	m_vRotation(0.0f , 0.0f, 0.0f)
 {
+	SetUp();
 }
 
 SpotLight::~SpotLight()
 {
+
 }
 
 void SpotLight::SetUp()
 {
 	ZeroMemory(&m_SpotLight, sizeof(D3DLIGHT9));
 	m_SpotLight.Type = D3DLIGHT_SPOT;
-	m_SpotLight.Diffuse = D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f);
-	m_SpotLight.Specular = D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f) * 0.3f;
-	m_SpotLight.Ambient = D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f) * 0.6f;
+	m_SpotLight.Diffuse = D3DXCOLOR(0.0f, 0.7f, 0.0f, 1.0f);
+	m_SpotLight.Specular = D3DXCOLOR(0.0f, 0.7f, 0.0f, 1.0f);
+	m_SpotLight.Ambient = D3DXCOLOR(0.0f, 0.7f, 0.0f, 1.0f);
 
-	m_SpotLight.Position = D3DXVECTOR3(-5, -5, -5);
+	m_SpotLight.Position = D3DXVECTOR3(-5, 5, -5);
 
-	D3DXVECTOR3 dir(0.0f, 1.0f, 0.0f);
+	D3DXVECTOR3 dir(0.0f, -1.0f, 0.0f);
 	D3DXVec3Normalize(&dir, &dir);
 	m_SpotLight.Direction = dir;
 
 	m_SpotLight.Range = 20.0f;
 	m_SpotLight.Falloff = 1.0f;
 
-	m_SpotLight.Attenuation0 = 0.000001f;
-	m_SpotLight.Attenuation1 = 0.000001f;
-	m_SpotLight.Attenuation2 = 0.000001f;
+	m_SpotLight.Attenuation0 = 0.045f;
+	m_SpotLight.Attenuation1 = 0.045f;
+	m_SpotLight.Attenuation2 = 0.045f;
 
 	m_SpotLight.Phi = D3DX_PI / 2.0f;
 	m_SpotLight.Theta = D3DX_PI / 4.0f;
@@ -154,7 +156,7 @@ void SpotLight::Update()
 	if (GetKeyState(VK_ESCAPE) & 0x8000)
 		m_vRotation = D3DXVECTOR3(0, 0, 0);	// Reset
 
-	D3DXVECTOR3 dir(0, 1, 0);
+	D3DXVECTOR3 dir(0, -1, 0);
 	D3DXMATRIXA16 matRx, matRz;
 	D3DXMatrixRotationZ(&matRz, m_vRotation.z);
 	D3DXMatrixRotationX(&matRx, m_vRotation.x);
