@@ -6,6 +6,8 @@
 #include "cGrid.h"
 #include "cCubeMan.h"
 #include "DirectionLight.h"
+#include "SpotLight.h"
+#include "PointLight.h"
 
 cMainGame::cMainGame()
 	: m_pCubePC(NULL)
@@ -14,6 +16,8 @@ cMainGame::cMainGame()
 	, m_pCubeMan(NULL) 
 	, m_pTexture(NULL)
 	, m_directLight(NULL)
+	, m_SpotLight(NULL)
+	, m_PointLight(NULL)
 {
 
 }
@@ -28,6 +32,8 @@ cMainGame::~cMainGame()
 	SafeRelease(m_pTexture); 
 
 	SafeDelete(m_directLight);
+	SafeDelete(m_SpotLight);
+	SafeDelete(m_PointLight);
 
 	g_pDeviceManager->Destroy();
 }
@@ -64,12 +70,16 @@ void cMainGame::Setup()
 		m_vecVertex.push_back(v);
 	}
 
-
 	Set_Light(); 
 
 	m_directLight = new DirectionLight;
 	m_directLight->SetUp();
-	
+
+	m_SpotLight = new SpotLight;
+	m_SpotLight->SetUp();
+
+	m_PointLight = new PointLight;
+	m_PointLight->SetUp();
 }
 
 void cMainGame::Update()
@@ -103,6 +113,12 @@ void cMainGame::Render()
 	//	m_pCubePC->Render(); 
 	if (m_pCubeMan)
 		m_pCubeMan->Render(); 
+
+	if (m_PointLight)
+		m_PointLight->Render();
+
+	if (m_SpotLight)
+		m_SpotLight->Render();
 
 	Draw_Texture(); 
 

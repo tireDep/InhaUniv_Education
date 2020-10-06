@@ -90,12 +90,12 @@ void cCubeMan::Render()
 		D3DXMatrixIdentity(&matWorld); 
 		g_pD3DDevice->SetTransform(D3DTS_WORLD, &matWorld); 
 		
-		// g_pD3DDevice->SetTexture(0, m_pTexture);
+		g_pD3DDevice->SetTexture(0, m_pTexture);
 
 		if (m_pRoot)
 			m_pRoot->Render();	// cCubeNode -> Render()
 
-		// g_pD3DDevice->SetTexture(0, NULL);
+		g_pD3DDevice->SetTexture(0, NULL);
 	}
 }
 

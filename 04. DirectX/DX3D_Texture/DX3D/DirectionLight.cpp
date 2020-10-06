@@ -2,8 +2,7 @@
 #include "DirectionLight.h"
 
 DirectionLight::DirectionLight() : 
-	lightNum(0.0f),
-	isTurn(false)
+	radian(0.0f)
 {
 }
 
@@ -27,29 +26,21 @@ void DirectionLight::SetUp()
 void DirectionLight::Update()
 {
 	float zDirc = 5.0f;
-	
-	if (!isTurn)
-	{
-		lightNum += 1.0f;
 
-		if (lightNum > 90)
-			isTurn = true;
-	}
-	else
-	{
-		lightNum -= 1.0f;
-		zDirc = -5.0f;
-
-		if (lightNum <= -90)
-			isTurn = false;
-	}
-
-
-	m_DirLight.Direction = D3DXVECTOR3(0.0f, lightNum, zDirc);
+	//radian += 1;
+	//D3DXMATRIXA16 matR;
+	//D3DXMatrixIdentity(&matR);
+	//D3DXMatrixRotationZ(&matR, radian);
+	//
+	//D3DXVECTOR3 calc = D3DXVECTOR3(0.0f, 0.0f, zDirc);
+	//D3DXVec3TransformCoord(&calc, &calc, &matR);
+	//
+	//m_DirLight.Direction = calc;
 
 	g_pD3DDevice->SetLight(0, &m_DirLight);
 	g_pD3DDevice->LightEnable(0, true);
 
 	g_pD3DDevice->SetRenderState(D3DRS_NORMALIZENORMALS, true);
-	g_pD3DDevice->SetRenderState(D3DRS_SPECULARENABLE, true);
+	// g_pD3DDevice->SetRenderState(D3DRS_SPECULARENABLE, true);
+	// 조명이 강해짐
 }
