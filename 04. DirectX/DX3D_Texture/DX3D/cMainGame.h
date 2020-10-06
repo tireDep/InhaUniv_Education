@@ -4,6 +4,8 @@ class cCamera;
 class cGrid; 
 class cCubeMan; 
 class DirectionLight;
+class SpotLight;
+class PointLight;
 
 class cMainGame
 {
@@ -19,6 +21,8 @@ private :
 	cCubeMan*		m_pCubeMan; 
 
 	DirectionLight* m_directLight;
+	SpotLight* m_SpotLight;
+	PointLight* m_PointLight;
 
 	// >> : for texture 
 	LPDIRECT3DTEXTURE9		m_pTexture; 

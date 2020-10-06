@@ -6,8 +6,7 @@ class DirectionLight
 private:
 	D3DLIGHT9 m_DirLight;
 
-	float lightNum;
-	bool isTurn;
+	float radian;
 
 public:
 	DirectionLight();
