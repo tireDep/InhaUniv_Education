@@ -21,6 +21,8 @@ cCubeMan::~cCubeMan()
 {
 	if (m_pRoot)
 		m_pRoot->Destroy(); 
+
+	SafeRelease(m_pTexture);
 }
 
 void cCubeMan::Setup()
@@ -61,6 +63,8 @@ void cCubeMan::Setup()
 	pRLeg->Setup();
 	pRLeg->SetRotDeltaX(0.1f);
 	m_pRoot->AddChild(pRLeg);
+
+	D3DXCreateTextureFromFile(g_pD3DDevice, L"../image/mkLink.png", &m_pTexture);
 }
 
 void cCubeMan::Update()
@@ -84,8 +88,13 @@ void cCubeMan::Render()
 		D3DXMATRIXA16 matWorld; 
 		D3DXMatrixIdentity(&matWorld); 
 		g_pD3DDevice->SetTransform(D3DTS_WORLD, &matWorld); 
+		
+		g_pD3DDevice->SetTexture(0, m_pTexture);
+
 		if (m_pRoot)
 			m_pRoot->Render();	// cCubeNode -> Render()
+
+		g_pD3DDevice->SetTexture(0, NULL);
 	}
 }
 

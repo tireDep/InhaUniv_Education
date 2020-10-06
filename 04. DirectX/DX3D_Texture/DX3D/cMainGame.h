@@ -22,6 +22,7 @@ private :
 	LPDIRECT3DTEXTURE9		m_pTexture; 
 	vector<ST_PT_VERTEX>	m_vecVertex; 
 	// << :
+
 public :
 	void Setup(); 
 	void Update(); 
