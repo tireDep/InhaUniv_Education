@@ -22,7 +22,7 @@ cCubeMan::~cCubeMan()
 	if (m_pRoot)
 		m_pRoot->Destroy(); 
 
-	// todo : texture Set
+	SafeRelease(m_pTexture);
 }
 
 void cCubeMan::Setup()
@@ -64,7 +64,7 @@ void cCubeMan::Setup()
 	pRLeg->SetRotDeltaX(0.1f);
 	m_pRoot->AddChild(pRLeg);
 
-	// todo : texture Set
+	D3DXCreateTextureFromFile(g_pD3DDevice, L"../image/mkLink.png", &m_pTexture);
 }
 
 void cCubeMan::Update()
@@ -89,12 +89,12 @@ void cCubeMan::Render()
 		D3DXMatrixIdentity(&matWorld); 
 		g_pD3DDevice->SetTransform(D3DTS_WORLD, &matWorld); 
 		
-		// todo : texture Set
+		g_pD3DDevice->SetTexture(0, m_pTexture);
 
 		if (m_pRoot)
 			m_pRoot->Render();	// cCubeNode -> Render()
 
-		// todo : texture Set
+		g_pD3DDevice->SetTexture(0, NULL);
 	}
 }
 

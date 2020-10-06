@@ -100,7 +100,7 @@ void cCubePNT::Setup()
 		m_vecVertex[i + 2].n = n;
 	}
 
-	D3DXCreateTextureFromFile(g_pD3DDevice, L"../image/mkLink.png", &m_pTexture);
+	
 
 }
 
@@ -110,20 +110,13 @@ void cCubePNT::Update()
 
 void cCubePNT::Render()
 {
-	g_pD3DDevice->SetRenderState(D3DRS_LIGHTING, false);
+	// g_pD3DDevice->SetRenderState(D3DRS_LIGHTING, false);
+	g_pD3DDevice->SetRenderState(D3DRS_LIGHTING, true);
 
 	g_pD3DDevice->SetFVF(ST_PNT_VERTEX::FVF); 
-	g_pD3DDevice->SetTexture(0, m_pTexture);
 
 	g_pD3DDevice->DrawPrimitiveUP(D3DPT_TRIANGLELIST,
 		m_vecVertex.size() / 3,
 		&m_vecVertex[0],
 		sizeof(ST_PNT_VERTEX)); 
-
-	// if (m_vecVertex_t.size() != 0)
-	// 	g_pD3DDevice->DrawPrimitiveUP(D3DPT_TRIANGLELIST, m_vecVertex_t.size() / 3, &m_vecVertex_t[0], sizeof(ST_PT_VERTEX));
-
-	// g_pD3DDevice->DrawPrimitiveUP(D3DPT_TRIANGLELIST, m_vecVertex_t.size() / 3, &m_vecVertex_t[0], sizeof(ST_PT_VERTEX));
-
-	g_pD3DDevice->SetTexture(0, NULL);
 }
