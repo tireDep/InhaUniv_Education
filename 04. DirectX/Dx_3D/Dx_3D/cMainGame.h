@@ -1,38 +1,51 @@
 #pragma once
 #include "stdafx.h"
 
-class cCubePC;
-class cCamera;
-class cGrid;
-
-class cCubeMan;
-// >> 어딘가에 선언되어 있음
-
 class cMainGame
 {
 private:
 	vector<stPC_Vertex> m_vecLineVertex;
 	vector<stPC_Vertex> m_verTriangleVertex;
 
-	// >>
-	cCubePC* m_pCubePc;
-	cCamera* m_pCamera;
-	cGrid* m_pGrid;
-	//<<
+	vector<stPC_Vertex> m_vecGridVertex;
+	
+	vector<stPC_Vertex> m_vecCube;
 
-	cCubeMan* m_pCubeMan;
+	vector<stPC_Vertex> m_vecZGizmo;
 
-	LPDIRECT3DTEXTURE9 m_pTexture;
-	vector<stPT_Vertext> m_vecVertex;
-	// texture
+	D3DXVECTOR3 movePos;
+	D3DXVECTOR3 cubeDirect;
 
+	float fRotY;
+
+	D3DXMATRIXA16 matWorld;
+	D3DXMATRIXA16 matRot;
+
+	float fCamDistance;
+
+	D3DXVECTOR3 camPos;
+	POINT startPos;
+	bool isLBtnDown;
+
+	D3DXVECTOR3 camAngle;
+
+	float fScale;
+
+	vector<vector<stPC_Vertex>> m_vecChar;
 
 public:
 	cMainGame();
 	~cMainGame();
 
+	void WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam);
+
 	void SetUp();
 	void Update();
+
+	void Update_Scale();
+	void Update_Rotaion();
+	void Update_Move();
+
 	void Render();
 
 	void SetUp_Line();
@@ -41,11 +54,16 @@ public:
 	void SetUp_Triangle();
 	void Draw_Triangle();
 
-	// >>
-	void WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam);
-	// <<
+	void SetUp_Grid();
+	void Draw_Grid();
 
-	void Set_Light();
+	void SetUp_Cube();
+	void Draw_Cube();
 
-	void Draw_Texture();
+	void SetUp_Gizmo();
+	void Draw_Gizmo();
+
+	void SetColor(vector<stPC_Vertex> &vec, int r, int g, int b);
+
+	void AddCharacterPoly(vector<stPC_Vertex> &index);
 };

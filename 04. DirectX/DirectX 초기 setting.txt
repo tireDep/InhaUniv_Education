@@ -1,0 +1,40 @@
+----------------------------------------------------------------------
+[ Property Manager ]
+view -> otherWindow -> PropertyManager
+
+>> 설치 후 최초 설정
++) Include, Lib 폴더 위치 알기 쉬운곳에 두는 것이 좋음
+
+debug | win32
+-> userMacro -> add 
+Name : DH
+Value : Include 폴더 주소
+
+Name : DL
+Value : Lib x86 폴더 주소
++) release도 하는 것이 좋음
+
+VC++ Directory
+-> include Directories 맨 마지막 $(DH);
+-> Lib Dire 어쩌구 맨 마지막 $(DL);
+
+<< 설치 후 최초 설정
+
+C/C++ -> General
+-> SDL check : No
+-> Multiprocessor : Yes
+
+CodeGeneration
+->Enable Minimal => Rebuild : No
+
+----------------------------------------------------------------------
+[ Solution Explorer Poperty ]
+(Soultion 'Name' 어쩌구) // 솔루션 익스플로러 맨 위에 있는거 우클릭 Property
+
+Configration
+-> Configration Manager 
+-> Active Solution platform
+-> Edit
+-> x64 delete
+
+==> x64 지우기

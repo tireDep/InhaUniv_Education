@@ -41,16 +41,24 @@ void cCubeNode::Update()
 {
 	cCubePNT::Update(); 
 
-	m_fRotX += m_fRotDeltaX; 
-	if (m_fRotX > D3DX_PI / 6.0F)
+	// >> 걷는 경우에만 애니메이션 실행
+	if (GetKeyState('W') >= 0 && GetKeyState('S') >= 0)
 	{
-		m_fRotX = D3DX_PI / 6.0F; 
-		m_fRotDeltaX *= -1; 
+		m_fRotX = 0;
 	}
-	if (m_fRotX < -D3DX_PI / 6.0F)
+	else
 	{
-		m_fRotX = -D3DX_PI / 6.0F;
-		m_fRotDeltaX *= -1;
+		m_fRotX += m_fRotDeltaX;
+		if (m_fRotX > D3DX_PI / 6.0F)
+		{
+			m_fRotX = D3DX_PI / 6.0F;
+			m_fRotDeltaX *= -1;
+		}
+		if (m_fRotX < -D3DX_PI / 6.0F)
+		{
+			m_fRotX = -D3DX_PI / 6.0F;
+			m_fRotDeltaX *= -1;
+		}
 	}
 
 
@@ -71,16 +79,16 @@ void cCubeNode::Update()
 
 	for each(auto p in m_vecChild)
 	{
-		p->Update(); 
+		p->Update(); // cCubeNode -> Update()
 	}
 }
 
 void cCubeNode::Render()
 {
 	g_pD3DDevice->SetTransform(D3DTS_WORLD, &m_matWorldTM); 
-	cCubePNT::Render(); 
+	cCubePNT::Render(); // 실제로 그려주는 곳
 	for each(auto p in m_vecChild)
 	{
-		p->Render(); 
+		p->Render();	// cCubeNode -> Render()
 	}
 }
