@@ -49,9 +49,9 @@ void cGrid::Setup(int nNumHalfTile, float fInterval)
 	// v.p = D3DXVECTOR3(0, 0, fMin); m_vecVertex.push_back(v);
 	// v.p = D3DXVECTOR3(0, 0, fMax); m_vecVertex.push_back(v);
 
-	for (int j = -15; j < 15; j++)
+	for (float j = -15; j < 15; j+=0.25f)
 	{
-		for (int i = -15; i < 15; i++)
+		for (float i = -15; i < 15; i+=0.25f)
 		{
 			v.p = D3DXVECTOR3(j + 1, 0, i);
 			v.n = D3DXVECTOR3(0, 1, 0);

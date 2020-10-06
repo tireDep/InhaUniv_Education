@@ -3,7 +3,7 @@
 
 PointLight::PointLight()
 {
-
+	SetUp();
 }
 
 PointLight::~PointLight()
@@ -20,8 +20,10 @@ void PointLight::SetUp()
 	m_PointLight.Specular = D3DXCOLOR(0.0f, 0.0f, 0.2f, 1.0f) * 0.3f;
 	m_PointLight.Ambient = D3DXCOLOR(0.0f, 0.0f, 0.2f, 1.0f) * 0.6f;
 
-	m_PointLight.Attenuation0 = 0.0000001f;
-	m_PointLight.Attenuation1 = 0.01f;
+	m_PointLight.Attenuation0 = 0.045f;
+	m_PointLight.Attenuation1 = 0.045f;
+	m_PointLight.Attenuation2 = 0.045f;
+	// 빛의 세기가 약해지는 정도
 
 	m_PointLight.Position = D3DXVECTOR3(5.0f, 2.0f, 5.0f);
 

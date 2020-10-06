@@ -70,16 +70,7 @@ void cMainGame::Setup()
 		m_vecVertex.push_back(v);
 	}
 
-	Set_Light(); 
-
-	m_directLight = new DirectionLight;
-	m_directLight->SetUp();
-
-	m_SpotLight = new SpotLight;
-	m_SpotLight->SetUp();
-
-	m_PointLight = new PointLight;
-	m_PointLight->SetUp();
+	Set_Light();
 }
 
 void cMainGame::Update()
@@ -93,14 +84,8 @@ void cMainGame::Update()
 	if (m_pCamera)
 		m_pCamera->Update(); 
 
-	if (m_directLight)
-		m_directLight->Update();
-
-	if (m_SpotLight)
-		m_SpotLight->Update();
-
-	if (m_PointLight)
-		m_PointLight->Update();
+	for (int i = 0; i < m_vecLight.size(); i++)
+		m_vecLight[i]->Update();
 }
 
 void cMainGame::Render()
@@ -120,11 +105,8 @@ void cMainGame::Render()
 	if (m_pCubeMan)
 		m_pCubeMan->Render(); 
 
-	if (m_PointLight)
-		m_PointLight->Render();
-
-	if (m_SpotLight)
-		m_SpotLight->Render();
+	for (int i = 0; i < m_vecLight.size(); i++)
+		m_vecLight[i]->Render();
 
 	Draw_Texture(); 
 
@@ -140,18 +122,14 @@ void cMainGame::WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 
 void cMainGame::Set_Light()
 {
-	// D3DLIGHT9	stLight; 
-	// ZeroMemory(&stLight, sizeof(D3DLIGHT9)); 
-	// stLight.Type = D3DLIGHT_DIRECTIONAL; 
-	// stLight.Ambient = D3DXCOLOR(0.8F, 0.8F, 0.8F, 1.0F); 
-	// stLight.Diffuse = D3DXCOLOR(0.8F, 0.8F, 0.8F, 1.0F);
-	// stLight.Specular = D3DXCOLOR(0.8F, 0.8F, 0.8F, 1.0F);
-	// 
-	// D3DXVECTOR3  vDir(1.0f, -1.0f, 1.0f); 
-	// D3DXVec3Normalize(&vDir, &vDir); 
-	// stLight.Direction = vDir; 
-	// g_pD3DDevice->SetLight(0, &stLight); 
-	// g_pD3DDevice->LightEnable(0, true); 
+	m_directLight = new DirectionLight;
+	m_vecLight.push_back(m_directLight);
+
+	m_SpotLight = new SpotLight;
+	m_vecLight.push_back(m_SpotLight);
+
+	m_PointLight = new PointLight;
+	m_vecLight.push_back(m_PointLight);
 }
 
 void cMainGame::Draw_Texture()

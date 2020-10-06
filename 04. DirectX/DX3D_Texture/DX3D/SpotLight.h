@@ -1,7 +1,8 @@
 #pragma once
 #include "stdafx.h"
+#include "cLight.h"
 
-class SpotLight
+class SpotLight : public cLight
 {
 private:
 	D3DLIGHT9 m_SpotLight;
@@ -14,7 +15,7 @@ public:
 	SpotLight();
 	~SpotLight();
 
-	void SetUp();
-	void Update();
-	void Render();
+	void SetUp() override;
+	void Update() override;
+	void Render() override;
 };

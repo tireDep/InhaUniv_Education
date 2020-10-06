@@ -1,7 +1,8 @@
 #pragma once
 #include "stdafx.h"
+#include "cLight.h"
 
-class PointLight
+class PointLight : public cLight
 {
 private:
 	D3DLIGHT9 m_PointLight;

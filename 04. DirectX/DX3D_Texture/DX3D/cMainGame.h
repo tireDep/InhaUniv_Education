@@ -7,6 +7,8 @@ class DirectionLight;
 class SpotLight;
 class PointLight;
 
+#include "cLight.h"
+
 class cMainGame
 {
 public:
@@ -23,6 +25,8 @@ private :
 	DirectionLight* m_directLight;
 	SpotLight* m_SpotLight;
 	PointLight* m_PointLight;
+
+	vector<cLight *> m_vecLight;
 
 	// >> : for texture 
 	LPDIRECT3DTEXTURE9		m_pTexture; 
