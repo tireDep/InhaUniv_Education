@@ -21,6 +21,8 @@ cCubeMan::~cCubeMan()
 {
 	if (m_pRoot)
 		m_pRoot->Destroy(); 
+
+	// todo : texture Set
 }
 
 void cCubeMan::Setup()
@@ -61,6 +63,8 @@ void cCubeMan::Setup()
 	pRLeg->Setup();
 	pRLeg->SetRotDeltaX(0.1f);
 	m_pRoot->AddChild(pRLeg);
+
+	// todo : texture Set
 }
 
 void cCubeMan::Update()
@@ -84,8 +88,13 @@ void cCubeMan::Render()
 		D3DXMATRIXA16 matWorld; 
 		D3DXMatrixIdentity(&matWorld); 
 		g_pD3DDevice->SetTransform(D3DTS_WORLD, &matWorld); 
+		
+		// todo : texture Set
+
 		if (m_pRoot)
 			m_pRoot->Render();	// cCubeNode -> Render()
+
+		// todo : texture Set
 	}
 }
 

@@ -12,6 +12,8 @@ protected :
 	cCubeNode*			m_pRoot; 
 	D3DMATERIAL9		m_stMtl; 
 
+	// todo : texture Set
+
 public : 
 	virtual ~cCubeMan(); 
 
