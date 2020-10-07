@@ -180,7 +180,6 @@
     <ClCompile Include="cHead.cpp" />
     <ClCompile Include="cLeftArm.cpp" />
     <ClCompile Include="cLeftLeg.cpp" />
-    <ClCompile Include="cLight.cpp" />
     <ClCompile Include="cMainGame.cpp" />
     <ClCompile Include="cPyramid.cpp" />
     <ClCompile Include="cRightArm.cpp" />

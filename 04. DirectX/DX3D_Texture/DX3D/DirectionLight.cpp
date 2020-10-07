@@ -1,8 +1,7 @@
 #include "stdafx.h"
 #include "DirectionLight.h"
 
-DirectionLight::DirectionLight() : 
-	radian(0.0f)
+DirectionLight::DirectionLight()
 {
 	SetUp();
 }

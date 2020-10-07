@@ -15,7 +15,7 @@ public:
 	SpotLight();
 	~SpotLight();
 
-	void SetUp() override;
-	void Update() override;
-	void Render() override;
+	void SetUp();
+	void Update();
+	void Render();
 };
