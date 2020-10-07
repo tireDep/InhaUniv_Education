@@ -8,6 +8,7 @@ class SpotLight;
 class PointLight;
 
 #include "cLight.h"
+#include "cDirection.h"
 
 class cMainGame
 {
@@ -32,6 +33,9 @@ private :
 	LPDIRECT3DTEXTURE9		m_pTexture; 
 	vector<ST_PT_VERTEX>	m_vecVertex; 
 	// << :
+
+	cDirection* m_direction;
+	cDirection m_NewDirection;
 
 public :
 	void Setup(); 

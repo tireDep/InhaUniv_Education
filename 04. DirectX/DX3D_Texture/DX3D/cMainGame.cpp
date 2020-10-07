@@ -18,6 +18,7 @@ cMainGame::cMainGame()
 	, m_directLight(NULL)
 	, m_SpotLight(NULL)
 	, m_PointLight(NULL)
+	, m_direction(NULL)
 {
 
 }
@@ -34,6 +35,8 @@ cMainGame::~cMainGame()
 	SafeDelete(m_directLight);
 	SafeDelete(m_SpotLight);
 	SafeDelete(m_PointLight);
+
+	SafeDelete(m_direction);
 
 	g_pDeviceManager->Destroy();
 }
@@ -71,6 +74,12 @@ void cMainGame::Setup()
 	}
 
 	Set_Light();
+
+	m_direction = new cDirection;
+	m_direction->SetUpHexa();
+
+	if (m_direction)
+		m_NewDirection.SetUp(*m_direction);
 }
 
 void cMainGame::Update()
@@ -107,6 +116,11 @@ void cMainGame::Render()
 
 	for (int i = 0; i < m_vecLight.size(); i++)
 		m_vecLight[i]->Render();
+
+	if (m_direction)
+		m_direction->Render();
+
+	m_NewDirection.Render();
 
 	Draw_Texture(); 
 
