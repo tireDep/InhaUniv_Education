@@ -151,7 +151,8 @@ void PointLight::Render()
 	D3DXMATRIXA16 matWorld;
 	D3DXMatrixIdentity(&matWorld);
 
-	g_pD3DDevice->SetRenderState(D3DRS_CULLMODE, false);
+	g_pD3DDevice->SetRenderState(D3DRS_CULLMODE, true);
+
 	g_pD3DDevice->SetTransform(D3DTS_WORLD, &matWorld);
 	g_pD3DDevice->SetFVF(ST_PC_VERTEX::FVF);
 	g_pD3DDevice->DrawPrimitiveUP(D3DPT_TRIANGLELIST,

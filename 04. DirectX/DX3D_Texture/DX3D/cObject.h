@@ -21,6 +21,9 @@ private:
 	vector<string> m_vecTextureFilePath;
 	// << Set mtlFile
 
+	LPDIRECT3DTEXTURE9 texture;
+	vector<LPDIRECT3DTEXTURE9> m_vecTexture;
+
 public:
 	cObject();
 	~cObject();

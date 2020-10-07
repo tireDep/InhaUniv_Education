@@ -49,6 +49,28 @@ cObject::cObject(string fName)
 		}
 	}
 	// << Normal
+
+	// >> Texture
+	for (int i = 0; i < m_vecVertex.size(); i++)
+	{
+		int len;
+		int sLength = m_vecTextureFilePath[i].length() + 1;
+		len = MultiByteToWideChar(CP_ACP, 0, m_vecTextureFilePath[i].c_str(), sLength, 0, 0);
+
+		wchar_t* buffer = new wchar_t[len];
+		MultiByteToWideChar(CP_ACP, 0, m_vecTextureFilePath[i].c_str(), sLength, buffer, len);
+
+		wstring result(buffer);
+		delete[] buffer;
+
+		LPCWSTR lFileName = result.c_str();
+		// <<
+
+		D3DXCreateTextureFromFile(g_pD3DDevice, lFileName, &texture);
+		m_vecTexture.push_back(texture);
+	}
+	// << Texture
+
 }
 
 
@@ -233,14 +255,19 @@ void cObject::CheckMtl(string strRead)
 			m_vecMtlUseIndex.push_back(0);
 		else
 		{
+			bool isIn = false;
 			for (int i = 0; i < m_vecReadMtlUse.size(); i++)
 			{
-				if (m_vecReadMtlUse[i] == m_vecReadMtlUse[i + 1])
+				if (m_vecReadMtlUse[i] == m_vecReadMtlUse[m_vecReadMtlUse.size() - 1])
 				{
 					m_vecMtlUseIndex.push_back(i);
+					isIn = true;
 					break;
 				}
 			}
+
+			if (!isIn)
+				m_vecMtlUseIndex.push_back(m_vecMtlUseIndex.size());
 		}
 
 
@@ -350,27 +377,9 @@ void cObject::Render()
 			g_pD3DDevice->SetTransform(D3DTS_WORLD, &matWorld);
 
 			g_pD3DDevice->SetFVF(ST_PNT_VERTEX::FVF);
-			
-			// >>
-			int len;
-			int sLength = m_vecTextureFilePath[i].length() + 1;
-			len = MultiByteToWideChar(CP_ACP, 0, m_vecTextureFilePath[i].c_str(), sLength, 0, 0);
 
-			wchar_t* buffer = new wchar_t[len];
-			MultiByteToWideChar(CP_ACP, 0, m_vecTextureFilePath[i].c_str(), sLength, buffer, len);
-
-			wstring result(buffer);
-			delete[] buffer;
-
-			LPCWSTR lFileName = result.c_str();
-			// <<
-
-			LPDIRECT3DTEXTURE9 texture;
-			D3DXCreateTextureFromFile(g_pD3DDevice, lFileName, &texture);
-
-			g_pD3DDevice->SetTexture(0, texture);
+			g_pD3DDevice->SetTexture(0, m_vecTexture[i]);
 			// ?? : 0 -> i or 1로 하면 텍스쳐가 출력되지 않음
-			// ?? : 텍스쳐 설정시 오래 켜두면 꺼짐
 
 			g_pD3DDevice->DrawPrimitiveUP(D3DPT_TRIANGLELIST, 
 										  m_vecVertex[i].size() / 3, 
