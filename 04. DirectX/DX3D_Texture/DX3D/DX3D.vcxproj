@@ -157,6 +157,7 @@
     <ClInclude Include="cLeftLeg.h" />
     <ClInclude Include="cLight.h" />
     <ClInclude Include="cMainGame.h" />
+    <ClInclude Include="cObject.h" />
     <ClInclude Include="cPyramid.h" />
     <ClInclude Include="cRightArm.h" />
     <ClInclude Include="cRightLeg.h" />
@@ -183,6 +184,7 @@
     <ClCompile Include="cLeftArm.cpp" />
     <ClCompile Include="cLeftLeg.cpp" />
     <ClCompile Include="cMainGame.cpp" />
+    <ClCompile Include="cObject.cpp" />
     <ClCompile Include="cPyramid.cpp" />
     <ClCompile Include="cRightArm.cpp" />
     <ClCompile Include="cRightLeg.cpp" />

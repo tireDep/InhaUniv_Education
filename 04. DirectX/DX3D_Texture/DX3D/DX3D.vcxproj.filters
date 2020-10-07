@@ -96,6 +96,9 @@
     <ClInclude Include="cDirection.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="cObject.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -162,6 +165,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="cDirection.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="cObject.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

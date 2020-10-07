@@ -8,6 +8,7 @@
 #include "DirectionLight.h"
 #include "SpotLight.h"
 #include "PointLight.h"
+#include "cObject.h"
 
 cMainGame::cMainGame()
 	: m_pCubePC(NULL)
@@ -20,7 +21,8 @@ cMainGame::cMainGame()
 	, m_PointLight(NULL)
 	, m_direction(NULL)
 {
-
+	cObject test;
+	test.ReadFileData();
 }
 
 
