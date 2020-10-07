@@ -7,8 +7,13 @@ class DirectionLight;
 class SpotLight;
 class PointLight;
 
-#include "cLight.h"
-#include "cDirection.h"
+class cLight;
+class cDirection;
+
+class cObject;
+
+// #include "cLight.h"
+// #include "cDirection.h"
 
 class cMainGame
 {
@@ -35,7 +40,9 @@ private :
 	// << :
 
 	cDirection* m_direction;
-	cDirection m_NewDirection;
+	cDirection* m_NewDirection;
+
+	vector<cObject *> m_vecObj;
 
 public :
 	void Setup(); 

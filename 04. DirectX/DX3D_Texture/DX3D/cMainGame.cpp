@@ -8,21 +8,24 @@
 #include "DirectionLight.h"
 #include "SpotLight.h"
 #include "PointLight.h"
+
+#include "cDirection.h"
 #include "cObject.h"
 
 cMainGame::cMainGame()
 	: m_pCubePC(NULL)
 	, m_pCamera(NULL)
 	, m_pGrid(NULL)
-	, m_pCubeMan(NULL) 
+	, m_pCubeMan(NULL)
 	, m_pTexture(NULL)
 	, m_directLight(NULL)
 	, m_SpotLight(NULL)
 	, m_PointLight(NULL)
 	, m_direction(NULL)
+	, m_NewDirection(NULL)
 {
-	cObject test;
-	test.ReadFileData();
+	cObject * test = new cObject("box.obj");
+	m_vecObj.push_back(test);
 }
 
 
@@ -39,6 +42,7 @@ cMainGame::~cMainGame()
 	SafeDelete(m_PointLight);
 
 	SafeDelete(m_direction);
+	SafeDelete(m_NewDirection);
 
 	g_pDeviceManager->Destroy();
 }
@@ -81,7 +85,10 @@ void cMainGame::Setup()
 	m_direction->SetUpHexa();
 
 	if (m_direction)
-		m_NewDirection.SetUp(*m_direction);
+	{
+		m_NewDirection = new cDirection;
+		m_NewDirection->SetUp(*m_direction);
+	}
 }
 
 void cMainGame::Update()
@@ -122,7 +129,11 @@ void cMainGame::Render()
 	if (m_direction)
 		m_direction->Render();
 
-	m_NewDirection.Render();
+	if(m_NewDirection)
+		m_NewDirection->Render();
+
+	for (int i = 0; i < m_vecObj.size(); i++)
+		m_vecObj[i]->Render();
 
 	Draw_Texture(); 
 
