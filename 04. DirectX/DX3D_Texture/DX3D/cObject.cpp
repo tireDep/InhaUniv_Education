@@ -20,6 +20,35 @@ cObject::cObject(string fName)
 {
 	ReadObjFile(fName);
 	ReadMtlFile();
+
+	// << Scale
+	D3DXMATRIXA16 matS;
+	D3DXMatrixScaling(&matS, 0.5f, 0.5f, 0.5f);
+	for (int i = 0; i < m_vecVertex.size(); i++)
+	{
+		for (int j = 0; j < m_vecVertex[i].size(); j++)
+			D3DXVec3TransformCoord(&m_vecVertex[i][j].p, &m_vecVertex[i][j].p, &matS);
+	}
+	// >> Scale
+
+	// >> Normal
+	D3DXVECTOR3 u, v, n;
+	for (int i = 0; i < m_vecVertex.size(); i++)
+	{
+		for (int j = 0; j < m_vecVertex[i].size(); j += 3)
+		{
+			u = m_vecVertex[i][j + 1].p - m_vecVertex[i][j].p;
+			v = m_vecVertex[i][j + 2].p - m_vecVertex[i][j].p;
+
+			D3DXVec3Cross(&n, &u, &v);
+			D3DXVec3Normalize(&n, &n);
+
+			m_vecVertex[i][j + 0].n = n;
+			m_vecVertex[i][j + 1].n = n;
+			m_vecVertex[i][j + 2].n = n;
+		}
+	}
+	// << Normal
 }
 
 
@@ -198,9 +227,24 @@ void cObject::CheckMtl(string strRead)
 	if (strstr(strRead.c_str(), "usemtl"))
 	{
 		int pos = strRead.find(" ");
-		m_vecStrMtlSet.push_back(strRead.substr(pos + 1, strRead.length() - 1));
-		// m_vecStrMtlSet = (strRead.substr(pos + 1, strRead.length() - 1));
+		m_vecReadMtlUse.push_back(strRead.substr(pos + 1, strRead.length() - 1));
 
+		if (m_vecReadMtlUse.size() == 1)
+			m_vecMtlUseIndex.push_back(0);
+		else
+		{
+			for (int i = 0; i < m_vecReadMtlUse.size(); i++)
+			{
+				if (m_vecReadMtlUse[i] == m_vecReadMtlUse[i + 1])
+				{
+					m_vecMtlUseIndex.push_back(i);
+					break;
+				}
+			}
+		}
+
+
+		
 		strRead = "\0";
 	}
 
@@ -218,7 +262,6 @@ void cObject::ReadMtlFile()
 {
 	ifstream fp;
 	string strRead;
-	bool isTextureAdd = false;
 	
 	SetFilePath(m_strMtlFileName);
 	fp.open(m_strMtlFileName); // , ios::in | ios::binary
@@ -228,13 +271,14 @@ void cObject::ReadMtlFile()
 		{
 			getline(fp, strRead);
 
-			for (int i = 0; i < m_vecStrMtlSet.size(); i++)
+			for (int i = 0; i < m_vecReadMtlUse.size(); i++)
 			{
-				if (strstr(strRead.c_str(), m_vecStrMtlSet[i].c_str()))
+				if (strstr(strRead.c_str(), m_vecReadMtlUse[i].c_str()))
 				{
-					isTextureAdd = true;
 					string temp;
 					D3DMATERIAL9 tempMtrl;
+
+					ZeroMemory(&tempMtrl, sizeof(D3DMATERIAL9));
 					fp >> temp >> tempMtrl.Ambient.r >> tempMtrl.Ambient.g >> tempMtrl.Ambient.b;
 					tempMtrl.Ambient.a = 1.0f;
 
@@ -246,34 +290,42 @@ void cObject::ReadMtlFile()
 
 					// ※ : d, Ns, illum은 읽어오지 않음
 
-					m_vecMtrl.push_back(tempMtrl);
-					strRead = "\0";
-				}
+					while (1)
+					{
+						string temp;
+						fp >> temp;
+						if (temp == "map_Kd")
+						{
+							string str; //  = strRead.substr(pos + 1, strRead.length() - 1);
+							fp >> str;
+							SetFilePath(str);
+							m_vecReadTexture.push_back(str);
+							break;
+						}
+					}
 
-				if (strstr(strRead.c_str(), "map_Kd"))
-				{
-					int pos = strRead.find(" ");
-					string str = strRead.substr(pos + 1, strRead.length() - 1);
-					SetFilePath(str);
-					m_vecTextureFilePath.push_back(str);
-
+					m_vecReadMtrl.push_back(tempMtrl);
 					strRead = "\0";
 				}
 			}	// for
+		}
 
-			if (!isTextureAdd)
+		for (int i = 0; i < m_vecMtlUseIndex.size(); i++)
+		{
+			for (int j = 0; j < m_vecReadMtrl.size(); j++)
 			{
-
+				if (m_vecMtlUseIndex[i] == j)
+				{
+					m_vecMtrl.push_back(m_vecReadMtrl[j]);
+					m_vecTextureFilePath.push_back(m_vecReadTexture[j]);
+				}
 			}
-
 		}
 	}
 	else
 	{
 		MessageBox(g_hWnd, L"Error : MtlFileOpen", L"Error", MB_YESNO);
 	}
-
-	MessageBox(g_hWnd, L"fin", L"fin", MB_YESNO);
 
 	if (&fp != NULL)
 		fp.close();
@@ -286,11 +338,11 @@ void cObject::SetFilePath(string & str)
 
 void cObject::Render()
 {
-	for (int i = 0; i < m_vecVertex.size(); i++)
+	if (g_pD3DDevice)
 	{
-		if (g_pD3DDevice)
+		for (int i = 0; i < m_vecVertex.size(); i++)
 		{
-			g_pD3DDevice->SetRenderState(D3DRS_LIGHTING, false);
+			g_pD3DDevice->SetRenderState(D3DRS_LIGHTING, true);
 			g_pD3DDevice->SetMaterial(&m_vecMtrl[i]);
 
 			D3DXMATRIXA16 matWorld;
@@ -315,7 +367,10 @@ void cObject::Render()
 
 			LPDIRECT3DTEXTURE9 texture;
 			D3DXCreateTextureFromFile(g_pD3DDevice, lFileName, &texture);
-			g_pD3DDevice->SetTexture(i, texture);
+
+			g_pD3DDevice->SetTexture(0, texture);
+			// ?? : 0 -> i or 1로 하면 텍스쳐가 출력되지 않음
+			// ?? : 텍스쳐 설정시 오래 켜두면 꺼짐
 
 			g_pD3DDevice->DrawPrimitiveUP(D3DPT_TRIANGLELIST, 
 										  m_vecVertex[i].size() / 3, 

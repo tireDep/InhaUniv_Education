@@ -44,6 +44,9 @@ cMainGame::~cMainGame()
 	SafeDelete(m_direction);
 	SafeDelete(m_NewDirection);
 
+	for (int i = 0; i < m_vecObj.size(); i++)
+		delete m_vecObj[i];
+
 	g_pDeviceManager->Destroy();
 }
 
