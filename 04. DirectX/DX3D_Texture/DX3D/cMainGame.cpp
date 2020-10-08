@@ -9,6 +9,9 @@
 #include "SpotLight.h"
 #include "PointLight.h"
 
+#include "cObjLoader.h"
+#include "cGroup.h"
+
 cMainGame::cMainGame()
 	: m_pCubePC(NULL)
 	, m_pCamera(NULL)
@@ -34,6 +37,13 @@ cMainGame::~cMainGame()
 	SafeDelete(m_directLight);
 	SafeDelete(m_SpotLight);
 	SafeDelete(m_PointLight);
+
+	for each(auto p in m_vecGroup)
+	{
+		SafeRelease(p);
+	}
+	m_vecGroup.clear();
+	g_pObjectManger->Destroy();
 
 	g_pDeviceManager->Destroy();
 }
@@ -71,6 +81,8 @@ void cMainGame::Setup()
 	}
 
 	Set_Light();
+
+	SetUp_Obj();
 }
 
 void cMainGame::Update()
@@ -108,6 +120,8 @@ void cMainGame::Render()
 	for (int i = 0; i < m_vecLight.size(); i++)
 		m_vecLight[i]->Render();
 
+	Render_Obj();
+
 	Draw_Texture(); 
 
 	g_pD3DDevice->EndScene();
@@ -143,6 +157,46 @@ void cMainGame::Draw_Texture()
 	g_pD3DDevice->SetFVF(ST_PT_VERTEX::FVF); 
 	g_pD3DDevice->DrawPrimitiveUP(D3DPT_TRIANGLELIST, m_vecVertex.size() / 3, &m_vecVertex[0], sizeof(ST_PT_VERTEX)); 
 	g_pD3DDevice->SetTexture(0, NULL); 
+}
+
+void cMainGame::SetUp_Obj()
+{
+	cObjLoader l;
+	l.Load(m_vecGroup, "obj", "box2.obj");
+}
+
+void cMainGame::Render_Obj()
+{
+	g_pD3DDevice->SetRenderState(D3DRS_LIGHTING, true);
+	g_pD3DDevice->LightEnable(1, false);
+	g_pD3DDevice->LightEnable(2, false);
+
+	D3DXMATRIXA16 matWorld, matS, matR;
+	D3DXMatrixScaling(&matS, 0.1f, 0.1f, 0.1f);
+	D3DXMatrixRotationX(&matR, -D3DX_PI / 2.0f);
+
+	matWorld = matS * matR;
+
+	g_pD3DDevice->SetTransform(D3DTS_WORLD, &matWorld);
+	
+	// m_vecGroup[0]->Render();
+	for each(auto p in m_vecGroup)
+	{
+		p->Render();
+	}
+
+	// todo : 과제!
+	//		  맵 로드 & 캐릭터 바닥 체크
+	// D3DXIntersectTri()
+	/*
+	D3DXIntersectTri(v1, v2, v3, rayPos, rayDir, u, v, f);
+	// v1, v2, v3 : 폴리곤 정점(바닥 surface)
+	// rayPos : 광선 시작점
+	// rayDir : 광선 진행 방향
+	// (캐릭터 위치, 건물 높이 등, 캐릭터 위치)
+	// u, v 지금 당장 필요 x
+	// f : 충돌이 있을 때 값
+	*/
 }
 
 

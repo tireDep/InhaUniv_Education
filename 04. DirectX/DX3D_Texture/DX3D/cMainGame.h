@@ -7,6 +7,8 @@ class DirectionLight;
 class SpotLight;
 class PointLight;
 
+class cGroup;
+
 #include "cLight.h"
 
 class cMainGame
@@ -33,6 +35,8 @@ private :
 	vector<ST_PT_VERTEX>	m_vecVertex; 
 	// << :
 
+	vector<cGroup*> m_vecGroup;
+
 public :
 	void Setup(); 
 	void Update(); 
@@ -42,5 +46,8 @@ public :
 	void Set_Light(); 
 
 	void Draw_Texture(); 
+
+	void SetUp_Obj();
+	void Render_Obj();
 };
 
