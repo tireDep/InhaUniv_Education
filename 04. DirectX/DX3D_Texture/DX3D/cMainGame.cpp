@@ -162,14 +162,12 @@ void cMainGame::Draw_Texture()
 void cMainGame::SetUp_Obj()
 {
 	cObjLoader l;
-	l.Load(m_vecGroup, "obj", "box2.obj");
+	l.Load(m_vecGroup, "obj", "box.obj");
 }
 
 void cMainGame::Render_Obj()
 {
 	g_pD3DDevice->SetRenderState(D3DRS_LIGHTING, true);
-	g_pD3DDevice->LightEnable(1, false);
-	g_pD3DDevice->LightEnable(2, false);
 
 	D3DXMATRIXA16 matWorld, matS, matR;
 	D3DXMatrixScaling(&matS, 0.1f, 0.1f, 0.1f);
@@ -179,7 +177,6 @@ void cMainGame::Render_Obj()
 
 	g_pD3DDevice->SetTransform(D3DTS_WORLD, &matWorld);
 	
-	// m_vecGroup[0]->Render();
 	for each(auto p in m_vecGroup)
 	{
 		p->Render();
