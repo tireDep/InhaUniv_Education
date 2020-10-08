@@ -6,20 +6,16 @@ class cObject
 private:
 	vector<vector<ST_PNT_VERTEX>> m_vecVertex;
 
-	// >> Set objFile
 	string m_strMtlFileName;
 
 	vector<string> m_vecReadMtlUse;
 	vector<int> m_vecMtlUseIndex;
-	// << Set objFile
 
-	// >> Set mtlFile
 	vector<D3DMATERIAL9> m_vecReadMtrl;
 	vector<D3DMATERIAL9> m_vecMtrl;
 
 	vector<string> m_vecReadTexture;
 	vector<string> m_vecTextureFilePath;
-	// << Set mtlFile
 
 	LPDIRECT3DTEXTURE9 texture;
 	vector<LPDIRECT3DTEXTURE9> m_vecTexture;

@@ -26,6 +26,9 @@ cMainGame::cMainGame()
 {
 	cObject * test = new cObject("box.obj");
 	m_vecObj.push_back(test);
+
+	cObject * test2 = new cObject("box2.obj");
+	m_vecObj.push_back(test2);
 }
 
 
