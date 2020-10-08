@@ -26,7 +26,7 @@ public :
 	virtual void Update() override; 
 	virtual void Render() override; 
 
-	
+	void SubUpdate();
 
 };
 

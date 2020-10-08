@@ -23,7 +23,7 @@ cObject::cObject(string fName)
 
 	// << Scale
 	D3DXMATRIXA16 matS;
-	D3DXMatrixScaling(&matS, 0.5f, 0.5f, 0.5f);
+	D3DXMatrixScaling(&matS, 0.2f, 0.2f, 0.2f);
 	for (int i = 0; i < m_vecVertex.size(); i++)
 	{
 		for (int j = 0; j < m_vecVertex[i].size(); j++)

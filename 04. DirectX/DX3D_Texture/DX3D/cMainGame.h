@@ -12,6 +12,8 @@ class cDirection;
 
 class cObject;
 
+class cSubCubeMan;
+
 // #include "cLight.h"
 // #include "cDirection.h"
 
@@ -43,6 +45,8 @@ private :
 	cDirection* m_NewDirection;
 
 	vector<cObject *> m_vecObj;
+
+	cSubCubeMan* m_subCubeMan;
 
 public :
 	void Setup(); 

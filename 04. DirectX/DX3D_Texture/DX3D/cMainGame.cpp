@@ -12,6 +12,8 @@
 #include "cDirection.h"
 #include "cObject.h"
 
+#include "cSubCubeMan.h"
+
 cMainGame::cMainGame()
 	: m_pCubePC(NULL)
 	, m_pCamera(NULL)
@@ -23,6 +25,7 @@ cMainGame::cMainGame()
 	, m_PointLight(NULL)
 	, m_direction(NULL)
 	, m_NewDirection(NULL)
+	, m_subCubeMan(NULL)
 {
 	cObject * test = new cObject("box.obj");
 	m_vecObj.push_back(test);
@@ -49,6 +52,8 @@ cMainGame::~cMainGame()
 
 	for (int i = 0; i < m_vecObj.size(); i++)
 		delete m_vecObj[i];
+
+	SafeDelete(m_subCubeMan);
 
 	g_pDeviceManager->Destroy();
 }
@@ -95,6 +100,9 @@ void cMainGame::Setup()
 		m_NewDirection = new cDirection;
 		m_NewDirection->SetUp(*m_direction);
 	}
+
+	m_subCubeMan = new cSubCubeMan;
+	m_subCubeMan->SetUp(m_direction->GetVertex());
 }
 
 void cMainGame::Update()
@@ -110,6 +118,9 @@ void cMainGame::Update()
 
 	for (int i = 0; i < m_vecLight.size(); i++)
 		m_vecLight[i]->Update();
+
+	if (m_subCubeMan)
+		m_subCubeMan->Update();
 }
 
 void cMainGame::Render()
@@ -140,6 +151,9 @@ void cMainGame::Render()
 
 	for (int i = 0; i < m_vecObj.size(); i++)
 		m_vecObj[i]->Render();
+
+	if (m_subCubeMan)
+		m_subCubeMan->Render();
 
 	Draw_Texture(); 
 

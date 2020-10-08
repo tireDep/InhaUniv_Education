@@ -1,19 +1,19 @@
 #include "stdafx.h"
-#include "cDirection.h"
+#include "cPath.h"
 
 #define dMaxT 1.0f
 #define dAddT 0.5f
 // 값이 클 수록 급격하게 꺾임
 
-cDirection::cDirection()
+cPath::cPath()
 {
 }
 
-cDirection::~cDirection()
+cPath::~cPath()
 {
 }
 
-void cDirection::SetUp(cDirection set)
+void cPath::SetUp(cPath set)
 {
 	ST_PC_VERTEX addVertex;
 	D3DXVECTOR3 fSpot, sSpot;
@@ -73,7 +73,7 @@ void cDirection::SetUp(cDirection set)
 	m_vecVertex.push_back(m_vecVertex[0]);
 }
 
-void cDirection::SetUpHexa()
+void cPath::SetUpHexa()
 {
 	ST_PC_VERTEX addVertex;
 
@@ -92,7 +92,7 @@ void cDirection::SetUpHexa()
 	}
 }
 
-void cDirection::Render()
+void cPath::Render()
 {
 	g_pD3DDevice->SetRenderState(D3DRS_LIGHTING, false);
 
@@ -103,9 +103,4 @@ void cDirection::Render()
 	g_pD3DDevice->SetFVF(ST_PC_VERTEX::FVF);
 
 	g_pD3DDevice->DrawPrimitiveUP(D3DPT_LINESTRIP, m_vecVertex.size() - 1, &m_vecVertex[0], sizeof(ST_PC_VERTEX));
-}
-
-vector<ST_PC_VERTEX> cDirection::GetVertex()
-{
-	return m_vecVertex;
 }

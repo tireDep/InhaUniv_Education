@@ -161,6 +161,7 @@
     <ClInclude Include="cPyramid.h" />
     <ClInclude Include="cRightArm.h" />
     <ClInclude Include="cRightLeg.h" />
+    <ClInclude Include="cSubCubeMan.h" />
     <ClInclude Include="DirectionLight.h" />
     <ClInclude Include="DX3D.h" />
     <ClInclude Include="PointLight.h" />
@@ -188,6 +189,7 @@
     <ClCompile Include="cPyramid.cpp" />
     <ClCompile Include="cRightArm.cpp" />
     <ClCompile Include="cRightLeg.cpp" />
+    <ClCompile Include="cSubCubeMan.cpp" />
     <ClCompile Include="DirectionLight.cpp" />
     <ClCompile Include="DX3D.cpp" />
     <ClCompile Include="PointLight.cpp" />

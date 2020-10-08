@@ -1,18 +1,16 @@
 #pragma once
 #include "stdafx.h"
 
-class cDirection
+class cPath
 {
 private:
 	vector<ST_PC_VERTEX> m_vecVertex;
 
 public:
-	cDirection();
-	~cDirection();
+	cPath();
+	~cPath();
 
-	void SetUp(cDirection set);
+	void SetUp(cPath set);
 	void SetUpHexa();
 	void Render();
-
-	vector<ST_PC_VERTEX> GetVertex();
 };
