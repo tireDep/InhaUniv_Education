@@ -149,8 +149,8 @@ void cMainGame::Render()
 	if(m_NewDirection)
 		m_NewDirection->Render();
 
-	for (int i = 0; i < m_vecObj.size(); i++)
-		m_vecObj[i]->Render();
+	//for (int i = 0; i < m_vecObj.size(); i++)
+	//	m_vecObj[i]->Render();
 
 	if (m_subCubeMan)
 		m_subCubeMan->Render();

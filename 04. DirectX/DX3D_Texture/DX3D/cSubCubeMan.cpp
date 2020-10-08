@@ -66,60 +66,39 @@ void cSubCubeMan::Setup()
 
 void cSubCubeMan::Update()
 {
-	// cCharacter::Update();
+	 // >> 시선 예제 코드
+	 D3DXMATRIXA16 matR, matT;
+	 D3DXMatrixIdentity(&matT);
+	 
+	 D3DXVECTOR3 vUp(0, 1, 0);
+	 D3DXVECTOR3 vAt = m_vecPath[iDestSpot].p;
 
-	// if (GetKeyState('A') & 0X8000)
-	// {
-	// 	m_fRotY -= 0.1f;
-	// }
-	// if (GetKeyState('D') & 0X8000)
-	// {
-	// 	m_fRotY += 0.1f;
-	// }
+	 D3DXMatrixIdentity(&matR);
+	 
+	//// >>
+	//if ((m_vPosition.x <= vAt.x - 0.1f && m_vPosition.z <= vAt.z - 0.1f)
+	//	|| (m_vPosition.x >= vAt.x + 0.1f && m_vPosition.z >= vAt.z + 0.1f)) // 수정
+	//{
+	//	// 조건 수정해야함
+	//	 m_vPosition += (m_vDirection * 0.05f);
+	//}
+	//else
+	//{
+	//	iDestSpot = iDestSpot + 1 >= m_vecPath.size() - 1 ? 0 : iDestSpot += 1;
+	//	//m_vPosition = D3DXVECTOR3(0, 0, 0);
+	//	//vAt = m_vecPath[iDestSpot].p;
+	//}
 
-	// if (GetKeyState('W') & 0X8000)
-	// {
-	// 	 m_vPosition += (m_vDirection*0.05f);
-	// }
-	// if (GetKeyState('S') & 0X8000)
-	// {
-	// 	m_vPosition -= (m_vDirection*0.1f);
-	// }
+	//
+	//m_vDirection = D3DXVECTOR3(0, 0, 1);
+	//D3DXVec3TransformCoord(&m_vDirection, &(vAt - m_vPosition), &matR);
+	//D3DXMatrixTranslation(&matT, m_vPosition.x, m_vPosition.y, m_vPosition.z);
+	//// << 
 
-	// if(m_vPosition <= test)
-	// 	m_vPosition += (m_vDirection * 0.01f);
-	// else
-	// 	iDestSpot = iDestSpot + 1 >= m_vecPath.size() ? 0 : iDestSpot++;
+	 D3DXMatrixLookAtLH(&matR, &m_vPosition, &vAt, &vUp);
+	// D3DXMatrixTranspose(&matR, &matR);	// ?????
 
-	RECT rc;
-	GetClientRect(g_hWnd, &rc);
-
-	D3DXMATRIXA16 matR, matT;
-	// D3DXMatrixRotationY(&matR, m_fRotY);	
-	D3DXMatrixIdentity(&matR);
-	// D3DXMatrixIdentity(&matT);
-
-
-	 //// >> 시선 예제 코드
-	 //D3DXMATRIXA16 matR, matT;
-	 //D3DXMatrixIdentity(&matR);
-	 //D3DXMatrixIdentity(&matT);
-	 //
-	 //D3DXVECTOR3 vUp(0, 1, 0);
-	 //D3DXVECTOR3 vAt(5, 0, 0);
-	 //
-	 //D3DXMatrixIdentity(&matR);
-	 //D3DXMatrixLookAtLH(&matR, &m_vPosition, &vAt, &vUp);
-
-	 //D3DXMatrixTranspose(&matR, &matR);
-	 //// << 시선 예제 코드
-
-	if(m_vPosition.x < 2.0f)
-		m_vPosition += (m_vDirection * 0.1f);
-		
-	m_vDirection = D3DXVECTOR3(1, 0, 0);
-	D3DXVec3TransformNormal(&m_vDirection, &m_vDirection, &matR);
-	D3DXMatrixTranslation(&matT, m_vPosition.x, m_vPosition.y, m_vPosition.z);
+	 // << 시선 예제 코드
 
 	m_matWorld = matR * matT;
 
@@ -158,5 +137,5 @@ void cSubCubeMan::SetUp(vector<ST_PC_VERTEX> path)
 	m_vecPath = path;
 	
 	m_vPosition = D3DXVECTOR3(0,0,0);
-	iDestSpot = 1;
+	iDestSpot = 2;
 }
