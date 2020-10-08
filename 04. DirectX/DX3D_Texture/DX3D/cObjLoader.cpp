@@ -53,6 +53,7 @@ void cObjLoader::Load(OUT vector<cGroup*>& vecGroup, IN char * szFolder, IN char
 		{
 			if (!vecVertex.empty())
 			{
+				CalcNormalVector(vecVertex);
 				cGroup* pGroup = new cGroup;
 				pGroup->SetVertex(vecVertex);
 				pGroup->SetMtlTex(m_mapMtlTex[sMtlName]);
@@ -211,4 +212,22 @@ void cObjLoader::LoadMtlLib(char * szFolder, char * szFile)
 	} // << : while
 
 	fclose(fp);
+}
+
+void cObjLoader::CalcNormalVector(vector<ST_PNT_VERTEX>& vecVertex)
+{
+	D3DXVECTOR3 u, v, n;
+	for (int i = 0; i < vecVertex.size(); i += 3)
+	{
+		u = vecVertex[i + 1].p - vecVertex[i].p;
+		v = vecVertex[i + 2].p - vecVertex[i].p;
+
+		D3DXVec3Cross(&n, &u, &v);
+		D3DXVec3Normalize(&n, &n);
+
+		vecVertex[i + 0].n = n;
+		vecVertex[i + 1].n = n;
+		vecVertex[i + 2].n = n;
+	}
+
 }
