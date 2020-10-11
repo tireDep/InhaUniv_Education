@@ -10,6 +10,7 @@ class PointLight;
 class cGroup;
 
 class cPath;
+class cSubCubeMan;
 
 #include "cLight.h"
 
@@ -40,6 +41,7 @@ private :
 	vector<cGroup*> m_vecGroup;
 
 	vector<cPath*> m_vecPath;
+	cSubCubeMan* m_pSubCubeMan;
 
 public :
 	void Setup(); 

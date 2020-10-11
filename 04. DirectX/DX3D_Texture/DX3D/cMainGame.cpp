@@ -15,6 +15,8 @@
 #include "cPath.h"
 #include "cBezierPath.h"
 
+#include "cSubCubeMan.h"
+
 cMainGame::cMainGame()
 	: m_pCubePC(NULL)
 	, m_pCamera(NULL)
@@ -24,6 +26,7 @@ cMainGame::cMainGame()
 	, m_directLight(NULL)
 	, m_SpotLight(NULL)
 	, m_PointLight(NULL)
+	, m_pSubCubeMan(NULL)
 {
 
 }
@@ -55,6 +58,8 @@ cMainGame::~cMainGame()
 		SafeDelete(p);
 	}
 	m_vecPath.clear();
+
+	SafeDelete(m_pSubCubeMan);
 }
 
 void cMainGame::Setup()
@@ -100,6 +105,9 @@ void cMainGame::Setup()
 	cBezierPath *bezierPath = new cBezierPath;
 	bezierPath->SetUp(m_vecPath[0]->GetVertex(), 0.5);
 	m_vecPath.push_back(bezierPath);
+
+	m_pSubCubeMan = new cSubCubeMan;
+	m_pSubCubeMan->Setup();
 }
 
 void cMainGame::Update()
@@ -115,6 +123,9 @@ void cMainGame::Update()
 
 	for (int i = 0; i < m_vecLight.size(); i++)
 		m_vecLight[i]->Update();
+
+	if (m_pSubCubeMan)
+		m_pSubCubeMan->Update_Path(m_vecPath[1]->GetVertex());
 }
 
 void cMainGame::Render()
@@ -137,10 +148,13 @@ void cMainGame::Render()
 	for (int i = 0; i < m_vecLight.size(); i++)
 		m_vecLight[i]->Render();
 
-	Render_Obj();
+	// Render_Obj();
 
 	for (int i = 0; i < m_vecPath.size(); i++)
 		m_vecPath[i]->Render();
+
+	if (m_pSubCubeMan)
+		m_pSubCubeMan->Render();
 
 	Draw_Texture(); 
 

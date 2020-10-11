@@ -14,6 +14,7 @@ public :
 
 	virtual void Setup(); 
 	virtual void Update(); 
+	virtual void Update_Sub(vector<ST_PC_VERTEX> path, int &destNum);
 	virtual void Render(); 
 	virtual D3DXVECTOR3& GetPosition(); 
 

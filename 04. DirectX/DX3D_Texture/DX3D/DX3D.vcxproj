@@ -166,6 +166,7 @@
     <ClInclude Include="cPyramid.h" />
     <ClInclude Include="cRightArm.h" />
     <ClInclude Include="cRightLeg.h" />
+    <ClInclude Include="cSubCubeMan.h" />
     <ClInclude Include="cTextureManager.h" />
     <ClInclude Include="DirectionLight.h" />
     <ClInclude Include="DX3D.h" />
@@ -200,6 +201,7 @@
     <ClCompile Include="cPyramid.cpp" />
     <ClCompile Include="cRightArm.cpp" />
     <ClCompile Include="cRightLeg.cpp" />
+    <ClCompile Include="cSubCubeMan.cpp" />
     <ClCompile Include="cTextureManager.cpp" />
     <ClCompile Include="DirectionLight.cpp" />
     <ClCompile Include="DX3D.cpp" />

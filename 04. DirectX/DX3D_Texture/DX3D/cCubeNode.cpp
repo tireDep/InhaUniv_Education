@@ -83,6 +83,43 @@ void cCubeNode::Update()
 	}
 }
 
+void cCubeNode::Update_Sub()
+{
+	cCubePNT::Update();
+
+	m_fRotX += m_fRotDeltaX;
+	if (m_fRotX > D3DX_PI / 6.0F)
+	{
+		m_fRotX = D3DX_PI / 6.0F;
+		m_fRotDeltaX *= -1;
+	}
+	if (m_fRotX < -D3DX_PI / 6.0F)
+	{
+		m_fRotX = -D3DX_PI / 6.0F;
+		m_fRotDeltaX *= -1;
+	}
+
+	D3DXMATRIXA16 matR, matT;
+	D3DXMatrixIdentity(&matR);
+	D3DXMatrixIdentity(&matT);
+	
+	D3DXMatrixRotationX(&matR, m_fRotX);
+	
+	D3DXMatrixTranslation(&matT, m_vLocalPos.x, m_vLocalPos.y, m_vLocalPos.z);
+	m_matLocalTM = matR * matT;
+	
+	m_matWorldTM = m_matLocalTM;
+	if (m_pParentWorldTM)
+	{
+		m_matWorldTM *= *m_pParentWorldTM;
+	}
+	
+	for each(auto p in m_vecChild)
+	{
+		p->Update_Sub();
+	}
+}
+
 void cCubeNode::Render()
 {
 	g_pD3DDevice->SetTransform(D3DTS_WORLD, &m_matWorldTM); 

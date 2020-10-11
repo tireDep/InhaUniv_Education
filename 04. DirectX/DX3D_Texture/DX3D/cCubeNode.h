@@ -24,6 +24,7 @@ public :
 
 	virtual void Setup() override; 
 	virtual void Update() override; 
+	virtual void Update_Sub();
 	virtual void Render() override; 
 
 	
