@@ -9,6 +9,8 @@ class PointLight;
 
 class cGroup;
 
+class cPath;
+
 #include "cLight.h"
 
 class cMainGame
@@ -36,6 +38,8 @@ private :
 	// << :
 
 	vector<cGroup*> m_vecGroup;
+
+	vector<cPath*> m_vecPath;
 
 public :
 	void Setup(); 

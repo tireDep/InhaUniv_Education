@@ -12,6 +12,9 @@
 #include "cObjLoader.h"
 #include "cGroup.h"
 
+#include "cPath.h"
+#include "cBezierPath.h"
+
 cMainGame::cMainGame()
 	: m_pCubePC(NULL)
 	, m_pCamera(NULL)
@@ -46,6 +49,12 @@ cMainGame::~cMainGame()
 	g_pObjectManger->Destroy();
 
 	g_pDeviceManager->Destroy();
+
+	for each(auto p in m_vecPath)
+	{
+		SafeDelete(p);
+	}
+	m_vecPath.clear();
 }
 
 void cMainGame::Setup()
@@ -83,6 +92,14 @@ void cMainGame::Setup()
 	Set_Light();
 
 	SetUp_Obj();
+
+	cPath *hexaPath = new cPath;
+	hexaPath->SetUp(6);
+	m_vecPath.push_back(hexaPath);
+
+	cBezierPath *bezierPath = new cBezierPath;
+	bezierPath->SetUp(m_vecPath[0]->GetVertex(), 0.5);
+	m_vecPath.push_back(bezierPath);
 }
 
 void cMainGame::Update()
@@ -121,6 +138,9 @@ void cMainGame::Render()
 		m_vecLight[i]->Render();
 
 	Render_Obj();
+
+	for (int i = 0; i < m_vecPath.size(); i++)
+		m_vecPath[i]->Render();
 
 	Draw_Texture(); 
 

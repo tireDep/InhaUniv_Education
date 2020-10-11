@@ -114,6 +114,12 @@
     <ClInclude Include="cTextureManager.h">
       <Filter>Object</Filter>
     </ClInclude>
+    <ClInclude Include="cPath.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="cBezierPath.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -199,6 +205,12 @@
     </ClCompile>
     <ClCompile Include="cObjectManager.cpp">
       <Filter>Object</Filter>
+    </ClCompile>
+    <ClCompile Include="cPath.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="cBezierPath.cpp">
+      <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
