@@ -17,6 +17,8 @@
 
 #include "cSubCubeMan.h"
 
+#include "cTimer.h"
+
 cMainGame::cMainGame()
 	: m_pCubePC(NULL)
 	, m_pCamera(NULL)
@@ -108,12 +110,16 @@ void cMainGame::Setup()
 
 	m_pSubCubeMan = new cSubCubeMan;
 	m_pSubCubeMan->Setup();
+
+	dTimer->SetUp();
 }
 
 void cMainGame::Update()
 {
 	//if (m_pCubePC)
 	//	m_pCubePC->Update(); 
+
+	dTimer->Update();
 
 	if (m_pCubeMan)
 		m_pCubeMan->Update(); 

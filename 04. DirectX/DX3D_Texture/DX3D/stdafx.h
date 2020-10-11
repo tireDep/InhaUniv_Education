@@ -114,3 +114,7 @@ void SetValue(int a ) { A = a ; }
 #include "cObject.h"
 #include "cObjectManager.h"
 #include "cTextureManager.h"
+
+#include "cTimer.h"
+
+#define dTimer cTimer::GetInstance()

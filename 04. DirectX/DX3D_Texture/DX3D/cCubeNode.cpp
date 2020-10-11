@@ -48,7 +48,7 @@ void cCubeNode::Update()
 	}
 	else
 	{
-		m_fRotX += m_fRotDeltaX;
+		m_fRotX += m_fRotDeltaX * 75 * dTimer->DeltaTime();
 		if (m_fRotX > D3DX_PI / 6.0F)
 		{
 			m_fRotX = D3DX_PI / 6.0F;
@@ -87,7 +87,7 @@ void cCubeNode::Update_Sub()
 {
 	cCubePNT::Update();
 
-	m_fRotX += m_fRotDeltaX;
+	m_fRotX += m_fRotDeltaX * 75 * dTimer->DeltaTime();
 	if (m_fRotX > D3DX_PI / 6.0F)
 	{
 		m_fRotX = D3DX_PI / 6.0F;

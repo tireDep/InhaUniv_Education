@@ -15,7 +15,7 @@ void cPath::SetUp(int spot)
 
 	ST_PC_VERTEX addSpot;
 	addSpot.c = D3DXCOLOR(0.0f, 255.0f, 0.0f, 1.0f);
-	addSpot.p = D3DXVECTOR3(0.0f, 0.5f, 5.0f);
+	addSpot.p = D3DXVECTOR3(0.0f, 1.0f, 5.0f);
 	m_vecVertex.push_back(addSpot);
 
 	for (int i = 0; i < spot; i++)
