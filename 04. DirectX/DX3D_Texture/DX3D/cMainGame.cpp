@@ -9,23 +9,28 @@
 #include "SpotLight.h"
 #include "PointLight.h"
 
-#include "cDirection.h"
-#include "cObject.h"
+#include "cObjLoader.h"
+#include "cGroup.h"
+
+#include "cPath.h"
+#include "cBezierPath.h"
+
+#include "cSubCubeMan.h"
+
+#include "cTimer.h"
 
 cMainGame::cMainGame()
 	: m_pCubePC(NULL)
 	, m_pCamera(NULL)
 	, m_pGrid(NULL)
-	, m_pCubeMan(NULL)
+	, m_pCubeMan(NULL) 
 	, m_pTexture(NULL)
 	, m_directLight(NULL)
 	, m_SpotLight(NULL)
 	, m_PointLight(NULL)
-	, m_direction(NULL)
-	, m_NewDirection(NULL)
+	, m_pSubCubeMan(NULL)
 {
-	cObject * test = new cObject("box.obj");
-	m_vecObj.push_back(test);
+
 }
 
 
@@ -41,13 +46,22 @@ cMainGame::~cMainGame()
 	SafeDelete(m_SpotLight);
 	SafeDelete(m_PointLight);
 
-	SafeDelete(m_direction);
-	SafeDelete(m_NewDirection);
-
-	for (int i = 0; i < m_vecObj.size(); i++)
-		delete m_vecObj[i];
+	for each(auto p in m_vecGroup)
+	{
+		SafeRelease(p);
+	}
+	m_vecGroup.clear();
+	g_pObjectManger->Destroy();
 
 	g_pDeviceManager->Destroy();
+
+	for each(auto p in m_vecPath)
+	{
+		SafeDelete(p);
+	}
+	m_vecPath.clear();
+
+	SafeDelete(m_pSubCubeMan);
 }
 
 void cMainGame::Setup()
@@ -84,20 +98,28 @@ void cMainGame::Setup()
 
 	Set_Light();
 
-	m_direction = new cDirection;
-	m_direction->SetUpHexa();
+	SetUp_Obj();
 
-	if (m_direction)
-	{
-		m_NewDirection = new cDirection;
-		m_NewDirection->SetUp(*m_direction);
-	}
+	cPath *hexaPath = new cPath;
+	hexaPath->SetUp(6);
+	m_vecPath.push_back(hexaPath);
+
+	cBezierPath *bezierPath = new cBezierPath;
+	bezierPath->SetUp(m_vecPath[0]->GetVertex(), 0.5);
+	m_vecPath.push_back(bezierPath);
+
+	m_pSubCubeMan = new cSubCubeMan;
+	m_pSubCubeMan->Setup();
+
+	dTimer->SetUp();
 }
 
 void cMainGame::Update()
 {
 	//if (m_pCubePC)
 	//	m_pCubePC->Update(); 
+
+	dTimer->Update();
 
 	if (m_pCubeMan)
 		m_pCubeMan->Update(); 
@@ -107,6 +129,9 @@ void cMainGame::Update()
 
 	for (int i = 0; i < m_vecLight.size(); i++)
 		m_vecLight[i]->Update();
+
+	if (m_pSubCubeMan)
+		m_pSubCubeMan->Update_Path(m_vecPath[1]->GetVertex());
 }
 
 void cMainGame::Render()
@@ -129,14 +154,13 @@ void cMainGame::Render()
 	for (int i = 0; i < m_vecLight.size(); i++)
 		m_vecLight[i]->Render();
 
-	if (m_direction)
-		m_direction->Render();
+	// Render_Obj();
 
-	if(m_NewDirection)
-		m_NewDirection->Render();
+	for (int i = 0; i < m_vecPath.size(); i++)
+		m_vecPath[i]->Render();
 
-	for (int i = 0; i < m_vecObj.size(); i++)
-		m_vecObj[i]->Render();
+	if (m_pSubCubeMan)
+		m_pSubCubeMan->Render();
 
 	Draw_Texture(); 
 
@@ -173,6 +197,43 @@ void cMainGame::Draw_Texture()
 	g_pD3DDevice->SetFVF(ST_PT_VERTEX::FVF); 
 	g_pD3DDevice->DrawPrimitiveUP(D3DPT_TRIANGLELIST, m_vecVertex.size() / 3, &m_vecVertex[0], sizeof(ST_PT_VERTEX)); 
 	g_pD3DDevice->SetTexture(0, NULL); 
+}
+
+void cMainGame::SetUp_Obj()
+{
+	cObjLoader l;
+	l.Load(m_vecGroup, "obj", "box.obj");
+}
+
+void cMainGame::Render_Obj()
+{
+	g_pD3DDevice->SetRenderState(D3DRS_LIGHTING, true);
+
+	D3DXMATRIXA16 matWorld, matS, matR;
+	D3DXMatrixScaling(&matS, 0.1f, 0.1f, 0.1f);
+	D3DXMatrixRotationX(&matR, -D3DX_PI / 2.0f);
+
+	matWorld = matS * matR;
+
+	g_pD3DDevice->SetTransform(D3DTS_WORLD, &matWorld);
+	
+	for each(auto p in m_vecGroup)
+	{
+		p->Render();
+	}
+
+	// todo : 과제!
+	//		  맵 로드 & 캐릭터 바닥 체크
+	// D3DXIntersectTri()
+	/*
+	D3DXIntersectTri(v1, v2, v3, rayPos, rayDir, u, v, f);
+	// v1, v2, v3 : 폴리곤 정점(바닥 surface)
+	// rayPos : 광선 시작점
+	// rayDir : 광선 진행 방향
+	// (캐릭터 위치, 건물 높이 등, 캐릭터 위치)
+	// u, v 지금 당장 필요 x
+	// f : 충돌이 있을 때 값
+	*/
 }
 
 

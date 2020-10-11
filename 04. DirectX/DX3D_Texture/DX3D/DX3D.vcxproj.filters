@@ -16,6 +16,9 @@
     <Filter Include="CubeMan">
       <UniqueIdentifier>{d8fa7376-c585-4cac-8f75-b00590010d7e}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Object">
+      <UniqueIdentifier>{9d5f5a34-c85a-45b9-999f-af0e84ea7949}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <Text Include="ReadMe.txt" />
@@ -93,10 +96,34 @@
     <ClInclude Include="cLight.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="cDirection.h">
+    <ClInclude Include="cObject.h">
+      <Filter>Object</Filter>
+    </ClInclude>
+    <ClInclude Include="cGroup.h">
+      <Filter>Object</Filter>
+    </ClInclude>
+    <ClInclude Include="cMtlTex.h">
+      <Filter>Object</Filter>
+    </ClInclude>
+    <ClInclude Include="cObjLoader.h">
+      <Filter>Object</Filter>
+    </ClInclude>
+    <ClInclude Include="cObjectManager.h">
+      <Filter>Object</Filter>
+    </ClInclude>
+    <ClInclude Include="cTextureManager.h">
+      <Filter>Object</Filter>
+    </ClInclude>
+    <ClInclude Include="cPath.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="cObject.h">
+    <ClInclude Include="cBezierPath.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="cSubCubeMan.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="cTimer.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
@@ -164,10 +191,37 @@
     <ClCompile Include="PointLight.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="cDirection.cpp">
+    <ClCompile Include="cLight.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="cObjLoader.cpp">
+      <Filter>Object</Filter>
+    </ClCompile>
+    <ClCompile Include="cGroup.cpp">
+      <Filter>Object</Filter>
+    </ClCompile>
+    <ClCompile Include="cMtlTex.cpp">
+      <Filter>Object</Filter>
+    </ClCompile>
     <ClCompile Include="cObject.cpp">
+      <Filter>Object</Filter>
+    </ClCompile>
+    <ClCompile Include="cTextureManager.cpp">
+      <Filter>Object</Filter>
+    </ClCompile>
+    <ClCompile Include="cObjectManager.cpp">
+      <Filter>Object</Filter>
+    </ClCompile>
+    <ClCompile Include="cPath.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="cBezierPath.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="cSubCubeMan.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="cTimer.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

@@ -48,7 +48,7 @@ void cCubeNode::Update()
 	}
 	else
 	{
-		m_fRotX += m_fRotDeltaX;
+		m_fRotX += m_fRotDeltaX * 75 * dTimer->DeltaTime();
 		if (m_fRotX > D3DX_PI / 6.0F)
 		{
 			m_fRotX = D3DX_PI / 6.0F;
@@ -80,6 +80,43 @@ void cCubeNode::Update()
 	for each(auto p in m_vecChild)
 	{
 		p->Update(); // cCubeNode -> Update()
+	}
+}
+
+void cCubeNode::Update_Sub()
+{
+	cCubePNT::Update();
+
+	m_fRotX += m_fRotDeltaX * 75 * dTimer->DeltaTime();
+	if (m_fRotX > D3DX_PI / 6.0F)
+	{
+		m_fRotX = D3DX_PI / 6.0F;
+		m_fRotDeltaX *= -1;
+	}
+	if (m_fRotX < -D3DX_PI / 6.0F)
+	{
+		m_fRotX = -D3DX_PI / 6.0F;
+		m_fRotDeltaX *= -1;
+	}
+
+	D3DXMATRIXA16 matR, matT;
+	D3DXMatrixIdentity(&matR);
+	D3DXMatrixIdentity(&matT);
+	
+	D3DXMatrixRotationX(&matR, m_fRotX);
+	
+	D3DXMatrixTranslation(&matT, m_vLocalPos.x, m_vLocalPos.y, m_vLocalPos.z);
+	m_matLocalTM = matR * matT;
+	
+	m_matWorldTM = m_matLocalTM;
+	if (m_pParentWorldTM)
+	{
+		m_matWorldTM *= *m_pParentWorldTM;
+	}
+	
+	for each(auto p in m_vecChild)
+	{
+		p->Update_Sub();
 	}
 }
 

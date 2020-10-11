@@ -7,13 +7,12 @@ class DirectionLight;
 class SpotLight;
 class PointLight;
 
-class cLight;
-class cDirection;
+class cGroup;
 
-class cObject;
+class cPath;
+class cSubCubeMan;
 
-// #include "cLight.h"
-// #include "cDirection.h"
+#include "cLight.h"
 
 class cMainGame
 {
@@ -39,10 +38,10 @@ private :
 	vector<ST_PT_VERTEX>	m_vecVertex; 
 	// << :
 
-	cDirection* m_direction;
-	cDirection* m_NewDirection;
+	vector<cGroup*> m_vecGroup;
 
-	vector<cObject *> m_vecObj;
+	vector<cPath*> m_vecPath;
+	cSubCubeMan* m_pSubCubeMan;
 
 public :
 	void Setup(); 
@@ -53,5 +52,8 @@ public :
 	void Set_Light(); 
 
 	void Draw_Texture(); 
+
+	void SetUp_Obj();
+	void Render_Obj();
 };
 
