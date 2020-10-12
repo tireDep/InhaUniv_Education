@@ -1,6 +1,8 @@
 #pragma once
 #include "cCharacter.h"
+
 class cCubeNode; 
+class cGroup;
 
 class cCubeMan :
 	public cCharacter

@@ -1,7 +1,7 @@
 #include "stdafx.h"
 #include "cCharacter.h"
 
-#define dSpeed 10.0f
+#define dSpeed 5.0f
 
 cCharacter::cCharacter()
 	: m_fRotY(0.0f)
@@ -31,14 +31,22 @@ void cCharacter::Update()
 		m_fRotY += dSpeed * dTimer->DeltaTime();
 	}
 
+	D3DXVECTOR3 pos;
 	if (GetKeyState('W') & 0X8000)
 	{
 		m_vPosition += (m_vDirection * dSpeed) * dTimer->DeltaTime();
+		// pos = m_vPosition + (m_vDirection * dSpeed) * dTimer->DeltaTime();
 	}
 	if (GetKeyState('S') & 0X8000)
 	{
 		m_vPosition -= (m_vDirection * dSpeed) * dTimer->DeltaTime();
+		// pos = m_vPosition - (m_vDirection * dSpeed) * dTimer->DeltaTime();
 	}
+
+	if (Collision_Btm(m_vPosition))
+		int a;// m_vPosition.y = 2.0;// m_vPosition = pos;
+	else
+		m_vPosition.y = 1.0;
 
 	RECT rc;
 	GetClientRect(g_hWnd, &rc);
@@ -103,4 +111,33 @@ void cCharacter::Render()
 D3DXVECTOR3 & cCharacter::GetPosition()
 {
 	return m_vPosition; 
+}
+
+void cCharacter::SetMap(vector<ST_PNT_VERTEX> set)
+{
+	m_vecMap = set;
+}
+
+bool cCharacter::Collision_Btm(D3DXVECTOR3 center)
+{
+	D3DXVECTOR3 rayPos(center.x, center.y + 1.0f, center.z);
+	D3DXVECTOR3 rayDir(0, -1, 0);
+	float vU = 0, vV = 0, fDist = 0;
+
+	for (int i = 0; i < m_vecMap.size(); i += 3)
+	{
+		if (D3DXIntersectTri(&m_vecMap[i + 0].p, &m_vecMap[i + 1].p, &m_vecMap[i + 2].p,
+			&rayPos, &rayDir, &vU, &vV, &fDist))
+		{
+			// D3DXMATRIXA16 matWorld, matR;
+			// D3DXMatrixRotationX(&matR, -D3DX_PI / 2.0f);
+			// D3DXVec3TransformNormal(&m_vPosition, &m_vPosition, &matR);
+
+			m_vPosition = rayPos + (fDist * rayDir);
+			// m_vPosition.y += 1.0f - fDist;
+			
+			return true;
+		}
+	}
+	return false;
 }

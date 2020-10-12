@@ -14,5 +14,4 @@ public:
 	~cGroup();
 
 	void Render();
-
 };

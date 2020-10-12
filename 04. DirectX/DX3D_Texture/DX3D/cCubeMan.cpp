@@ -71,6 +71,7 @@ void cCubeMan::Setup()
 void cCubeMan::Update()
 {
 	cCharacter::Update(); 
+
 	if (m_pRoot)
 		m_pRoot->Update();	// cCubeNode -> Update() 
 }

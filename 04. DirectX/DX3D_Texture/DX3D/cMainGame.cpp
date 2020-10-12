@@ -154,7 +154,7 @@ void cMainGame::Render()
 	for (int i = 0; i < m_vecLight.size(); i++)
 		m_vecLight[i]->Render();
 
-	// Render_Obj();
+	Render_Obj();
 
 	for (int i = 0; i < m_vecPath.size(); i++)
 		m_vecPath[i]->Render();
@@ -202,7 +202,10 @@ void cMainGame::Draw_Texture()
 void cMainGame::SetUp_Obj()
 {
 	cObjLoader l;
+	// l.Load(m_vecGroup, "obj", "map_surface.obj");
 	l.Load(m_vecGroup, "obj", "box.obj");
+
+	m_pCubeMan->SetMap(m_vecGroup[0]->GetVertex());
 }
 
 void cMainGame::Render_Obj()
@@ -210,10 +213,12 @@ void cMainGame::Render_Obj()
 	g_pD3DDevice->SetRenderState(D3DRS_LIGHTING, true);
 
 	D3DXMATRIXA16 matWorld, matS, matR;
-	D3DXMatrixScaling(&matS, 0.1f, 0.1f, 0.1f);
+	//D3DXMatrixScaling(&matS, 0.1f, 0.1f, 0.1f);
 	D3DXMatrixRotationX(&matR, -D3DX_PI / 2.0f);
 
-	matWorld = matS * matR;
+	// matWorld = matS * matR;
+	matWorld = matR;
+	//D3DXMatrixIdentity(&matWorld);
 
 	g_pD3DDevice->SetTransform(D3DTS_WORLD, &matWorld);
 	
