@@ -37,12 +37,12 @@ void cCharacter::Update(iMap *pMap)
 	if (GetKeyState('W') & 0X8000)
 	{
 		// m_vPosition += (m_vDirection*0.1f);
-		vPosition = m_vPosition + (m_vDirection*0.1f);;
+		vPosition = m_vPosition + (m_vDirection*0.1f);
 	}
 	if (GetKeyState('S') & 0X8000)
 	{
 		// m_vPosition -= (m_vDirection*0.1f);
-		vPosition = m_vPosition - (m_vDirection*0.1f);;
+		vPosition = m_vPosition - (m_vDirection*0.1f);
 	}
 
 	D3DXMATRIXA16 matR, matT;
@@ -52,13 +52,15 @@ void cCharacter::Update(iMap *pMap)
 	{
 		if (pMap->GetHeight(vPosition.x, vPosition.y, vPosition.z))
 		{
-			m_vPosition = vPosition;
+			if(vPosition.y -  m_vPosition.y < 2.0f)
+				m_vPosition = vPosition;
 		}
 	}
 
+
 	m_vDirection = D3DXVECTOR3(0, 0, 1);
 	D3DXVec3TransformNormal(&m_vDirection, &m_vDirection, &matR);
-	D3DXMatrixTranslation(&matT, m_vPosition.x, m_vPosition.y, m_vPosition.z);
+	D3DXMatrixTranslation(&matT, m_vPosition.x, m_vPosition.y + 1.0f, m_vPosition.z);
 
 	m_matWorld = matR * matT;
 }

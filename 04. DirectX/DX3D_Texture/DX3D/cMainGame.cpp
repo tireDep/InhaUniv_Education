@@ -23,6 +23,7 @@ cMainGame::cMainGame()
 	, m_directLight(NULL)
 	, m_SpotLight(NULL)
 	, m_PointLight(NULL)
+	, m_pMap(NULL)
 {
 
 }
@@ -40,6 +41,8 @@ cMainGame::~cMainGame()
 	SafeDelete(m_SpotLight);
 	SafeDelete(m_PointLight);
 
+	SafeDelete(m_pMap);
+
 	for each(auto p in m_vecGroup)
 	{
 		SafeRelease(p);
@@ -48,8 +51,6 @@ cMainGame::~cMainGame()
 	g_pObjectManger->Destroy();
 
 	g_pDeviceManager->Destroy();
-
-	SafeDelete(m_iMap);
 }
 
 void cMainGame::Setup()
@@ -95,7 +96,7 @@ void cMainGame::Update()
 	//	m_pCubePC->Update(); 
 
 	if (m_pCubeMan)
-		m_pCubeMan->Update(m_iMap); 
+		m_pCubeMan->Update(m_pMap); 
 
 	if (m_pCamera)
 		m_pCamera->Update(); 
@@ -178,7 +179,7 @@ void cMainGame::Render_Obj()
 	g_pD3DDevice->LightEnable(2, false);
 
 	D3DXMATRIXA16 matWorld, matS, matR;
-	D3DXMatrixScaling(&matS, 0.1f, 0.1f, 0.1f);
+	D3DXMatrixScaling(&matS, 0.01f, 0.01f, 0.01f);
 	D3DXMatrixRotationX(&matR, -D3DX_PI / 2.0f);
 
 	matWorld = matS * matR;
@@ -208,12 +209,10 @@ void cMainGame::Render_Obj()
 void cMainGame::Load_Surface()
 {
 	D3DXMATRIXA16 matWorld, matS, matR;
-	D3DXMatrixScaling(&matS, 0.1f, 0.1f, 0.1f);
+	D3DXMatrixScaling(&matS, 0.01f, 0.01f, 0.01f);
 	D3DXMatrixRotationX(&matR, -D3DX_PI / 2.0f);
 
 	matWorld = matS * matR;
 
-	m_iMap = new cObjMap("obj", "map_surface.obj", &matWorld);
+	m_pMap = new cObjMap("obj", "map_surface.obj", &matWorld);
 }
-
-

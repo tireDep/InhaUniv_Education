@@ -237,11 +237,11 @@ void cObjLoader::LoadSurface(OUT vector<D3DXVECTOR3>& vecSurface, IN char * szFo
 		}
 		else if (szTemp[0] == 'm')
 		{
-			
+
 		}
 		else if (szTemp[0] == 'g')
 		{
-			
+
 		}
 		else if (szTemp[0] == 'v')
 		{
@@ -254,17 +254,17 @@ void cObjLoader::LoadSurface(OUT vector<D3DXVECTOR3>& vecSurface, IN char * szFo
 			}
 			else if (szTemp[1] == 't')
 			{
-				
+
 			}
 			else if (szTemp[1] == 'n')
 			{
-				
+
 			}
 
 		}
 		else if (szTemp[0] == 'u')
 		{
-			
+
 		}
 		else if (szTemp[0] == 'f')
 		{
