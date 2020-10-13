@@ -18,7 +18,7 @@ public :
 	virtual ~cCubeMan(); 
 
 	virtual void Setup() override; 
-	virtual void Update() override; 
+	virtual void Update(iMap *pMap);
 	virtual void Render() override; 
 };
 

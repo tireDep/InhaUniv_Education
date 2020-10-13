@@ -37,6 +37,8 @@ private :
 
 	vector<cGroup*> m_vecGroup;
 
+	iMap *m_pMap;
+
 public :
 	void Setup(); 
 	void Update(); 
@@ -49,5 +51,7 @@ public :
 
 	void SetUp_Obj();
 	void Render_Obj();
+
+	void Load_Surface();
 };
 

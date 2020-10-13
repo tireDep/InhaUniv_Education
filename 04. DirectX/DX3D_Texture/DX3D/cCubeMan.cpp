@@ -68,9 +68,9 @@ void cCubeMan::Setup()
 	D3DXCreateTextureFromFile(g_pD3DDevice, L"../image/mkLink.png", &m_pTexture);
 }
 
-void cCubeMan::Update()
+void cCubeMan::Update(iMap *pMap)
 {
-	cCharacter::Update(); 
+	cCharacter::Update(pMap);
 	if (m_pRoot)
 		m_pRoot->Update();	// cCubeNode -> Update() 
 }

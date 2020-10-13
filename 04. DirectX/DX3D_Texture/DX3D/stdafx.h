@@ -109,6 +109,8 @@ void SetValue(int a ) { A = a ; }
 			} \
 }
 
+#include "iMap.h"
+
 #include "cDeviceManager.h"
 
 #include "cObject.h"
