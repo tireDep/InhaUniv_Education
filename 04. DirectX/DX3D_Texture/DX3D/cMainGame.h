@@ -12,7 +12,7 @@ class cGroup;
 class cPath;
 class cSubCubeMan;
 
-class cCharObjGroup;
+class cGeoObject;
 
 #include "cLight.h"
 
@@ -45,7 +45,7 @@ private :
 	vector<cPath*> m_vecPath;
 	cSubCubeMan* m_pSubCubeMan;
 
-	vector<cCharObjGroup*> m_charGroup;
+	cGeoObject* m_pGeoObject;
 
 public :
 	void Setup(); 

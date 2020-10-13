@@ -19,8 +19,8 @@
 
 #include "cTimer.h"
 
-#include "cCharObjLoader.h"
-#include "cCharObjGroup.h"
+#include "cGeoObject.h"
+#include "cCharObjectLoader.h"
 
 cMainGame::cMainGame()
 	: m_pCubePC(NULL)
@@ -32,10 +32,9 @@ cMainGame::cMainGame()
 	, m_SpotLight(NULL)
 	, m_PointLight(NULL)
 	, m_pSubCubeMan(NULL)
+	, m_pGeoObject(NULL)
 {
-	cCharObjLoader l;
 
-	l.Load(m_charGroup, "woman", "woman_01_all.ASE");
 }
 
 
@@ -68,11 +67,7 @@ cMainGame::~cMainGame()
 
 	SafeDelete(m_pSubCubeMan);
 
-	for each(auto p in m_charGroup)
-	{
-		SafeRelease(p);
-	}
-	m_charGroup.clear();
+	SafeDelete(m_pGeoObject);
 }
 
 void cMainGame::Setup()
@@ -123,6 +118,9 @@ void cMainGame::Setup()
 	m_pSubCubeMan->Setup();
 
 	dTimer->SetUp();
+
+	cCharObjectLoader loader;
+	loader.Load(m_pGeoObject, "woman", "woman_01_all.ASE");
 }
 
 void cMainGame::Update()
@@ -159,21 +157,23 @@ void cMainGame::Render()
 
 	//if (m_pCubePC)
 	//	m_pCubePC->Render(); 
-	if (m_pCubeMan)
-		m_pCubeMan->Render(); 
+	// if (m_pCubeMan)
+	// 	m_pCubeMan->Render(); 
+	// 
+	// for (int i = 0; i < m_vecLight.size(); i++)
+	// 	m_vecLight[i]->Render();
+	// 
+	// Render_Obj();
+	// 
+	// for (int i = 0; i < m_vecPath.size(); i++)
+	// 	m_vecPath[i]->Render();
+	// 
+	// if (m_pSubCubeMan)
+	// 	m_pSubCubeMan->Render();
+	// 
+	// Draw_Texture(); 
 
-	for (int i = 0; i < m_vecLight.size(); i++)
-		m_vecLight[i]->Render();
-
-	Render_Obj();
-
-	for (int i = 0; i < m_vecPath.size(); i++)
-		m_vecPath[i]->Render();
-
-	if (m_pSubCubeMan)
-		m_pSubCubeMan->Render();
-
-	Draw_Texture(); 
+	m_pGeoObject->Render();
 
 	g_pD3DDevice->EndScene();
 	g_pD3DDevice->Present(NULL, NULL, NULL, NULL);
@@ -224,21 +224,16 @@ void cMainGame::Render_Obj()
 	g_pD3DDevice->SetRenderState(D3DRS_LIGHTING, true);
 
 	D3DXMATRIXA16 matWorld, matS, matR;
-	D3DXMatrixScaling(&matS, 0.1f, 0.1f, 0.1f);
+	//D3DXMatrixScaling(&matS, 0.1f, 0.1f, 0.1f);
 	D3DXMatrixRotationX(&matR, -D3DX_PI / 2.0f);
 
-	matWorld = matS * matR;
+	// matWorld = matS * matR;
+	matWorld = matR;
+	//D3DXMatrixIdentity(&matWorld);
 
 	g_pD3DDevice->SetTransform(D3DTS_WORLD, &matWorld);
 	
 	for each(auto p in m_vecGroup)
-	{
-		p->Render();
-	}
-
-	D3DXMatrixIdentity(&matWorld);
-	g_pD3DDevice->SetTransform(D3DTS_WORLD, &matWorld);
-	for each(auto p in m_charGroup)
 	{
 		p->Render();
 	}
