@@ -9,6 +9,8 @@ class PointLight;
 
 class cGroup;
 
+class iMap;
+
 #include "cLight.h"
 
 class cMainGame
@@ -37,6 +39,8 @@ private :
 
 	vector<cGroup*> m_vecGroup;
 
+	iMap* m_iMap;
+
 public :
 	void Setup(); 
 	void Update(); 
@@ -49,5 +53,7 @@ public :
 
 	void SetUp_Obj();
 	void Render_Obj();
+
+	void Load_Surface();
 };
 

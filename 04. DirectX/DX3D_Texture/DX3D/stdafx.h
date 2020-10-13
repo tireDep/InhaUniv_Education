@@ -110,7 +110,8 @@ void SetValue(int a ) { A = a ; }
 }
 
 #include "cDeviceManager.h"
-
 #include "cObject.h"
 #include "cObjectManager.h"
 #include "cTextureManager.h"
+
+// #include "iMap.h"

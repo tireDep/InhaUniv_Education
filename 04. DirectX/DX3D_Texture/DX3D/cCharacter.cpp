@@ -19,8 +19,10 @@ void cCharacter::Setup()
 {
 }
 
-void cCharacter::Update()
+void cCharacter::Update(iMap *pMap)
 {
+	m_pMap = pMap;
+
 	if (GetKeyState('A') & 0X8000)
 	{
 		m_fRotY -= 0.1f;
@@ -30,20 +32,29 @@ void cCharacter::Update()
 		m_fRotY += 0.1f;
 	}
 
+	D3DXVECTOR3 vPosition = m_vPosition;
+
 	if (GetKeyState('W') & 0X8000)
 	{
-		m_vPosition += (m_vDirection*0.1f);
+		// m_vPosition += (m_vDirection*0.1f);
+		vPosition = m_vPosition + (m_vDirection*0.1f);;
 	}
 	if (GetKeyState('S') & 0X8000)
 	{
-		m_vPosition -= (m_vDirection*0.1f);
+		// m_vPosition -= (m_vDirection*0.1f);
+		vPosition = m_vPosition - (m_vDirection*0.1f);;
 	}
-
-	RECT rc;
-	GetClientRect(g_hWnd, &rc);
 
 	D3DXMATRIXA16 matR, matT;
 	D3DXMatrixRotationY(&matR, m_fRotY);
+
+	if (pMap)
+	{
+		if (pMap->GetHeight(vPosition.x, vPosition.y, vPosition.z))
+		{
+			m_vPosition = vPosition;
+		}
+	}
 
 	m_vDirection = D3DXVECTOR3(0, 0, 1);
 	D3DXVec3TransformNormal(&m_vDirection, &m_vDirection, &matR);

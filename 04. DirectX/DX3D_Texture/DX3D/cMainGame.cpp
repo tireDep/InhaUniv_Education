@@ -12,6 +12,8 @@
 #include "cObjLoader.h"
 #include "cGroup.h"
 
+#include "cObjMap.h"
+
 cMainGame::cMainGame()
 	: m_pCubePC(NULL)
 	, m_pCamera(NULL)
@@ -46,6 +48,8 @@ cMainGame::~cMainGame()
 	g_pObjectManger->Destroy();
 
 	g_pDeviceManager->Destroy();
+
+	SafeDelete(m_iMap);
 }
 
 void cMainGame::Setup()
@@ -91,7 +95,7 @@ void cMainGame::Update()
 	//	m_pCubePC->Update(); 
 
 	if (m_pCubeMan)
-		m_pCubeMan->Update(); 
+		m_pCubeMan->Update(m_iMap); 
 
 	if (m_pCamera)
 		m_pCamera->Update(); 
@@ -162,7 +166,9 @@ void cMainGame::Draw_Texture()
 void cMainGame::SetUp_Obj()
 {
 	cObjLoader l;
-	l.Load(m_vecGroup, "obj", "box2.obj");
+	l.Load(m_vecGroup, "obj", "map.obj");
+
+	Load_Surface();
 }
 
 void cMainGame::Render_Obj()
@@ -197,6 +203,17 @@ void cMainGame::Render_Obj()
 	// u, v 지금 당장 필요 x
 	// f : 충돌이 있을 때 값
 	*/
+}
+
+void cMainGame::Load_Surface()
+{
+	D3DXMATRIXA16 matWorld, matS, matR;
+	D3DXMatrixScaling(&matS, 0.1f, 0.1f, 0.1f);
+	D3DXMatrixRotationX(&matR, -D3DX_PI / 2.0f);
+
+	matWorld = matS * matR;
+
+	m_iMap = new cObjMap("obj", "map_surface.obj", &matWorld);
 }
 
 

@@ -114,6 +114,12 @@
     <ClInclude Include="cTextureManager.h">
       <Filter>Object</Filter>
     </ClInclude>
+    <ClInclude Include="iMap.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="cObjMap.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -199,6 +205,12 @@
     </ClCompile>
     <ClCompile Include="cObjectManager.cpp">
       <Filter>Object</Filter>
+    </ClCompile>
+    <ClCompile Include="iMap.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="cObjMap.cpp">
+      <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

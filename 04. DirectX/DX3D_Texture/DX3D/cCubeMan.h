@@ -14,11 +14,13 @@ protected :
 
 	LPDIRECT3DTEXTURE9		m_pTexture;
 
+	iMap *m_pMap;
+
 public : 
 	virtual ~cCubeMan(); 
 
 	virtual void Setup() override; 
-	virtual void Update() override; 
+	virtual void Update(iMap *pMap); 
 	virtual void Render() override; 
 };
 
