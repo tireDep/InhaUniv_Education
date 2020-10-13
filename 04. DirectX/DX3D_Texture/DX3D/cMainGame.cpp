@@ -19,6 +19,9 @@
 
 #include "cTimer.h"
 
+#include "cGeoObject.h"
+#include "cCharObjectLoader.h"
+
 cMainGame::cMainGame()
 	: m_pCubePC(NULL)
 	, m_pCamera(NULL)
@@ -29,6 +32,7 @@ cMainGame::cMainGame()
 	, m_SpotLight(NULL)
 	, m_PointLight(NULL)
 	, m_pSubCubeMan(NULL)
+	, m_pGeoObject(NULL)
 {
 
 }
@@ -62,6 +66,8 @@ cMainGame::~cMainGame()
 	m_vecPath.clear();
 
 	SafeDelete(m_pSubCubeMan);
+
+	SafeDelete(m_pGeoObject);
 }
 
 void cMainGame::Setup()
@@ -112,6 +118,9 @@ void cMainGame::Setup()
 	m_pSubCubeMan->Setup();
 
 	dTimer->SetUp();
+
+	cCharObjectLoader loader;
+	loader.Load(m_pGeoObject, "woman", "woman_01_all.ASE");
 }
 
 void cMainGame::Update()
@@ -148,21 +157,23 @@ void cMainGame::Render()
 
 	//if (m_pCubePC)
 	//	m_pCubePC->Render(); 
-	if (m_pCubeMan)
-		m_pCubeMan->Render(); 
+	// if (m_pCubeMan)
+	// 	m_pCubeMan->Render(); 
+	// 
+	// for (int i = 0; i < m_vecLight.size(); i++)
+	// 	m_vecLight[i]->Render();
+	// 
+	// Render_Obj();
+	// 
+	// for (int i = 0; i < m_vecPath.size(); i++)
+	// 	m_vecPath[i]->Render();
+	// 
+	// if (m_pSubCubeMan)
+	// 	m_pSubCubeMan->Render();
+	// 
+	// Draw_Texture(); 
 
-	for (int i = 0; i < m_vecLight.size(); i++)
-		m_vecLight[i]->Render();
-
-	Render_Obj();
-
-	for (int i = 0; i < m_vecPath.size(); i++)
-		m_vecPath[i]->Render();
-
-	if (m_pSubCubeMan)
-		m_pSubCubeMan->Render();
-
-	Draw_Texture(); 
+	m_pGeoObject->Render();
 
 	g_pD3DDevice->EndScene();
 	g_pD3DDevice->Present(NULL, NULL, NULL, NULL);

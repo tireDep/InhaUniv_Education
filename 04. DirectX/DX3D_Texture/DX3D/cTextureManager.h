@@ -16,4 +16,6 @@ public:
 
 	void Destroy();
 
+	void AddTexture(string key, string fileName);
+
 };

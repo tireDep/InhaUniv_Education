@@ -28,3 +28,10 @@ void cTextureManager::Destroy()
 	
 	m_mapTexture.clear();
 }
+
+void cTextureManager::AddTexture(string key, string fileName)
+{
+	SafeRelease(m_mapTexture[key]);
+
+	D3DXCreateTextureFromFileA(g_pD3DDevice, fileName.c_str(), &m_mapTexture[key]);
+}

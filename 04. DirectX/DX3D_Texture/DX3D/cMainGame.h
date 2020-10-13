@@ -12,6 +12,8 @@ class cGroup;
 class cPath;
 class cSubCubeMan;
 
+class cGeoObject;
+
 #include "cLight.h"
 
 class cMainGame
@@ -42,6 +44,8 @@ private :
 
 	vector<cPath*> m_vecPath;
 	cSubCubeMan* m_pSubCubeMan;
+
+	cGeoObject* m_pGeoObject;
 
 public :
 	void Setup(); 

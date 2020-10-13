@@ -146,11 +146,13 @@
     <ClInclude Include="cBody.h" />
     <ClInclude Include="cCamera.h" />
     <ClInclude Include="cCharacter.h" />
+    <ClInclude Include="cCharObjectLoader.h" />
     <ClInclude Include="cCubeMan.h" />
     <ClInclude Include="cCubeNode.h" />
     <ClInclude Include="cCubePC.h" />
     <ClInclude Include="cCubePNT.h" />
     <ClInclude Include="cDeviceManager.h" />
+    <ClInclude Include="cGeoObject.h" />
     <ClInclude Include="cGrid.h" />
     <ClInclude Include="cGroup.h" />
     <ClInclude Include="cHead.h" />
@@ -182,11 +184,13 @@
     <ClCompile Include="cBody.cpp" />
     <ClCompile Include="cCamera.cpp" />
     <ClCompile Include="cCharacter.cpp" />
+    <ClCompile Include="cCharObjectLoader.cpp" />
     <ClCompile Include="cCubeMan.cpp" />
     <ClCompile Include="cCubeNode.cpp" />
     <ClCompile Include="cCubePC.cpp" />
     <ClCompile Include="cCubePNT.cpp" />
     <ClCompile Include="cDeviceManager.cpp" />
+    <ClCompile Include="cGeoObject.cpp" />
     <ClCompile Include="cGrid.cpp" />
     <ClCompile Include="cGroup.cpp" />
     <ClCompile Include="cHead.cpp" />
