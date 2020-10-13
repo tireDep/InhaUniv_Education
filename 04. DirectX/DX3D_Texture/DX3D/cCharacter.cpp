@@ -52,7 +52,8 @@ void cCharacter::Update(iMap *pMap)
 	{
 		if (pMap->GetHeight(vPosition.x, vPosition.y, vPosition.z))
 		{
-			m_vPosition = vPosition;
+			if(vPosition.y -  m_vPosition.y < 3)
+				m_vPosition = vPosition;
 		}
 	}
 
