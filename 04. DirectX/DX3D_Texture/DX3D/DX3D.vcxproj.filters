@@ -19,6 +19,9 @@
     <Filter Include="Object">
       <UniqueIdentifier>{9d5f5a34-c85a-45b9-999f-af0e84ea7949}</UniqueIdentifier>
     </Filter>
+    <Filter Include="CharObj">
+      <UniqueIdentifier>{909610e3-e05c-4ea3-bb05-59663a54c6b7}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <Text Include="ReadMe.txt" />
@@ -129,6 +132,18 @@
     <ClInclude Include="cSubCubeMan.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="cCharObj.h">
+      <Filter>CharObj</Filter>
+    </ClInclude>
+    <ClInclude Include="cCharObjLoader.h">
+      <Filter>CharObj</Filter>
+    </ClInclude>
+    <ClInclude Include="cCharObjGroup.h">
+      <Filter>CharObj</Filter>
+    </ClInclude>
+    <ClInclude Include="cCharTextureManager.h">
+      <Filter>CharObj</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -229,6 +244,18 @@
     </ClCompile>
     <ClCompile Include="cSubCubeMan.cpp">
       <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="cCharObj.cpp">
+      <Filter>CharObj</Filter>
+    </ClCompile>
+    <ClCompile Include="cCharObjGroup.cpp">
+      <Filter>CharObj</Filter>
+    </ClCompile>
+    <ClCompile Include="cCharTextureManager.cpp">
+      <Filter>CharObj</Filter>
+    </ClCompile>
+    <ClCompile Include="cCharObjLoader.cpp">
+      <Filter>CharObj</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

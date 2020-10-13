@@ -146,6 +146,10 @@
     <ClInclude Include="cBody.h" />
     <ClInclude Include="cCamera.h" />
     <ClInclude Include="cCharacter.h" />
+    <ClInclude Include="cCharObj.h" />
+    <ClInclude Include="cCharObjGroup.h" />
+    <ClInclude Include="cCharObjLoader.h" />
+    <ClInclude Include="cCharTextureManager.h" />
     <ClInclude Include="cCubeMan.h" />
     <ClInclude Include="cCubeNode.h" />
     <ClInclude Include="cCubePC.h" />
@@ -182,6 +186,10 @@
     <ClCompile Include="cBody.cpp" />
     <ClCompile Include="cCamera.cpp" />
     <ClCompile Include="cCharacter.cpp" />
+    <ClCompile Include="cCharObj.cpp" />
+    <ClCompile Include="cCharObjGroup.cpp" />
+    <ClCompile Include="cCharObjLoader.cpp" />
+    <ClCompile Include="cCharTextureManager.cpp" />
     <ClCompile Include="cCubeMan.cpp" />
     <ClCompile Include="cCubeNode.cpp" />
     <ClCompile Include="cCubePC.cpp" />

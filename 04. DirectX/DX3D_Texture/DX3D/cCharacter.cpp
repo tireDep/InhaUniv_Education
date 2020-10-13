@@ -31,7 +31,7 @@ void cCharacter::Update()
 		m_fRotY += dSpeed * dTimer->DeltaTime();
 	}
 
-	D3DXVECTOR3 pos;
+	// D3DXVECTOR3 pos;
 	if (GetKeyState('W') & 0X8000)
 	{
 		m_vPosition += (m_vDirection * dSpeed) * dTimer->DeltaTime();
@@ -43,10 +43,10 @@ void cCharacter::Update()
 		// pos = m_vPosition - (m_vDirection * dSpeed) * dTimer->DeltaTime();
 	}
 
-	if (Collision_Btm(m_vPosition))
-		int a;// m_vPosition.y = 2.0;// m_vPosition = pos;
-	else
-		m_vPosition.y = 1.0;
+	// if (Collision_Btm(m_vPosition))
+	// 	int a;// m_vPosition.y = 2.0;// m_vPosition = pos;
+	// else
+	// 	m_vPosition.y = 1.0;
 
 	RECT rc;
 	GetClientRect(g_hWnd, &rc);

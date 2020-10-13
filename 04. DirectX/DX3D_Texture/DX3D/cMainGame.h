@@ -12,6 +12,8 @@ class cGroup;
 class cPath;
 class cSubCubeMan;
 
+class cCharObjGroup;
+
 #include "cLight.h"
 
 class cMainGame
@@ -42,6 +44,8 @@ private :
 
 	vector<cPath*> m_vecPath;
 	cSubCubeMan* m_pSubCubeMan;
+
+	vector<cCharObjGroup*> m_charGroup;
 
 public :
 	void Setup(); 

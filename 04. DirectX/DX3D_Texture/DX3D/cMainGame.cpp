@@ -19,6 +19,9 @@
 
 #include "cTimer.h"
 
+#include "cCharObjLoader.h"
+#include "cCharObjGroup.h"
+
 cMainGame::cMainGame()
 	: m_pCubePC(NULL)
 	, m_pCamera(NULL)
@@ -30,7 +33,9 @@ cMainGame::cMainGame()
 	, m_PointLight(NULL)
 	, m_pSubCubeMan(NULL)
 {
+	cCharObjLoader l;
 
+	l.Load(m_charGroup, "woman", "woman_01_all.ASE");
 }
 
 
@@ -62,6 +67,12 @@ cMainGame::~cMainGame()
 	m_vecPath.clear();
 
 	SafeDelete(m_pSubCubeMan);
+
+	for each(auto p in m_charGroup)
+	{
+		SafeRelease(p);
+	}
+	m_charGroup.clear();
 }
 
 void cMainGame::Setup()
@@ -213,16 +224,21 @@ void cMainGame::Render_Obj()
 	g_pD3DDevice->SetRenderState(D3DRS_LIGHTING, true);
 
 	D3DXMATRIXA16 matWorld, matS, matR;
-	//D3DXMatrixScaling(&matS, 0.1f, 0.1f, 0.1f);
+	D3DXMatrixScaling(&matS, 0.1f, 0.1f, 0.1f);
 	D3DXMatrixRotationX(&matR, -D3DX_PI / 2.0f);
 
-	// matWorld = matS * matR;
-	matWorld = matR;
-	//D3DXMatrixIdentity(&matWorld);
+	matWorld = matS * matR;
 
 	g_pD3DDevice->SetTransform(D3DTS_WORLD, &matWorld);
 	
 	for each(auto p in m_vecGroup)
+	{
+		p->Render();
+	}
+
+	D3DXMatrixIdentity(&matWorld);
+	g_pD3DDevice->SetTransform(D3DTS_WORLD, &matWorld);
+	for each(auto p in m_charGroup)
 	{
 		p->Render();
 	}
