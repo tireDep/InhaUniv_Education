@@ -130,7 +130,7 @@
       <Filter>03. Object_ASE</Filter>
     </ClInclude>
     <ClInclude Include="cAseLoader.h">
-      <Filter>Header Files</Filter>
+      <Filter>03. Object_ASE</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -228,7 +228,7 @@
       <Filter>03. Object_ASE</Filter>
     </ClCompile>
     <ClCompile Include="cAseLoader.cpp">
-      <Filter>Source Files</Filter>
+      <Filter>03. Object_ASE</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

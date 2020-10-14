@@ -9,6 +9,8 @@ class PointLight;
 
 class cGroup;
 
+class cFrame;
+
 #include "cLight.h"
 
 class cMainGame
@@ -38,6 +40,8 @@ private :
 	vector<cGroup*> m_vecGroup;
 
 	iMap *m_pMap;
+
+	cFrame* m_pRootFrame;
 
 public :
 	void Setup(); 

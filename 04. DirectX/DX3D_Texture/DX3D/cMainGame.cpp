@@ -14,6 +14,9 @@
 
 #include "cObjMap.h"
 
+#include "cFrame.h"
+#include "cAseLoader.h"
+
 cMainGame::cMainGame()
 	: m_pCubePC(NULL)
 	, m_pCamera(NULL)
@@ -24,6 +27,7 @@ cMainGame::cMainGame()
 	, m_SpotLight(NULL)
 	, m_PointLight(NULL)
 	, m_pMap(NULL)
+	, m_pRootFrame(NULL)
 {
 
 }
@@ -48,6 +52,9 @@ cMainGame::~cMainGame()
 		SafeRelease(p);
 	}
 	m_vecGroup.clear();
+
+	m_pRootFrame->Destroy();
+
 	g_pObjectManger->Destroy();
 
 	g_pDeviceManager->Destroy();
@@ -88,6 +95,9 @@ void cMainGame::Setup()
 	Set_Light();
 
 	SetUp_Obj();
+
+	cAseLoader aseLoder;
+	m_pRootFrame = aseLoder.Load("woman/woman_01_all.ASE");
 }
 
 void cMainGame::Update()
@@ -117,17 +127,21 @@ void cMainGame::Render()
 	if (m_pGrid)
 		m_pGrid->Render(); 
 
-	//if (m_pCubePC)
+	// if (m_pCubePC)
 	//	m_pCubePC->Render(); 
-	if (m_pCubeMan)
-		m_pCubeMan->Render(); 
 
-	for (int i = 0; i < m_vecLight.size(); i++)
-		m_vecLight[i]->Render();
+	// if (m_pCubeMan)
+	// 	m_pCubeMan->Render(); 
 
-	Render_Obj();
+	// for (int i = 0; i < m_vecLight.size(); i++)
+	// 	m_vecLight[i]->Render();
 
-	Draw_Texture(); 
+	// Render_Obj();
+
+	// Draw_Texture(); 
+
+	if (m_pRootFrame)
+		m_pRootFrame->Render();
 
 	g_pD3DDevice->EndScene();
 	g_pD3DDevice->Present(NULL, NULL, NULL, NULL);
