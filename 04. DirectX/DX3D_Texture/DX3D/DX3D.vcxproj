@@ -142,6 +142,8 @@
     <Text Include="ReadMe.txt" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Asciitok.h" />
+    <ClInclude Include="cAseLoader.h" />
     <ClInclude Include="cBody.h" />
     <ClInclude Include="cCamera.h" />
     <ClInclude Include="cCharacter.h" />
@@ -150,6 +152,7 @@
     <ClInclude Include="cCubePC.h" />
     <ClInclude Include="cCubePNT.h" />
     <ClInclude Include="cDeviceManager.h" />
+    <ClInclude Include="cFrame.h" />
     <ClInclude Include="cGrid.h" />
     <ClInclude Include="cGroup.h" />
     <ClInclude Include="cHead.h" />
@@ -176,6 +179,7 @@
     <ClInclude Include="targetver.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="cAseLoader.cpp" />
     <ClCompile Include="cBody.cpp" />
     <ClCompile Include="cCamera.cpp" />
     <ClCompile Include="cCharacter.cpp" />
@@ -184,6 +188,7 @@
     <ClCompile Include="cCubePC.cpp" />
     <ClCompile Include="cCubePNT.cpp" />
     <ClCompile Include="cDeviceManager.cpp" />
+    <ClCompile Include="cFrame.cpp" />
     <ClCompile Include="cGrid.cpp" />
     <ClCompile Include="cGroup.cpp" />
     <ClCompile Include="cHead.cpp" />
