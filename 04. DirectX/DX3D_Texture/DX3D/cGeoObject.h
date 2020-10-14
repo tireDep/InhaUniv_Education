@@ -13,7 +13,7 @@ class cGeoObject : public cObject
 private:
 	vector<cGeoObject*> m_vecChild;
 	string m_sName;
-
+	
 public:
 	cGeoObject();
 	~cGeoObject();

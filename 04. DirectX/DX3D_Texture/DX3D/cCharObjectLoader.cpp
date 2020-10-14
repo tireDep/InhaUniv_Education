@@ -17,6 +17,10 @@ void cCharObjectLoader::Load(OUT cGeoObject* &pGeoObject, IN char * szFolder, IN
 	vector<ST_PNT_VERTEX> vecVertex;
 
 	int nIndex;
+
+	int fFrame;
+	int lFrame;
+	int tickFrame;
 	cGeoObject* newGeoObject = NULL;
 
 	FILE *fp;
@@ -35,12 +39,29 @@ void cCharObjectLoader::Load(OUT cGeoObject* &pGeoObject, IN char * szFolder, IN
 		char szBuffer[1024];
 		sscanf(szTemp, "%s", szBuffer);
 
+		// >> SetScene
+		if (!strcmp(szBuffer, "*SCENE_FIRSTFRAME"))
+		{
+			sscanf_s(szTemp, "%*s %d", &fFrame);
+		}
+		else if (!strcmp(szBuffer, "*SCENE_LASTFRAME"))
+		{
+			sscanf_s(szTemp, "%*s %d", &lFrame);
+		}
+		else if (!strcmp(szBuffer, "*SCENE_TICKSPERFRAME"))
+		{
+			sscanf_s(szTemp, "%*s %d", &tickFrame);
+		}
+		// << SetScene
+
 		// >> SetMtrl
 		if (!strcmp(szBuffer, "*MATERIAL_COUNT"))
 		{
 			int nSize;
 			sscanf_s(szTemp, "%*s %d", &nSize);
+			
 			m_vecMtrlTex.resize(nSize);
+			m_vecMtrlName.resize(nSize);
 		}
 		else if (!strcmp(szBuffer, "*MATERIAL"))
 		{
@@ -48,6 +69,16 @@ void cCharObjectLoader::Load(OUT cGeoObject* &pGeoObject, IN char * szFolder, IN
 
 			SafeRelease(m_vecMtrlTex[nIndex]);
 			m_vecMtrlTex[nIndex] = new cMtlTex;
+		}
+		else if (!strcmp(szBuffer, "*MATERIAL_NAME"))
+		{
+			char name[1024];
+			sscanf_s(szTemp, "%*s %[^/]%[/]%*[^/]%s", name, 1024);
+
+			string sName = name;
+			sName = sName.assign(sName.begin() + 1, sName.end() - 2);
+
+			m_vecMtrlName[nIndex] = sName;
 		}
 		else if (!strcmp(szBuffer, "*MATERIAL_AMBIENT"))
 		{
@@ -130,7 +161,6 @@ void cCharObjectLoader::Load(OUT cGeoObject* &pGeoObject, IN char * szFolder, IN
 					newGeoObject->SetVertex(vecVertex);
 					// newGeoObject->SetMatLocal(matInverse);
 					newGeoObject->SetMatLocal(newGeoObject->GetMatWorld());
-
 					vecVertex.clear();
 				}
 				newGeoObject = new cGeoObject;
@@ -219,6 +249,7 @@ void cCharObjectLoader::Load(OUT cGeoObject* &pGeoObject, IN char * szFolder, IN
 			vecV.clear();
 			vecV.resize(nSize);
 		}
+		// >> Mesh
 		else if(!strcmp(szBuffer, "*MESH_VERTEX"))
 		{
 			int nIndex;
@@ -294,6 +325,7 @@ void cCharObjectLoader::Load(OUT cGeoObject* &pGeoObject, IN char * szFolder, IN
 			sscanf_s(szTemp, "%*s %d", &nIndex);
 			newGeoObject->SetMtrlTex((m_vecMtrlTex[nIndex]));
 		}
+		// << Mesh
 		// << SetGeo
 
 	}	// : while

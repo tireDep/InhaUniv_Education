@@ -163,13 +163,13 @@ void cMainGame::Render()
 	// if (m_pCubePC)
 	// 	m_pCubePC->Render(); 
 
-	if (m_pCubeMan)
-	 	m_pCubeMan->Render(); 
+	// if (m_pCubeMan)
+	//  	m_pCubeMan->Render(); 
 	 
 	// for (int i = 0; i < m_vecLight.size(); i++)
 	// 	m_vecLight[i]->Render();
 	 
-	Render_Obj();
+	// Render_Obj();
 	 
 	// for (int i = 0; i < m_vecPath.size(); i++)
 	// 	m_vecPath[i]->Render();
@@ -179,7 +179,7 @@ void cMainGame::Render()
 	 
 	// Draw_Texture(); 
 
-	// m_pGeoObject->Render();
+	m_pGeoObject->Render();
 
 	g_pD3DDevice->EndScene();
 	g_pD3DDevice->Present(NULL, NULL, NULL, NULL);

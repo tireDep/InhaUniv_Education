@@ -7,6 +7,7 @@ class cCharObjectLoader : public cObject
 {
 private:
 	vector<cMtlTex*> m_vecMtrlTex;
+	vector<string> m_vecMtrlName;
 
 public:
 	cCharObjectLoader();
