@@ -31,7 +31,7 @@ void cCharacter::Update()
 		m_fRotY += dSpeed * dTimer->DeltaTime();
 	}
 
-	// D3DXVECTOR3 pos;
+	// D3DXVECTOR3 pos = m_vPosition;
 	if (GetKeyState('W') & 0X8000)
 	{
 		m_vPosition += (m_vDirection * dSpeed) * dTimer->DeltaTime();
@@ -42,14 +42,6 @@ void cCharacter::Update()
 		m_vPosition -= (m_vDirection * dSpeed) * dTimer->DeltaTime();
 		// pos = m_vPosition - (m_vDirection * dSpeed) * dTimer->DeltaTime();
 	}
-
-	// if (Collision_Btm(m_vPosition))
-	// 	int a;// m_vPosition.y = 2.0;// m_vPosition = pos;
-	// else
-	// 	m_vPosition.y = 1.0;
-
-	RECT rc;
-	GetClientRect(g_hWnd, &rc);
 
 	D3DXMATRIXA16 matR, matT;
 	D3DXMatrixRotationY(&matR, m_fRotY);
@@ -65,9 +57,57 @@ void cCharacter::Update()
 	// D3DXMatrixTranspose(&matR, &matR);
 	// // << 시선 예제 코드
 
+	// if (pMap)
+	// {
+	// 	if (pMap->GetHeight(pos.x, pos.y, pos.z))
+	// 	{
+	// 		m_vPosition = pos;
+	// 	}
+	// }
+
 	m_vDirection = D3DXVECTOR3(0, 0, 1);
 	D3DXVec3TransformNormal(&m_vDirection, &m_vDirection, &matR);
-	D3DXMatrixTranslation(&matT, m_vPosition.x, m_vPosition.y, m_vPosition.z);
+	D3DXMatrixTranslation(&matT, m_vPosition.x, m_vPosition.y + 1.0f, m_vPosition.z);
+
+	m_matWorld = matR * matT;
+}
+
+void cCharacter::Update(iMap *pMap)
+{
+	if (GetKeyState('A') & 0X8000)
+	{
+		m_fRotY -= dSpeed * dTimer->DeltaTime();
+	}
+	if (GetKeyState('D') & 0X8000)
+	{
+		m_fRotY += dSpeed * dTimer->DeltaTime();
+	}
+
+	D3DXVECTOR3 pos = m_vPosition;
+	if (GetKeyState('W') & 0X8000)
+	{
+		pos = m_vPosition + (m_vDirection * dSpeed) * dTimer->DeltaTime();
+	}
+	if (GetKeyState('S') & 0X8000)
+	{
+		pos = m_vPosition - (m_vDirection * dSpeed) * dTimer->DeltaTime();
+	}
+
+	D3DXMATRIXA16 matR, matT;
+	D3DXMatrixRotationY(&matR, m_fRotY);
+
+	if (pMap)
+	{
+		if (pMap->GetHeight(pos.x, pos.y, pos.z))
+		{
+			if(pos.y - m_vPosition.y < 3)
+				m_vPosition = pos;	// 계단 판정
+		}
+	}
+
+	m_vDirection = D3DXVECTOR3(0, 0, 1);
+	D3DXVec3TransformNormal(&m_vDirection, &m_vDirection, &matR);
+	D3DXMatrixTranslation(&matT, m_vPosition.x, m_vPosition.y + 1.0f, m_vPosition.z);
 
 	m_matWorld = matR * matT;
 }

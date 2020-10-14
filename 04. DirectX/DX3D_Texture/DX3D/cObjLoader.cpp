@@ -214,6 +214,84 @@ void cObjLoader::LoadMtlLib(char * szFolder, char * szFile)
 	fclose(fp);
 }
 
+void cObjLoader::LoadSurface(OUT vector<D3DXVECTOR3>& vecSurface, IN char * szFolder, IN char * szFile, IN D3DXMATRIXA16 * pmat)
+{
+	vector<D3DXVECTOR3> vecV;
+
+	string sFullPath(szFolder);
+	sFullPath += (string("/") + string(szFile));
+
+	FILE* fp;
+	fopen_s(&fp, sFullPath.c_str(), "r");
+
+	while (true)
+	{
+		if (feof(fp))
+			break;
+
+		char szTemp[1024];
+		fgets(szTemp, 1024, fp);
+
+		if (szTemp[0] == '#')
+		{
+			continue;
+		}
+		else if (szTemp[0] == 'm')
+		{
+			continue;
+		}
+		else if (szTemp[0] == 'g')
+		{
+			continue;
+		}
+		else if (szTemp[0] == 'v')
+		{
+			if (szTemp[1] == ' ')
+			{
+				float x, y, z;
+				sscanf_s(szTemp, "%*s %f %f %f", &x, &y, &z);
+
+				vecV.push_back(D3DXVECTOR3(x, y, z));
+			}
+			else if (szTemp[1] == 't')
+			{
+				continue;
+			}
+			else if (szTemp[1] == 'n')
+			{
+				continue;
+			}
+		}
+		else if (szTemp[0] == 'u')
+		{
+			continue;
+		}
+		else if (szTemp[0] == 'f')
+		{
+			int nIndex[3];
+			sscanf_s(szTemp, "%*s %d/%*d/%*d %d/%*d/%*d %d/%*d/%*d",
+				&nIndex[0], &nIndex[1], &nIndex[2]);
+
+			for (int i = 0; i < 3; i++)
+			{
+				vecSurface.push_back(vecV[nIndex[i] - 1]);
+			} // : for
+
+		}	// : if
+
+	}	// : while
+
+	fclose(fp);
+
+	if (pmat)	// 변환이 발생했을 경우
+	{
+		for (size_t i = 0; i < vecSurface.size(); i++)
+		{
+			D3DXVec3TransformCoord(&vecSurface[i], &vecSurface[i], pmat);
+		}
+	}
+}
+
 void cObjLoader::CalcNormalVector(vector<ST_PNT_VERTEX>& vecVertex)
 {
 	D3DXVECTOR3 u, v, n;

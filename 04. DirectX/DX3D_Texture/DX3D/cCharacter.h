@@ -16,7 +16,8 @@ public :
 	virtual ~cCharacter(void); 
 
 	virtual void Setup(); 
-	virtual void Update(); 
+	virtual void Update();
+	virtual void Update(iMap *pMap);
 	virtual void Update_Sub(vector<ST_PC_VERTEX> path, int &destNum);
 	virtual void Render(); 
 	virtual D3DXVECTOR3& GetPosition(); 

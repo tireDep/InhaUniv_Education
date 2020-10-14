@@ -22,6 +22,9 @@
     <Filter Include="03. CharObject">
       <UniqueIdentifier>{bf0ecfef-fcc3-4470-a356-ca558fb2deb3}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02_1.Object_Surface">
+      <UniqueIdentifier>{b72430ae-e5f8-4dfb-b514-acf2195a1df8}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <Text Include="ReadMe.txt" />
@@ -138,6 +141,12 @@
     <ClInclude Include="cGeoObject.h">
       <Filter>03. CharObject</Filter>
     </ClInclude>
+    <ClInclude Include="cObjMap.h">
+      <Filter>02_1.Object_Surface</Filter>
+    </ClInclude>
+    <ClInclude Include="iMap.h">
+      <Filter>02_1.Object_Surface</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -244,6 +253,12 @@
     </ClCompile>
     <ClCompile Include="cCharObjectLoader.cpp">
       <Filter>03. CharObject</Filter>
+    </ClCompile>
+    <ClCompile Include="iMap.cpp">
+      <Filter>02_1.Object_Surface</Filter>
+    </ClCompile>
+    <ClCompile Include="cObjMap.cpp">
+      <Filter>02_1.Object_Surface</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

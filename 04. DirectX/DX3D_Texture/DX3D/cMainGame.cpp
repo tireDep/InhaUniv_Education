@@ -22,6 +22,8 @@
 #include "cGeoObject.h"
 #include "cCharObjectLoader.h"
 
+#include "cObjMap.h"
+
 cMainGame::cMainGame()
 	: m_pCubePC(NULL)
 	, m_pCamera(NULL)
@@ -33,6 +35,7 @@ cMainGame::cMainGame()
 	, m_PointLight(NULL)
 	, m_pSubCubeMan(NULL)
 	, m_pGeoObject(NULL)
+	, m_pMap(NULL)
 {
 
 }
@@ -68,6 +71,8 @@ cMainGame::~cMainGame()
 	SafeDelete(m_pSubCubeMan);
 
 	SafeDelete(m_pGeoObject);
+
+	SafeDelete(m_pMap);
 }
 
 void cMainGame::Setup()
@@ -131,7 +136,7 @@ void cMainGame::Update()
 	dTimer->Update();
 
 	if (m_pCubeMan)
-		m_pCubeMan->Update(); 
+		m_pCubeMan->Update(m_pMap); 
 
 	if (m_pCamera)
 		m_pCamera->Update(); 
@@ -155,25 +160,26 @@ void cMainGame::Render()
 	if (m_pGrid)
 		m_pGrid->Render(); 
 
-	//if (m_pCubePC)
-	//	m_pCubePC->Render(); 
-	// if (m_pCubeMan)
-	// 	m_pCubeMan->Render(); 
-	// 
+	// if (m_pCubePC)
+	// 	m_pCubePC->Render(); 
+
+	if (m_pCubeMan)
+	 	m_pCubeMan->Render(); 
+	 
 	// for (int i = 0; i < m_vecLight.size(); i++)
 	// 	m_vecLight[i]->Render();
-	// 
-	// Render_Obj();
-	// 
+	 
+	Render_Obj();
+	 
 	// for (int i = 0; i < m_vecPath.size(); i++)
 	// 	m_vecPath[i]->Render();
-	// 
+	 
 	// if (m_pSubCubeMan)
 	// 	m_pSubCubeMan->Render();
-	// 
+	 
 	// Draw_Texture(); 
 
-	m_pGeoObject->Render();
+	// m_pGeoObject->Render();
 
 	g_pD3DDevice->EndScene();
 	g_pD3DDevice->Present(NULL, NULL, NULL, NULL);
@@ -213,10 +219,11 @@ void cMainGame::Draw_Texture()
 void cMainGame::SetUp_Obj()
 {
 	cObjLoader l;
-	// l.Load(m_vecGroup, "obj", "map_surface.obj");
-	l.Load(m_vecGroup, "obj", "box.obj");
+	l.Load(m_vecGroup, "obj", "map.obj");
 
 	m_pCubeMan->SetMap(m_vecGroup[0]->GetVertex());
+
+	Load_Surface();
 }
 
 void cMainGame::Render_Obj()
@@ -224,12 +231,10 @@ void cMainGame::Render_Obj()
 	g_pD3DDevice->SetRenderState(D3DRS_LIGHTING, true);
 
 	D3DXMATRIXA16 matWorld, matS, matR;
-	//D3DXMatrixScaling(&matS, 0.1f, 0.1f, 0.1f);
+	D3DXMatrixScaling(&matS, 0.01f, 0.01f, 0.01f);
 	D3DXMatrixRotationX(&matR, -D3DX_PI / 2.0f);
 
-	// matWorld = matS * matR;
-	matWorld = matR;
-	//D3DXMatrixIdentity(&matWorld);
+	matWorld = matS * matR;
 
 	g_pD3DDevice->SetTransform(D3DTS_WORLD, &matWorld);
 	
@@ -250,6 +255,17 @@ void cMainGame::Render_Obj()
 	// u, v 지금 당장 필요 x
 	// f : 충돌이 있을 때 값
 	*/
+}
+
+void cMainGame::Load_Surface()
+{
+	D3DXMATRIXA16 matWorld, matS, matR;
+	D3DXMatrixScaling(&matS, 0.01f, 0.01f, 0.01f);
+	D3DXMatrixRotationX(&matR, -D3DX_PI / 2.0f);
+
+	matWorld = matS * matR;
+
+	m_pMap = new cObjMap("obj", "map_surface.obj", &matWorld);
 }
 
 

@@ -164,6 +164,7 @@
     <ClInclude Include="cObject.h" />
     <ClInclude Include="cObjectManager.h" />
     <ClInclude Include="cObjLoader.h" />
+    <ClInclude Include="cObjMap.h" />
     <ClInclude Include="cPath.h" />
     <ClInclude Include="cPyramid.h" />
     <ClInclude Include="cRightArm.h" />
@@ -173,6 +174,7 @@
     <ClInclude Include="cTimer.h" />
     <ClInclude Include="DirectionLight.h" />
     <ClInclude Include="DX3D.h" />
+    <ClInclude Include="iMap.h" />
     <ClInclude Include="PointLight.h" />
     <ClInclude Include="Resource.h" />
     <ClInclude Include="SpotLight.h" />
@@ -202,6 +204,7 @@
     <ClCompile Include="cObject.cpp" />
     <ClCompile Include="cObjectManager.cpp" />
     <ClCompile Include="cObjLoader.cpp" />
+    <ClCompile Include="cObjMap.cpp" />
     <ClCompile Include="cPath.cpp" />
     <ClCompile Include="cPyramid.cpp" />
     <ClCompile Include="cRightArm.cpp" />
@@ -211,6 +214,7 @@
     <ClCompile Include="cTimer.cpp" />
     <ClCompile Include="DirectionLight.cpp" />
     <ClCompile Include="DX3D.cpp" />
+    <ClCompile Include="iMap.cpp" />
     <ClCompile Include="PointLight.cpp" />
     <ClCompile Include="SpotLight.cpp" />
     <ClCompile Include="stdafx.cpp">
