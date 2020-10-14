@@ -12,6 +12,11 @@
 #include "cObjLoader.h"
 #include "cGroup.h"
 
+#include "cObjMap.h"
+
+#include "cFrame.h"
+#include "cAseLoader.h"
+
 cMainGame::cMainGame()
 	: m_pCubePC(NULL)
 	, m_pCamera(NULL)
@@ -21,6 +26,8 @@ cMainGame::cMainGame()
 	, m_directLight(NULL)
 	, m_SpotLight(NULL)
 	, m_PointLight(NULL)
+	, m_pMap(NULL)
+	, m_pRootFrame(NULL)
 {
 
 }
@@ -38,11 +45,16 @@ cMainGame::~cMainGame()
 	SafeDelete(m_SpotLight);
 	SafeDelete(m_PointLight);
 
+	SafeDelete(m_pMap);
+
 	for each(auto p in m_vecGroup)
 	{
 		SafeRelease(p);
 	}
 	m_vecGroup.clear();
+
+	m_pRootFrame->Destroy();
+
 	g_pObjectManger->Destroy();
 
 	g_pDeviceManager->Destroy();
@@ -83,6 +95,9 @@ void cMainGame::Setup()
 	Set_Light();
 
 	SetUp_Obj();
+
+	cAseLoader aseLoder;
+	m_pRootFrame = aseLoder.Load("woman/woman_01_all.ASE");
 }
 
 void cMainGame::Update()
@@ -91,7 +106,7 @@ void cMainGame::Update()
 	//	m_pCubePC->Update(); 
 
 	if (m_pCubeMan)
-		m_pCubeMan->Update(); 
+		m_pCubeMan->Update(m_pMap); 
 
 	if (m_pCamera)
 		m_pCamera->Update(); 
@@ -112,17 +127,21 @@ void cMainGame::Render()
 	if (m_pGrid)
 		m_pGrid->Render(); 
 
-	//if (m_pCubePC)
+	// if (m_pCubePC)
 	//	m_pCubePC->Render(); 
-	if (m_pCubeMan)
-		m_pCubeMan->Render(); 
 
-	for (int i = 0; i < m_vecLight.size(); i++)
-		m_vecLight[i]->Render();
+	// if (m_pCubeMan)
+	// 	m_pCubeMan->Render(); 
 
-	Render_Obj();
+	// for (int i = 0; i < m_vecLight.size(); i++)
+	// 	m_vecLight[i]->Render();
 
-	Draw_Texture(); 
+	// Render_Obj();
+
+	// Draw_Texture(); 
+
+	if (m_pRootFrame)
+		m_pRootFrame->Render();
 
 	g_pD3DDevice->EndScene();
 	g_pD3DDevice->Present(NULL, NULL, NULL, NULL);
@@ -162,21 +181,26 @@ void cMainGame::Draw_Texture()
 void cMainGame::SetUp_Obj()
 {
 	cObjLoader l;
-	l.Load(m_vecGroup, "obj", "box.obj");
+	l.Load(m_vecGroup, "obj", "map.obj");
+
+	Load_Surface();
 }
 
 void cMainGame::Render_Obj()
 {
 	g_pD3DDevice->SetRenderState(D3DRS_LIGHTING, true);
+	g_pD3DDevice->LightEnable(1, false);
+	g_pD3DDevice->LightEnable(2, false);
 
 	D3DXMATRIXA16 matWorld, matS, matR;
-	D3DXMatrixScaling(&matS, 0.1f, 0.1f, 0.1f);
+	D3DXMatrixScaling(&matS, 0.01f, 0.01f, 0.01f);
 	D3DXMatrixRotationX(&matR, -D3DX_PI / 2.0f);
 
 	matWorld = matS * matR;
 
 	g_pD3DDevice->SetTransform(D3DTS_WORLD, &matWorld);
 	
+	// m_vecGroup[0]->Render();
 	for each(auto p in m_vecGroup)
 	{
 		p->Render();
@@ -196,4 +220,13 @@ void cMainGame::Render_Obj()
 	*/
 }
 
+void cMainGame::Load_Surface()
+{
+	D3DXMATRIXA16 matWorld, matS, matR;
+	D3DXMatrixScaling(&matS, 0.01f, 0.01f, 0.01f);
+	D3DXMatrixRotationX(&matR, -D3DX_PI / 2.0f);
 
+	matWorld = matS * matR;
+
+	m_pMap = new cObjMap("obj", "map_surface.obj", &matWorld);
+}

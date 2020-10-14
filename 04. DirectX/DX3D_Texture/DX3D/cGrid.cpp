@@ -109,6 +109,7 @@ void cGrid::Render()
 {
 	g_pD3DDevice->SetRenderState(D3DRS_LIGHTING, true); 
 	g_pD3DDevice->SetMaterial(&m_mtrl);
+	g_pD3DDevice->SetTexture(0, NULL);
 	D3DXMATRIXA16 matI; 
 	D3DXMatrixIdentity(&matI); 
 	g_pD3DDevice->SetTransform(D3DTS_WORLD, &matI); 
