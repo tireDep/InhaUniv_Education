@@ -36,8 +36,17 @@ private:
 	void	Process_NODE_TM(OUT cFrame* pFrame);
 
 	// >> Animation
+	void Process_TM_ANIMATION(OUT cFrame* pFrame);
+	void Process_CONTROL_POS_TRACK(OUT cFrame* pFrame);
+	void Process_CONTROL_ROT_TRACK(OUT cFrame* pFrame);
+
 	void	Process_Scene();
 	void	Set_SceneFrame(OUT cFrame* pRoot);
+
+	DWORD m_dwFirstFrame;
+	DWORD m_dwLastFrame;
+	DWORD m_dwFrameSpeed;
+	DWORD m_dwTicksPerFrame;
 	// << Animation
 
 public:
