@@ -26,7 +26,7 @@ cFrame * cAseLoader::Load(IN char * szFullPath)
 	{
 		if (IsEqual(szToken, ID_SCENE))
 		{
-			// Process_Scene();
+			Process_Scene();
 		}
 		else if (IsEqual(szToken,ID_MATERIAL_LIST))
 		{
@@ -38,7 +38,7 @@ cFrame * cAseLoader::Load(IN char * szFullPath)
 			if (pRoot == NULL)
 			{
 				pRoot = pFrame;
-				// Set_SceneFrame();
+				Set_SceneFrame(pRoot);
 			}
 		}
 	}	// : while
@@ -275,7 +275,7 @@ cFrame * cAseLoader::Process_GEOMOBJECT()
 		}
 		else if (IsEqual(szToken, ID_TM_ANIMATION))
 		{
-			// : skip
+			Process_TM_ANIMATION(pFrame);
 		}
 		else if (IsEqual(szToken, ID_MATERIAL_REF))
 		{
@@ -549,12 +549,152 @@ void cAseLoader::Process_NODE_TM(OUT cFrame * pFrame)
 	pFrame->SetWorldTM(matWorld);
 }
 
+void cAseLoader::Process_TM_ANIMATION(OUT cFrame * pFrame)
+{
+	int nLevel = 0;
+	do
+	{
+		char* szToken = GetToken();
+		if (IsEqual(szToken, "{"))
+		{
+			++nLevel;
+		}
+		else if (IsEqual(szToken, "}"))
+		{
+			--nLevel;
+		}
+		else if (IsEqual(szToken, ID_POS_TRACK))
+		{
+			Process_CONTROL_POS_TRACK(pFrame);
+		}
+		else if (IsEqual(szToken, ID_ROT_TRACK))
+		{
+			Process_CONTROL_ROT_TRACK(pFrame);
+		}
+
+	} while (nLevel > 0);
+}
+
+void cAseLoader::Process_CONTROL_POS_TRACK(OUT cFrame * pFrame)
+{
+	vector<ST_POS_SAMPLE> vecPosTrack;
+
+	int nLevel = 0;
+	do
+	{
+		char* szToken = GetToken();
+		if (IsEqual(szToken, "{"))
+		{
+			++nLevel;
+		}
+		else if (IsEqual(szToken, "}"))
+		{
+			--nLevel;
+		}
+		else if (IsEqual(szToken, ID_POS_SAMPLE))
+		{
+			// 값 정보 : 현재 프레임 /t 위치값들
+			ST_POS_SAMPLE s;
+			s.n = GetInteger();
+			s.v.x = GetFloat();
+			s.v.z = GetFloat();
+			s.v.y = GetFloat();
+			
+			vecPosTrack.push_back(s);
+		}
+
+	} while (nLevel > 0);
+
+	pFrame->SetPosTrack(vecPosTrack);
+}
+
+void cAseLoader::Process_CONTROL_ROT_TRACK(OUT cFrame * pFrame)
+{
+	vector<ST_ROT_SAMPLE> vecRotTrack;
+
+	int nLevel = 0;
+	do
+	{
+		char* szToken = GetToken();
+		if (IsEqual(szToken, "{"))
+		{
+			++nLevel;
+		}
+		else if (IsEqual(szToken, "}"))
+		{
+			--nLevel;
+		}
+		else if (IsEqual(szToken, ID_ROT_SAMPLE))
+		{
+			// 값 정보 : 현재 프레임 /t 위치값들
+			ST_ROT_SAMPLE s;
+
+			s.n = GetInteger();
+			s.q.x = GetFloat();
+			s.q.z = GetFloat();
+			s.q.y = GetFloat();
+			s.q.w = GetFloat();
+			// >> 여기까지 axis angle, quaternion 변환 필요(변환식 사용)
+
+			s.q.x *= sinf(s.q.w / 2.0f);
+			s.q.y *= sinf(s.q.w / 2.0f);
+			s.q.z *= sinf(s.q.w / 2.0f);
+			s.q.w  = cosf(s.q.w / 2.0f);
+			// quaternion 변환
+
+			if (!vecRotTrack.empty())
+			{
+				s.q = vecRotTrack.back().q * s.q;	// 회전 값 누적 필요
+			}
+			vecRotTrack.push_back(s);
+
+		}
+	} while (nLevel > 0);
+
+	pFrame->SetRotTrack(vecRotTrack);
+}
+
 void cAseLoader::Process_Scene()
 {
 	// animation
+	int nLevel = 0;
+	do
+	{
+		char* szToken = GetToken();
+		if (IsEqual(szToken, "{"))
+		{
+			++nLevel;
+		}
+		else if (IsEqual(szToken, "}"))
+		{
+			--nLevel;
+		}
+
+		else if (IsEqual(szToken, ID_FIRSTFRAME))
+		{
+			m_dwFirstFrame = GetInteger();
+		}
+		else if (IsEqual(szToken, ID_LASTFRAME))
+		{
+			m_dwLastFrame = GetInteger();
+		}
+		else if (IsEqual(szToken, ID_FRAMESPEED))
+		{
+			m_dwFrameSpeed = GetInteger();
+		}
+		else if (IsEqual(szToken, ID_TICKSPERFRAME))
+		{
+			m_dwTicksPerFrame = GetInteger();
+		}
+
+	} while (nLevel > 0);
 }
 
 void cAseLoader::Set_SceneFrame(OUT cFrame * pRoot)
 {
 	// animation
+	pRoot->m_dwFirstFrame = m_dwFirstFrame;
+	pRoot->m_dwLastFrame = m_dwLastFrame;
+	pRoot->m_dwFrameSpeed = m_dwFrameSpeed;
+	pRoot->m_dwTicksPerFrame = m_dwTicksPerFrame;
 }

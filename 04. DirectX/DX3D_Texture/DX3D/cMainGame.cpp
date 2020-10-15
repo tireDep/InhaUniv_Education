@@ -113,6 +113,9 @@ void cMainGame::Update()
 
 	for (int i = 0; i < m_vecLight.size(); i++)
 		m_vecLight[i]->Update();
+
+	if (m_pRootFrame)
+		m_pRootFrame->Update(m_pRootFrame->GetKeyFrame(), NULL);
 }
 
 void cMainGame::Render()

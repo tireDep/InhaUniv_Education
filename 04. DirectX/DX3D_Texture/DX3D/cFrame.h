@@ -14,6 +14,11 @@ private:
 
 	vector<cFrame*> m_vecChild;
 
+	// >> animation
+	Synthesize_Pass_by_Ref(vector<ST_POS_SAMPLE>, m_vecPosTrack, PosTrack);
+	Synthesize_Pass_by_Ref(vector<ST_ROT_SAMPLE>, m_vecRotTrack, RotTrack);
+	// << animation
+
 public:
 	cFrame();
 	~cFrame();
@@ -24,4 +29,15 @@ public:
 	void Destroy();
 	void CalcOriginalLocalTM(D3DXMATRIXA16* pMatParent);
 
+	// >> animation
+	DWORD m_dwFirstFrame;
+	DWORD m_dwLastFrame;
+	DWORD m_dwFrameSpeed;
+	DWORD m_dwTicksPerFrame;
+
+	void CalcLocalT(IN int nKeyFrame, OUT D3DXMATRIXA16 &matT);
+	void CalcLocalR(IN int nKeyFrame, OUT D3DXMATRIXA16 &matR);
+
+	int GetKeyFrame();
+	// << animation
 };
