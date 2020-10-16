@@ -24,10 +24,16 @@ private:
 	Synthesize_Pass_by_Ref(vector<ST_ROT_SAMPLE>, m_vecRotTrack, RotTrack);
 	// << animation
 
-	// >> BufferMemory
+	// >> vertexBuffer
 	int m_nNumTri;
 	LPDIRECT3DVERTEXBUFFER9 m_pVB;
-	// << BufferMemory
+	// << vertexBuffer
+
+	// >> indexBuffer
+	int m_nNumVer;
+	int m_nNumTri_I;
+	LPDIRECT3DINDEXBUFFER9 m_pIB;
+	// << indexBuffer
 
 public:
 	cFrame();
@@ -46,7 +52,11 @@ public:
 	int GetKeyFrame();
 	// << animation
 
-	// >> BufferMemory
+	// >> vertexBuffer
 	void BuildVB(vector<ST_PNT_VERTEX>& vecVertex);
-	// << BufferMemory
+	// << vertexBuffer
+
+	// >> indexBuffer
+	void BuildIB(vector<ST_PNT_VERTEX>& vecVertex);
+	// << indexBuffer
 };

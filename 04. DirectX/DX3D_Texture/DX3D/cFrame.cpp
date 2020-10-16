@@ -5,7 +5,10 @@
 cFrame::cFrame() :
 	m_pMtlTex(NULL),
 	m_pVB(NULL),
-	m_nNumTri(0)
+	m_nNumTri(0),
+	m_pIB(NULL),
+	m_nNumVer(0),
+	m_nNumTri_I(0)
 {
 	D3DXMatrixIdentity(&m_matWorldTM);
 	D3DXMatrixIdentity(&m_matLocalTM);
@@ -16,6 +19,7 @@ cFrame::~cFrame()
 {
 	SafeRelease(m_pMtlTex);
 	SafeRelease(m_pVB);
+	SafeRelease(m_pIB);
 }
 
 void cFrame::Update(int nKeyFrame, D3DXMATRIXA16 * pMatParent)
@@ -48,11 +52,15 @@ void cFrame::Render()
 		g_pD3DDevice->SetMaterial(&m_pMtlTex->GetMaterial());
 
 		g_pD3DDevice->SetFVF(ST_PNT_VERTEX::FVF);
-		g_pD3DDevice->DrawPrimitiveUP(D3DPT_TRIANGLELIST, m_vecVertex.size() / 3, &m_vecVertex[0], sizeof(ST_PNT_VERTEX));
+		// g_pD3DDevice->DrawPrimitiveUP(D3DPT_TRIANGLELIST, m_vecVertex.size() / 3, &m_vecVertex[0], sizeof(ST_PNT_VERTEX));
+		// 
+		// g_pD3DDevice->SetStreamSource(0, m_pVB, 0, sizeof(ST_PNT_VERTEX));
+		// g_pD3DDevice->DrawPrimitive(D3DPT_TRIANGLELIST, 0, m_nNumTri);
+		// m_nNumTri => 삼각형 갯수
 
 		g_pD3DDevice->SetStreamSource(0, m_pVB, 0, sizeof(ST_PNT_VERTEX));
-		g_pD3DDevice->DrawPrimitive(D3DPT_TRIANGLELIST, 0, m_nNumTri);
-		// m_nNumTri => 삼각형 갯수
+		g_pD3DDevice->SetIndices(m_pIB);
+		g_pD3DDevice->DrawIndexedPrimitive(D3DPT_TRIANGLELIST, 0, 0, m_nNumVer, 0, m_nNumTri_I);
 	}
 
 	for each(auto c in m_vecChild)
@@ -239,4 +247,24 @@ void cFrame::BuildVB(vector<ST_PNT_VERTEX>& vecVertex)
 	// 위치, 시작위치, 사이즈
 	m_pVB->Unlock();
 	// << 메모리 잠금
+}
+
+void cFrame::BuildIB(vector<ST_PNT_VERTEX>& vecVertex)
+{
+	m_nNumTri_I = vecVertex.size() / 3;
+	m_nNumVer = vecVertex.size();
+
+	vector<WORD> vecIndex;
+	g_pD3DDevice->CreateIndexBuffer(vecVertex.size() * sizeof(WORD), D3DUSAGE_WRITEONLY
+		, D3DFMT_INDEX16, D3DPOOL_MANAGED, &m_pIB, NULL);
+
+	for (int i = 0; i < vecVertex.size(); i++)
+	{
+		vecIndex.push_back(i);
+	}
+
+	WORD* data = NULL;
+	m_pIB->Lock(0, 0, (void**)&data, 0);
+	memcpy(data, &vecIndex[0], vecVertex.size() * sizeof(WORD));
+	m_pIB->Unlock();
 }

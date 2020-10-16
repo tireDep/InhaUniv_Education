@@ -356,6 +356,7 @@ void cAseLoader::Process_MESH(OUT cFrame * pFrame)
 
 	pFrame->SetVertex(vecVertex);
 	pFrame->BuildVB(vecVertex);
+	pFrame->BuildIB(vecVertex);
 }
 
 void cAseLoader::Process_MESH_VERTEX_LIST(OUT vector<D3DXVECTOR3>& vecV)
