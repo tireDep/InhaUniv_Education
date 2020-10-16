@@ -3,6 +3,7 @@
 
 cMtlTex::cMtlTex() 
 	: m_pTexture(NULL)
+	, m_nAttrID(NULL)
 {
 	ZeroMemory(&m_stMtl,sizeof(D3DMATERIAL9));
 }

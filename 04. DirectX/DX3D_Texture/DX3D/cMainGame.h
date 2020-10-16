@@ -11,6 +11,8 @@ class cGroup;
 
 class cFrame;
 
+class cMtlTex;
+
 #include "cLight.h"
 
 class cMainGame
@@ -43,6 +45,16 @@ private :
 
 	cFrame* m_pRootFrame;
 
+	// >> mesh
+	LPD3DXMESH m_pMeshTeaPot;
+	LPD3DXMESH m_pMeshSphere;
+	D3DMATERIAL9 m_stMtlTeaPot;
+	D3DMATERIAL9 m_stMtlSphere;
+
+	LPD3DXMESH m_pObjMesh;
+	vector<cMtlTex*> m_vecObjMtlTex;
+	// << mesh
+
 public :
 	void Setup(); 
 	void Update(); 
@@ -57,5 +69,10 @@ public :
 	void Render_Obj();
 
 	void Load_Surface();
+
+	// >> mesh
+	void SetUp_MeshObj();
+	void Render_MeshObj();
+	// << mesh
 };
 
