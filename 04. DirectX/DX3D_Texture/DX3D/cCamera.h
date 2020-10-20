@@ -20,5 +20,7 @@ public :
 	void Update(); 
 
 	void WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam); 
+
+	D3DXVECTOR3 GetLookAt();
 };
 

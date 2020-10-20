@@ -160,6 +160,7 @@
     <ClInclude Include="cLeftLeg.h" />
     <ClInclude Include="cLight.h" />
     <ClInclude Include="cMainGame.h" />
+    <ClInclude Include="CMouse.h" />
     <ClInclude Include="cMtlTex.h" />
     <ClInclude Include="cObject.h" />
     <ClInclude Include="cObjectManager.h" />
@@ -168,6 +169,7 @@
     <ClInclude Include="cPyramid.h" />
     <ClInclude Include="cRightArm.h" />
     <ClInclude Include="cRightLeg.h" />
+    <ClInclude Include="CSphere.h" />
     <ClInclude Include="cTextureManager.h" />
     <ClInclude Include="DirectionLight.h" />
     <ClInclude Include="DX3D.h" />
@@ -196,6 +198,7 @@
     <ClCompile Include="cLeftLeg.cpp" />
     <ClCompile Include="cLight.cpp" />
     <ClCompile Include="cMainGame.cpp" />
+    <ClCompile Include="CMouse.cpp" />
     <ClCompile Include="cMtlTex.cpp" />
     <ClCompile Include="cObject.cpp" />
     <ClCompile Include="cObjectManager.cpp" />
@@ -204,6 +207,7 @@
     <ClCompile Include="cPyramid.cpp" />
     <ClCompile Include="cRightArm.cpp" />
     <ClCompile Include="cRightLeg.cpp" />
+    <ClCompile Include="CSphere.cpp" />
     <ClCompile Include="cTextureManager.cpp" />
     <ClCompile Include="DirectionLight.cpp" />
     <ClCompile Include="DX3D.cpp" />

@@ -17,6 +17,9 @@
 #include "cFrame.h"
 #include "cAseLoader.h"
 
+#include "CMouse.h"
+#include "CSphere.h"
+
 cMainGame::cMainGame()
 	: m_pCubePC(NULL)
 	, m_pCamera(NULL)
@@ -31,6 +34,7 @@ cMainGame::cMainGame()
 	, m_pMeshTeaPot(NULL)
 	, m_pMeshSphere(NULL)
 	, m_pObjMesh(NULL)
+	, m_pMouse(NULL)
 {
 
 }
@@ -68,6 +72,14 @@ cMainGame::~cMainGame()
 	}
 	m_vecObjMtlTex.clear();
 	// << mesh
+
+	SafeDelete(m_pMouse);
+
+	// for each(auto p in m_vecSphere)
+	// {
+	// 	SafeRelease(p);
+	// }
+	// m_vecSphere.clear();
 
 	g_pObjectManger->Destroy();
 
@@ -114,6 +126,21 @@ void cMainGame::Setup()
 	m_pRootFrame = aseLoder.Load("woman/woman_01_all.ASE");
 
 	SetUp_MeshObj();
+
+	m_pMouse = new CMouse;
+	
+	for (int i = 0; i < 15; i+=3)
+	{
+		D3DXVECTOR3 tempCenter(0, 0, i);
+		CSphere* tempSphere = new CSphere;
+		tempSphere->SetUp(0.5f, 10, 10, tempCenter);
+		m_vecSphere.push_back(tempSphere);
+
+		tempCenter = D3DXVECTOR3(0, 0, -i);
+		tempSphere = new CSphere;
+		tempSphere->SetUp(0.5f, 10, 10, tempCenter);
+		m_vecSphere.push_back(tempSphere);
+	}
 }
 
 void cMainGame::Update()
@@ -132,6 +159,8 @@ void cMainGame::Update()
 
 	if (m_pRootFrame)
 		m_pRootFrame->Update(m_pRootFrame->GetKeyFrame(), NULL);
+
+	m_pMouse->Update(m_vecSphere, m_pCamera->GetLookAt());
 }
 
 void cMainGame::Render()
@@ -149,8 +178,8 @@ void cMainGame::Render()
 	// if (m_pCubePC)
 	//	m_pCubePC->Render(); 
 
-	// if (m_pCubeMan)
-	// 	m_pCubeMan->Render(); 
+	if (m_pCubeMan)
+		m_pCubeMan->Render(); 
 
 	// for (int i = 0; i < m_vecLight.size(); i++)
 	// 	m_vecLight[i]->Render();
@@ -159,10 +188,15 @@ void cMainGame::Render()
 
 	// Draw_Texture(); 
 
-	if (m_pRootFrame)
-		m_pRootFrame->Render();
+	// if (m_pRootFrame)
+	// 	m_pRootFrame->Render();
 
-	Render_MeshObj();
+	// Render_MeshObj();
+
+	for (int i = 0; i < m_vecSphere.size(); i++)
+	{
+		m_vecSphere[i]->Render();
+	}
 
 	g_pD3DDevice->EndScene();
 	g_pD3DDevice->Present(NULL, NULL, NULL, NULL);
@@ -172,6 +206,9 @@ void cMainGame::WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 {
 	if (m_pCamera)
 		m_pCamera->WndProc(hWnd, message, wParam, lParam); 
+
+	if(m_pMouse)
+		m_pMouse->WndProc(hWnd, message, wParam, lParam);
 }
 
 void cMainGame::Set_Light()
@@ -277,44 +314,86 @@ void cMainGame::SetUp_MeshObj()
 void cMainGame::Render_MeshObj()
 {
 	D3DXMATRIXA16 matWorld, matS, matR;
-	{
-		D3DXMatrixIdentity(&matS);
-		D3DXMatrixIdentity(&matR); 
-		matWorld = matS * matR;
-		D3DXMatrixTranslation(&matWorld, 0, 1, 10);
+	// {
+	// 	D3DXMatrixIdentity(&matS);
+	// 	D3DXMatrixIdentity(&matR); 
+	// 	matWorld = matS * matR;
+	// 	D3DXMatrixTranslation(&matWorld, 0, 1, 10);
+	// 
+	// 	g_pD3DDevice->SetTransform(D3DTS_WORLD, &matWorld);
+	// 
+	// 	g_pD3DDevice->SetMaterial(&m_stMtlTeaPot);
+	// 	m_pMeshTeaPot->DrawSubset(0);	// attribute 1°³
+	// }
 
-		g_pD3DDevice->SetTransform(D3DTS_WORLD, &matWorld);
+	//{
+	//	D3DXMatrixIdentity(&matS);
+	//	D3DXMatrixIdentity(&matR);
+	//	matWorld = matS * matR;
 
-		g_pD3DDevice->SetMaterial(&m_stMtlTeaPot);
-		m_pMeshTeaPot->DrawSubset(0);	// attribute 1°³
-	}
+	//	//for (int i = 0; i < 15; i += 3)
+	//	//{
+	//	//	D3DXMatrixTranslation(&matWorld, 0, 0, i);
+	//	//	g_pD3DDevice->SetTransform(D3DTS_WORLD, &matWorld);
+	//	//	g_pD3DDevice->SetMaterial(&m_stMtlSphere);
 
-	{
-		D3DXMatrixIdentity(&matS);
-		D3DXMatrixIdentity(&matR);
-		matWorld = matS * matR;
-		D3DXMatrixTranslation(&matWorld, 1, 1, 0);
-		g_pD3DDevice->SetTransform(D3DTS_WORLD, &matWorld);
+	//	//	if (m_pMouse->IsClicked(m_pMeshSphere))
+	//	//	{
+	//	//		//todo
+	//	//		m_stMtlSphere.Ambient = D3DXCOLOR(0.7f, 0.0f, 0.0f, 1.0f);
+	//	//		m_stMtlSphere.Diffuse = D3DXCOLOR(0.7f, 0.0f, 0.0f, 1.0f);
+	//	//		m_stMtlSphere.Specular = D3DXCOLOR(0.7f, 0.0f, 0.0f, 1.0f);
+	//	//	}
+	//	//	m_pMeshSphere->DrawSubset(0);
+	//	//	
+	//	//	D3DXMatrixTranslation(&matWorld, 0, 0, -i);
+	//	//	g_pD3DDevice->SetTransform(D3DTS_WORLD, &matWorld);
+	//	//	g_pD3DDevice->SetMaterial(&m_stMtlSphere);
 
-		g_pD3DDevice->SetMaterial(&m_stMtlSphere);
-		m_pMeshSphere->DrawSubset(0);	// attribute 1°³
-	}
+
+	//	//	if (m_pMouse->IsClicked(m_pMeshSphere))
+	//	//	{
+	//	//		//todo
+	//	//		m_stMtlSphere.Ambient = D3DXCOLOR(0.7f, 0.0f, 0.0f, 1.0f);
+	//	//		m_stMtlSphere.Diffuse = D3DXCOLOR(0.7f, 0.0f, 0.0f, 1.0f);
+	//	//		m_stMtlSphere.Specular = D3DXCOLOR(0.7f, 0.0f, 0.0f, 1.0f);
+	//	//	}
+	//	//	m_pMeshSphere->DrawSubset(0);
+	//	//}
+
+	//	D3DXMatrixTranslation(&matWorld, 0, 0, 0);
+	//	g_pD3DDevice->SetTransform(D3DTS_WORLD, &matWorld);
+	//	g_pD3DDevice->SetMaterial(&m_stMtlSphere);
+
+	//	POINT pos;
+	//	if (m_pMouse->IsClicked(m_pMeshSphere, pos))
+	//	{
+	//		// m_stMtlSphere.Ambient = D3DXCOLOR(0.7f, 0.0f, 0.0f, 1.0f);
+	//		// m_stMtlSphere.Diffuse = D3DXCOLOR(0.7f, 0.0f, 0.0f, 1.0f);
+	//		// m_stMtlSphere.Specular = D3DXCOLOR(0.7f, 0.0f, 0.0f, 1.0f);
+
+	//		D3DXMatrixTranslation(&matWorld, pos.x, 0, pos.y);
+	//		g_pD3DDevice->SetTransform(D3DTS_WORLD, &matWorld);
+	//	}
+	//	m_pMeshSphere->DrawSubset(0);
+
+	//}
 	// ================================================================
-	{
-		D3DXMatrixIdentity(&matWorld);
-		D3DXMatrixScaling(&matS, 0.01f, 0.01f, 0.01f);
-		D3DXMatrixRotationX(&matR, -D3DX_PI / 2.0f);
-
-		matWorld = matS * matR;
-
-		g_pD3DDevice->SetTransform(D3DTS_WORLD, &matWorld);
-
-		for (size_t i = 0; i < m_vecObjMtlTex.size(); i++)
-		{
-			g_pD3DDevice->SetMaterial(&m_vecObjMtlTex[i]->GetMaterial());
-			g_pD3DDevice->SetTexture(0, m_vecObjMtlTex[i]->GetTexture());
-
-			m_pObjMesh->DrawSubset(i);
-		}
-	}
+	// {
+	// 	D3DXMatrixIdentity(&matWorld);
+	// 	D3DXMatrixScaling(&matS, 0.01f, 0.01f, 0.01f);
+	// 	D3DXMatrixRotationX(&matR, -D3DX_PI / 2.0f);
+	// 
+	// 	matWorld = matS * matR;
+	// 
+	// 	g_pD3DDevice->SetTransform(D3DTS_WORLD, &matWorld);
+	// 
+	// 	for (size_t i = 0; i < m_vecObjMtlTex.size(); i++)
+	// 	{
+	// 		g_pD3DDevice->SetMaterial(&m_vecObjMtlTex[i]->GetMaterial());
+	// 		g_pD3DDevice->SetTexture(0, m_vecObjMtlTex[i]->GetTexture());
+	// 
+	// 		m_pObjMesh->DrawSubset(i);
+	// 	}
+	// }
 }

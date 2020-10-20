@@ -101,4 +101,9 @@ void cCamera::WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 	}
 }
 
+D3DXVECTOR3 cCamera::GetLookAt()
+{
+	return m_vLookAt;
+}
+
 
