@@ -5,7 +5,8 @@
 CMouse::CMouse() :
 	m_isLDown(false),
 	m_isRDown(false),
-	m_destPos(9999, 9999, 9999)
+	m_destPos(0, 0, 0),
+	m_gridIndex(-1)
 {
 	m_clickPos.x = -1;
 	m_clickPos.y = -1;
@@ -44,25 +45,22 @@ void CMouse::WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 	}
 }
 
-void CMouse::Update(vector<CSphere *>& mesh, D3DXVECTOR3 setLookAt)
+void CMouse::Update(vector<CSphere *>& mesh, D3DXVECTOR3 setLookAt, vector<ST_PN_VERTEX> vecCheck)
 {
-	POINT pos;
-	for(int i=0;i<mesh.size();i++)
-		CheckClicked(mesh[i], pos);
+	for (int i = 0; i < mesh.size(); i++)
+	{
+		if (m_isLDown)
+		CheckLBtn(mesh[i]);
+
+		if (m_isRDown)
+		CheckRBtn(mesh[i], vecCheck);
+	}
 
 	m_vLookAt = setLookAt;
 }
 
-void CMouse::CheckClicked(CSphere* mesh, POINT& pos)
-{
-	if (m_isLDown)
-		CheckLBtn(mesh, pos);
 
-	if (m_isRDown)
-		CheckRBtn(mesh, pos);
-}
-
-void CMouse::CheckLBtn(CSphere * mesh, POINT & pos)
+void CMouse::CheckLBtn(CSphere * mesh)
 {
 	// >> 픽킹 광선의 계산
 	D3DXVECTOR3 mousePos;
@@ -177,42 +175,77 @@ void CMouse::CheckLBtn(CSphere * mesh, POINT & pos)
 	m_isLDown = false;
 }
 
-void CMouse::CheckRBtn(CSphere * mesh, POINT & pos)
+void CMouse::CheckRBtn(CSphere * mesh, vector<ST_PN_VERTEX> vecCheck)
 {
-	D3DXVECTOR3 mousePos;
+	// >> 언프로젝션
+	D3DVIEWPORT9 viewPort;
+	g_pD3DDevice->GetViewport(&viewPort);
 
-	D3DVIEWPORT9 viewPortMat;
-	g_pD3DDevice->GetViewport(&viewPortMat);
+	D3DXMATRIXA16 matProj;
+	g_pD3DDevice->GetTransform(D3DTS_PROJECTION, &matProj);
 
-	D3DXMATRIX projMat;
-	g_pD3DDevice->GetTransform(D3DTS_PROJECTION, &projMat);
+	D3DXVECTOR3 finV;
+	finV.x = ((  (((m_clickPos.x - viewPort.X) * 2.0 / viewPort.Width - 1.0f) )) - matProj._31 ) / matProj._11;
+	finV.y = (( -(((m_clickPos.y - viewPort.Y) * 2.0 / viewPort.Height - 1.0f) )) - matProj._32) / matProj._22;
+	finV.z = 1.0f;
+	// << 언프로젝션
 
-	mousePos.x = ((2.0f * m_clickPos.x) / viewPortMat.Width - 1.0f) / projMat._11;
-	mousePos.y = ((-2.0f * m_clickPos.y) / viewPortMat.Height + 1.0f) / projMat._22;
-	mousePos.z = 1.0f;
-	// 픽킹 광선의 계산
+	// >> 카메라 좌표와 구해진 점을 있는 반직선 구함
+	D3DXMATRIXA16 matView, matInverseView;
+	g_pD3DDevice->GetTransform(D3DTS_VIEW, &matView);
 
-	// >> 광선변환
-	D3DXVECTOR3 origin(0, 0, 0);
-	D3DXVECTOR3 direction(mousePos.x, mousePos.y, mousePos.z);
+	D3DXMatrixInverse(&matInverseView, NULL, &matView);
+	
+	D3DXVECTOR3 rayOrigin;
+	D3DXVECTOR3	rayDir;
 
-	D3DXMATRIXA16 view;
-	g_pD3DDevice->GetTransform(D3DTS_VIEW, &view);
-	D3DXMatrixInverse(&view, 0, &view);
+	rayDir.x = finV.x*matInverseView._11 + finV.y*matInverseView._21 + finV.z*matInverseView._31;
+	rayDir.y = finV.x*matInverseView._12 + finV.y*matInverseView._22 + finV.z*matInverseView._32;
+	rayDir.z = finV.x*matInverseView._13 + finV.y*matInverseView._23 + finV.z*matInverseView._33;
+	
+	rayOrigin.x = matInverseView._41;
+	rayOrigin.y = matInverseView._42;
+	rayOrigin.z = matInverseView._43;
+	// << 카메라 좌표와 구해진 점을 있는 반직선 구함
 
+	// >> piking
+	float u = 0, v = 0, dist = 0;
+	for (int i = 0; i < vecCheck.size(); i += 3)
+	{
+		if (D3DXIntersectTri(
+			&vecCheck[i + 0].p,
+			&vecCheck[i + 1].p,
+			&vecCheck[i + 2].p,
+			&rayOrigin,
+			&rayDir,
+			&u,
+			&v,
+			&dist))
+		{
+			// 3d 마우스 좌표 계산
+			m_destPos = rayOrigin + rayDir * dist;
+			m_gridIndex = i; // Callback return Value
+			return;
+		}
+		// else
+		// {
+		// 	dist = 5.0f / D3DXVec3Length(&vPickRayDir);
+		// 	m_destPos = vPickRayOrig + vPickRayDir * dist;
+		//	// 아무것도 눌리지 않았을 경우의 처리도 필요함
+		// }
 
-	D3DXVec3TransformCoord(&origin, &origin, &view);
-	D3DXVec3TransformNormal(&direction, &direction, &view);
-	D3DXVec3Normalize(&direction, &direction);
-	// << 광선변환
-
-	m_destPos = D3DXVECTOR3(5,0,5);
-	// m_destPos.y = 0.0f;
+	} // : for
+	// << piking
 
 	m_isRDown = false;
 }
 
-D3DXVECTOR3 CMouse::CallFunc(D3DXVECTOR3 a)
+D3DXVECTOR3 CMouse::CallFunc()
 {
-	return  CMouse::GetInstance()->m_destPos;
+	return CMouse::GetInstance()->m_destPos;
+}
+
+int CMouse::CallFunc_GridMtrl()
+{
+	return CMouse::GetInstance()->m_gridIndex;
 }

@@ -2,25 +2,20 @@
 
 #include "cCharacter.h"
 
-struct ST_RAY
-{
-	D3DXVECTOR3 vRayOrigin;
-	D3DXVECTOR3 vRayDir;
-};
-
 class CSphere;
 
 class CMouse
 {
 private:
 	POINT m_clickPos;
-	ST_RAY m_ray;
 
 	bool m_isLDown;
 	bool m_isRDown;
 
 	D3DXVECTOR3 m_vLookAt;
+
 	D3DXVECTOR3 m_destPos;
+	int m_gridIndex;
 
 public:
 	// CMouse();
@@ -30,14 +25,13 @@ public:
 
 	void SetUp();
 	void WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam);
-	void Update(vector<CSphere *>& mesh, D3DXVECTOR3 setLookAt);
-	void CheckClicked(CSphere* mesh, POINT& pos);
-	void CheckLBtn(CSphere* mesh, POINT& pos);
-	void CheckRBtn(CSphere* mesh, POINT& pos);
+	void Update(vector<CSphere *>& mesh, D3DXVECTOR3 setLookAt, vector<ST_PN_VERTEX> vecCheck);
+	void CheckLBtn(CSphere* mesh);
+	void CheckRBtn(CSphere* mesh, vector<ST_PN_VERTEX> vecCheck);
 
-	// D3DXVECTOR3 CheckRClicked(D3DXVECTOR3 vPos);
-	// typedef void*(funcType)(CMouse mouse);
-	// void CheckRClicked(D3DXVECTOR3 pos);
-	static D3DXVECTOR3 CallFunc(D3DXVECTOR3 a);
+
+	static D3DXVECTOR3 CallFunc();
+
+	static int CallFunc_GridMtrl();
 };
 

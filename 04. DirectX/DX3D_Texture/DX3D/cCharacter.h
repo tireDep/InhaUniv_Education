@@ -15,9 +15,8 @@ protected :
 
 	iMap *m_pMap;
 
-	D3DXVECTOR3(*funcPtr) (D3DXVECTOR3 v);
+	D3DXVECTOR3(*funcPtr) ();
 	D3DXVECTOR3 m_destPos;
-	bool m_isMoving;
 
 public : 
 	virtual ~cCharacter(void); 

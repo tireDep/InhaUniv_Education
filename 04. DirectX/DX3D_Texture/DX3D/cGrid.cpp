@@ -2,6 +2,8 @@
 #include "cGrid.h"
 #include "cPyramid.h"
 
+#include "CMouse.h"
+
 cGrid::cGrid()
 {
 }
@@ -76,8 +78,6 @@ void cGrid::Setup(int nNumHalfTile, float fInterval)
 			v.p = D3DXVECTOR3(j + 1, 0, i + 1);
 			v.n = D3DXVECTOR3(0, 1, 0);
 			m_vecVertex.push_back(v);
-
-
 		}
 	}
 
@@ -107,6 +107,14 @@ void cGrid::Setup(int nNumHalfTile, float fInterval)
 
 void cGrid::Render()
 {
+	funcPtr = CMouse::CallFunc_GridMtrl;
+	if (funcPtr() != -1)
+	{
+		m_mtrl.Ambient = D3DXCOLOR(0.0f, 0.7f, 0.7f, 1.0f);
+		m_mtrl.Diffuse = D3DXCOLOR(0.0f, 0.7f, 0.7f, 1.0f);
+		m_mtrl.Specular = D3DXCOLOR(0.0f, 0.7f, 0.7f, 1.0f);
+	}
+
 	g_pD3DDevice->SetRenderState(D3DRS_LIGHTING, true); 
 	g_pD3DDevice->SetMaterial(&m_mtrl);
 	g_pD3DDevice->SetTexture(0, NULL);
@@ -116,11 +124,11 @@ void cGrid::Render()
 	g_pD3DDevice->SetFVF(ST_PN_VERTEX::FVF);
 
 
-	g_pD3DDevice->DrawPrimitiveUP(D3DPT_LINELIST,
-		m_vecVertexLine.size() / 2, &m_vecVertexLine[0], sizeof(ST_PN_VERTEX));
+	// g_pD3DDevice->DrawPrimitiveUP(D3DPT_LINELIST,
+	// 	m_vecVertexLine.size() / 2, &m_vecVertexLine[0], sizeof(ST_PN_VERTEX));
 
-	// g_pD3DDevice->DrawPrimitiveUP(D3DPT_TRIANGLELIST,
- 	// 	m_vecVertex.size() / 3, &m_vecVertex[0], sizeof(ST_PN_VERTEX));
+	g_pD3DDevice->DrawPrimitiveUP(D3DPT_TRIANGLELIST,
+ 		m_vecVertex.size() / 3, &m_vecVertex[0], sizeof(ST_PN_VERTEX));
 
 	// for each (auto p in m_vecPyramid)
 	// 	p->Render(); 

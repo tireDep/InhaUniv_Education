@@ -16,6 +16,8 @@ private :
 
 	D3DMATERIAL9 m_mtrl;
 
+	int (*funcPtr) ();
+
 public :
 	void Setup(int nNumHalfTile = 15, float fInterval = 1.0f);
 	void Render(); 

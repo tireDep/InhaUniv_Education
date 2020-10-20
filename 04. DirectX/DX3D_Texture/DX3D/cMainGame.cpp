@@ -156,7 +156,7 @@ void cMainGame::Update()
 	if (m_pRootFrame)
 		m_pRootFrame->Update(m_pRootFrame->GetKeyFrame(), NULL);
 
-	m_pMouse->Update(m_vecSphere, m_pCamera->GetLookAt());
+	m_pMouse->Update(m_vecSphere, m_pCamera->GetLookAt(), m_pGrid->GetvecVertex());
 }
 
 void cMainGame::Render()
