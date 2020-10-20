@@ -121,3 +121,8 @@ void cGrid::Render()
 	// for each (auto p in m_vecPyramid)
 	// 	p->Render(); 
 }
+
+vector<ST_PN_VERTEX> cGrid::GetvecVertex()
+{
+	return m_vecVertex;
+}

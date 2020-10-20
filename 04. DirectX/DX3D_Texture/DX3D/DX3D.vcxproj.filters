@@ -22,6 +22,9 @@
     <Filter Include="01. CubeMan_parts">
       <UniqueIdentifier>{d8fa7376-c585-4cac-8f75-b00590010d7e}</UniqueIdentifier>
     </Filter>
+    <Filter Include="04. MouseClick">
+      <UniqueIdentifier>{c98415e6-44bd-4776-9c7b-9fa50f57fb54}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <Text Include="ReadMe.txt" />
@@ -132,6 +135,12 @@
     <ClInclude Include="cAseLoader.h">
       <Filter>03. Object_ASE</Filter>
     </ClInclude>
+    <ClInclude Include="CMouse.h">
+      <Filter>04. MouseClick</Filter>
+    </ClInclude>
+    <ClInclude Include="CSphere.h">
+      <Filter>04. MouseClick</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -229,6 +238,12 @@
     </ClCompile>
     <ClCompile Include="cAseLoader.cpp">
       <Filter>03. Object_ASE</Filter>
+    </ClCompile>
+    <ClCompile Include="CMouse.cpp">
+      <Filter>04. MouseClick</Filter>
+    </ClCompile>
+    <ClCompile Include="CSphere.cpp">
+      <Filter>04. MouseClick</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

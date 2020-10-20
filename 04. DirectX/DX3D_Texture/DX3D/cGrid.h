@@ -18,5 +18,7 @@ private :
 public :
 	void Setup(int nNumHalfTile = 15, float fInterval = 1.0f);
 	void Render(); 
+
+	vector<ST_PN_VERTEX> GetvecVertex();
 };
 

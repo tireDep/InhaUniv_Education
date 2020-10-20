@@ -13,6 +13,10 @@ class cFrame;
 
 class cMtlTex;
 
+class CMouse;
+
+class CSphere;
+
 #include "cLight.h"
 
 class cMainGame
@@ -54,6 +58,9 @@ private :
 	LPD3DXMESH m_pObjMesh;
 	vector<cMtlTex*> m_vecObjMtlTex;
 	// << mesh
+
+	CMouse* m_pMouse;
+	vector<CSphere*> m_vecSphere;
 
 public :
 	void Setup(); 
