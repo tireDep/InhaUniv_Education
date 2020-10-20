@@ -65,6 +65,11 @@ void CSphere::SetMatWorldPos(D3DXVECTOR3 set)
 	m_center = set;
 }
 
+void CSphere::SetCenter(D3DXVECTOR3 set)
+{
+	m_center = set;
+}
+
 bool CSphere::GetIsClicked()
 {
 	return m_isClicked;

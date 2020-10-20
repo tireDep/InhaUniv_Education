@@ -68,32 +68,33 @@ void CMouse::CheckClicked(CSphere* mesh, POINT& pos)
 		mousePos.x = ((2.0f * m_clickPos.x) / viewPortMat.Width - 1.0f) / projMat._11;
 		mousePos.y = ((-2.0f * m_clickPos.y) / viewPortMat.Height + 1.0f) / projMat._22;
 		mousePos.z = 1.0f;
-
-		RECT viewRect;
-		GetClientRect(g_hWnd, &viewRect);
-		pos.x = -((m_clickPos.x / viewRect.right)*-2.0f + 1.0f);
-		pos.y = -((m_clickPos.y / viewRect.right)*-2.0f + 1.0f);
-
 		// <<<<<<<<<<<<<<<<
 		// 픽킹 광선의 계산
 
 		// 광선변환
 		// >>>>>>>>>>>>>>>>
-		// D3DXVECTOR3 origin(0, 0, 0);
-		D3DXVECTOR3 origin = m_vLookAt;
+		D3DXVECTOR3 origin(0, 0, 0);
+		// D3DXVECTOR3 origin = m_vLookAt;
 		D3DXVECTOR3 direction(mousePos.x, mousePos.y, mousePos.z);
 
 		D3DXMATRIXA16 view;
 		g_pD3DDevice->GetTransform(D3DTS_VIEW, &view);
 		D3DXMatrixInverse(&view, 0, &view);
 		
+		// // >> 좌표 값
+		// D3DXVECTOR3 finPos = direction;
+		// D3DXVec3TransformCoord(&finPos, &origin, &view);
+		// // << 좌표 값
+
 		D3DXVec3TransformCoord(&origin, &origin, &view);
 		D3DXVec3TransformNormal(&direction, &direction, &view);
 		D3DXVec3Normalize(&direction, &direction);
+
 		// <<<<<<<<<<<<<<<<
 		// 광선변환
 		
-		// 광선 물체 교차_MESH에서 VERTEX & FACE 뽑아서 계산 => 수정 필요
+		// 광선 물체 교차_MESH에서 VERTEX & FACE 뽑아서 계산 
+		// => 수정 필요 (센터만 적용됨)
 		/*
 		// >>>>>>>>>>>>>>>>>>>>>>
 		{
@@ -115,14 +116,16 @@ void CMouse::CheckClicked(CSphere* mesh, POINT& pos)
 				D3DXVECTOR3 v1 = pVer[pIndex[i * 3 + 1]].p;
 				D3DXVECTOR3 v2 = pVer[pIndex[i * 3 + 2]].p;
 
-				D3DXMATRIXA16 matWorld = mesh->GetMatWorld();
+				D3DXMATRIXA16 matWorld; // = mesh->GetMatWorld();
 
-				D3DXVECTOR3 center = mesh->GetCenter();
-				D3DXMatrixTranslation(&matWorld, center.x, center.y, center.z);
+				// D3DXVECTOR3 center = mesh->GetCenter();
+				// D3DXMatrixTranslation(&matWorld, center.x, center.y, center.z);
+				
+				g_pD3DDevice->GetTransform(D3DTS_WORLD, &matWorld);
 
-				D3DXVec3TransformCoord(&v0, &v0, &matWorld);
-				D3DXVec3TransformCoord(&v1, &v1, &matWorld);
-				D3DXVec3TransformCoord(&v2, &v2, &matWorld);
+				D3DXVec3TransformCoord(&v0, &v0, &mesh->GetMatWorld());
+				D3DXVec3TransformCoord(&v1, &v1, &mesh->GetMatWorld());
+				D3DXVec3TransformCoord(&v2, &v2, &mesh->GetMatWorld());
 
 				float u = 0, v = 0, fDist = 0;
 				if (D3DXIntersectTri(&v0, &v1, &v2, &origin, &direction, &u, &v, &fDist))
@@ -148,29 +151,67 @@ void CMouse::CheckClicked(CSphere* mesh, POINT& pos)
 		
 		// <<<<<<<<<<<<<<<<<<<<<<<
 		*/
+		
 
-		// 광선 물체 교차
-		 {
-		 	D3DXVECTOR3 v = origin - mesh->GetCenter();
-		 
-		 	float b = 2.0f * D3DXVec3Dot(&direction, &v);
-		 	float c = D3DXVec3Dot(&v, &v) - (0.5f * 0.5f); // radius - radius
-		 	
-		 	float discriminant = (b * b) - (4.0f*c);	// 판별식
-		 	
-		 	if (discriminant < 0.0f)
-		 		return;
-		 	
-		 	discriminant = sqrtf(discriminant);
-		 	
-		 	float s0 = (-b + discriminant) / 2.0f;
-		 	float s1 = (-b - discriminant) / 2.0f;
-		 	
-		 	if (s0 > 0.0f || s1 >= 0.0f)
-		 		mesh->SetIsClicked(!mesh->GetIsClicked());// return true;
-		 }
+		// >> 광선 물체 교차
+		{
+			D3DXVECTOR3 v = origin - mesh->GetCenter();
+		
+			float b = 2.0f * D3DXVec3Dot(&direction, &v);
+			float c = D3DXVec3Dot(&v, &v) - (0.5f * 0.5f); // radius - radius
+			
+			float discriminant = (b * b) - (4.0f*c);	// 판별식
+			
+			if (discriminant < 0.0f)
+				return;
+			
+			discriminant = sqrtf(discriminant);
+			
+			float s0 = (-b + discriminant) / 2.0f;
+			float s1 = (-b - discriminant) / 2.0f;
+			
+			if (s0 > 0.0f || s1 >= 0.0f)
+				mesh->SetIsClicked(!mesh->GetIsClicked());// return true;
+		}
+		// << 광선 물체 교차
 
 		m_isLDown = false;
 
 	}	// : if_isLBtn == True
+
+	// if (m_isRDown)
+	// {
+	// 	D3DXVECTOR3 mousePos;
+	// 
+	// 	D3DVIEWPORT9 viewPortMat;
+	// 	g_pD3DDevice->GetViewport(&viewPortMat);
+	// 
+	// 	D3DXMATRIX projMat;
+	// 	g_pD3DDevice->GetTransform(D3DTS_PROJECTION, &projMat);
+	// 
+	// 	mousePos.x = ((2.0f * m_clickPos.x) / viewPortMat.Width - 1.0f) / projMat._11;
+	// 	mousePos.y = ((-2.0f * m_clickPos.y) / viewPortMat.Height + 1.0f) / projMat._22;
+	// 	mousePos.z = 1.0f;
+	// 	// <<<<<<<<<<<<<<<<
+	// 	// 픽킹 광선의 계산
+	// 
+	// 	// 광선변환
+	// 	// >>>>>>>>>>>>>>>>
+	// 	D3DXVECTOR3 origin(0, 0, 0);
+	// 	// D3DXVECTOR3 origin = m_vLookAt;
+	// 	D3DXVECTOR3 direction(mousePos.x, mousePos.y, mousePos.z);
+	// 
+	// 	D3DXMATRIXA16 view;
+	// 	g_pD3DDevice->GetTransform(D3DTS_VIEW, &view);
+	// 	D3DXMatrixInverse(&view, 0, &view);
+	// 
+	// 	// >> 좌표 값
+	// 	D3DXVECTOR3 finPos = direction;
+	// 	D3DXVec3TransformCoord(&finPos, &origin, &view);
+	// 
+	// 	mesh->SetCenter(finPos);
+	// 	// << 좌표 값
+	// 
+	// 	m_isRDown = false;
+	// }
 }

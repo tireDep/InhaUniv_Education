@@ -9,6 +9,7 @@ public:
 	~cGrid();
 private :
 	vector<ST_PN_VERTEX>	m_vecVertex; 
+	vector<ST_PN_VERTEX>	m_vecVertexLine;
 	vector<cPyramid*>		m_vecPyramid; 
 
 	vector<ST_PN_VERTEX> m_vecPrintVer;

@@ -22,32 +22,32 @@ void cGrid::Setup(int nNumHalfTile, float fInterval)
 	float fMax = nNumHalfTile * fInterval; 
 	float fMin = -fMax; 
 	ST_PN_VERTEX v; 
-	// for (int i = 1; i <= nNumHalfTile; ++i)
-	// {
-	// 	v.n = D3DXVECTOR3(0.0f, 1.0f, 0.0f);
-	// 
-	// 	v.p = D3DXVECTOR3(fMin, 0, i*fInterval); m_vecVertex.push_back(v); 
-	// 	v.p = D3DXVECTOR3(fMax, 0, i*fInterval); m_vecVertex.push_back(v);
-	// 
-	// 	v.p = D3DXVECTOR3(fMin, 0, -i*fInterval); m_vecVertex.push_back(v);
-	// 	v.p = D3DXVECTOR3(fMax, 0, -i*fInterval); m_vecVertex.push_back(v);
-	// 	
-	// 	v.p = D3DXVECTOR3(i*fInterval , 0, fMin); m_vecVertex.push_back(v);
-	// 	v.p = D3DXVECTOR3(i*fInterval, 0, fMax); m_vecVertex.push_back(v);
-	// 	
-	// 	v.p = D3DXVECTOR3(-i*fInterval, 0, fMin); m_vecVertex.push_back(v);
-	// 	v.p = D3DXVECTOR3(-i*fInterval, 0, fMax); m_vecVertex.push_back(v);
-	// }
-	// 
-	// v.n = D3DXVECTOR3(0.0f, 1.0f, 0.0f);
-	// v.p = D3DXVECTOR3(fMin, 0, 0); m_vecVertex.push_back(v); 
-	// v.p = D3DXVECTOR3(fMax, 0, 0); m_vecVertex.push_back(v);
-	// 
-	// v.p = D3DXVECTOR3(0,fMin, 0); m_vecVertex.push_back(v);
-	// v.p = D3DXVECTOR3(0,fMax, 0); m_vecVertex.push_back(v);
-	// 
-	// v.p = D3DXVECTOR3(0, 0, fMin); m_vecVertex.push_back(v);
-	// v.p = D3DXVECTOR3(0, 0, fMax); m_vecVertex.push_back(v);
+	for (int i = 1; i <= nNumHalfTile; ++i)
+	{
+		v.n = D3DXVECTOR3(0.0f, 1.0f, 0.0f);
+	
+		v.p = D3DXVECTOR3(fMin, 0, i*fInterval); m_vecVertexLine.push_back(v); 
+		v.p = D3DXVECTOR3(fMax, 0, i*fInterval); m_vecVertexLine.push_back(v);
+	
+		v.p = D3DXVECTOR3(fMin, 0, -i*fInterval); m_vecVertexLine.push_back(v);
+		v.p = D3DXVECTOR3(fMax, 0, -i*fInterval); m_vecVertexLine.push_back(v);
+		
+		v.p = D3DXVECTOR3(i*fInterval , 0, fMin); m_vecVertexLine.push_back(v);
+		v.p = D3DXVECTOR3(i*fInterval, 0, fMax); m_vecVertexLine.push_back(v);
+		
+		v.p = D3DXVECTOR3(-i*fInterval, 0, fMin); m_vecVertexLine.push_back(v);
+		v.p = D3DXVECTOR3(-i*fInterval, 0, fMax); m_vecVertexLine.push_back(v);
+	}
+	
+	v.n = D3DXVECTOR3(0.0f, 1.0f, 0.0f);
+	v.p = D3DXVECTOR3(fMin, 0, 0); m_vecVertexLine.push_back(v); 
+	v.p = D3DXVECTOR3(fMax, 0, 0); m_vecVertexLine.push_back(v);
+	
+	v.p = D3DXVECTOR3(0,fMin, 0); m_vecVertexLine.push_back(v);
+	v.p = D3DXVECTOR3(0,fMax, 0); m_vecVertexLine.push_back(v);
+	
+	v.p = D3DXVECTOR3(0, 0, fMin); m_vecVertexLine.push_back(v);
+	v.p = D3DXVECTOR3(0, 0, fMax); m_vecVertexLine.push_back(v);
 
 	for (float j = -15; j < 15; j+=0.25f)
 	{
@@ -115,8 +115,12 @@ void cGrid::Render()
 	g_pD3DDevice->SetTransform(D3DTS_WORLD, &matI); 
 	g_pD3DDevice->SetFVF(ST_PN_VERTEX::FVF);
 
-	g_pD3DDevice->DrawPrimitiveUP(D3DPT_TRIANGLELIST,
- 		m_vecVertex.size() / 3, &m_vecVertex[0], sizeof(ST_PN_VERTEX));
+
+	g_pD3DDevice->DrawPrimitiveUP(D3DPT_LINELIST,
+		m_vecVertexLine.size() / 2, &m_vecVertexLine[0], sizeof(ST_PN_VERTEX));
+
+	// g_pD3DDevice->DrawPrimitiveUP(D3DPT_TRIANGLELIST,
+ 	// 	m_vecVertex.size() / 3, &m_vecVertex[0], sizeof(ST_PN_VERTEX));
 
 	// for each (auto p in m_vecPyramid)
 	// 	p->Render(); 

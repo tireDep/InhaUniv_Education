@@ -17,6 +17,7 @@ public:
 
 	void SetIsClicked(bool set);
 	void SetMatWorldPos(D3DXVECTOR3 set);
+	void SetCenter(D3DXVECTOR3 set);
 
 	bool GetIsClicked();
 	D3DXVECTOR3 GetCenter();
