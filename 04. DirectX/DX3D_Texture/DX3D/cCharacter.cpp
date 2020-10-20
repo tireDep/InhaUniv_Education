@@ -48,15 +48,17 @@ void cCharacter::Update(iMap *pMap)
 	D3DXMATRIXA16 matR, matT;
 	D3DXMatrixRotationY(&matR, m_fRotY);
 
-	if (pMap)
-	{
-		if (pMap->GetHeight(vPosition.x, vPosition.y, vPosition.z))
-		{
-			if(vPosition.y -  m_vPosition.y < 2.0f)
-				m_vPosition = vPosition;
-		}
-	}
+	// if (pMap)
+	// {
+	// 	if (pMap->GetHeight(vPosition.x, vPosition.y, vPosition.z))
+	// 	{
+	// 		if(vPosition.y -  m_vPosition.y < 2.0f)
+	// 			m_vPosition = vPosition;
+	// 	}
+	// }
+	// >> ¹Ù´Ú Ã¼Å©
 
+	m_vPosition = vPosition;
 
 	m_vDirection = D3DXVECTOR3(0, 0, 1);
 	D3DXVec3TransformNormal(&m_vDirection, &m_vDirection, &matR);

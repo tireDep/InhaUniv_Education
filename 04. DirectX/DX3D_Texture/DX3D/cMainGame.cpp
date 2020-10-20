@@ -149,8 +149,8 @@ void cMainGame::Render()
 	// if (m_pCubePC)
 	//	m_pCubePC->Render(); 
 
-	// if (m_pCubeMan)
-	// 	m_pCubeMan->Render(); 
+	if (m_pCubeMan)
+		m_pCubeMan->Render(); 
 
 	// for (int i = 0; i < m_vecLight.size(); i++)
 	// 	m_vecLight[i]->Render();
@@ -159,8 +159,8 @@ void cMainGame::Render()
 
 	// Draw_Texture(); 
 
-	if (m_pRootFrame)
-		m_pRootFrame->Render();
+	// if (m_pRootFrame)
+	// 	m_pRootFrame->Render();
 
 	Render_MeshObj();
 
@@ -277,17 +277,17 @@ void cMainGame::SetUp_MeshObj()
 void cMainGame::Render_MeshObj()
 {
 	D3DXMATRIXA16 matWorld, matS, matR;
-	{
-		D3DXMatrixIdentity(&matS);
-		D3DXMatrixIdentity(&matR); 
-		matWorld = matS * matR;
-		D3DXMatrixTranslation(&matWorld, 0, 1, 10);
-
-		g_pD3DDevice->SetTransform(D3DTS_WORLD, &matWorld);
-
-		g_pD3DDevice->SetMaterial(&m_stMtlTeaPot);
-		m_pMeshTeaPot->DrawSubset(0);	// attribute 1°³
-	}
+	// {
+	// 	D3DXMatrixIdentity(&matS);
+	// 	D3DXMatrixIdentity(&matR); 
+	// 	matWorld = matS * matR;
+	// 	D3DXMatrixTranslation(&matWorld, 0, 1, 10);
+	// 
+	// 	g_pD3DDevice->SetTransform(D3DTS_WORLD, &matWorld);
+	// 
+	// 	g_pD3DDevice->SetMaterial(&m_stMtlTeaPot);
+	// 	m_pMeshTeaPot->DrawSubset(0);	// attribute 1°³
+	// }
 
 	{
 		D3DXMatrixIdentity(&matS);
@@ -300,21 +300,21 @@ void cMainGame::Render_MeshObj()
 		m_pMeshSphere->DrawSubset(0);	// attribute 1°³
 	}
 	// ================================================================
-	{
-		D3DXMatrixIdentity(&matWorld);
-		D3DXMatrixScaling(&matS, 0.01f, 0.01f, 0.01f);
-		D3DXMatrixRotationX(&matR, -D3DX_PI / 2.0f);
-
-		matWorld = matS * matR;
-
-		g_pD3DDevice->SetTransform(D3DTS_WORLD, &matWorld);
-
-		for (size_t i = 0; i < m_vecObjMtlTex.size(); i++)
-		{
-			g_pD3DDevice->SetMaterial(&m_vecObjMtlTex[i]->GetMaterial());
-			g_pD3DDevice->SetTexture(0, m_vecObjMtlTex[i]->GetTexture());
-
-			m_pObjMesh->DrawSubset(i);
-		}
-	}
+	// {
+	// 	D3DXMatrixIdentity(&matWorld);
+	// 	D3DXMatrixScaling(&matS, 0.01f, 0.01f, 0.01f);
+	// 	D3DXMatrixRotationX(&matR, -D3DX_PI / 2.0f);
+	// 
+	// 	matWorld = matS * matR;
+	// 
+	// 	g_pD3DDevice->SetTransform(D3DTS_WORLD, &matWorld);
+	// 
+	// 	for (size_t i = 0; i < m_vecObjMtlTex.size(); i++)
+	// 	{
+	// 		g_pD3DDevice->SetMaterial(&m_vecObjMtlTex[i]->GetMaterial());
+	// 		g_pD3DDevice->SetTexture(0, m_vecObjMtlTex[i]->GetTexture());
+	// 
+	// 		m_pObjMesh->DrawSubset(i);
+	// 	}
+	// }
 }
