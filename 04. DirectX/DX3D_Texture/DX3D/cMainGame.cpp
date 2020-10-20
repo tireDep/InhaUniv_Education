@@ -73,7 +73,7 @@ cMainGame::~cMainGame()
 	m_vecObjMtlTex.clear();
 	// << mesh
 
-	SafeDelete(m_pMouse);
+	// SafeDelete(m_pMouse);
 
 	// for each(auto p in m_vecSphere)
 	// {
@@ -127,17 +127,13 @@ void cMainGame::Setup()
 
 	SetUp_MeshObj();
 
-	m_pMouse = new CMouse;
+	// m_pMouse = new CMouse;
+	m_pMouse = CMouse::GetInstance();
 	
-	for (int i = 0; i < 15; i+=3)
+	for (int i = -15; i <= 15; i+=3)
 	{
 		D3DXVECTOR3 tempCenter(0, 0, i);
 		CSphere* tempSphere = new CSphere;
-		tempSphere->SetUp(0.5f, 10, 10, tempCenter);
-		m_vecSphere.push_back(tempSphere);
-
-		tempCenter = D3DXVECTOR3(0, 0, -i);
-		tempSphere = new CSphere;
 		tempSphere->SetUp(0.5f, 10, 10, tempCenter);
 		m_vecSphere.push_back(tempSphere);
 	}

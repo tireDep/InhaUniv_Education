@@ -20,5 +20,11 @@ public :
 	virtual void Setup() override; 
 	virtual void Update(iMap *pMap);
 	virtual void Render() override; 
+
+	// static void CheckInputMove(void* callBackData);
+	// typedef void*(funcType)(cCharacter character);
+	// void CheckRClicked();
+
+	// void CallFunc();
 };
 

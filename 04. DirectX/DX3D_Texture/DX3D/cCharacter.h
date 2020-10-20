@@ -1,5 +1,7 @@
 #pragma once
 
+// class CMouse;
+
 class cCharacter
 {
 public:
@@ -12,6 +14,10 @@ protected :
 	D3DXMATRIXA16	m_matWorld; 
 
 	iMap *m_pMap;
+
+	D3DXVECTOR3(*funcPtr) (D3DXVECTOR3 v);
+	D3DXVECTOR3 m_destPos;
+	bool m_isMoving;
 
 public : 
 	virtual ~cCharacter(void); 
