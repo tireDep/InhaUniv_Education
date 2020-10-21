@@ -114,8 +114,6 @@ void cMainGame::Setup()
 
 	Set_Light();
 
-	SetUp_Obj();
-
 	cAseLoader aseLoder;
 	m_pRootFrame = aseLoder.Load("woman/woman_01_all.ASE");
 
@@ -124,6 +122,8 @@ void cMainGame::Setup()
 	SetUp_PickingObj();
 
 	l.LoadHeightMap(heightMap, "HeightMapData", "HeightMap.raw");
+
+	SetUp_Obj();
 }
 
 void cMainGame::Update()
@@ -167,8 +167,8 @@ void cMainGame::Render()
 	// if (m_pCubePC)
 	//	m_pCubePC->Render(); 
 
-	// if (m_pCubeMan)
-	// 	m_pCubeMan->Render(); 
+	if (m_pCubeMan)
+		m_pCubeMan->Render(); 
 
 	// for (int i = 0; i < m_vecLight.size(); i++)
 	// 	m_vecLight[i]->Render();
@@ -299,7 +299,8 @@ void cMainGame::Load_Surface()
 
 	matWorld = matS * matR;
 
-	m_pMap = new cObjMap("obj", "map_surface.obj", &matWorld);
+	// m_pMap = new cObjMap("obj", "map_surface.obj", &matWorld);
+	m_pMap = new cObjMap(l.GetVecHeight());
 }
 
 void cMainGame::SetUp_MeshObj()

@@ -2,6 +2,11 @@
 #include "cObjMap.h"
 #include "cObjLoader.h"
 
+cObjMap::cObjMap(vector<D3DXVECTOR3> mapData)
+{
+	m_vecSurface = mapData;
+}
+
 cObjMap::cObjMap(IN char * szFolder, IN char * szFile, IN D3DXMATRIXA16 * pmat)
 {
 	Load(szFolder, szFile, pmat);
