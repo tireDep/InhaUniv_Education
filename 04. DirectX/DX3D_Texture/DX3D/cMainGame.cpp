@@ -18,6 +18,11 @@
 #include "cAseLoader.h"
 
 #include "Ray.h"
+#include "RawLoader.h"
+#include "HeightMap.h"
+
+vector<CHeightMap> heightMap;
+CRawLoader l;
 
 cMainGame::cMainGame()
 	: m_pCubePC(NULL)
@@ -34,7 +39,6 @@ cMainGame::cMainGame()
 	, m_pMeshSphere(NULL)
 	, m_pObjMesh(NULL)
 {
-
 }
 
 
@@ -118,6 +122,8 @@ void cMainGame::Setup()
 	SetUp_MeshObj();
 
 	SetUp_PickingObj();
+
+	l.LoadHeightMap(heightMap, "HeightMapData", "HeightMap.raw");
 }
 
 void cMainGame::Update()
@@ -147,7 +153,13 @@ void cMainGame::Render()
 
 	g_pD3DDevice->BeginScene();
 	
+	D3DXCreateTextureFromFile(g_pD3DDevice, L"HeightMapData/terrain.jpg", &m_pTexture);
+
 	PickingObj_Render();
+
+	l.Render();
+
+	// heightMap
 
 	// if (m_pGrid)
 	// 	m_pGrid->Render(); 
