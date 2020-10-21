@@ -98,6 +98,16 @@ struct ST_ROT_SAMPLE
 };
 // << animation
 
+// >> piking
+struct ST_SPHERE
+{
+	float fRadius;
+	D3DXVECTOR3 vCenter;
+	bool isPicked;
+	ST_SPHERE() : fRadius(0.0f), vCenter(0, 0, 0) {}
+};
+// << piking
+
 #define Synthesize(varType , varName , funName) \
 protected : varType varName ; \
 public : inline varType Get##funName(void) const { return varName ; } \

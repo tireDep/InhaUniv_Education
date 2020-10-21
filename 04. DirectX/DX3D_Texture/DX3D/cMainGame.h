@@ -55,6 +55,15 @@ private :
 	vector<cMtlTex*> m_vecObjMtlTex;
 	// << mesh
 
+	// >> piking
+	vector<ST_SPHERE> m_vecSphere;
+	D3DMATERIAL9 m_stMtlNone;
+	D3DMATERIAL9 m_stMtlPicked;
+	D3DMATERIAL9 m_stMtlPlane;	// 바닥
+	vector<ST_PN_VERTEX> m_vecPlanVertex;	// 바닥
+	D3DXVECTOR3 m_vPickedPosition;	// 현재 선택 위치
+	// << piking
+
 public :
 	void Setup(); 
 	void Update(); 
@@ -74,5 +83,11 @@ public :
 	void SetUp_MeshObj();
 	void Render_MeshObj();
 	// << mesh
+
+	// >> piking
+	void SetUp_PickingObj();
+	void PickingObj_Render();
+	// << piking
+
 };
 

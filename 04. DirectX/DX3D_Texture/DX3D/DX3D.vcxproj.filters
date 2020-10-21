@@ -22,6 +22,9 @@
     <Filter Include="01. CubeMan_parts">
       <UniqueIdentifier>{d8fa7376-c585-4cac-8f75-b00590010d7e}</UniqueIdentifier>
     </Filter>
+    <Filter Include="04. Picking">
+      <UniqueIdentifier>{0f990ebc-5439-42da-897d-8d2ff2ab0b07}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <Text Include="ReadMe.txt" />
@@ -132,6 +135,9 @@
     <ClInclude Include="cAseLoader.h">
       <Filter>03. Object_ASE</Filter>
     </ClInclude>
+    <ClInclude Include="Ray.h">
+      <Filter>04. Picking</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -229,6 +235,9 @@
     </ClCompile>
     <ClCompile Include="cAseLoader.cpp">
       <Filter>03. Object_ASE</Filter>
+    </ClCompile>
+    <ClCompile Include="Ray.cpp">
+      <Filter>04. Picking</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
