@@ -25,6 +25,9 @@
     <Filter Include="04. Picking">
       <UniqueIdentifier>{0f990ebc-5439-42da-897d-8d2ff2ab0b07}</UniqueIdentifier>
     </Filter>
+    <Filter Include="05. HeightMap">
+      <UniqueIdentifier>{3f39bcaa-2848-432c-99d4-b87ab72c1c26}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <Text Include="ReadMe.txt" />
@@ -138,6 +141,12 @@
     <ClInclude Include="Ray.h">
       <Filter>04. Picking</Filter>
     </ClInclude>
+    <ClInclude Include="HeightMap.h">
+      <Filter>05. HeightMap</Filter>
+    </ClInclude>
+    <ClInclude Include="RawLoader.h">
+      <Filter>05. HeightMap</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -238,6 +247,12 @@
     </ClCompile>
     <ClCompile Include="Ray.cpp">
       <Filter>04. Picking</Filter>
+    </ClCompile>
+    <ClCompile Include="HeightMap.cpp">
+      <Filter>05. HeightMap</Filter>
+    </ClCompile>
+    <ClCompile Include="RawLoader.cpp">
+      <Filter>05. HeightMap</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
