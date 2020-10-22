@@ -13,6 +13,8 @@ class cFrame;
 
 class cMtlTex;
 
+class CSkinnedMesh;
+
 #include "cLight.h"
 
 class cMainGame
@@ -64,6 +66,8 @@ private :
 	D3DXVECTOR3 m_vPickedPosition;	// 현재 선택 위치
 	// << piking
 
+	CSkinnedMesh* m_pSkinnedMesh;
+
 public :
 	void Setup(); 
 	void Update(); 
@@ -92,5 +96,7 @@ public :
 	// >> heightMap
 	void SetUp_HeightMap();
 	// << heightMap
+
+	void Render_SkinnedMesh();
 };
 

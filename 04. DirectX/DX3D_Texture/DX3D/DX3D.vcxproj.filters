@@ -31,6 +31,9 @@
     <Filter Include="03_1. Surface">
       <UniqueIdentifier>{5c3dae3f-c9e8-4683-9c38-9985a3930733}</UniqueIdentifier>
     </Filter>
+    <Filter Include="06. SkinedMesh">
+      <UniqueIdentifier>{f3a6b83d-58dd-437e-8f15-e28e7651e224}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <Text Include="ReadMe.txt" />
@@ -147,6 +150,15 @@
     <ClInclude Include="cObjMap.h">
       <Filter>03_1. Surface</Filter>
     </ClInclude>
+    <ClInclude Include="TimeManager.h">
+      <Filter>06. SkinedMesh</Filter>
+    </ClInclude>
+    <ClInclude Include="AllocateHierarchy.h">
+      <Filter>06. SkinedMesh</Filter>
+    </ClInclude>
+    <ClInclude Include="SkinnedMesh.h">
+      <Filter>06. SkinedMesh</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -250,6 +262,15 @@
     </ClCompile>
     <ClCompile Include="cObjMap.cpp">
       <Filter>03_1. Surface</Filter>
+    </ClCompile>
+    <ClCompile Include="TimeManager.cpp">
+      <Filter>06. SkinedMesh</Filter>
+    </ClCompile>
+    <ClCompile Include="AllocateHierarchy.cpp">
+      <Filter>06. SkinedMesh</Filter>
+    </ClCompile>
+    <ClCompile Include="SkinnedMesh.cpp">
+      <Filter>06. SkinedMesh</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
