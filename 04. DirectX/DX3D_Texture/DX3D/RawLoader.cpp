@@ -129,9 +129,9 @@ void CRawLoader::LoadHeightMap(vector<CHeightMap>& heightMap,  char * szFolderPa
 	//	&m_iB,
 	//	NULL);
 
-	//vector<WORD> vIndex;
-	//for (int i = 0; i < vecVertex.size(); i++)
-	//	vIndex.push_back(i);
+	vector<DWORD> vIndex;
+	for (int i = 0; i < vecVertex.size(); i++)
+		vIndex.push_back(i);
 
 
 	//WORD* pW = NULL;
@@ -145,10 +145,10 @@ void CRawLoader::LoadHeightMap(vector<CHeightMap>& heightMap,  char * szFolderPa
 		vecAttrBuf.push_back(0);
 	// 임시 Mtrl
 	
-	int divideNum = 9;	// size가 너무 커서 메쉬 생성되지 x
+	int divideNum = 1;	// size가 너무 커서 메쉬 생성되지 x
 	D3DXCreateMeshFVF(vecAttrBuf.size() / divideNum,
 		vecVertex.size() / divideNum,
-		D3DXMESH_MANAGED,
+		D3DXMESH_MANAGED | D3DXMESH_32BIT,
 		ST_PNT_VERTEX::FVF,
 		g_pD3DDevice, &m_mesh);
 
@@ -159,9 +159,9 @@ void CRawLoader::LoadHeightMap(vector<CHeightMap>& heightMap,  char * szFolderPa
 	// 다음 구역
 	m_mesh->UnlockVertexBuffer();
 
-	WORD* pI = NULL;
+	DWORD* pI = NULL;
 	m_mesh->LockIndexBuffer(0, (LPVOID*)&pI);
-	for (int i = 0; i < vecVertex.size() / divideNum; i++)
+	for (int i = 0; i < vIndex.size() / divideNum; i++)
 		pI[i] = i;
 	// int j = 0;
 	// for (int i = vecVertex.size() / divideNum; i < vecVertex.size() / divideNum * 3 ; i++)
@@ -177,12 +177,12 @@ void CRawLoader::LoadHeightMap(vector<CHeightMap>& heightMap,  char * szFolderPa
 	m_mesh->UnlockAttributeBuffer();
 
 	// 최적화
-	vector<DWORD> vecAdj(vecVertex.size());
-	m_mesh->GenerateAdjacency(0.0f, &vecAdj[0]);
-	m_mesh->OptimizeInplace(D3DXMESHOPT_ATTRSORT |
-							D3DXMESHOPT_COMPACT |
-							D3DXMESHOPT_VERTEXCACHE,
-							&vecAdj[0],0,0,0);
+	// vector<DWORD> vecAdj(vIndex.size());
+	// m_mesh->GenerateAdjacency(0.0f, &vecAdj[0]);
+	// m_mesh->OptimizeInplace(D3DXMESHOPT_ATTRSORT |
+	// 						D3DXMESHOPT_COMPACT |
+	// 						D3DXMESHOPT_VERTEXCACHE,
+	// 						&vecAdj[0],0,0,0);
 }
 
 void CRawLoader::Render()
