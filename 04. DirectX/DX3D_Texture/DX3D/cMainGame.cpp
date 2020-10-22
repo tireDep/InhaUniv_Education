@@ -19,6 +19,8 @@
 
 #include "Ray.h"
 
+#include "HeigthMap.h"
+
 cMainGame::cMainGame()
 	: m_pCubePC(NULL)
 	, m_pCamera(NULL)
@@ -118,6 +120,8 @@ void cMainGame::Setup()
 	SetUp_MeshObj();
 
 	SetUp_PickingObj();
+
+	SetUp_HeightMap();
 }
 
 void cMainGame::Update()
@@ -147,16 +151,19 @@ void cMainGame::Render()
 
 	g_pD3DDevice->BeginScene();
 	
-	PickingObj_Render();
+	// PickingObj_Render();
 
-	// if (m_pGrid)
-	// 	m_pGrid->Render(); 
+	if (m_pGrid)
+		m_pGrid->Render(); 
 
 	// if (m_pCubePC)
 	//	m_pCubePC->Render(); 
 
-	// if (m_pCubeMan)
-	// 	m_pCubeMan->Render(); 
+	if (m_pMap)
+		m_pMap->Render();
+
+	if (m_pCubeMan)
+		m_pCubeMan->Render(); 
 
 	// for (int i = 0; i < m_vecLight.size(); i++)
 	// 	m_vecLight[i]->Render();
@@ -432,4 +439,11 @@ void cMainGame::PickingObj_Render()
 
 	m_pMeshSphere->DrawSubset(0);
 	// << 선택된 위치 표시용
+}
+
+void cMainGame::SetUp_HeightMap()
+{
+	CHeigthMap* pMap = new CHeigthMap;
+	pMap->SetUp("HeightMapData/", "HeightMap.raw", "terrain.jpg");
+	m_pMap = pMap;
 }

@@ -89,5 +89,8 @@ public :
 	void PickingObj_Render();
 	// << piking
 
+	// >> heightMap
+	void SetUp_HeightMap();
+	// << heightMap
 };
 

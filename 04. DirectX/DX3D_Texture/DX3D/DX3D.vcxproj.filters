@@ -25,6 +25,12 @@
     <Filter Include="04. Picking">
       <UniqueIdentifier>{0f990ebc-5439-42da-897d-8d2ff2ab0b07}</UniqueIdentifier>
     </Filter>
+    <Filter Include="05. HeightMap">
+      <UniqueIdentifier>{33bb42a6-2b40-43ac-8ffe-4d4c7fffcc02}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03_1. Surface">
+      <UniqueIdentifier>{5c3dae3f-c9e8-4683-9c38-9985a3930733}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <Text Include="ReadMe.txt" />
@@ -120,12 +126,6 @@
     <ClInclude Include="cTextureManager.h">
       <Filter>02. Object_obj</Filter>
     </ClInclude>
-    <ClInclude Include="iMap.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="cObjMap.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="Asciitok.h">
       <Filter>03. Object_ASE</Filter>
     </ClInclude>
@@ -137,6 +137,15 @@
     </ClInclude>
     <ClInclude Include="Ray.h">
       <Filter>04. Picking</Filter>
+    </ClInclude>
+    <ClInclude Include="HeigthMap.h">
+      <Filter>05. HeightMap</Filter>
+    </ClInclude>
+    <ClInclude Include="iMap.h">
+      <Filter>03_1. Surface</Filter>
+    </ClInclude>
+    <ClInclude Include="cObjMap.h">
+      <Filter>03_1. Surface</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -224,12 +233,6 @@
     <ClCompile Include="cObjectManager.cpp">
       <Filter>02. Object_obj</Filter>
     </ClCompile>
-    <ClCompile Include="iMap.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="cObjMap.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="cFrame.cpp">
       <Filter>03. Object_ASE</Filter>
     </ClCompile>
@@ -238,6 +241,15 @@
     </ClCompile>
     <ClCompile Include="Ray.cpp">
       <Filter>04. Picking</Filter>
+    </ClCompile>
+    <ClCompile Include="HeigthMap.cpp">
+      <Filter>05. HeightMap</Filter>
+    </ClCompile>
+    <ClCompile Include="iMap.cpp">
+      <Filter>03_1. Surface</Filter>
+    </ClCompile>
+    <ClCompile Include="cObjMap.cpp">
+      <Filter>03_1. Surface</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
