@@ -35,7 +35,8 @@ using namespace std;
 extern HWND g_hWnd;
 
 #define SafeRelease(p)		{ if(p) p->Release() ; p = NULL ; }
-#define SafeDelete(p)	{ if( p) delete p ; p=NULL ; }
+#define SafeDelete(p)		{ if(p) delete p ; p=NULL ; }
+#define SafeDeleteArray(p)	{ if(p) delete[]p; p=NULL; }
 // >> : 
 #define Singletone(class_name) \
 		private : \
@@ -145,3 +146,4 @@ void SetValue(int a ) { A = a ; }
 #include "cObject.h"
 #include "cObjectManager.h"
 #include "cTextureManager.h"
+#include "TimeManager.h"

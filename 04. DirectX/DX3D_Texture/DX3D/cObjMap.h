@@ -13,4 +13,6 @@ public:
 	void Load(IN char* szFolder, IN char * szFile, IN D3DXMATRIXA16* pmat = NULL);
 
 	virtual bool GetHeight(IN float x, OUT float& y, IN float z);
+
+	virtual void Render();
 };

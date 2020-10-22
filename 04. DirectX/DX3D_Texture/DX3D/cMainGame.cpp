@@ -19,6 +19,10 @@
 
 #include "Ray.h"
 
+#include "HeigthMap.h"
+
+#include "SkinnedMesh.h"
+
 cMainGame::cMainGame()
 	: m_pCubePC(NULL)
 	, m_pCamera(NULL)
@@ -33,6 +37,7 @@ cMainGame::cMainGame()
 	, m_pMeshTeaPot(NULL)
 	, m_pMeshSphere(NULL)
 	, m_pObjMesh(NULL)
+	, m_pSkinnedMesh(NULL)
 {
 
 }
@@ -70,6 +75,8 @@ cMainGame::~cMainGame()
 	}
 	m_vecObjMtlTex.clear();
 	// << mesh
+
+	SafeDelete(m_pSkinnedMesh);
 
 	g_pObjectManger->Destroy();
 
@@ -118,6 +125,11 @@ void cMainGame::Setup()
 	SetUp_MeshObj();
 
 	SetUp_PickingObj();
+
+	SetUp_HeightMap();
+
+	m_pSkinnedMesh = new CSkinnedMesh;
+	m_pSkinnedMesh->SetUp("xFile/Zealot", "zealot.x");
 }
 
 void cMainGame::Update()
@@ -125,9 +137,9 @@ void cMainGame::Update()
 	//if (m_pCubePC)
 	//	m_pCubePC->Update(); 
 
-	if (m_pCubeMan)
-		m_pCubeMan->Update(m_pMap); 
-
+	// if (m_pCubeMan)
+	// 	m_pCubeMan->Update(m_pMap); 
+	// 
 	if (m_pCamera)
 		m_pCamera->Update(); 
 
@@ -136,6 +148,10 @@ void cMainGame::Update()
 
 	if (m_pRootFrame)
 		m_pRootFrame->Update(m_pRootFrame->GetKeyFrame(), NULL);
+
+	g_pTimeManager->Update();
+	if (m_pSkinnedMesh)
+		m_pSkinnedMesh->Update();
 }
 
 void cMainGame::Render()
@@ -147,16 +163,22 @@ void cMainGame::Render()
 
 	g_pD3DDevice->BeginScene();
 	
-	PickingObj_Render();
+	// PickingObj_Render();
 
-	// if (m_pGrid)
-	// 	m_pGrid->Render(); 
+	if (m_pGrid)
+		m_pGrid->Render(); 
 
 	// if (m_pCubePC)
 	//	m_pCubePC->Render(); 
 
+	if (m_pMap)
+		m_pMap->Render();
+
 	// if (m_pCubeMan)
 	// 	m_pCubeMan->Render(); 
+
+	
+	Render_SkinnedMesh();
 
 	// for (int i = 0; i < m_vecLight.size(); i++)
 	// 	m_vecLight[i]->Render();
@@ -432,4 +454,23 @@ void cMainGame::PickingObj_Render()
 
 	m_pMeshSphere->DrawSubset(0);
 	// << 선택된 위치 표시용
+}
+
+void cMainGame::SetUp_HeightMap()
+{
+	CHeigthMap* pMap = new CHeigthMap;
+	pMap->SetUp("HeightMapData/", "HeightMap.raw", "terrain.jpg");
+	m_pMap = pMap;
+}
+
+void cMainGame::Render_SkinnedMesh()
+{
+	g_pD3DDevice->SetRenderState(D3DRS_LIGHTING, false);
+
+	D3DXMATRIXA16 matWorld;
+	D3DXMatrixIdentity(&matWorld);
+
+	g_pD3DDevice->SetTransform(D3DTS_WORLD, &matWorld);
+	if (m_pSkinnedMesh)
+		m_pSkinnedMesh->Render(NULL);
 }
