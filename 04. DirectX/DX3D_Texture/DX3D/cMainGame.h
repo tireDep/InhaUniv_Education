@@ -13,6 +13,8 @@ class cFrame;
 
 class cMtlTex;
 
+class CXfileObj;
+
 #include "cLight.h"
 
 class cMainGame
@@ -63,6 +65,8 @@ private :
 	vector<ST_PN_VERTEX> m_vecPlanVertex;	// 바닥
 	D3DXVECTOR3 m_vPickedPosition;	// 현재 선택 위치
 	// << piking
+	
+	CXfileObj* m_xFileObj;
 
 public :
 	void Setup(); 

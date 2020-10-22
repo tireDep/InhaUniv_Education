@@ -21,6 +21,8 @@
 #include "RawLoader.h"
 #include "HeightMap.h"
 
+#include "XfileObj.h"
+
 vector<CHeightMap> heightMap;
 CRawLoader l;
 
@@ -38,6 +40,7 @@ cMainGame::cMainGame()
 	, m_pMeshTeaPot(NULL)
 	, m_pMeshSphere(NULL)
 	, m_pObjMesh(NULL)
+	, m_xFileObj(NULL)
 {
 }
 
@@ -74,6 +77,8 @@ cMainGame::~cMainGame()
 	}
 	m_vecObjMtlTex.clear();
 	// << mesh
+
+	SafeDelete(m_xFileObj);
 
 	g_pObjectManger->Destroy();
 
@@ -124,6 +129,9 @@ void cMainGame::Setup()
 	l.LoadHeightMap(heightMap, "HeightMapData", "HeightMap.raw");
 
 	SetUp_Obj();
+
+	m_xFileObj = new CXfileObj;
+	m_xFileObj->LoadXFile("xFile/zealot", "zealot.x");
 }
 
 void cMainGame::Update()
@@ -131,8 +139,8 @@ void cMainGame::Update()
 	//if (m_pCubePC)
 	//	m_pCubePC->Update(); 
 
-	if (m_pCubeMan)
-		m_pCubeMan->Update(m_pMap); 
+	// if (m_pCubeMan)
+	// 	m_pCubeMan->Update(m_pMap); 
 
 	if (m_pCamera)
 		m_pCamera->Update(); 
@@ -155,20 +163,23 @@ void cMainGame::Render()
 	
 	D3DXCreateTextureFromFile(g_pD3DDevice, L"HeightMapData/terrain.jpg", &m_pTexture);
 
-	PickingObj_Render();
+	// PickingObj_Render();
 
-	l.Render();
+	// l.Render();
 
 	// heightMap
 
-	// if (m_pGrid)
-	// 	m_pGrid->Render(); 
+	if (m_pGrid)
+		m_pGrid->Render(); 
+
+	if (m_xFileObj)
+		m_xFileObj->Render();
 
 	// if (m_pCubePC)
 	//	m_pCubePC->Render(); 
 
-	if (m_pCubeMan)
-		m_pCubeMan->Render(); 
+	// if (m_pCubeMan)
+	// 	m_pCubeMan->Render(); 
 
 	// for (int i = 0; i < m_vecLight.size(); i++)
 	// 	m_vecLight[i]->Render();

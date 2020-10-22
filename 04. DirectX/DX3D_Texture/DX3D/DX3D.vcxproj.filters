@@ -28,6 +28,9 @@
     <Filter Include="05. HeightMap">
       <UniqueIdentifier>{3f39bcaa-2848-432c-99d4-b87ab72c1c26}</UniqueIdentifier>
     </Filter>
+    <Filter Include="06. Object_XFile">
+      <UniqueIdentifier>{f1df81a8-55e3-421a-9da7-0911a1761ccb}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <Text Include="ReadMe.txt" />
@@ -147,6 +150,9 @@
     <ClInclude Include="RawLoader.h">
       <Filter>05. HeightMap</Filter>
     </ClInclude>
+    <ClInclude Include="XfileObj.h">
+      <Filter>06. Object_XFile</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -253,6 +259,9 @@
     </ClCompile>
     <ClCompile Include="RawLoader.cpp">
       <Filter>05. HeightMap</Filter>
+    </ClCompile>
+    <ClCompile Include="XfileObj.cpp">
+      <Filter>06. Object_XFile</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
