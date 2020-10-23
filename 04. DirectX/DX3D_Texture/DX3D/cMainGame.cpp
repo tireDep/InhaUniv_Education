@@ -23,8 +23,13 @@
 
 #include "XfileObj.h"
 
+#include "FrustumObj.h"
+
 vector<CHeightMap> heightMap;
 CRawLoader l;
+
+CFrustumObj frusObj;
+static bool isClicked = false;
 
 cMainGame::cMainGame()
 	: m_pCubePC(NULL)
@@ -132,15 +137,18 @@ void cMainGame::Setup()
 
 	m_xFileObj = new CXfileObj;
 	m_xFileObj->LoadXFile("xFile/zealot", "zealot.x");
+
+	frusObj.SetUp();
 }
 
 void cMainGame::Update()
 {
 	//if (m_pCubePC)
 	//	m_pCubePC->Update(); 
+	frusObj.Update();
 
-	// if (m_pCubeMan)
-	// 	m_pCubeMan->Update(m_pMap); 
+	if (m_pCubeMan)
+		m_pCubeMan->Update(m_pMap); 
 
 	if (m_pCamera)
 		m_pCamera->Update(); 
@@ -150,6 +158,7 @@ void cMainGame::Update()
 
 	if (m_pRootFrame)
 		m_pRootFrame->Update(m_pRootFrame->GetKeyFrame(), NULL);
+
 }
 
 void cMainGame::Render()
@@ -163,7 +172,7 @@ void cMainGame::Render()
 	
 	D3DXCreateTextureFromFile(g_pD3DDevice, L"HeightMapData/terrain.jpg", &m_pTexture);
 
-	// PickingObj_Render();
+	PickingObj_Render();
 
 	// l.Render();
 
@@ -172,14 +181,16 @@ void cMainGame::Render()
 	if (m_pGrid)
 		m_pGrid->Render(); 
 
-	if (m_xFileObj)
-		m_xFileObj->Render();
+	// if (m_xFileObj)
+	// 	m_xFileObj->Render();
+
+	// frusObj.Render();
 
 	// if (m_pCubePC)
 	//	m_pCubePC->Render(); 
 
-	// if (m_pCubeMan)
-	// 	m_pCubeMan->Render(); 
+	if (m_pCubeMan)
+		m_pCubeMan->Render(); 
 
 	// for (int i = 0; i < m_vecLight.size(); i++)
 	// 	m_vecLight[i]->Render();
@@ -217,6 +228,7 @@ void cMainGame::WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 
 	case WM_RBUTTONDOWN:
 		{
+		isClicked = true;
 			CRay r = CRay::RayAtWorldSpace(LOWORD(lParam), HIWORD(lParam));
 
 			for (int i = 0; i < m_vecPlanVertex.size(); i+=3)
@@ -383,12 +395,27 @@ void cMainGame::Render_MeshObj()
 
 void cMainGame::SetUp_PickingObj()
 {
-	for (int i = 0; i <= 10; i++)
+	/*for (int i = 0; i <= 10; i++)
 	{
 		ST_SPHERE s;
 		s.fRadius = 0.5f;
 		s.vCenter = D3DXVECTOR3(0, 0, -10 + 2 * i);
 		m_vecSphere.push_back(s);
+	}*/
+
+	int min = -15, max = 15;
+	for (int x = min; x < max; x++)
+	{
+		for (int y = min; y < max; y++)
+		{
+			for (int z = min; z < max; z++)
+			{
+				ST_SPHERE s;
+				s.fRadius = 0.5f;
+				s.vCenter = D3DXVECTOR3(x, y, z);
+				m_vecSphere.push_back(s);
+			}
+		}
 	}
 
 	ZeroMemory(&m_stMtlNone, sizeof(D3DMATERIAL9));
@@ -435,8 +462,13 @@ void cMainGame::PickingObj_Render()
 	// << plane
 
 	// >> Sphere
+	g_pD3DDevice->SetRenderState(D3DRS_CULLMODE, 1);
 	for (int i = 0; i < m_vecSphere.size(); i++)
 	{
+		if (!frusObj.IsInFrustum(m_vecSphere[i].vCenter, m_vecSphere[i].fRadius, isClicked))
+		{
+			continue;
+		}
 		D3DXMatrixIdentity(&matWorld);
 		matWorld._41 = m_vecSphere[i].vCenter.x;
 		matWorld._42 = m_vecSphere[i].vCenter.y;

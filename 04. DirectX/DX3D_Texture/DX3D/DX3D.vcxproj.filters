@@ -31,6 +31,9 @@
     <Filter Include="06. Object_XFile">
       <UniqueIdentifier>{f1df81a8-55e3-421a-9da7-0911a1761ccb}</UniqueIdentifier>
     </Filter>
+    <Filter Include="07. Frustum Culling">
+      <UniqueIdentifier>{e0e43019-89e3-487c-97d5-d944e3253f90}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <Text Include="ReadMe.txt" />
@@ -153,6 +156,12 @@
     <ClInclude Include="XfileObj.h">
       <Filter>06. Object_XFile</Filter>
     </ClInclude>
+    <ClInclude Include="FrustumObj.h">
+      <Filter>07. Frustum Culling</Filter>
+    </ClInclude>
+    <ClInclude Include="Sphere.h">
+      <Filter>07. Frustum Culling</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -262,6 +271,12 @@
     </ClCompile>
     <ClCompile Include="XfileObj.cpp">
       <Filter>06. Object_XFile</Filter>
+    </ClCompile>
+    <ClCompile Include="FrustumObj.cpp">
+      <Filter>07. Frustum Culling</Filter>
+    </ClCompile>
+    <ClCompile Include="Sphere.cpp">
+      <Filter>07. Frustum Culling</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
