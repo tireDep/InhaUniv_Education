@@ -4,7 +4,12 @@
 
 CSkinnedMesh::CSkinnedMesh() :
 	m_pRoot(NULL),
-	m_pAnimController(NULL)
+	m_pAniController(NULL),
+	m_fBlendTime(0.3f),
+	m_fPassedBlendTime(0.0f),
+	m_isAniBlend(false),
+	m_passedTime(0.0f),
+	m_maxPlayTime(0.0f)
 {
 }
 
@@ -12,7 +17,7 @@ CSkinnedMesh::~CSkinnedMesh()
 {
 	CAllocateHierarchy ah;
 	D3DXFrameDestroy(m_pRoot, &ah);
-	SafeRelease(m_pAnimController);
+	SafeRelease(m_pAniController);
 }
 
 void CSkinnedMesh::SetUp(char * szFolder, char * szFile)
@@ -28,14 +33,46 @@ void CSkinnedMesh::SetUp(char * szFolder, char * szFile)
 		&ah,
 		NULL,
 		&m_pRoot,
-		&m_pAnimController);
+		&m_pAniController);
 
 	SetUpBoneMatrixPtrs(m_pRoot);
+
+	LPD3DXANIMATIONSET pAniSet = NULL;
+	m_pAniController->GetAnimationSet(0, &pAniSet);
+	SetNowPlayMaxTime(pAniSet);
+	SafeRelease(pAniSet);
 }
 
 void CSkinnedMesh::Update()
 {
-	m_pAnimController->AdvanceTime(g_pTimeManager->GetElapsedTime(), NULL);
+	m_passedTime += g_pTimeManager->GetElapsedTime();
+	if (m_maxPlayTime <= m_passedTime + m_fBlendTime && strstr(m_sNowPlayAni.c_str(), "Attack"))
+	{
+		// 블랜딩 시간 추가
+		SetAnimationIndexBlend(4);
+	}
+	
+	if (m_isAniBlend)
+	{
+		m_fPassedBlendTime += g_pTimeManager->GetElapsedTime();	// 시간 누적
+		if (m_fPassedBlendTime >= m_fBlendTime)
+		{
+			m_isAniBlend = false;
+			m_pAniController->SetTrackWeight(0, 1.0f);
+			m_pAniController->SetTrackEnable(1, false); 
+			// 같은 의미 : m_pAniController->SetTrackWeight(1, 0.0f);
+			// 애니메이션 안함
+		}
+		else
+		{
+			float fWeight = m_fPassedBlendTime / m_fBlendTime;
+			m_pAniController->SetTrackWeight(0, fWeight);
+			m_pAniController->SetTrackWeight(1, 1.0f - fWeight);
+			// 시간이 지나갈 수록 더 가까운 쪽의 애니메이션이 실행됨
+		}
+	}
+
+	m_pAniController->AdvanceTime(g_pTimeManager->GetElapsedTime(), NULL);
 	Update(m_pRoot, NULL);
 	UpdateSkinnedMesh(m_pRoot);
 }
@@ -161,4 +198,61 @@ void CSkinnedMesh::UpdateSkinnedMesh(LPD3DXFRAME pFrame)
 
 	if (pFrame->pFrameSibling)
 		UpdateSkinnedMesh(pFrame->pFrameSibling);
+}
+
+void CSkinnedMesh::SetAnimationIndex(int nIndex)
+{
+	// 새로운 애니메이션 setting
+	int num = m_pAniController->GetNumAnimationSets();
+
+	if (nIndex > num)
+		nIndex = nIndex % num;
+
+	LPD3DXANIMATIONSET pAnimSet = NULL;
+	m_pAniController->GetAnimationSet(nIndex, &pAnimSet);
+	m_pAniController->SetTrackAnimationSet(0, pAnimSet);
+	// m_pAniController->ResetTime();	// 처음부터 실행
+
+	m_pAniController->GetPriorityBlend();	// 이전 동작과 섞임
+}
+
+void CSkinnedMesh::SetAnimationIndexBlend(int nIndex)
+{
+	m_isAniBlend = true;
+	m_fPassedBlendTime = 0.0f;
+	
+	int num = m_pAniController->GetNumAnimationSets();
+	
+	if (nIndex >= num)
+		nIndex = nIndex%num;
+
+	LPD3DXANIMATIONSET pPrevAniSet = NULL;
+	LPD3DXANIMATIONSET pNextAniSet = NULL;
+
+	D3DXTRACK_DESC stTrackDesc;
+	m_pAniController->GetTrackDesc(0, &stTrackDesc);
+	m_pAniController->GetTrackAnimationSet(0, &pPrevAniSet);
+	m_pAniController->SetTrackAnimationSet(1, pPrevAniSet);
+	
+	m_pAniController->SetTrackDesc(1, &stTrackDesc);
+	m_pAniController->GetAnimationSet(nIndex, &pNextAniSet);
+	m_pAniController->SetTrackAnimationSet(0, pNextAniSet);
+	m_pAniController->SetTrackPosition(0, 0.0f);
+
+	// >> 가중치
+	m_pAniController->SetTrackWeight(0, 0.0f);
+	m_pAniController->SetTrackWeight(1, 1.0f);
+	// << 가중치
+
+	SetNowPlayMaxTime(pNextAniSet);
+	m_passedTime = 0.0f;
+
+	SafeRelease(pPrevAniSet);
+	SafeRelease(pNextAniSet);
+}
+
+void CSkinnedMesh::SetNowPlayMaxTime(LPD3DXANIMATIONSET aniInfo)
+{
+	m_maxPlayTime = aniInfo->GetPeriod();
+	m_sNowPlayAni = aniInfo->GetName();
 }
