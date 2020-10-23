@@ -122,11 +122,11 @@ void cMainGame::Setup()
 	cAseLoader aseLoder;
 	m_pRootFrame = aseLoder.Load("woman/woman_01_all.ASE");
 
-	SetUp_MeshObj();
-
-	SetUp_PickingObj();
-
-	SetUp_HeightMap();
+	// SetUp_MeshObj();
+	// 
+	// SetUp_PickingObj();
+	// 
+	// SetUp_HeightMap();
 
 	m_pSkinnedMesh = new CSkinnedMesh;
 	m_pSkinnedMesh->SetUp("xFile/Zealot", "zealot.x");
@@ -148,6 +148,9 @@ void cMainGame::Update()
 
 	if (m_pRootFrame)
 		m_pRootFrame->Update(m_pRootFrame->GetKeyFrame(), NULL);
+
+	if (GetKeyState('5') & 0x8000)
+		m_pSkinnedMesh->SetAnimationIndexBlend(3);
 
 	g_pTimeManager->Update();
 	if (m_pSkinnedMesh)
@@ -216,16 +219,23 @@ void cMainGame::WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 
 	case WM_RBUTTONDOWN:
 		{
-			CRay r = CRay::RayAtWorldSpace(LOWORD(lParam), HIWORD(lParam));
+			// << 애니메이션
+			static int n = 0;
+			// m_pSkinnedMesh->SetAnimationIndex(++n);
 
-			for (int i = 0; i < m_vecPlanVertex.size(); i+=3)
-			{
-				D3DXVECTOR3 v(0, 0, 0);
-				if (r.IntersectTri(m_vecPlanVertex[i + 0].p, m_vecPlanVertex[i + 1].p, m_vecPlanVertex[i + 2].p, v))
-				{
-					m_vPickedPosition = v;
-				}
-			}
+			m_pSkinnedMesh->SetAnimationIndexBlend(++n);
+			// >> 애니메이션
+
+			// CRay r = CRay::RayAtWorldSpace(LOWORD(lParam), HIWORD(lParam));
+			// 
+			// for (int i = 0; i < m_vecPlanVertex.size(); i+=3)
+			// {
+			// 	D3DXVECTOR3 v(0, 0, 0);
+			// 	if (r.IntersectTri(m_vecPlanVertex[i + 0].p, m_vecPlanVertex[i + 1].p, m_vecPlanVertex[i + 2].p, v))
+			// 	{
+			// 		m_vPickedPosition = v;
+			// 	}
+			// }
 		}
 		break;
 

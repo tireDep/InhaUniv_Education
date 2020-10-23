@@ -4,7 +4,17 @@ class CSkinnedMesh
 {
 protected:
 	LPD3DXFRAME					m_pRoot;
-	LPD3DXANIMATIONCONTROLLER	m_pAnimController;
+	LPD3DXANIMATIONCONTROLLER	m_pAniController;
+
+	// >> animation blend
+	float m_fBlendTime;
+	float m_fPassedBlendTime;
+	bool  m_isAniBlend;
+	// << animation blend
+
+	float m_passedTime;
+	float m_maxPlayTime;
+	string m_sNowPlayAni;
 
 public:
 	CSkinnedMesh();
@@ -16,5 +26,10 @@ public:
 	void Render(LPD3DXFRAME pFrame);
 	void SetUpBoneMatrixPtrs(LPD3DXFRAME pFrame);
 	void UpdateSkinnedMesh(LPD3DXFRAME pFrame);
+
+	void SetAnimationIndex(int nIndex);
+	void SetAnimationIndexBlend(int nIndex);
+
+	void SetNowPlayMaxTime(LPD3DXANIMATIONSET aniInfo);
 };
 
