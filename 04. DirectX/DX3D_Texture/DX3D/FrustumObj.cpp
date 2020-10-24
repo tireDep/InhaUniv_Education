@@ -23,71 +23,60 @@ void CFrustumObj::SetUp()
 	g_pD3DDevice->GetViewport(&viewPort);
 
 	float zMinNum = -matProj._43 / matProj._33;
-	float r = 0 / (0 - zMinNum);
+	float r = 1000 / (1000 - zMinNum);
 	matProj._33 = r;
 	matProj._43 = -r*zMinNum;
 
-	D3DXMATRIXA16 matProjView = matProj * matView;
+	D3DXMATRIXA16 matViewProj = matView * matProj;
 	
 	D3DXPLANE plane;
-	plane.a = matProjView._14 + matProjView._13;
-	plane.b = matProjView._24 + matProjView._23;
-	plane.c = matProjView._34 + matProjView._33;
-	plane.d = matProjView._44 + matProjView._43;
+	plane.a = matViewProj._14 + matViewProj._13;
+	plane.b = matViewProj._24 + matViewProj._23;
+	plane.c = matViewProj._34 + matViewProj._33;
+	plane.d = matViewProj._44 + matViewProj._43;
 	D3DXPlaneNormalize(&plane, &plane);
 	m_vecPlane.push_back(plane);
 	// near
 	
-	plane.a = matProjView._14 - matProjView._13;
-	plane.b = matProjView._24 - matProjView._23;
-	plane.c = matProjView._34 - matProjView._33;
-	plane.d = matProjView._44 - matProjView._43;
+	plane.a = matViewProj._14 - matViewProj._13;
+	plane.b = matViewProj._24 - matViewProj._23;
+	plane.c = matViewProj._34 - matViewProj._33;
+	plane.d = matViewProj._44 - matViewProj._43;
 	D3DXPlaneNormalize(&plane, &plane);
 	m_vecPlane.push_back(plane);
 	// far
 	
-	plane.a = matProjView._14 + matProjView._11;
-	plane.b = matProjView._24 + matProjView._21;
-	plane.c = matProjView._34 + matProjView._31;
-	plane.d = matProjView._44 + matProjView._41;
+	plane.a = matViewProj._14 + matViewProj._11;
+	plane.b = matViewProj._24 + matViewProj._21;
+	plane.c = matViewProj._34 + matViewProj._31;
+	plane.d = matViewProj._44 + matViewProj._41;
 	D3DXPlaneNormalize(&plane, &plane);
 	m_vecPlane.push_back(plane);
 	// left
 	
-	plane.a = matProjView._14 - matProjView._11;
-	plane.b = matProjView._24 - matProjView._21;
-	plane.c = matProjView._34 - matProjView._31;
-	plane.d = matProjView._44 - matProjView._41;
+	plane.a = matViewProj._14 - matViewProj._11;
+	plane.b = matViewProj._24 - matViewProj._21;
+	plane.c = matViewProj._34 - matViewProj._31;
+	plane.d = matViewProj._44 - matViewProj._41;
 	D3DXPlaneNormalize(&plane, &plane);
 	m_vecPlane.push_back(plane);
 	// right
 	
-	plane.a = matProjView._14 - matProjView._12;
-	plane.b = matProjView._24 - matProjView._22;
-	plane.c = matProjView._34 - matProjView._32;
-	plane.d = matProjView._44 - matProjView._42;
+	plane.a = matViewProj._14 - matViewProj._12;
+	plane.b = matViewProj._24 - matViewProj._22;
+	plane.c = matViewProj._34 - matViewProj._32;
+	plane.d = matViewProj._44 - matViewProj._42;
 	D3DXPlaneNormalize(&plane, &plane);
 	m_vecPlane.push_back(plane);
 	// top
 	
-	plane.a = matProjView._14 + matProjView._12;
-	plane.b = matProjView._24 + matProjView._22;
-	plane.c = matProjView._34 + matProjView._32;
-	plane.d = matProjView._44 + matProjView._42;
+	plane.a = matViewProj._14 + matViewProj._12;
+	plane.b = matViewProj._24 + matViewProj._22;
+	plane.c = matViewProj._34 + matViewProj._32;
+	plane.d = matViewProj._44 + matViewProj._42;
 	D3DXPlaneNormalize(&plane, &plane);
 	m_vecPlane.push_back(plane);
 	// bottom
-
-	/*
-	D3DXMATRIXA16 matProj;
-	g_pD3DDevice->GetTransform(D3DTS_PROJECTION, &matProj);
-
-	D3DXMATRIXA16 matView;
-	g_pD3DDevice->GetTransform(D3DTS_VIEW, &matView);
-
-	D3DXVECTOR3 vertex(0, 0, 0);
-	D3DXVec3Unproject(&vertex, &vertex, NULL, &matProj, &matView, NULL);
-	*/
 }
 
 void CFrustumObj::Update()
@@ -107,7 +96,7 @@ bool CFrustumObj::IsInFrustum(D3DXVECTOR3 vPoint, float & fRadius, bool isClicke
 		{
 			fRet = D3DXPlaneDotCoord(&m_vecPlane[i], &vPoint);
 
-			if (fRet < -fRadius)
+			if (fRet < fRadius * 0.5)
 				return false;
 		}
 	}
