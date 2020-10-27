@@ -2,7 +2,9 @@
 #include "AllocateHierarchy.h"
 
 
-CAllocateHierarchy::CAllocateHierarchy()
+CAllocateHierarchy::CAllocateHierarchy() :
+	m_vMax(0,0,0),
+	m_vMin(0,0,0)
 {
 }
 
@@ -48,7 +50,7 @@ STDMETHODIMP CAllocateHierarchy::CreateMeshContainer(THIS_ LPCSTR Name,
 	{
 		pBoneMesh->vecMtl.push_back(pMaterials[i].MatD3D);
 		string sFullPath = m_sFolder;
-		sFullPath = string(sFullPath) + "/" + string(pMaterials[i].pTextureFilename);
+		sFullPath = string(sFullPath) + string("/") + string(pMaterials[i].pTextureFilename);
 
 		pBoneMesh->vecTexture.push_back(g_pTextureManager->GetTexture(sFullPath));
 	}	// : for
@@ -59,6 +61,29 @@ STDMETHODIMP CAllocateHierarchy::CreateMeshContainer(THIS_ LPCSTR Name,
 
 	pMeshData->pMesh->AddRef();
 	pBoneMesh->MeshData.pMesh = pMeshData->pMesh;
+
+	// >> Bounding Box
+	if (pMeshData && pMeshData->pMesh)
+	{
+		D3DXVECTOR3 vMin(0, 0, 0), vMax(0, 0, 0);
+		LPVOID pV = NULL;
+		pMeshData->pMesh->LockVertexBuffer(0, &pV);
+
+		D3DXComputeBoundingBox((D3DXVECTOR3*)pV,
+			pMeshData->pMesh->GetNumVertices(), 
+			D3DXGetFVFVertexSize(pMeshData->pMesh->GetFVF()), 
+			&vMin, 
+			&vMax);
+		// 바운딩 박스의 최소, 최대 구해짐
+
+		D3DXVec3Minimize(&m_vMin, &m_vMin, &vMin);
+		D3DXVec3Maximize(&m_vMax, &m_vMax, &vMax);
+		// 비교해서 작은 값, 큰 값 저장
+
+		pMeshData->pMesh->UnlockVertexBuffer();
+	}
+	// << Bounding Box
+
 	pMeshData->pMesh->CloneMeshFVF(
 		pMeshData->pMesh->GetOptions(),
 		pMeshData->pMesh->GetFVF(),

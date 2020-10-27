@@ -25,6 +25,9 @@
 
 #include "Frustum.h"
 
+#include "Zealot.h"
+#include "OBB.h"
+
 cMainGame::cMainGame()
 	: m_pCubePC(NULL)
 	, m_pCamera(NULL)
@@ -41,6 +44,8 @@ cMainGame::cMainGame()
 	, m_pObjMesh(NULL)
 	, m_pSkinnedMesh(NULL)
 	, m_pFrustum(NULL)
+	, m_pHoldZealot(NULL)
+	, m_pMoveZealot(NULL)
 {
 
 }
@@ -82,6 +87,11 @@ cMainGame::~cMainGame()
 	SafeDelete(m_pFrustum);
 
 	SafeDelete(m_pSkinnedMesh);
+
+	// >> OBB
+	SafeDelete(m_pHoldZealot);
+	SafeDelete(m_pMoveZealot);
+	// << OBB
 
 	g_pObjectManger->Destroy();
 
@@ -137,6 +147,10 @@ void cMainGame::Setup()
 	m_pSkinnedMesh->SetUp("xFile/Zealot", "zealot.x");
 
 	SetUp_Frustum();
+
+	// >> OBB
+	SetUp_OBB();
+	// << OBB
 }
 
 void cMainGame::Update()
@@ -159,12 +173,21 @@ void cMainGame::Update()
 	if (m_pRootFrame)
 		m_pRootFrame->Update(m_pRootFrame->GetKeyFrame(), NULL);
 
-	if (GetKeyState('5') & 0x8000)
-		m_pSkinnedMesh->SetAnimationIndexBlend(3);
+	// if (GetKeyState('5') & 0x8000)
+	// 	m_pSkinnedMesh->SetAnimationIndexBlend(3);
+	// 
+	// g_pTimeManager->Update();
+	// if (m_pSkinnedMesh)
+	// 	m_pSkinnedMesh->Update();
 
+	// >> OBB
 	g_pTimeManager->Update();
-	if (m_pSkinnedMesh)
-		m_pSkinnedMesh->Update();
+	if (m_pHoldZealot)
+		m_pHoldZealot->Update(NULL);
+
+	if (m_pMoveZealot)
+		m_pMoveZealot->Update(m_pMap);
+	// << OBB
 }
 
 void cMainGame::Render()
@@ -181,7 +204,9 @@ void cMainGame::Render()
 	if (m_pGrid)
 		m_pGrid->Render(); 
 
-	Render_Frustum();
+	Render_OBB();
+
+	// Render_Frustum();
 
 	// if (m_pCubePC)
 	//	m_pCubePC->Render(); 
@@ -557,4 +582,29 @@ void cMainGame::Render_Frustum()
 			m_pSphere->DrawSubset(0);
 		}
 	}
+}
+
+void cMainGame::SetUp_OBB()
+{
+	m_pHoldZealot = new CZealot;
+	m_pHoldZealot->SetUp();
+
+	m_pMoveZealot = new CZealot;
+	m_pMoveZealot->SetUp();
+
+	cCharacter* pCharacter = new cCharacter;
+	m_pMoveZealot->SetCharacterController(pCharacter);	// 캐릭터 이동
+	SafeRelease(pCharacter);
+}
+
+void cMainGame::Render_OBB()
+{
+	D3DCOLOR c = COBB::IsCollision(m_pHoldZealot->GetOBB(), m_pMoveZealot->GetOBB())
+		? D3DCOLOR_XRGB(255,0,0) : D3DCOLOR_XRGB(255, 255, 255); // 충돌시 색상 변경
+
+	if (m_pHoldZealot)
+		m_pHoldZealot->Render(c);
+
+	if (m_pMoveZealot)
+		m_pMoveZealot->Render(c);
 }

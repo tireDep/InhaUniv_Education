@@ -17,6 +17,8 @@ class CSkinnedMesh;
 
 class CFrustum;
 
+class CZealot;
+
 #include "cLight.h"
 
 class cMainGame
@@ -77,6 +79,11 @@ private :
 	CFrustum* m_pFrustum;
 	// <<
 
+	// >> OBB
+	CZealot* m_pHoldZealot;
+	CZealot* m_pMoveZealot;
+	// << OBB
+
 public :
 	void Setup(); 
 	void Update(); 
@@ -112,5 +119,10 @@ public :
 	void SetUp_Frustum();
 	void Render_Frustum();
 	// << frustum
+
+	// >> OBB
+	void SetUp_OBB();
+	void Render_OBB();
+	// << OBB
 };
 
