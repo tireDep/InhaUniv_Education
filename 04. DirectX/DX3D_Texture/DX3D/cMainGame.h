@@ -15,6 +15,8 @@ class cMtlTex;
 
 class CSkinnedMesh;
 
+class CFrustum;
+
 #include "cLight.h"
 
 class cMainGame
@@ -68,6 +70,13 @@ private :
 
 	CSkinnedMesh* m_pSkinnedMesh;
 
+	// >>
+	LPD3DXMESH		m_pSphere;
+	D3DMATERIAL9	m_stCullingMtl;
+	vector<ST_SPHERE*> m_vecCullingSphere;
+	CFrustum* m_pFrustum;
+	// <<
+
 public :
 	void Setup(); 
 	void Update(); 
@@ -98,5 +107,10 @@ public :
 	// << heightMap
 
 	void Render_SkinnedMesh();
+
+	// >> frustum
+	void SetUp_Frustum();
+	void Render_Frustum();
+	// << frustum
 };
 

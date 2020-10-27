@@ -34,6 +34,9 @@
     <Filter Include="06. SkinedMesh">
       <UniqueIdentifier>{f3a6b83d-58dd-437e-8f15-e28e7651e224}</UniqueIdentifier>
     </Filter>
+    <Filter Include="07. FrustumCulling">
+      <UniqueIdentifier>{cb1d590c-8871-4b39-a218-7e725130ad79}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <Text Include="ReadMe.txt" />
@@ -159,6 +162,9 @@
     <ClInclude Include="SkinnedMesh.h">
       <Filter>06. SkinedMesh</Filter>
     </ClInclude>
+    <ClInclude Include="Frustum.h">
+      <Filter>07. FrustumCulling</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -271,6 +277,9 @@
     </ClCompile>
     <ClCompile Include="SkinnedMesh.cpp">
       <Filter>06. SkinedMesh</Filter>
+    </ClCompile>
+    <ClCompile Include="Frustum.cpp">
+      <Filter>07. FrustumCulling</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

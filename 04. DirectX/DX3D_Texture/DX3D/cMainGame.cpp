@@ -23,6 +23,8 @@
 
 #include "SkinnedMesh.h"
 
+#include "Frustum.h"
+
 cMainGame::cMainGame()
 	: m_pCubePC(NULL)
 	, m_pCamera(NULL)
@@ -38,6 +40,7 @@ cMainGame::cMainGame()
 	, m_pMeshSphere(NULL)
 	, m_pObjMesh(NULL)
 	, m_pSkinnedMesh(NULL)
+	, m_pFrustum(NULL)
 {
 
 }
@@ -75,6 +78,8 @@ cMainGame::~cMainGame()
 	}
 	m_vecObjMtlTex.clear();
 	// << mesh
+
+	SafeDelete(m_pFrustum);
 
 	SafeDelete(m_pSkinnedMesh);
 
@@ -130,6 +135,8 @@ void cMainGame::Setup()
 
 	m_pSkinnedMesh = new CSkinnedMesh;
 	m_pSkinnedMesh->SetUp("xFile/Zealot", "zealot.x");
+
+	SetUp_Frustum();
 }
 
 void cMainGame::Update()
@@ -139,7 +146,10 @@ void cMainGame::Update()
 
 	// if (m_pCubeMan)
 	// 	m_pCubeMan->Update(m_pMap); 
-	// 
+	
+	if (m_pFrustum)
+		m_pFrustum->Update();
+
 	if (m_pCamera)
 		m_pCamera->Update(); 
 
@@ -171,17 +181,18 @@ void cMainGame::Render()
 	if (m_pGrid)
 		m_pGrid->Render(); 
 
+	Render_Frustum();
+
 	// if (m_pCubePC)
 	//	m_pCubePC->Render(); 
 
-	if (m_pMap)
-		m_pMap->Render();
+	// if (m_pMap)
+	// 	m_pMap->Render();
 
 	// if (m_pCubeMan)
 	// 	m_pCubeMan->Render(); 
 
-	
-	Render_SkinnedMesh();
+	// Render_SkinnedMesh();
 
 	// for (int i = 0; i < m_vecLight.size(); i++)
 	// 	m_vecLight[i]->Render();
@@ -219,11 +230,20 @@ void cMainGame::WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 
 	case WM_RBUTTONDOWN:
 		{
-			// << 애니메이션
-			static int n = 0;
-			// m_pSkinnedMesh->SetAnimationIndex(++n);
+			// >> frustum
+			for each(ST_SPHERE* sphere in m_vecCullingSphere)
+			{
+				if (m_pFrustum->IsIn(sphere))
+					sphere->isPicked = true;
+				else
+					sphere->isPicked = false;
+			}
+			// << frustum
 
-			m_pSkinnedMesh->SetAnimationIndexBlend(++n);
+			// << 애니메이션
+			//static int n = 0;
+			// m_pSkinnedMesh->SetAnimationIndex(++n);
+			//m_pSkinnedMesh->SetAnimationIndexBlend(++n);
 			// >> 애니메이션
 
 			// CRay r = CRay::RayAtWorldSpace(LOWORD(lParam), HIWORD(lParam));
@@ -483,4 +503,58 @@ void cMainGame::Render_SkinnedMesh()
 	g_pD3DDevice->SetTransform(D3DTS_WORLD, &matWorld);
 	if (m_pSkinnedMesh)
 		m_pSkinnedMesh->Render(NULL);
+}
+
+void cMainGame::SetUp_Frustum()
+{
+	D3DXCreateSphere(g_pD3DDevice, 0.5f, 10, 10, &m_pSphere, NULL);
+
+	for (int i = -20; i <= 20; i++)
+	{
+		for (int j = -20; j <= 20; j++)
+		{
+			for (int k = -20; k <= 20; k++)
+			{
+				ST_SPHERE* s = new ST_SPHERE;
+				s->fRadius = 0.5f;
+				s->vCenter = D3DXVECTOR3((float)i, (float)j, (float)k);
+				s->isPicked = true;
+
+				m_vecCullingSphere.push_back(s);
+			} // : for_k
+
+		} // : for_j
+
+	} // : for_i
+
+	ZeroMemory(&m_stCullingMtl, sizeof(D3DMATERIAL9));
+	m_stCullingMtl.Ambient = D3DXCOLOR(0.7f, 0.7f, 0.7f, 0.7f);
+	m_stCullingMtl.Diffuse = D3DXCOLOR(0.7f, 0.7f, 0.7f, 0.7f);
+	m_stCullingMtl.Specular = D3DXCOLOR(0.7f, 0.7f, 0.7f, 0.7f);
+
+	m_pFrustum = new CFrustum;
+	m_pFrustum->SetUp();
+}
+
+void cMainGame::Render_Frustum()
+{
+	g_pD3DDevice->SetRenderState(D3DRS_LIGHTING, true);
+
+	D3DXMATRIXA16 matWorld;
+	D3DXMatrixIdentity(&matWorld);
+
+	for each(ST_SPHERE* sphere in m_vecCullingSphere)
+	{
+		if (sphere->isPicked)
+		{
+			D3DXMatrixIdentity(&matWorld);
+			matWorld._41 = sphere->vCenter.x;
+			matWorld._42 = sphere->vCenter.y;
+			matWorld._43 = sphere->vCenter.z;
+
+			g_pD3DDevice->SetTransform(D3DTS_WORLD, &matWorld);
+			g_pD3DDevice->SetMaterial(&m_stCullingMtl);
+			m_pSphere->DrawSubset(0);
+		}
+	}
 }

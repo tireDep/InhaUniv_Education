@@ -172,6 +172,7 @@
     <ClInclude Include="cTextureManager.h" />
     <ClInclude Include="DirectionLight.h" />
     <ClInclude Include="DX3D.h" />
+    <ClInclude Include="Frustum.h" />
     <ClInclude Include="HeigthMap.h" />
     <ClInclude Include="iMap.h" />
     <ClInclude Include="PointLight.h" />
@@ -213,6 +214,7 @@
     <ClCompile Include="cTextureManager.cpp" />
     <ClCompile Include="DirectionLight.cpp" />
     <ClCompile Include="DX3D.cpp" />
+    <ClCompile Include="Frustum.cpp" />
     <ClCompile Include="HeigthMap.cpp" />
     <ClCompile Include="iMap.cpp" />
     <ClCompile Include="PointLight.cpp" />
