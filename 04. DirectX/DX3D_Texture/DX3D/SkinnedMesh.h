@@ -1,4 +1,5 @@
 #pragma once
+#include "AllocateHierarchy.h"
 
 class CSkinnedMesh
 {
@@ -16,6 +17,11 @@ protected:
 	float m_maxPlayTime;
 	string m_sNowPlayAni;
 
+	// >> hitBox_OBB
+	Synthesize(D3DXVECTOR3, m_vMin, Min);
+	Synthesize(D3DXVECTOR3, m_vMax, Max);
+	// << hitBox_OBB
+
 public:
 	CSkinnedMesh();
 	~CSkinnedMesh();
@@ -31,5 +37,17 @@ public:
 	void SetAnimationIndexBlend(int nIndex);
 
 	void SetNowPlayMaxTime(LPD3DXANIMATIONSET aniInfo);
+
+	// >> hitBox_OBB
+	CSkinnedMesh(char* szFolder, char* szFileName);
+	void Load(char* szFolder, char* szFileName);
+	void Destroy();
+	void UpdateAndRender();
+	void Update(ST_BONE* pCurrent, D3DXMATRIXA16* pmatParent);
+	void SetRandomTrackPosition();
+
+	D3DXMATRIXA16 m_matworldTM;
+	void SetTransform(D3DXMATRIXA16* pmat);
+	// << hitBox_OBB
 };
 

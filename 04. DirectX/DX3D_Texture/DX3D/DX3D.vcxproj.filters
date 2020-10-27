@@ -34,6 +34,12 @@
     <Filter Include="06. SkinedMesh">
       <UniqueIdentifier>{f3a6b83d-58dd-437e-8f15-e28e7651e224}</UniqueIdentifier>
     </Filter>
+    <Filter Include="07. FrustumCulling">
+      <UniqueIdentifier>{cb1d590c-8871-4b39-a218-7e725130ad79}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="08. OBB">
+      <UniqueIdentifier>{96814fa5-8957-4ea8-ad22-b812d7a692fe}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <Text Include="ReadMe.txt" />
@@ -159,6 +165,18 @@
     <ClInclude Include="SkinnedMesh.h">
       <Filter>06. SkinedMesh</Filter>
     </ClInclude>
+    <ClInclude Include="Frustum.h">
+      <Filter>07. FrustumCulling</Filter>
+    </ClInclude>
+    <ClInclude Include="OBB.h">
+      <Filter>08. OBB</Filter>
+    </ClInclude>
+    <ClInclude Include="Zealot.h">
+      <Filter>08. OBB</Filter>
+    </ClInclude>
+    <ClInclude Include="SkinnedMeshManager.h">
+      <Filter>06. SkinedMesh</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -270,6 +288,18 @@
       <Filter>06. SkinedMesh</Filter>
     </ClCompile>
     <ClCompile Include="SkinnedMesh.cpp">
+      <Filter>06. SkinedMesh</Filter>
+    </ClCompile>
+    <ClCompile Include="Frustum.cpp">
+      <Filter>07. FrustumCulling</Filter>
+    </ClCompile>
+    <ClCompile Include="OBB.cpp">
+      <Filter>08. OBB</Filter>
+    </ClCompile>
+    <ClCompile Include="Zealot.cpp">
+      <Filter>08. OBB</Filter>
+    </ClCompile>
+    <ClCompile Include="SkinnedMeshManager.cpp">
       <Filter>06. SkinedMesh</Filter>
     </ClCompile>
   </ItemGroup>

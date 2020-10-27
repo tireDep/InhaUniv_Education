@@ -23,6 +23,11 @@
 
 #include "SkinnedMesh.h"
 
+#include "Frustum.h"
+
+#include "Zealot.h"
+#include "OBB.h"
+
 cMainGame::cMainGame()
 	: m_pCubePC(NULL)
 	, m_pCamera(NULL)
@@ -38,6 +43,9 @@ cMainGame::cMainGame()
 	, m_pMeshSphere(NULL)
 	, m_pObjMesh(NULL)
 	, m_pSkinnedMesh(NULL)
+	, m_pFrustum(NULL)
+	, m_pHoldZealot(NULL)
+	, m_pMoveZealot(NULL)
 {
 
 }
@@ -76,7 +84,14 @@ cMainGame::~cMainGame()
 	m_vecObjMtlTex.clear();
 	// << mesh
 
+	SafeDelete(m_pFrustum);
+
 	SafeDelete(m_pSkinnedMesh);
+
+	// >> OBB
+	SafeDelete(m_pHoldZealot);
+	SafeDelete(m_pMoveZealot);
+	// << OBB
 
 	g_pObjectManger->Destroy();
 
@@ -130,6 +145,12 @@ void cMainGame::Setup()
 
 	m_pSkinnedMesh = new CSkinnedMesh;
 	m_pSkinnedMesh->SetUp("xFile/Zealot", "zealot.x");
+
+	SetUp_Frustum();
+
+	// >> OBB
+	SetUp_OBB();
+	// << OBB
 }
 
 void cMainGame::Update()
@@ -139,7 +160,10 @@ void cMainGame::Update()
 
 	// if (m_pCubeMan)
 	// 	m_pCubeMan->Update(m_pMap); 
-	// 
+	
+	if (m_pFrustum)
+		m_pFrustum->Update();
+
 	if (m_pCamera)
 		m_pCamera->Update(); 
 
@@ -149,12 +173,21 @@ void cMainGame::Update()
 	if (m_pRootFrame)
 		m_pRootFrame->Update(m_pRootFrame->GetKeyFrame(), NULL);
 
-	if (GetKeyState('5') & 0x8000)
-		m_pSkinnedMesh->SetAnimationIndexBlend(3);
+	// if (GetKeyState('5') & 0x8000)
+	// 	m_pSkinnedMesh->SetAnimationIndexBlend(3);
+	// 
+	// g_pTimeManager->Update();
+	// if (m_pSkinnedMesh)
+	// 	m_pSkinnedMesh->Update();
 
+	// >> OBB
 	g_pTimeManager->Update();
-	if (m_pSkinnedMesh)
-		m_pSkinnedMesh->Update();
+	if (m_pHoldZealot)
+		m_pHoldZealot->Update(m_pMap);
+
+	if (m_pMoveZealot)
+		m_pMoveZealot->Update(m_pMap);
+	// << OBB
 }
 
 void cMainGame::Render()
@@ -171,17 +204,20 @@ void cMainGame::Render()
 	if (m_pGrid)
 		m_pGrid->Render(); 
 
+	Render_OBB();
+
+	// Render_Frustum();
+
 	// if (m_pCubePC)
 	//	m_pCubePC->Render(); 
 
-	if (m_pMap)
-		m_pMap->Render();
+	// if (m_pMap)
+	// 	m_pMap->Render();
 
 	// if (m_pCubeMan)
 	// 	m_pCubeMan->Render(); 
 
-	
-	Render_SkinnedMesh();
+	// Render_SkinnedMesh();
 
 	// for (int i = 0; i < m_vecLight.size(); i++)
 	// 	m_vecLight[i]->Render();
@@ -219,11 +255,20 @@ void cMainGame::WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 
 	case WM_RBUTTONDOWN:
 		{
-			// << 애니메이션
-			static int n = 0;
-			// m_pSkinnedMesh->SetAnimationIndex(++n);
+			// >> frustum
+			for each(ST_SPHERE* sphere in m_vecCullingSphere)
+			{
+				if (m_pFrustum->IsIn(sphere))
+					sphere->isPicked = true;
+				else
+					sphere->isPicked = false;
+			}
+			// << frustum
 
-			m_pSkinnedMesh->SetAnimationIndexBlend(++n);
+			// << 애니메이션
+			//static int n = 0;
+			// m_pSkinnedMesh->SetAnimationIndex(++n);
+			//m_pSkinnedMesh->SetAnimationIndexBlend(++n);
 			// >> 애니메이션
 
 			// CRay r = CRay::RayAtWorldSpace(LOWORD(lParam), HIWORD(lParam));
@@ -483,4 +528,83 @@ void cMainGame::Render_SkinnedMesh()
 	g_pD3DDevice->SetTransform(D3DTS_WORLD, &matWorld);
 	if (m_pSkinnedMesh)
 		m_pSkinnedMesh->Render(NULL);
+}
+
+void cMainGame::SetUp_Frustum()
+{
+	D3DXCreateSphere(g_pD3DDevice, 0.5f, 10, 10, &m_pSphere, NULL);
+
+	for (int i = -20; i <= 20; i++)
+	{
+		for (int j = -20; j <= 20; j++)
+		{
+			for (int k = -20; k <= 20; k++)
+			{
+				ST_SPHERE* s = new ST_SPHERE;
+				s->fRadius = 0.5f;
+				s->vCenter = D3DXVECTOR3((float)i, (float)j, (float)k);
+				s->isPicked = true;
+
+				m_vecCullingSphere.push_back(s);
+			} // : for_k
+
+		} // : for_j
+
+	} // : for_i
+
+	ZeroMemory(&m_stCullingMtl, sizeof(D3DMATERIAL9));
+	m_stCullingMtl.Ambient = D3DXCOLOR(0.7f, 0.7f, 0.7f, 0.7f);
+	m_stCullingMtl.Diffuse = D3DXCOLOR(0.7f, 0.7f, 0.7f, 0.7f);
+	m_stCullingMtl.Specular = D3DXCOLOR(0.7f, 0.7f, 0.7f, 0.7f);
+
+	m_pFrustum = new CFrustum;
+	m_pFrustum->SetUp();
+}
+
+void cMainGame::Render_Frustum()
+{
+	g_pD3DDevice->SetRenderState(D3DRS_LIGHTING, true);
+
+	D3DXMATRIXA16 matWorld;
+	D3DXMatrixIdentity(&matWorld);
+
+	for each(ST_SPHERE* sphere in m_vecCullingSphere)
+	{
+		if (sphere->isPicked)
+		{
+			D3DXMatrixIdentity(&matWorld);
+			matWorld._41 = sphere->vCenter.x;
+			matWorld._42 = sphere->vCenter.y;
+			matWorld._43 = sphere->vCenter.z;
+
+			g_pD3DDevice->SetTransform(D3DTS_WORLD, &matWorld);
+			g_pD3DDevice->SetMaterial(&m_stCullingMtl);
+			m_pSphere->DrawSubset(0);
+		}
+	}
+}
+
+void cMainGame::SetUp_OBB()
+{
+	m_pHoldZealot = new CZealot;
+	m_pHoldZealot->SetUp();
+
+	m_pMoveZealot = new CZealot;
+	m_pMoveZealot->SetUp();
+
+	cCharacter* pCharacter = new cCharacter;
+	m_pMoveZealot->SetCharacterController(pCharacter);	// 캐릭터 이동
+	SafeRelease(pCharacter);
+}
+
+void cMainGame::Render_OBB()
+{
+	D3DCOLOR c = COBB::IsCollision(m_pHoldZealot->GetOBB(), m_pMoveZealot->GetOBB())
+		? D3DCOLOR_XRGB(255,0,0) : D3DCOLOR_XRGB(255, 255, 255); // 충돌시 색상 변경
+
+	if (m_pHoldZealot)
+		m_pHoldZealot->Render(c);
+
+	if (m_pMoveZealot)
+		m_pMoveZealot->Render(c);
 }
