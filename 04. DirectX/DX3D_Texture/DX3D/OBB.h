@@ -18,6 +18,9 @@ private:
 
 	D3DXMATRIXA16 m_matWorldTM;
 
+	vector<ST_PC_VERTEX> m_vecVertex_Basic;
+	vector<ST_PC_VERTEX> m_vecVertex;
+
 public:
 	COBB();
 	~COBB();

@@ -15,6 +15,79 @@ void COBB::SetUp(CSkinnedMesh * pSkinnedMesh)
 {
 	D3DXVECTOR3 vMin = pSkinnedMesh->GetMin();
 	D3DXVECTOR3 vMax = pSkinnedMesh->GetMax();
+	
+	// >> hitBox
+	vector<ST_PC_VERTEX> tempVec;
+	int maxPoint = 8;
+	tempVec.resize(8);
+	tempVec[0].p = D3DXVECTOR3(vMin.x, vMin.y, vMin.z);
+	tempVec[1].p = D3DXVECTOR3(vMin.x, vMin.y, vMax.z);
+	tempVec[2].p = D3DXVECTOR3(vMax.x, vMin.y, vMax.z);
+	tempVec[3].p = D3DXVECTOR3(vMax.x, vMin.y, vMin.z);
+
+	tempVec[4].p = D3DXVECTOR3(vMin.x, vMax.y, vMin.z);
+	tempVec[5].p = D3DXVECTOR3(vMin.x, vMax.y, vMax.z);
+	tempVec[6].p = D3DXVECTOR3(vMax.x, vMax.y, vMax.z);
+	tempVec[7].p = D3DXVECTOR3(vMax.x, vMax.y, vMin.z);
+	// hitBox_Triangle
+	{
+		// front
+		m_vecVertex.push_back(tempVec[0]);
+		m_vecVertex.push_back(tempVec[4]);
+		m_vecVertex.push_back(tempVec[7]);
+
+		m_vecVertex.push_back(tempVec[0]);
+		m_vecVertex.push_back(tempVec[7]);
+		m_vecVertex.push_back(tempVec[3]);
+
+		// back
+		m_vecVertex.push_back(tempVec[1]);
+		m_vecVertex.push_back(tempVec[6]);
+		m_vecVertex.push_back(tempVec[5]);
+
+		m_vecVertex.push_back(tempVec[1]);
+		m_vecVertex.push_back(tempVec[2]);
+		m_vecVertex.push_back(tempVec[6]);
+
+		// left
+		m_vecVertex.push_back(tempVec[1]);
+		m_vecVertex.push_back(tempVec[5]);
+		m_vecVertex.push_back(tempVec[4]);
+
+		m_vecVertex.push_back(tempVec[1]);
+		m_vecVertex.push_back(tempVec[4]);
+		m_vecVertex.push_back(tempVec[0]);
+
+		// right
+		m_vecVertex.push_back(tempVec[3]);
+		m_vecVertex.push_back(tempVec[7]);
+		m_vecVertex.push_back(tempVec[6]);
+
+		m_vecVertex.push_back(tempVec[3]);
+		m_vecVertex.push_back(tempVec[6]);
+		m_vecVertex.push_back(tempVec[2]);
+
+		// top
+		m_vecVertex.push_back(tempVec[4]);
+		m_vecVertex.push_back(tempVec[5]);
+		m_vecVertex.push_back(tempVec[6]);
+
+		m_vecVertex.push_back(tempVec[4]);
+		m_vecVertex.push_back(tempVec[6]);
+		m_vecVertex.push_back(tempVec[7]);
+
+		// bottom
+		m_vecVertex.push_back(tempVec[1]);
+		m_vecVertex.push_back(tempVec[0]);
+		m_vecVertex.push_back(tempVec[3]);
+
+		m_vecVertex.push_back(tempVec[1]);
+		m_vecVertex.push_back(tempVec[3]);
+		m_vecVertex.push_back(tempVec[2]);
+
+		m_vecVertex_Basic = m_vecVertex;
+	}
+	// << hitBox
 
 	m_vOriCenterPos = (vMin + vMax) / 2.f;
 	m_vOriAxidDir[0] = D3DXVECTOR3(1, 0, 0);	// x
@@ -45,6 +118,12 @@ void COBB::Update(D3DXMATRIXA16 * pmatWorld)
 	}
 
 	D3DXVec3TransformCoord(&m_vCenterPos, &m_vOriCenterPos, &m_matWorldTM);
+
+	vector<ST_PC_VERTEX> temp = m_vecVertex_Basic;
+	for (int i = 0; i < m_vecVertex_Basic.size(); i++)
+		D3DXVec3TransformCoord(&temp[i].p, &temp[i].p, &m_matWorldTM);
+
+	m_vecVertex = temp;
 }
 
 bool COBB::IsCollision(COBB * pOBB1, COBB * pOBB2)
@@ -181,9 +260,20 @@ bool COBB::IsCollision(COBB * pOBB1, COBB * pOBB2)
 
 void COBB::Render_OBB_BOX(D3DCOLOR c)
 {
+	g_pD3DDevice->SetTexture(0, NULL);
+	g_pD3DDevice->SetRenderState(D3DRS_LIGHTING, false);
+
 	D3DXMATRIXA16 matWorld;
 	D3DXMatrixIdentity(&matWorld);
 	g_pD3DDevice->SetTransform(D3DTS_WORLD, &matWorld);
 
-	// g_pD3DDevice->DrawPrimitiveUP()
+	g_pD3DDevice->SetFVF(ST_PC_VERTEX::FVF);
+
+	for (int i = 0; i < m_vecVertex.size(); i++)
+	{
+		m_vecVertex[i].c = c;
+	}
+
+	// g_pD3DDevice->DrawPrimitiveUP(D3DPT_TRIANGLELIST, m_vecVertex.size() / 3, &m_vecVertex[0], sizeof(ST_PC_VERTEX));
+	g_pD3DDevice->DrawPrimitiveUP(D3DPT_LINESTRIP, m_vecVertex.size()-1, &m_vecVertex[0], sizeof(ST_PC_VERTEX));
 }
