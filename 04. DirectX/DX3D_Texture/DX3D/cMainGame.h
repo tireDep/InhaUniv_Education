@@ -84,6 +84,12 @@ private :
 	CZealot* m_pMoveZealot;
 	// << OBB
 
+	// >> font
+	LPD3DXFONT m_pFont;
+
+	ID3DXMesh* m_p3DText;
+	// << font
+
 public :
 	void Setup(); 
 	void Update(); 
@@ -124,5 +130,10 @@ public :
 	void SetUp_OBB();
 	void Render_OBB();
 	// << OBB
+
+	// >> font
+	void Create_Font();
+	void Render_Txt();
+	// << font
 };
 

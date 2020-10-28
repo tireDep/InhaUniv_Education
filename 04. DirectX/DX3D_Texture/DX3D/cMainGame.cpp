@@ -46,6 +46,8 @@ cMainGame::cMainGame()
 	, m_pFrustum(NULL)
 	, m_pHoldZealot(NULL)
 	, m_pMoveZealot(NULL)
+	, m_pFont(NULL)
+	, m_p3DText(NULL)
 {
 
 }
@@ -92,6 +94,14 @@ cMainGame::~cMainGame()
 	SafeDelete(m_pHoldZealot);
 	SafeDelete(m_pMoveZealot);
 	// << OBB
+
+	//>> font
+	SafeRelease(m_pFont);
+	SafeRelease(m_p3DText);
+
+	g_pFontManager->Destroy();
+	//>> font
+
 
 	g_pObjectManger->Destroy();
 
@@ -151,6 +161,8 @@ void cMainGame::Setup()
 	// >> OBB
 	SetUp_OBB();
 	// << OBB
+
+	Create_Font();
 }
 
 void cMainGame::Update()
@@ -198,7 +210,8 @@ void cMainGame::Render()
 		1.0F, 0);
 
 	g_pD3DDevice->BeginScene();
-	
+
+	Render_Txt();
 	// PickingObj_Render();
 
 	if (m_pGrid)
@@ -607,4 +620,90 @@ void cMainGame::Render_OBB()
 
 	if (m_pMoveZealot)
 		m_pMoveZealot->Render(c);
+}
+
+void cMainGame::Create_Font()
+{
+	D3DXFONT_DESC fd;
+	ZeroMemory(&fd, sizeof(D3DXFONT_DESC));
+	fd.Height = 50;
+	fd.Width = 25;
+	fd.Weight = FW_MEDIUM;
+	fd.Italic = false;
+	fd.CharSet = DEFAULT_CHARSET;
+	fd.OutputPrecision = OUT_DEFAULT_PRECIS;	// 외곽선 관련인듯?
+	fd.PitchAndFamily = FF_DONTCARE;
+
+	// wcscpy_s(fd.FaceName, L"굴림체");
+	// 시스템 폰트 사용
+
+	// AddFontResource(L"font/umberto.ttf");
+	AddFontResourceA("font/umberto.ttf");
+	wcscpy_s(fd.FaceName, L"umberto");
+	// 텍스트가 깨질 경우 이미지 출력하는 방법으로(글자와 이미지 대치)
+	// 외부 폰트 사용
+
+	// >> 3dFont
+	HDC hdc = CreateCompatibleDC(0);
+	LOGFONT lf;
+	ZeroMemory(&lf, sizeof(LOGFONT));
+	lf.lfHeight = 25;
+	lf.lfWidth = 12;
+	lf.lfWidth = 500;
+	lf.lfItalic = false;
+	lf.lfUnderline = false;
+	lf.lfStrikeOut = false;
+	lf.lfCharSet = DEFAULT_CHARSET;
+
+	wcscpy_s(lf.lfFaceName, L"umberto");
+
+	HFONT hFont;
+	HFONT hFontOld;
+	hFont = CreateFontIndirect(&lf);
+	hFontOld = (HFONT)SelectObject(hdc, hFont);
+	D3DXCreateTextA(g_pD3DDevice, hdc, "Direct3D", 0.001f, 0.01f, &m_p3DText, 0, 0);
+
+	SelectObject(hdc, hFontOld);
+	DeleteObject(hFont);
+	DeleteDC(hdc);
+	// << 3dFont
+	// 무거워서 UI는 사용 안하는 것이 좋음(단, 캐릭터 위 아이디 등..? => 부하 생길 수 있음)
+	// 오브젝트 처럼 사용 할 수 있음
+
+	D3DXCreateFontIndirect(g_pD3DDevice, &fd, &m_pFont);
+}
+
+void cMainGame::Render_Txt()
+{
+	string sText("ABC 123 !@# 가나다");
+
+	RECT rc;
+	SetRect(&rc, 100, 100, 300, 300);
+
+	LPD3DXFONT pFont = g_pFontManager->GetFont(CFontManager::E_DEFAULT);
+
+	// m_pFont->DrawTextA(NULL, sText.c_str(), sText.length(), 
+	// 	&rc, DT_LEFT | DT_TOP | DT_NOCLIP, D3DCOLOR_XRGB(255, 255, 0));
+	// >> 문자 출력
+
+	m_pFont = pFont;
+	m_pFont->DrawTextA(NULL, sText.c_str(), sText.length(),
+		&rc, DT_LEFT | DT_TOP | DT_NOCLIP, D3DCOLOR_XRGB(255, 255, 0));
+
+
+	// >> 3dFont
+	D3DXMATRIXA16 matWorld, matS, matR, matT;
+	D3DXMatrixIdentity(&matS);
+	D3DXMatrixIdentity(&matR);
+	D3DXMatrixIdentity(&matT);
+	
+	D3DXMatrixScaling(&matS, 1.0f, 1.0f, 1.0f);
+	D3DXMatrixRotationX(&matR, -D3DX_PI / 4.0f);
+	D3DXMatrixTranslation(&matT, -2.0f, 1.0f, 0.0f);
+
+	matWorld = matS * matR * matT;
+	g_pD3DDevice->SetTransform(D3DTS_WORLD, &matWorld);
+
+	m_p3DText->DrawSubset(0);
+	// << 3dFont
 }

@@ -40,6 +40,9 @@
     <Filter Include="08. OBB">
       <UniqueIdentifier>{96814fa5-8957-4ea8-ad22-b812d7a692fe}</UniqueIdentifier>
     </Filter>
+    <Filter Include="09. UI">
+      <UniqueIdentifier>{335fd7cd-7261-4cc8-b96c-37f3b0673e08}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <Text Include="ReadMe.txt" />
@@ -55,9 +58,6 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="DX3D.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="cMainGame.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="cDeviceManager.h">
@@ -177,15 +177,18 @@
     <ClInclude Include="SkinnedMeshManager.h">
       <Filter>06. SkinedMesh</Filter>
     </ClInclude>
+    <ClInclude Include="cMainGame.h">
+      <Filter>09. UI</Filter>
+    </ClInclude>
+    <ClInclude Include="FontManager.h">
+      <Filter>09. UI</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="DX3D.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="cMainGame.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="cDeviceManager.cpp">
@@ -301,6 +304,12 @@
     </ClCompile>
     <ClCompile Include="SkinnedMeshManager.cpp">
       <Filter>06. SkinedMesh</Filter>
+    </ClCompile>
+    <ClCompile Include="cMainGame.cpp">
+      <Filter>09. UI</Filter>
+    </ClCompile>
+    <ClCompile Include="FontManager.cpp">
+      <Filter>09. UI</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

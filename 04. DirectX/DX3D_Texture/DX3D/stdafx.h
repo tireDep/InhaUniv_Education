@@ -147,3 +147,4 @@ void SetValue(int a ) { A = a ; }
 #include "cObjectManager.h"
 #include "cTextureManager.h"
 #include "TimeManager.h"
+#include "FontManager.h"
