@@ -19,6 +19,8 @@ class CFrustum;
 
 class CZealot;
 
+class C_UI;
+
 #include "cLight.h"
 
 class cMainGame
@@ -96,6 +98,10 @@ private :
 	LPDIRECT3DTEXTURE9 m_pTextureUI;
 	// 따로 모아서 관리하는 형태로 만들어 둘 것
 	// << UI
+
+	// >> myUI
+	C_UI* m_pUI;
+	// << myUI
 
 public :
 	void Setup(); 

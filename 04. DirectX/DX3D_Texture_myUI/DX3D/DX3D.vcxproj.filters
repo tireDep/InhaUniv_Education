@@ -43,6 +43,9 @@
     <Filter Include="09. UI">
       <UniqueIdentifier>{335fd7cd-7261-4cc8-b96c-37f3b0673e08}</UniqueIdentifier>
     </Filter>
+    <Filter Include="09_1. myUI">
+      <UniqueIdentifier>{adbd4098-2917-4609-a042-38e09f1adcee}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <Text Include="ReadMe.txt" />
@@ -183,6 +186,15 @@
     <ClInclude Include="FontManager.h">
       <Filter>09. UI</Filter>
     </ClInclude>
+    <ClInclude Include="UI.h">
+      <Filter>09_1. myUI</Filter>
+    </ClInclude>
+    <ClInclude Include="Button.h">
+      <Filter>09_1. myUI</Filter>
+    </ClInclude>
+    <ClInclude Include="SpriteManager.h">
+      <Filter>09_1. myUI</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -310,6 +322,15 @@
     </ClCompile>
     <ClCompile Include="FontManager.cpp">
       <Filter>09. UI</Filter>
+    </ClCompile>
+    <ClCompile Include="UI.cpp">
+      <Filter>09_1. myUI</Filter>
+    </ClCompile>
+    <ClCompile Include="Button.cpp">
+      <Filter>09_1. myUI</Filter>
+    </ClCompile>
+    <ClCompile Include="SpriteManager.cpp">
+      <Filter>09_1. myUI</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

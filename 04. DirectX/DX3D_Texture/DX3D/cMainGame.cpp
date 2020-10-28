@@ -28,6 +28,8 @@
 #include "Zealot.h"
 #include "OBB.h"
 
+#include "UI.h"
+
 cMainGame::cMainGame()
 	: m_pCubePC(NULL)
 	, m_pCamera(NULL)
@@ -252,7 +254,7 @@ void cMainGame::Render()
 
 	// Render_MeshObj();
 
-	Render_UI();
+	// Render_UI();
 	// 맨 마지막에 그릴 것
 
 	g_pD3DDevice->EndScene();

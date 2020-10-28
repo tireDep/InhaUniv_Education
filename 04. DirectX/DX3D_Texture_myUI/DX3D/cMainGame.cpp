@@ -28,6 +28,8 @@
 #include "Zealot.h"
 #include "OBB.h"
 
+#include "UI.h"
+
 cMainGame::cMainGame()
 	: m_pCubePC(NULL)
 	, m_pCamera(NULL)
@@ -50,6 +52,7 @@ cMainGame::cMainGame()
 	, m_p3DText(NULL)
 	, m_pSprite(NULL)
 	, m_pTextureUI(NULL)
+	, m_pUI(NULL)
 {
 
 }
@@ -108,6 +111,8 @@ cMainGame::~cMainGame()
 	SafeRelease(m_pSprite);
 	SafeRelease(m_pTextureUI);
 	// << UI
+
+	SafeDelete(m_pUI);
 
 	g_pObjectManger->Destroy();
 
@@ -170,7 +175,10 @@ void cMainGame::Setup()
 
 	Create_Font();
 
-	SetUp_UI();
+	// SetUp_UI();
+
+	m_pUI = new C_UI();
+	m_pUI->SetUp("UI", "Panel.png");
 }
 
 void cMainGame::Update()
@@ -252,8 +260,11 @@ void cMainGame::Render()
 
 	// Render_MeshObj();
 
-	Render_UI();
+	// Render_UI();
 	// 맨 마지막에 그릴 것
+
+	if (m_pUI)
+		m_pUI->Render();
 
 	g_pD3DDevice->EndScene();
 	g_pD3DDevice->Present(NULL, NULL, NULL, NULL);
@@ -264,53 +275,56 @@ void cMainGame::WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 	if (m_pCamera)
 		m_pCamera->WndProc(hWnd, message, wParam, lParam); 
 
-	switch (message)
-	{
-	case WM_LBUTTONDOWN:
-		{
-			CRay r = CRay::RayAtWorldSpace(LOWORD(lParam), HIWORD(lParam));
-			for (int i = 0; i < m_vecSphere.size(); i++)
-			{
-				m_vecSphere[i].isPicked = r.IsPicked(&m_vecSphere[i]);
-				// 라인이 있는 모든것이 선택되는 단점이 있음
-			}
-		}
-		break;
+	if (m_pUI)
+		m_pUI->WndProc(hWnd, message, wParam, lParam);
 
-	case WM_RBUTTONDOWN:
-		{
-			// >> frustum
-			for each(ST_SPHERE* sphere in m_vecCullingSphere)
-			{
-				if (m_pFrustum->IsIn(sphere))
-					sphere->isPicked = true;
-				else
-					sphere->isPicked = false;
-			}
-			// << frustum
+	//switch (message)
+	//{
+	//case WM_LBUTTONDOWN:
+	//	{
+	//		CRay r = CRay::RayAtWorldSpace(LOWORD(lParam), HIWORD(lParam));
+	//		for (int i = 0; i < m_vecSphere.size(); i++)
+	//		{
+	//			m_vecSphere[i].isPicked = r.IsPicked(&m_vecSphere[i]);
+	//			// 라인이 있는 모든것이 선택되는 단점이 있음
+	//		}
+	//	}
+	//	break;
 
-			// << 애니메이션
-			//static int n = 0;
-			// m_pSkinnedMesh->SetAnimationIndex(++n);
-			//m_pSkinnedMesh->SetAnimationIndexBlend(++n);
-			// >> 애니메이션
+	//case WM_RBUTTONDOWN:
+	//	{
+	//		// >> frustum
+	//		for each(ST_SPHERE* sphere in m_vecCullingSphere)
+	//		{
+	//			if (m_pFrustum->IsIn(sphere))
+	//				sphere->isPicked = true;
+	//			else
+	//				sphere->isPicked = false;
+	//		}
+	//		// << frustum
 
-			// CRay r = CRay::RayAtWorldSpace(LOWORD(lParam), HIWORD(lParam));
-			// 
-			// for (int i = 0; i < m_vecPlanVertex.size(); i+=3)
-			// {
-			// 	D3DXVECTOR3 v(0, 0, 0);
-			// 	if (r.IntersectTri(m_vecPlanVertex[i + 0].p, m_vecPlanVertex[i + 1].p, m_vecPlanVertex[i + 2].p, v))
-			// 	{
-			// 		m_vPickedPosition = v;
-			// 	}
-			// }
-		}
-		break;
+	//		// << 애니메이션
+	//		//static int n = 0;
+	//		// m_pSkinnedMesh->SetAnimationIndex(++n);
+	//		//m_pSkinnedMesh->SetAnimationIndexBlend(++n);
+	//		// >> 애니메이션
 
-	default:
-		break;
-	}
+	//		// CRay r = CRay::RayAtWorldSpace(LOWORD(lParam), HIWORD(lParam));
+	//		// 
+	//		// for (int i = 0; i < m_vecPlanVertex.size(); i+=3)
+	//		// {
+	//		// 	D3DXVECTOR3 v(0, 0, 0);
+	//		// 	if (r.IntersectTri(m_vecPlanVertex[i + 0].p, m_vecPlanVertex[i + 1].p, m_vecPlanVertex[i + 2].p, v))
+	//		// 	{
+	//		// 		m_vPickedPosition = v;
+	//		// 	}
+	//		// }
+	//	}
+	//	break;
+
+	//default:
+	//	break;
+	//}
 }
 
 void cMainGame::Set_Light()
@@ -752,17 +766,20 @@ void cMainGame::Render_UI()
 	SetRect(&rc, 0, 0, m_stImgInfo.Width, m_stImgInfo.Height);
 
 	D3DXMATRIXA16 matS, matR, matT, matWorld;
-	D3DXMatrixTranslation(&matT, 5, 5, 0);
+	D3DXMatrixTranslation(&matT, 0, 0, 0);
 
 	static float fAngle = 0.0f;
 	fAngle += 0.01f;
 	D3DXMatrixRotationZ(&matR, fAngle);
 
-	matWorld = matR * matT;
-	m_pSprite->SetTransform(&matWorld);
+	matWorld = matS * matR * matT;
+	m_pSprite->SetTransform(&matR);
 
-	m_pSprite->Draw(m_pTextureUI, &rc, &D3DXVECTOR3(0, 0, 0),
-		&D3DXVECTOR3(0, 0, 0), D3DCOLOR_ARGB(150, 255, 255, 255));
+	m_pSprite->Draw(m_pTextureUI,
+		NULL, 
+		&D3DXVECTOR3(0, 0, 0),
+		&D3DXVECTOR3(0, 0, 0),
+		D3DCOLOR_ARGB(150, 255, 255, 255));
 
 	m_pSprite->End();
 }
