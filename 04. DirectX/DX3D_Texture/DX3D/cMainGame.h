@@ -90,6 +90,13 @@ private :
 	ID3DXMesh* m_p3DText;
 	// << font
 
+	// >> UI
+	LPD3DXSPRITE m_pSprite;
+	D3DXIMAGE_INFO m_stImgInfo;
+	LPDIRECT3DTEXTURE9 m_pTextureUI;
+	// 따로 모아서 관리하는 형태로 만들어 둘 것
+	// << UI
+
 public :
 	void Setup(); 
 	void Update(); 
@@ -135,5 +142,10 @@ public :
 	void Create_Font();
 	void Render_Txt();
 	// << font
+
+	// >> UI
+	void SetUp_UI();
+	void Render_UI();
+	// << UI
 };
 

@@ -52,8 +52,8 @@ LPD3DXFONT CFontManager::GetFont(eFontType e)
 
 void CFontManager::Destroy()
 {
-	for each(auto it in m_mapFont)
-	{
-		SafeRelease(it.second);
-	}
+	// for each(auto it in m_mapFont)
+	// {
+	// 	SafeRelease(it.second);
+	// }
 }

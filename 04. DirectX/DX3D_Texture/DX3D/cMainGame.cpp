@@ -48,6 +48,8 @@ cMainGame::cMainGame()
 	, m_pMoveZealot(NULL)
 	, m_pFont(NULL)
 	, m_p3DText(NULL)
+	, m_pSprite(NULL)
+	, m_pTextureUI(NULL)
 {
 
 }
@@ -102,6 +104,10 @@ cMainGame::~cMainGame()
 	g_pFontManager->Destroy();
 	//>> font
 
+	// >> UI
+	SafeRelease(m_pSprite);
+	SafeRelease(m_pTextureUI);
+	// << UI
 
 	g_pObjectManger->Destroy();
 
@@ -163,6 +169,8 @@ void cMainGame::Setup()
 	// << OBB
 
 	Create_Font();
+
+	SetUp_UI();
 }
 
 void cMainGame::Update()
@@ -243,6 +251,9 @@ void cMainGame::Render()
 	// 	m_pRootFrame->Render();
 
 	// Render_MeshObj();
+
+	Render_UI();
+	// 맨 마지막에 그릴 것
 
 	g_pD3DDevice->EndScene();
 	g_pD3DDevice->Present(NULL, NULL, NULL, NULL);
@@ -706,4 +717,52 @@ void cMainGame::Render_Txt()
 
 	m_p3DText->DrawSubset(0);
 	// << 3dFont
+}
+
+void cMainGame::SetUp_UI()
+{
+	D3DXCreateSprite(g_pD3DDevice, &m_pSprite);
+
+	// m_pTextureUI = g_pTextureManager->GetTexture("UI/test2.png");
+	// UI는 이런식 로드 X
+
+	D3DXCreateTextureFromFileExA(
+		g_pD3DDevice,
+		"UI/test2.png",
+		D3DX_DEFAULT_NONPOW2,
+		D3DX_DEFAULT_NONPOW2,
+		D3DX_DEFAULT,
+		0,
+		D3DFMT_UNKNOWN,
+		D3DPOOL_MANAGED,
+		D3DX_FILTER_NONE,
+		D3DX_DEFAULT,
+		0,
+		&m_stImgInfo,
+		NULL,
+		&m_pTextureUI
+	);
+}
+
+void cMainGame::Render_UI()
+{
+	m_pSprite->Begin(D3DXSPRITE_ALPHABLEND | D3DXSPRITE_SORT_TEXTURE);
+
+	RECT rc;
+	SetRect(&rc, 0, 0, m_stImgInfo.Width, m_stImgInfo.Height);
+
+	D3DXMATRIXA16 matS, matR, matT, matWorld;
+	D3DXMatrixTranslation(&matT, 5, 5, 0);
+
+	static float fAngle = 0.0f;
+	fAngle += 0.01f;
+	D3DXMatrixRotationZ(&matR, fAngle);
+
+	matWorld = matR * matT;
+	m_pSprite->SetTransform(&matWorld);
+
+	m_pSprite->Draw(m_pTextureUI, &rc, &D3DXVECTOR3(0, 0, 0),
+		&D3DXVECTOR3(0, 0, 0), D3DCOLOR_ARGB(150, 255, 255, 255));
+
+	m_pSprite->End();
 }
