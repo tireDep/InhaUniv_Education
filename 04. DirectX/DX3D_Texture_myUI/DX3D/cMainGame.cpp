@@ -153,7 +153,7 @@ void cMainGame::Setup()
 
 	Set_Light();
 
-	SetUp_Obj();
+	//SetUp_Obj();
 
 	cAseLoader aseLoder;
 	m_pRootFrame = aseLoder.Load("woman/woman_01_all.ASE");
@@ -178,7 +178,7 @@ void cMainGame::Setup()
 	// SetUp_UI();
 
 	m_pUI = new C_UI();
-	m_pUI->SetUp("UI", "Panel.png");
+	m_pUI->SetUp("UI", "panel-info.png");
 }
 
 void cMainGame::Update()
@@ -216,6 +216,9 @@ void cMainGame::Update()
 	if (m_pMoveZealot)
 		m_pMoveZealot->Update(m_pMap);
 	// << OBB
+
+	if (m_pUI)
+		m_pUI->Update();
 }
 
 void cMainGame::Render()

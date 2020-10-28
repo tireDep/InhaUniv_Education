@@ -2,12 +2,9 @@
 class C_UI
 {
 protected:
-	// D3DXVECTOR3 m_anchor;
-	// D3DXVECTOR3 m_pivot;
-
 	LPD3DXSPRITE m_pSprite;
 	D3DXIMAGE_INFO m_stImgInfo;
-	LPDIRECT3DTEXTURE9 m_pTextureUI;
+	vector<LPDIRECT3DTEXTURE9> m_vecTextureUI;
 
 	D3DXMATRIXA16 m_matWorld;
 
@@ -18,6 +15,13 @@ protected:
 	bool m_isLBtnPush;
 
 	bool m_isUI;
+
+	POINT m_center;
+	RECT rc;
+
+	POINT m_parentCenter;
+
+	int m_index;
 
 public:
 	C_UI();
