@@ -28,7 +28,11 @@
 #include "Zealot.h"
 #include "OBB.h"
 
-#include "UI.h"
+DWORD FtoDw(float f)
+{
+	return *((DWORD*)&f);
+	// float to dword
+}
 
 cMainGame::cMainGame()
 	: m_pCubePC(NULL)
@@ -173,6 +177,8 @@ void cMainGame::Setup()
 	Create_Font();
 
 	SetUp_UI();
+
+	SetUp_Particle();
 }
 
 void cMainGame::Update()
@@ -210,6 +216,8 @@ void cMainGame::Update()
 	if (m_pMoveZealot)
 		m_pMoveZealot->Update(m_pMap);
 	// << OBB
+
+	Update_Particle();
 }
 
 void cMainGame::Render()
@@ -256,6 +264,8 @@ void cMainGame::Render()
 
 	// Render_UI();
 	// 맨 마지막에 그릴 것
+
+	Render_Particle();
 
 	g_pD3DDevice->EndScene();
 	g_pD3DDevice->Present(NULL, NULL, NULL, NULL);
@@ -767,4 +777,104 @@ void cMainGame::Render_UI()
 		&D3DXVECTOR3(0, 0, 0), D3DCOLOR_ARGB(150, 255, 255, 255));
 
 	m_pSprite->End();
+}
+
+void cMainGame::SetUp_Particle()
+{
+	m_vecVertexParticle.resize(1000);
+	for (int i = 0; i < m_vecVertexParticle.size(); i++)
+	{
+		float fRadius = rand() % 100 / 10.0f;
+		// 0 ~ 10 사이 소수?
+
+		m_vecVertexParticle[i].p = D3DXVECTOR3(0, 0, fRadius);
+		D3DXVECTOR3 vAngle = D3DXVECTOR3(
+			D3DXToRadian(rand() % 3600 / 10.0f),
+			D3DXToRadian(rand() % 3600 / 10.0f),
+			D3DXToRadian(rand() % 3600 / 10.0f));
+
+		D3DXMATRIX matRx, matRy, matRz, matWorld;
+		D3DXMatrixRotationX(&matRx, vAngle.x);
+		D3DXMatrixRotationY(&matRy, vAngle.y);
+		D3DXMatrixRotationZ(&matRz, vAngle.z);
+		matWorld = matRx * matRy * matRz;
+
+		D3DXVec3TransformCoord(
+			&m_vecVertexParticle[i].p,
+			&m_vecVertexParticle[i].p,
+			&matWorld);
+
+		m_vecVertexParticle[i].c = D3DCOLOR_ARGB(255, 180, 70, 20);
+	}
+}
+
+void cMainGame::Update_Particle()
+{
+	static int nAlpha = 0;
+	static int nDelta = 4;
+
+	nAlpha += nDelta;
+	if (nAlpha > 255)
+	{
+		nAlpha = 255;
+		nDelta *= -1;
+	}
+	if (nAlpha < 0)
+	{
+		nAlpha = 0;
+		nDelta *= -1;
+	}
+
+	for (int i = 0; i < m_vecVertexParticle.size(); i++)
+	{
+		if (i % 2)
+			continue;
+
+		m_vecVertexParticle[i].c = D3DCOLOR_ARGB(nAlpha, 180, 70, 20);
+	}
+}
+
+void cMainGame::Render_Particle()
+{
+	D3DXMATRIXA16 matWorld;
+	D3DXMatrixIdentity(&matWorld);
+	g_pD3DDevice->SetTransform(D3DTS_WORLD, &matWorld);
+
+	g_pD3DDevice->SetRenderState(D3DRS_LIGHTING, false);
+	g_pD3DDevice->SetRenderState(D3DRS_ALPHABLENDENABLE, true);
+	g_pD3DDevice->SetRenderState(D3DRS_ZWRITEENABLE, false);
+
+	g_pD3DDevice->SetRenderState(D3DRS_POINTSCALEENABLE, true); // 확대 가능 여부
+	g_pD3DDevice->SetRenderState(D3DRS_POINTSIZE, FtoDw(5.0f));
+
+	g_pD3DDevice->SetRenderState(D3DRS_POINTSCALE_A, FtoDw(0.0f));
+	g_pD3DDevice->SetRenderState(D3DRS_POINTSCALE_B, FtoDw(0.0f));
+	g_pD3DDevice->SetRenderState(D3DRS_POINTSCALE_C, FtoDw(1.0f));
+	// c만 1.0 ~ 10.0 사이로 변경해 보기
+
+	g_pD3DDevice->SetRenderState(D3DRS_POINTSPRITEENABLE, true); // 포인터에 텍스쳐 적용
+	g_pD3DDevice->SetRenderState(D3DRS_POINTSIZE_MIN, FtoDw(0.0f));
+	g_pD3DDevice->SetRenderState(D3DRS_POINTSIZE_MAX, FtoDw(100.0f));
+
+	g_pD3DDevice->SetTextureStageState(0, D3DTSS_ALPHAOP, D3DTOP_MODULATE); // MODULATE : 조절하다
+	g_pD3DDevice->SetTextureStageState(0, D3DTSS_ALPHAARG1, D3DTA_TEXTURE);
+	g_pD3DDevice->SetTextureStageState(0, D3DTSS_ALPHAARG2, D3DTA_DIFFUSE);
+
+	g_pD3DDevice->SetTextureStageState(0, D3DTSS_COLOROP, D3DTOP_SELECTARG1);	// 1번 위치 색상
+	g_pD3DDevice->SetTextureStageState(0, D3DTSS_COLORARG1, D3DTA_DIFFUSE);
+
+	g_pD3DDevice->SetRenderState(D3DRS_BLENDOP, D3DBLENDOP_ADD);
+	g_pD3DDevice->SetRenderState(D3DRS_SRCBLEND, D3DBLEND_SRCALPHA);
+	g_pD3DDevice->SetRenderState(D3DRS_DESTBLEND, D3DBLEND_ONE);
+
+	// >> draw
+	g_pD3DDevice->SetFVF(ST_PC_VERTEX::FVF);
+	g_pD3DDevice->SetTexture(0, g_pTextureManager->GetTexture("shader/alpha_tex.tga"));
+	g_pD3DDevice->DrawPrimitiveUP(D3DPT_POINTLIST, m_vecVertexParticle.size(), 
+		&m_vecVertexParticle[0], sizeof(ST_PC_VERTEX));
+	// << draw
+
+	g_pD3DDevice->SetRenderState(D3DRS_LIGHTING, true);
+	g_pD3DDevice->SetRenderState(D3DRS_ALPHABLENDENABLE, false);
+	g_pD3DDevice->SetRenderState(D3DRS_ZWRITEENABLE, true);
 }

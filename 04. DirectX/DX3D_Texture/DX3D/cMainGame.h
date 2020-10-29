@@ -97,6 +97,10 @@ private :
 	// 따로 모아서 관리하는 형태로 만들어 둘 것
 	// << UI
 
+	// >> shader
+	vector<ST_PC_VERTEX> m_vecVertexParticle;
+	// << shader
+
 public :
 	void Setup(); 
 	void Update(); 
@@ -147,5 +151,11 @@ public :
 	void SetUp_UI();
 	void Render_UI();
 	// << UI
+
+	// >> shader
+	void SetUp_Particle();
+	void Update_Particle();
+	void Render_Particle();
+	// << shader
 };
 
