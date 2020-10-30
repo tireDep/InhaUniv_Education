@@ -111,6 +111,12 @@ private :
 	vector<ST_PT_VERTEX> m_vecVertex_Multi;
 	// << multiTexture
 
+	// >> shader2
+	LPD3DXEFFECT m_pShader;
+	bool LoadAssets();
+	LPD3DXEFFECT LoadShader(const char * filename);
+	// << shader2
+
 public :
 	void Setup(); 
 	void Update(); 

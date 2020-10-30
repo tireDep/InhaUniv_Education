@@ -58,6 +58,7 @@ cMainGame::cMainGame()
 	, m_p3DText(NULL)
 	, m_pSprite(NULL)
 	, m_pTextureUI(NULL)
+	, m_pShader(NULL)
 {
 
 }
@@ -116,6 +117,8 @@ cMainGame::~cMainGame()
 	SafeRelease(m_pSprite);
 	SafeRelease(m_pTextureUI);
 	// << UI
+
+	SafeRelease(m_pShader);
 
 	g_pObjectManger->Destroy();
 
@@ -183,6 +186,8 @@ void cMainGame::Setup()
 	SetUp_Particle();
 
 	Setup_MultiTexture();
+
+	LoadAssets();
 }
 
 void cMainGame::Update()
@@ -208,9 +213,9 @@ void cMainGame::Update()
 	// if (GetKeyState('5') & 0x8000)
 	// 	m_pSkinnedMesh->SetAnimationIndexBlend(3);
 	// 
-	// g_pTimeManager->Update();
-	// if (m_pSkinnedMesh)
-	// 	m_pSkinnedMesh->Update();
+	g_pTimeManager->Update();
+	if (m_pSkinnedMesh)
+		m_pSkinnedMesh->Update();
 
 	// >> OBB
 	g_pTimeManager->Update();
@@ -254,7 +259,7 @@ void cMainGame::Render()
 	// if (m_pCubeMan)
 	// 	m_pCubeMan->Render(); 
 
-	// Render_SkinnedMesh();
+	Render_SkinnedMesh();
 
 	// for (int i = 0; i < m_vecLight.size(); i++)
 	// 	m_vecLight[i]->Render();
@@ -570,8 +575,40 @@ void cMainGame::Render_SkinnedMesh()
 	D3DXMatrixIdentity(&matWorld);
 
 	g_pD3DDevice->SetTransform(D3DTS_WORLD, &matWorld);
-	if (m_pSkinnedMesh)
-		m_pSkinnedMesh->Render(NULL);
+
+	if (m_pShader)
+	{
+		D3DXMATRIXA16 matView, matProj;
+		g_pD3DDevice->GetTransform(D3DTS_VIEW, &matView);
+		g_pD3DDevice->GetTransform(D3DTS_PROJECTION, &matProj);
+
+		m_pShader->SetMatrix("gWorldMatrix", &matWorld);
+		m_pShader->SetMatrix("gViewMatrix", &matView);
+		m_pShader->SetMatrix("gProjectionMatrix", &matProj);
+
+		D3DXCOLOR color(0.2f, 0.5f, 0.5f, 0.0f);
+		m_pShader->SetValue("gColor", &color, sizeof(D3DXVECTOR4));
+
+		UINT numPasses = 0;
+		m_pShader->Begin(&numPasses, NULL);
+		{
+			for (UINT i = 0; i < numPasses; ++i)
+			{
+				m_pShader->BeginPass(i); // 구체를 그린다
+
+				if (m_pSkinnedMesh)
+					m_pSkinnedMesh->Render(NULL);
+
+				m_pShader->EndPass();
+			}
+		}
+		m_pShader->End();
+	}
+	else
+	{
+		if (m_pSkinnedMesh)
+			m_pSkinnedMesh->Render(NULL);
+	}
 }
 
 void cMainGame::SetUp_Frustum()
@@ -1111,6 +1148,49 @@ void cMainGame::Render_MultiTexture_default()
 	g_pD3DDevice->SetTexture(0, m_pTex0);
 	g_pD3DDevice->SetTextureStageState(1, D3DTSS_COLOROP, D3DTOP_DISABLE);
 	g_pD3DDevice->SetTextureStageState(2, D3DTSS_COLOROP, D3DTOP_DISABLE);
+}
+
+bool cMainGame::LoadAssets()
+{
+	// 셰이더 로딩
+	m_pShader = LoadShader("shader/ColorShader.fx");
+	if (!m_pShader)
+		return false;
+
+	return true;
+}
+
+LPD3DXEFFECT cMainGame::LoadShader(const char * filename)
+{
+	LPD3DXEFFECT ret = NULL;
+
+	LPD3DXBUFFER pError = NULL;
+	DWORD dwShaderFlags = 0;
+
+#if _DEBUG
+	dwShaderFlags |= D3DXSHADER_DEBUG;
+#endif
+
+	D3DXCreateEffectFromFileA(g_pD3DDevice, filename,
+		NULL, NULL, dwShaderFlags, NULL, &ret, &pError);
+
+	// 쉐이더 로딩에 실패한 경우 output창에 쉐이더
+	// 컴파일 에러를 출력한다.
+	if (!ret && pError)
+	{
+		int size = pError->GetBufferSize();
+		void *ack = pError->GetBufferPointer();
+
+		// if (ack)
+		// {
+		// 	char* str = new char[size];
+		// 	sprintf(str, (const char*)ack, size);
+		// 	OutputDebugString(str);
+		// 	delete[] str;
+		// }
+	}
+
+	return ret;
 }
 
 void SetBillBoard()
