@@ -19,6 +19,9 @@
     <Filter Include="02. Mediator">
       <UniqueIdentifier>{bb9df74d-38a7-40eb-b0ea-4005712e673a}</UniqueIdentifier>
     </Filter>
+    <Filter Include="03. Observer">
+      <UniqueIdentifier>{a83303ea-945c-47f9-a84e-87b3c0d478a7}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -49,6 +52,12 @@
     </ClInclude>
     <ClInclude Include="Collegue.h">
       <Filter>02. Mediator</Filter>
+    </ClInclude>
+    <ClInclude Include="Observer.h">
+      <Filter>03. Observer</Filter>
+    </ClInclude>
+    <ClInclude Include="Observer2.h">
+      <Filter>03. Observer</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
