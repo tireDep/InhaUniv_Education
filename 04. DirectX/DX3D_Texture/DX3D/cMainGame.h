@@ -101,6 +101,16 @@ private :
 	vector<ST_PC_VERTEX> m_vecVertexParticle;
 	// << shader
 
+	// >> multiTexture
+	int m_nType;
+	LPDIRECT3DTEXTURE9 m_pTex0;
+	LPDIRECT3DTEXTURE9 m_pTex1;
+	LPDIRECT3DTEXTURE9 m_pTex2;
+	LPDIRECT3DTEXTURE9 m_pTex3;
+
+	vector<ST_PT_VERTEX> m_vecVertex_Multi;
+	// << multiTexture
+
 public :
 	void Setup(); 
 	void Update(); 
@@ -157,5 +167,23 @@ public :
 	void Update_Particle();
 	void Render_Particle();
 	// << shader
+
+	// >> multiTexture
+	void Setup_MultiTexture();
+	void Update_MultiTexture();
+	void Render_MultiTexture();
+
+	void Render_MultiTexture1();
+	void Render_MultiTexture2();
+	void Render_MultiTexture3();
+	void Render_MultiTexture4();
+	void Render_MultiTexture5();
+	void Render_MultiTexture6();
+	void Render_MultiTexture7();
+	void Render_MultiTexture8();
+	void Render_MultiTexture9();
+	void Render_MultiTexture0();
+	void Render_MultiTexture_default();
+	// << multiTexture
 };
 
