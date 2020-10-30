@@ -34,6 +34,8 @@ DWORD FtoDw(float f)
 	// float to dword
 }
 
+void SetBillBoard();
+
 cMainGame::cMainGame()
 	: m_pCubePC(NULL)
 	, m_pCamera(NULL)
@@ -955,6 +957,8 @@ void cMainGame::Render_MultiTexture()
 	default: Render_MultiTexture_default(); break;
 	}
 
+	SetBillBoard();
+
 	g_pD3DDevice->SetFVF(ST_PT_VERTEX::FVF);
 	g_pD3DDevice->DrawPrimitiveUP(D3DPT_TRIANGLELIST,
 		m_vecVertex_Multi.size() / 3,
@@ -1107,4 +1111,24 @@ void cMainGame::Render_MultiTexture_default()
 	g_pD3DDevice->SetTexture(0, m_pTex0);
 	g_pD3DDevice->SetTextureStageState(1, D3DTSS_COLOROP, D3DTOP_DISABLE);
 	g_pD3DDevice->SetTextureStageState(2, D3DTSS_COLOROP, D3DTOP_DISABLE);
+}
+
+void SetBillBoard()
+{
+	D3DXMATRIXA16 matBillBoard, matView;
+	D3DXMatrixIdentity(&matBillBoard);
+	g_pD3DDevice->GetTransform(D3DTS_VIEW, &matView);
+	// view 매트릭스를 구해서 y축 회전
+	matBillBoard._11 = matView._11;
+	matBillBoard._13 = matView._13;
+	matBillBoard._31 = matView._31;
+	matBillBoard._33 = matView._33;
+
+	D3DXMATRIXA16 matT;
+	D3DXMatrixIdentity(&matT);
+	D3DXMatrixTranslation(&matT, 1, 0, 0);
+	matBillBoard *= matT;
+
+	D3DXMatrixInverse(&matBillBoard, NULL, &matBillBoard);
+	g_pD3DDevice->SetTransform(D3DTS_WORLD, &matBillBoard);
 }
