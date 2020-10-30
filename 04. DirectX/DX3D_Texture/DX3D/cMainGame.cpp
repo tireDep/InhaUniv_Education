@@ -246,7 +246,7 @@ void cMainGame::Render()
 	if (m_pGrid)
 		m_pGrid->Render(); 
 
-	Render_OBB();
+	//Render_OBB();
 
 	// Render_Frustum();
 
@@ -278,7 +278,7 @@ void cMainGame::Render()
 
 	Render_Particle();
 
-	Render_MultiTexture();
+	//Render_MultiTexture();
 
 	g_pD3DDevice->EndScene();
 	g_pD3DDevice->Present(NULL, NULL, NULL, NULL);
@@ -1153,7 +1153,7 @@ void cMainGame::Render_MultiTexture_default()
 bool cMainGame::LoadAssets()
 {
 	// 셰이더 로딩
-	m_pShader = LoadShader("shader/ColorShader.fx");
+	m_pShader = LoadShader("shader/textureMapping.fx");
 	if (!m_pShader)
 		return false;
 
