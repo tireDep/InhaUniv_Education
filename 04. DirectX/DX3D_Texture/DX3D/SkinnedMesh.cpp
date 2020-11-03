@@ -105,6 +105,7 @@ void CSkinnedMesh::Update(LPD3DXFRAME pFrame, LPD3DXFRAME pParent)
 
 void CSkinnedMesh::Render(LPD3DXFRAME pFrame)
 {
+
 	if (pFrame == NULL)
 		pFrame = m_pRoot;
 

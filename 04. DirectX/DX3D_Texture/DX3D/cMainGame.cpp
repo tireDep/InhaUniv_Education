@@ -34,6 +34,7 @@ DWORD FtoDw(float f)
 	// float to dword
 }
 
+LPDIRECT3DTEXTURE9 LoadTexture(const char * filename);
 void SetBillBoard();
 
 cMainGame::cMainGame()
@@ -204,8 +205,8 @@ void cMainGame::Update()
 	if (m_pCamera)
 		m_pCamera->Update(); 
 
-	//for (int i = 0; i < m_vecLight.size(); i++)
-	//	m_vecLight[i]->Update();
+	for (int i = 0; i < m_vecLight.size(); i++)
+		m_vecLight[i]->Update();
 
 	if (m_pRootFrame)
 		m_pRootFrame->Update(m_pRootFrame->GetKeyFrame(), NULL);
@@ -248,7 +249,7 @@ void cMainGame::Render()
 
 	//Render_OBB();
 
-	// Render_Frustum();
+	Render_Frustum();
 
 	// if (m_pCubePC)
 	//	m_pCubePC->Render(); 
@@ -276,7 +277,7 @@ void cMainGame::Render()
 	// Render_UI();
 	// 맨 마지막에 그릴 것
 
-	Render_Particle();
+	//Render_Particle();
 
 	//Render_MultiTexture();
 
@@ -569,8 +570,8 @@ void cMainGame::SetUp_HeightMap()
 
 void cMainGame::Render_SkinnedMesh()
 {
-	g_pD3DDevice->SetRenderState(D3DRS_LIGHTING, false);
-
+	g_pD3DDevice->SetRenderState(D3DRS_LIGHTING, true);
+	g_pD3DDevice->LightEnable(0, true);
 	D3DXMATRIXA16 matWorld;
 	D3DXMatrixIdentity(&matWorld);
 
@@ -587,7 +588,18 @@ void cMainGame::Render_SkinnedMesh()
 		m_pShader->SetMatrix("gProjectionMatrix", &matProj);
 
 		D3DXCOLOR color(0.2f, 0.5f, 0.5f, 0.0f);
-		m_pShader->SetValue("gColor", &color, sizeof(D3DXVECTOR4));
+		// m_pShader->SetValue("gColor", &color, sizeof(D3DXVECTOR4));
+		
+		D3DXVECTOR4 gLightColor(0.0f, 1.0f, 1.0f, 1.0f);
+		//gLightColor.x = m_directLight->GetLight().Direction.x;
+		//gLightColor.y = m_directLight->GetLight().Direction.y;
+		//gLightColor.z = m_directLight->GetLight().Direction.z;
+		m_pShader->SetVector("gLightColor", &gLightColor);
+
+		LPDIRECT3DTEXTURE9 diffTex = LoadTexture("xFile/Zealot/Zealot_Diffuse.bmp");
+		LPDIRECT3DTEXTURE9 specTex = LoadTexture("xFile/Zealot/test.png");
+		m_pShader->SetTexture("DiffuseMap_Tex", diffTex);
+		m_pShader->SetTexture("Specular_Tex", specTex);
 
 		UINT numPasses = 0;
 		m_pShader->Begin(&numPasses, NULL);
@@ -1153,7 +1165,7 @@ void cMainGame::Render_MultiTexture_default()
 bool cMainGame::LoadAssets()
 {
 	// 셰이더 로딩
-	m_pShader = LoadShader("shader/textureMapping.fx");
+	m_pShader = LoadShader("shader/SpecularMapping.fx");
 	if (!m_pShader)
 		return false;
 
@@ -1211,4 +1223,18 @@ void SetBillBoard()
 
 	D3DXMatrixInverse(&matBillBoard, NULL, &matBillBoard);
 	g_pD3DDevice->SetTransform(D3DTS_WORLD, &matBillBoard);
+}
+
+LPDIRECT3DTEXTURE9 LoadTexture(const char * filename)
+{
+	LPDIRECT3DTEXTURE9 ret = NULL;
+
+	if (FAILED(D3DXCreateTextureFromFileA(g_pD3DDevice, filename, &ret)))
+	{
+		OutputDebugStringA("텍스처 로딩 실패: ");
+		OutputDebugStringA(filename);
+		OutputDebugStringA("\n");
+	}
+
+	return ret;
 }

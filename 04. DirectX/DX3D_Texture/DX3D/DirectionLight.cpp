@@ -50,3 +50,8 @@ void DirectionLight::Update()
 void DirectionLight::Render()
 {
 }
+
+D3DLIGHT9 DirectionLight::GetLight()
+{
+	return m_DirLight;
+}

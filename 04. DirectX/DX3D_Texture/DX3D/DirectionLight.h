@@ -16,4 +16,6 @@ public:
 	void SetUp();
 	void Update();
 	void Render();
+
+	D3DLIGHT9 GetLight();
 };
