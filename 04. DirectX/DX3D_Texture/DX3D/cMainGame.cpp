@@ -60,6 +60,9 @@ cMainGame::cMainGame()
 	, m_pSprite(NULL)
 	, m_pTextureUI(NULL)
 	, m_pShader(NULL)
+	, m_pDiffuse1(NULL)
+	, m_pDiffuse2(NULL)
+	, m_pAlphaMap(NULL)
 {
 
 }
@@ -120,6 +123,10 @@ cMainGame::~cMainGame()
 	// << UI
 
 	SafeRelease(m_pShader);
+
+	SafeRelease(m_pDiffuse1);
+	SafeRelease(m_pDiffuse2);
+	SafeRelease(m_pAlphaMap);
 
 	g_pObjectManger->Destroy();
 
@@ -244,12 +251,13 @@ void cMainGame::Render()
 	Render_Txt();
 	// PickingObj_Render();
 
+	Setup_Fog();
 	if (m_pGrid)
 		m_pGrid->Render(); 
-
+	g_pD3DDevice->SetRenderState(D3DRS_FOGENABLE, false);
 	//Render_OBB();
 
-	Render_Frustum();
+	// Render_Frustum();
 
 	// if (m_pCubePC)
 	//	m_pCubePC->Render(); 
@@ -280,6 +288,8 @@ void cMainGame::Render()
 	//Render_Particle();
 
 	//Render_MultiTexture();
+
+	Render_MultiTexture_shader();
 
 	g_pD3DDevice->EndScene();
 	g_pD3DDevice->Present(NULL, NULL, NULL, NULL);
@@ -590,7 +600,7 @@ void cMainGame::Render_SkinnedMesh()
 		D3DXCOLOR color(0.2f, 0.5f, 0.5f, 0.0f);
 		// m_pShader->SetValue("gColor", &color, sizeof(D3DXVECTOR4));
 		
-		D3DXVECTOR4 gLightColor(0.0f, 1.0f, 1.0f, 1.0f);
+		D3DXVECTOR4 gLightColor(1.0f, 1.0f, 1.0f, 1.0f);
 		//gLightColor.x = m_directLight->GetLight().Direction.x;
 		//gLightColor.y = m_directLight->GetLight().Direction.y;
 		//gLightColor.z = m_directLight->GetLight().Direction.z;
@@ -948,6 +958,10 @@ void cMainGame::Setup_MultiTexture()
 	D3DXCreateTextureFromFile(g_pD3DDevice, L"multiTexture/env1.png", &m_pTex2);
 	D3DXCreateTextureFromFile(g_pD3DDevice, L"multiTexture/Albedo00.jpg", &m_pTex3);
 
+	D3DXCreateTextureFromFile(g_pD3DDevice, L"multiTexShader/Albedo00.jpg", &m_pDiffuse1);
+	D3DXCreateTextureFromFile(g_pD3DDevice, L"multiTexShader/stones.png", &m_pDiffuse2);
+	D3DXCreateTextureFromFile(g_pD3DDevice, L"multiTexShader/AlphaMap256.png", &m_pAlphaMap);
+
 	ST_PT_VERTEX v;
 	v.p = D3DXVECTOR3(0, 0, 0); v.t = D3DXVECTOR2(0, 1); m_vecVertex_Multi.push_back(v);
 	v.p = D3DXVECTOR3(0, 2, 0); v.t = D3DXVECTOR2(0, 0); m_vecVertex_Multi.push_back(v);
@@ -1162,10 +1176,87 @@ void cMainGame::Render_MultiTexture_default()
 	g_pD3DDevice->SetTextureStageState(2, D3DTSS_COLOROP, D3DTOP_DISABLE);
 }
 
+void cMainGame::Render_MultiTexture_shader()
+{
+	g_pD3DDevice->SetRenderState(D3DRS_LIGHTING, false);
+	// g_pD3DDevice->LightEnable(0, true);
+	D3DXMATRIXA16 matWorld;
+	D3DXMatrixIdentity(&matWorld);
+
+	g_pD3DDevice->SetTransform(D3DTS_WORLD, &matWorld);
+
+	if (m_pShader)
+	{
+		D3DXMATRIXA16 matView, matProj;
+		g_pD3DDevice->GetTransform(D3DTS_VIEW, &matView);
+		g_pD3DDevice->GetTransform(D3DTS_PROJECTION, &matProj);
+
+		m_pShader->SetMatrix("gWorldMatrix", &matWorld);
+		m_pShader->SetMatrix("gViewMatrix", &matView);
+		m_pShader->SetMatrix("gProjectionMatrix", &matProj);
+		m_pShader->SetVector("gWorldCameraPosition", &D3DXVECTOR4(m_pCamera->GetPosition(), 1.0f));
+
+		D3DXVECTOR4 gLightColor(1.0f, 1.0f, 1.0f, 1.0f);
+		m_pShader->SetVector("gLightColor", &gLightColor);
+
+		m_pShader->SetTexture("DiffuseMap_Tex1", m_pDiffuse1);
+		m_pShader->SetTexture("DiffuseMap_Tex2", m_pDiffuse2);
+		m_pShader->SetTexture("AlphaMap_Tex", m_pAlphaMap);
+	}
+
+		SetBillBoard();
+
+		UINT numPasses = 0;
+		m_pShader->Begin(&numPasses, NULL);
+		{
+			m_pShader->BeginPass(0);
+			{
+				g_pD3DDevice->SetFVF(ST_PT_VERTEX::FVF);
+				g_pD3DDevice->DrawPrimitiveUP(D3DPT_TRIANGLELIST,
+					m_vecVertex_Multi.size() / 3,
+					&m_vecVertex_Multi[0],
+					sizeof(ST_PT_VERTEX));
+			}
+
+			m_pShader->EndPass();
+		}
+		m_pShader->End();
+
+		g_pD3DDevice->SetTexture(0, NULL);
+		g_pD3DDevice->SetTexture(1, NULL);
+		g_pD3DDevice->SetTexture(2, NULL);
+		
+		g_pD3DDevice->SetTextureStageState(1, D3DTSS_COLOROP, D3DTOP_DISABLE);
+		g_pD3DDevice->SetTextureStageState(2, D3DTSS_COLOROP, D3DTOP_DISABLE);
+		g_pD3DDevice->SetTextureStageState(1, D3DTSS_RESULTARG, D3DTA_CURRENT);
+		g_pD3DDevice->SetTextureStageState(2, D3DTSS_RESULTARG, D3DTA_CURRENT);
+		
+		for (int i = 0; i < 4; ++i)
+		{
+			g_pD3DDevice->SetSamplerState(i, D3DSAMP_MAGFILTER, D3DTEXF_NONE);
+			g_pD3DDevice->SetSamplerState(i, D3DSAMP_MINFILTER, D3DTEXF_NONE);
+			g_pD3DDevice->SetSamplerState(i, D3DSAMP_MIPFILTER, D3DTEXF_NONE);
+		}
+}
+
+void cMainGame::Setup_Fog()
+{
+	g_pD3DDevice->SetRenderState(D3DRS_FOGENABLE,true);
+	g_pD3DDevice->SetRenderState(D3DRS_FOGCOLOR, D3DXCOLOR(255,255,0,125));
+	g_pD3DDevice->SetRenderState(D3DRS_FOGVERTEXMODE, D3DFOG_LINEAR);
+	g_pD3DDevice->SetRenderState(D3DRS_FOGSTART, FtoDw(10.0f));
+	g_pD3DDevice->SetRenderState(D3DRS_FOGEND, FtoDw(200.0f));
+	g_pD3DDevice->SetRenderState(D3DRS_RANGEFOGENABLE,true);
+
+	// g_pD3DDevice->SetRenderState(D3DRS_FOGENABLE, false);
+}
+
 bool cMainGame::LoadAssets()
 {
 	// ¼ÎÀÌ´õ ·Îµù
-	m_pShader = LoadShader("shader/SpecularMapping.fx");
+	// m_pShader = LoadShader("shader/SpecularMapping.fx");
+	m_pShader = LoadShader("shader/Splatting.fx");
+
 	if (!m_pShader)
 		return false;
 

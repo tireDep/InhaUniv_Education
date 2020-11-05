@@ -117,6 +117,12 @@ private :
 	LPD3DXEFFECT LoadShader(const char * filename);
 	// << shader2
 
+	// >> multiTexture_Shader
+	LPDIRECT3DTEXTURE9 m_pDiffuse1;
+	LPDIRECT3DTEXTURE9 m_pDiffuse2;
+	LPDIRECT3DTEXTURE9 m_pAlphaMap;
+	// << multiTexture_Shader
+
 public :
 	void Setup(); 
 	void Update(); 
@@ -191,5 +197,11 @@ public :
 	void Render_MultiTexture0();
 	void Render_MultiTexture_default();
 	// << multiTexture
+
+	// >> multiTexture_Shader
+	void Render_MultiTexture_shader();
+
+	void Setup_Fog();
+	// << multiTexture_Shader
 };
 
