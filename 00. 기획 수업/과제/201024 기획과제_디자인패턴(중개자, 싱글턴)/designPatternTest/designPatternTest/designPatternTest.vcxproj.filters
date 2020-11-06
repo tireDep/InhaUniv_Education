@@ -22,6 +22,12 @@
     <Filter Include="03. Observer">
       <UniqueIdentifier>{a83303ea-945c-47f9-a84e-87b3c0d478a7}</UniqueIdentifier>
     </Filter>
+    <Filter Include="04. Strategy">
+      <UniqueIdentifier>{3a86694f-9815-475d-a8e8-aa47a4f6eace}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="05. Composite">
+      <UniqueIdentifier>{0cdaa3f6-588a-4406-96ff-a19761316e28}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -32,6 +38,12 @@
     </ClCompile>
     <ClCompile Include="ConcreteMediator.cpp">
       <Filter>02. Mediator</Filter>
+    </ClCompile>
+    <ClCompile Include="Composite.cpp">
+      <Filter>05. Composite</Filter>
+    </ClCompile>
+    <ClCompile Include="Strategy.cpp">
+      <Filter>04. Strategy</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -58,6 +70,12 @@
     </ClInclude>
     <ClInclude Include="Observer2.h">
       <Filter>03. Observer</Filter>
+    </ClInclude>
+    <ClInclude Include="Composite.h">
+      <Filter>05. Composite</Filter>
+    </ClInclude>
+    <ClInclude Include="Strategy.h">
+      <Filter>04. Strategy</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
