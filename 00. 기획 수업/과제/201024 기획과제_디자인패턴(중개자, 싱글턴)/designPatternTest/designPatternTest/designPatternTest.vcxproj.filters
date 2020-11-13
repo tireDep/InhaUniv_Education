@@ -28,6 +28,9 @@
     <Filter Include="05. Composite">
       <UniqueIdentifier>{0cdaa3f6-588a-4406-96ff-a19761316e28}</UniqueIdentifier>
     </Filter>
+    <Filter Include="06. Iterator">
+      <UniqueIdentifier>{7ac43ea3-ca6d-49c1-95e7-c78a66d2eed7}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -44,6 +47,9 @@
     </ClCompile>
     <ClCompile Include="Strategy.cpp">
       <Filter>04. Strategy</Filter>
+    </ClCompile>
+    <ClCompile Include="Iterator.cpp">
+      <Filter>Header Files</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -76,6 +82,9 @@
     </ClInclude>
     <ClInclude Include="Strategy.h">
       <Filter>04. Strategy</Filter>
+    </ClInclude>
+    <ClInclude Include="Iterator.h">
+      <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
