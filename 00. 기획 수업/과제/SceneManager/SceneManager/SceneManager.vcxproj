@@ -19,9 +19,9 @@
     </ProjectConfiguration>
   </ItemGroup>
   <PropertyGroup Label="Globals">
-    <ProjectGuid>{69154A83-6206-437E-BC38-B50AFB91E1C0}</ProjectGuid>
+    <ProjectGuid>{408C8663-DFD6-42B0-A022-42AAFB23BFAD}</ProjectGuid>
     <Keyword>Win32Proj</Keyword>
-    <RootNamespace>designPatternTest</RootNamespace>
+    <RootNamespace>SceneManager</RootNamespace>
     <WindowsTargetPlatformVersion>8.1</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
@@ -146,40 +146,14 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="Composite.cpp">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
-    </ClCompile>
-    <ClCompile Include="ConcreteMediator.cpp" />
-    <ClCompile Include="Iterator.cpp" />
-    <ClCompile Include="main.cpp">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
-    </ClCompile>
-    <ClCompile Include="SingletonObj.cpp" />
-    <ClCompile Include="Strategy.cpp">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
-    </ClCompile>
+    <ClCompile Include="GameManager.cpp" />
+    <ClCompile Include="main.cpp" />
+    <ClCompile Include="SceneState.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Collegue.h" />
-    <ClInclude Include="Composite.h" />
-    <ClInclude Include="ConcreteMediator.h" />
-    <ClInclude Include="ICollegue.h" />
-    <ClInclude Include="IMediator.h" />
-    <ClInclude Include="Iterator.h" />
-    <ClInclude Include="Observer.h" />
-    <ClInclude Include="Observer2.h" />
-    <ClInclude Include="Singleton.h" />
-    <ClInclude Include="SingletonObj.h" />
-    <ClInclude Include="Strategy.h" />
+    <ClInclude Include="GameManager.h" />
+    <ClInclude Include="SceneState.h" />
+    <ClInclude Include="State.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
