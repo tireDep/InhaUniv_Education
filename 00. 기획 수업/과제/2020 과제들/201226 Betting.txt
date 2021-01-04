@@ -1,0 +1,40 @@
+최소 돈 : 5 buck
+
+winner : double
+lose : no bet
+
+four dog, straight track
+
+totally random, no handicaps or odd, next race based on his past performance
+
+Dog -------------
+trackPosition
+finishTrackPos
+
+Person ---------------
+name
+bet
+nowCash
+
+레벨요소
+[ betting ]
+: gain or lose
+	double or nothing
+: mininum bet
+	$5
+
+[ dog ]
+: state
+	winner, loser
+: trackPosition
+
+: rank
+
+: counters
+	four
+
+[ person ]
+: state
+	bet, gain, lose
+: bet
+	dogNum, betDallers
