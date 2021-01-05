@@ -5,11 +5,11 @@ using UnityEngine;
 public class Move : MonoBehaviour
 {
     // [SerializeField]
-    private float moveSpeed = 1.0f;
+    private float moveSpeed = 10.0f;
     // 객체 생성시 한 번
     private void Awake()
     {
-
+        
     }
 
     // 스크립트 실행될 때 한 번
@@ -22,7 +22,21 @@ public class Move : MonoBehaviour
     // 매 프레임
     void Update()
     {
-        DoMove();
+        // DoMove();
+
+        if (Input.GetKey(KeyCode.W))
+        {
+            float moveDelta = this.moveSpeed * Time.deltaTime;
+            this.transform.Translate(Vector3.forward * moveDelta);
+        }
+        else if (Input.GetKey(KeyCode.S))
+        {
+            float moveDelta = this.moveSpeed * Time.deltaTime;
+            Vector3 pos = this.transform.position;
+            pos.z -= moveDelta;
+
+            this.transform.position = pos;
+        }
     }
 
     void DoMove()
