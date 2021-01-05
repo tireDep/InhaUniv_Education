@@ -453,8 +453,9 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 270940154}
+  - component: {fileID: 270940155}
   m_Layer: 0
-  m_Name: ' Helicopter (1)'
+  m_Name: ' Helicopter'
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -479,6 +480,18 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 4
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &270940155
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 270940153}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 28a6132725a68c643a07489abf2e1516, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &281199152
 GameObject:
   m_ObjectHideFlags: 0
@@ -488,6 +501,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 281199153}
+  - component: {fileID: 281199155}
   m_Layer: 0
   m_Name: bigPropeller
   m_TagString: Untagged
@@ -512,6 +526,19 @@ Transform:
   m_Father: {fileID: 270940154}
   m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &281199155
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 281199152}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8053e7643ae534d49ab74bb64e2da9ed, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  target: {fileID: 1674141137}
 --- !u!1 &298988359
 GameObject:
   m_ObjectHideFlags: 0
@@ -2056,7 +2083,7 @@ Transform:
   m_GameObject: {fileID: 1549844522}
   m_LocalRotation: {x: 0.7071068, y: -0, z: -0, w: 0.7071068}
   m_LocalPosition: {x: -3.8200002, y: 0.71599996, z: -0.32000005}
-  m_LocalScale: {x: 0.2, y: 0.50000024, z: 0.20000018}
+  m_LocalScale: {x: 0.2, y: 0.50000024, z: 0.2}
   m_Children: []
   m_Father: {fileID: 1913499628}
   m_RootOrder: 2
@@ -2610,6 +2637,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1913499628}
+  - component: {fileID: 1913499630}
   m_Layer: 0
   m_Name: smallPropeller
   m_TagString: Untagged
@@ -2634,6 +2662,19 @@ Transform:
   m_Father: {fileID: 270940154}
   m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1913499630
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1913499627}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 370c0fff31ecac744a33b65fcff98374, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  target: {fileID: 1549844522}
 --- !u!1 &1982559064
 GameObject:
   m_ObjectHideFlags: 0
