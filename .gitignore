@@ -163,7 +163,7 @@ artifacts/
 *_p.c
 *_i.h
 *.ilk
-*.meta
+# *.meta
 *.obj
 *.pch
 *.pdb
@@ -409,9 +409,9 @@ ExportedObj/
 *.VC.db
 
 # Unity3D generated meta files
-*.pidb.meta
-*.pdb.meta
-*.mdb.meta
+# *.pidb.meta
+# *.pdb.meta
+# *.mdb.meta
 
 # Unity3D generated file on crash reports
 sysinfo.txt
@@ -438,13 +438,9 @@ crashlytics-build.properties
 # =============== #
  
 Temp/
- 
 Obj/
- 
 UnityGenerated/
- 
 Library/
- 
  
  
 # ===================================== #
@@ -456,23 +452,14 @@ Library/
 ExportedObj/
  
 *.svd
- 
 *.userprefs
- 
 *.csproj
- 
 *.pidb
- 
 *.suo
- 
 *.sln
- 
 *.user
- 
 *.unityproj
- 
 *.booproj
- 
  
  
 # ============ #
@@ -482,23 +469,13 @@ ExportedObj/
 # ============ #
  
 .DS_Store
- 
 .DS_Store?
- 
 ._*
- 
 .Spotlight-V100
- 
 .Trashes
- 
 Icon?
- 
 ehthumbs.db
- 
 Thumbs.db
- 
 GraphicsSettings.asset
- 
 ProjectSettings.asset
- 
 ProjectVersion.txt
