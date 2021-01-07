@@ -6,7 +6,7 @@ EditorBuildSettings:
   serializedVersion: 2
   m_Scenes:
   - enabled: 1
-    path: Assets/Scenes/00. RacingCar.unity
+    path: Assets/Scenes/00. RacingGame.unity
     guid: d1dc6a168668d1847b2691438959cc7a
   - enabled: 1
     path: Assets/Scenes/01. RayCasting.unity
@@ -17,4 +17,10 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/02. Collision.unity
     guid: 06a3805b6f0cece4ea9ffd59150abd2b
+  - enabled: 1
+    path: Assets/Scenes/02_1. Start.unity
+    guid: eaba3c5ab54ba8348a02fe59e104a2c0
+  - enabled: 1
+    path: Assets/Scenes/02_2. End.unity
+    guid: 67b0cac206d3f9a4d965a1b9942904e6
   m_configObjects: {}

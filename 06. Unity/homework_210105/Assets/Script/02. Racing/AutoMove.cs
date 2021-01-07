@@ -19,7 +19,8 @@ public class AutoMove : MonoBehaviour
     private RaycastHit rayRightHit;
     private RaycastHit rayFrontHit;
 
-    private bool isFinish = false;
+    
+    public bool isFinish = false;
     
     private Rigidbody rigidbody;
     void Start()
