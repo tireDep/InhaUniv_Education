@@ -107,6 +107,7 @@ public class AutoMove : MonoBehaviour
 
     private void OnDrawGizmos()
     {
+        
         Debug.DrawRay(rayRight.origin, rayRight.direction * fDistance, Color.red);
         Debug.DrawRay(rayLeft.origin, rayLeft.direction * fDistance, Color.blue);
 
