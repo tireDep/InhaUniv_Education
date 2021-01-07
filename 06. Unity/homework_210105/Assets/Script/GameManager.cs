@@ -6,6 +6,8 @@ public class GameManager : MonoBehaviour
 {
     // >> singleton
     private static GameManager sInstance;
+    GameObject[] objArr = null;
+    float[] timeArr = null;
 
     public static GameManager Instance
     {
@@ -21,6 +23,16 @@ public class GameManager : MonoBehaviour
     }
     private void Awake()
     {
+        objArr = GameObject.FindGameObjectsWithTag("Vehicle");
+
+        Debug.Log(objArr[0].gameObject.name);
+        Debug.Log(objArr[1].gameObject.name);
+        Debug.Log(objArr[2].gameObject.name);
+
+        timeArr = new float[objArr.Length];
+        for (int i = 0; i < timeArr.Length; i++)
+            timeArr[i] = -1.0f;
+
         DontDestroyOnLoad(this.gameObject);
     }
     // << singleton
@@ -40,4 +52,34 @@ public class GameManager : MonoBehaviour
     //         Debug.Log("씬전환");
     //     }
     // }
+
+    // ===================================
+
+    public void LabTimeRecord(float labTime)
+    {
+        for (int i = 0; i < timeArr.Length; i++)
+        {
+            if (timeArr[i] == -1)
+            {
+                timeArr[i] = labTime;
+                break;
+            }
+        }
+    }
+
+    public float[] GetLabTime()
+    {
+        return timeArr;
+    }
+
+    public string[] GetObjName()
+    {
+        string[] result = new string[objArr.Length];
+
+        for (int i = 0; i < result.Length; i++)
+            result[i] = objArr[i].gameObject.name;
+
+        return result;
+    }
+
 }

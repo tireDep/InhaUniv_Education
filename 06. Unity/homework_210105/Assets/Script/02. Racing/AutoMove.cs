@@ -19,30 +19,45 @@ public class AutoMove : MonoBehaviour
     private RaycastHit rayRightHit;
     private RaycastHit rayFrontHit;
 
-
     public int finishCheck = 2;
     public bool isFinish = false;
     
-    private Rigidbody rigidbody;
+    private Rigidbody rigidbody = null;
     void Start()
     {
+        fOrigSpeed = fSpeed;
         SetRay();
 
         rigidbody = this.gameObject.GetComponent<Rigidbody>();
     }
 
+    public float Labtime = 0.0f;
+    private bool check = false;
     void Update()
     {
-        if (isFinish)
+        if(Labtime >= 0.5f)
         {
-            ReduceSpeed();
+            if (isFinish)
+            {
+                ReduceSpeed();
+            }
+
+            if (IsSpeedNotZero())
+            {
+                AutoMoving();
+                CheckWall();
+            }
+            else
+            {
+                if (!check)
+                {
+                    check = true;
+                    GameManager.Instance.LabTimeRecord(Labtime);
+                }
+            }
         }
 
-        if (IsSpeedNotZero())
-        {
-            AutoMoving();
-            CheckWall();
-        }
+        Labtime += Time.deltaTime;
     }
 
     void AutoMoving()
@@ -80,6 +95,10 @@ public class AutoMove : MonoBehaviour
                 lDist = rayLeftHit.distance;
         }
 
+        // rDist = Mathf.Floor(rDist);
+        // lDist = Mathf.Floor(lDist);
+
+        // Debug.Log(lDist + " + " + rDist);
         if(rDist < lDist)
             this.transform.Rotate(new Vector3(0, -1 * fSpeed * Time.deltaTime, 0));
         else if (rDist > lDist)
@@ -116,25 +135,64 @@ public class AutoMove : MonoBehaviour
 
     private void OnCollisionEnter(UnityEngine.Collision collision)
     {
+        if (rigidbody == null)
+            return;
+
         GameObject hitObj = collision.gameObject;
 
-        if (hitObj.tag == "Vehicle" && !isFinish)
+        if (hitObj.tag == "Floor")
+            return;
+
+        // if (hitObj.tag == "Vehicle" && !isFinish)
+        if (!isFinish)
         {
             float tempSpeed = fSpeed;
             fSpeed = tempSpeed * 0.5f;
         }
-        else if (hitObj.tag == "Vehicle" && isFinish)
+        // else if (hitObj.tag == "Vehicle" && isFinish)
+        else if(isFinish)
         {
             Debug.Log("hit");
             fSpeed = 0.0f;
         }
     }
 
+    private void OnCollisionStay(UnityEngine.Collision collision)
+    {
+        //if (rigidbody == null)
+        //    return;
+
+        //GameObject hitObj = collision.gameObject;
+
+        //if (hitObj.tag == "Floor")
+        //    return;
+
+        //// if (hitObj.tag == "Vehicle" && !isFinish)
+        //if (!isFinish && hitObj)
+        //{
+        //    float tempSpeed = fSpeed;
+        //    fSpeed = tempSpeed * 0.5f;
+        //}
+        //// else if (hitObj.tag == "Vehicle" && isFinish)
+        //else if (isFinish)
+        //{
+        //    Debug.Log("hit");
+        //    fSpeed = 0.0f;
+        //}
+    }
+
     private void OnCollisionExit(UnityEngine.Collision collision)
     {
+        if (rigidbody == null)
+            return;
+
         GameObject hitObj = collision.gameObject;
 
-        if (hitObj.tag == "Vehicle" && !isFinish)
+        if (hitObj.tag == "Floor")
+            return;
+
+        // if (hitObj.tag == "Vehicle" && !isFinish)
+        if (!isFinish)
         {
             fSpeed = fOrigSpeed;
         }
@@ -143,6 +201,9 @@ public class AutoMove : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
+        if (rigidbody == null)
+            return;
+
         GameObject hitObj = other.gameObject;
 
         if (hitObj.tag == "EndLine" && IsSpeedNotZero())
@@ -153,6 +214,9 @@ public class AutoMove : MonoBehaviour
 
     private void OnTriggerExit(Collider other)
     {
+        if (rigidbody == null)
+            return;
+
         GameObject hitObj = other.gameObject;
 
         if (hitObj.tag == "EndLine" && this.tag == "Vehicle")

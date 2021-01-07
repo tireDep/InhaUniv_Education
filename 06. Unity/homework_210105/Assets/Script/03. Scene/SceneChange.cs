@@ -19,7 +19,18 @@ public class SceneChange : MonoBehaviour
             SceneChangeUI("StartScene", "Start", "00. RacingGame");
 
         else if (scene.name.Contains("End"))
+        {
             SceneChangeUI("EndScene", "Retry", "02_1. Start");
+
+            float[] timeArr = GameManager.Instance.GetLabTime();
+            // string[] nameArr = GameManager.Instance.GetObjName();
+            for(int i=0;i<timeArr.Length;i++)
+            {
+                GUILayout.Label(i + 1 + " : " + timeArr[i]);
+                // GUILayout.Label(i + 1 + " : " + nameArr[i] + " / " + timeArr[i]);
+            }
+            // >> err : MissingReferenceException
+        }
 
         else if (scene.name.Contains("RacingGame"))
         {
@@ -35,7 +46,10 @@ public class SceneChange : MonoBehaviour
         {
             if(objArr[i].tag == "Vehicle")
             {
-                if (objArr[i].GetComponent<AutoMove>().fSpeed <= 0.0f)
+                if (objArr[i].name != "Player" && objArr[i].GetComponent<AutoMove>().fSpeed <= 0.0f)
+                    checkCnt++;
+                
+                if(objArr[i].name == "Player" && objArr[i].GetComponent<PlayerMove>().fSpeed <= 0.0f)
                     checkCnt++;
             }
         }
