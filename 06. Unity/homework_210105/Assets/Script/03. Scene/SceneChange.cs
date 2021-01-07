@@ -11,6 +11,8 @@ public class SceneChange : MonoBehaviour
 
     private void OnGUI()
     {
+        // GameManager.Instance.nSceneID = 0;
+
         scene = SceneManager.GetActiveScene();
 
         if (scene.name.Contains("Start"))
@@ -33,7 +35,7 @@ public class SceneChange : MonoBehaviour
         {
             if(objArr[i].tag == "Vehicle")
             {
-                if (objArr[i].GetComponent<AutoMove>().isFinish)
+                if (objArr[i].GetComponent<AutoMove>().fSpeed <= 0.0f)
                     checkCnt++;
             }
         }

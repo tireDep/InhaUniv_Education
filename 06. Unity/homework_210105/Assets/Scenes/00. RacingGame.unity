@@ -630,6 +630,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   fDistance: 250
+  finishCheck: 2
+  isFinish: 0
 --- !u!1 &1199763751 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 1646981259178978, guid: 6f993fa0f8fc9f045888054c717741b4, type: 3}
@@ -648,6 +650,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   fDistance: 250
+  finishCheck: 1
+  isFinish: 0
 --- !u!54 &1199763753
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -713,6 +717,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   fDistance: 250
+  finishCheck: 1
+  isFinish: 0
 --- !u!54 &1317497148
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -1337,6 +1343,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   fDistance: 250
+  finishCheck: 2
+  isFinish: 0
 --- !u!1 &1948508086 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 1255947835851222, guid: 6f993fa0f8fc9f045888054c717741b4, type: 3}

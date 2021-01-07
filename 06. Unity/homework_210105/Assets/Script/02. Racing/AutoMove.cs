@@ -8,7 +8,7 @@ public class AutoMove : MonoBehaviour
     // >> unity 내부에서 배열 크기 & 오브젝트 추가 가능
 
     private float fOrigSpeed = 100.0f;
-    private float fSpeed = 100.0f;
+    public float fSpeed = 100.0f;
     public float fDistance = 75.0f;
 
     private Ray rayRight;
@@ -19,7 +19,8 @@ public class AutoMove : MonoBehaviour
     private RaycastHit rayRightHit;
     private RaycastHit rayFrontHit;
 
-    
+
+    public int finishCheck = 2;
     public bool isFinish = false;
     
     private Rigidbody rigidbody;
@@ -116,10 +117,15 @@ public class AutoMove : MonoBehaviour
     {
         GameObject hitObj = collision.gameObject;
 
-        if (hitObj.tag == "Vehicle" && IsSpeedNotZero())
+        if (hitObj.tag == "Vehicle" && !isFinish)
         {
             float tempSpeed = fSpeed;
             fSpeed = tempSpeed * 0.5f;
+        }
+        else if (hitObj.tag == "Vehicle" && isFinish)
+        {
+            Debug.Log("hit");
+            fSpeed = 0.0f;
         }
     }
 
@@ -127,7 +133,7 @@ public class AutoMove : MonoBehaviour
     {
         GameObject hitObj = collision.gameObject;
 
-        if (hitObj.tag == "Vehicle" && IsSpeedNotZero())
+        if (hitObj.tag == "Vehicle" && !isFinish)
         {
             fSpeed = fOrigSpeed;
         }
@@ -140,7 +146,7 @@ public class AutoMove : MonoBehaviour
 
         if (hitObj.tag == "EndLine" && IsSpeedNotZero())
         {
-            isFinish = true;
+           
         }
     }
 
@@ -148,9 +154,12 @@ public class AutoMove : MonoBehaviour
     {
         GameObject hitObj = other.gameObject;
 
-        if (hitObj.tag == "EndLine")
+        if (hitObj.tag == "EndLine" && this.tag == "Vehicle")
         {
-            Debug.Log("finish");
+            finishCheck--;
+
+            if (finishCheck <= 0)
+                isFinish = true;
         }
     }
 
@@ -166,7 +175,7 @@ public class AutoMove : MonoBehaviour
             return true;
         else
         {
-            rigidbody.isKinematic = true;
+            // rigidbody.isKinematic = true;
             return false;
         }
     }
