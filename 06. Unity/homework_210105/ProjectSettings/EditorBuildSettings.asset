@@ -4,5 +4,17 @@
 EditorBuildSettings:
   m_ObjectHideFlags: 0
   serializedVersion: 2
-  m_Scenes: []
+  m_Scenes:
+  - enabled: 1
+    path: Assets/Scenes/00. RacingCar.unity
+    guid: d1dc6a168668d1847b2691438959cc7a
+  - enabled: 1
+    path: Assets/Scenes/01. RayCasting.unity
+    guid: e9435d401e1570948849e46c99f30776
+  - enabled: 1
+    path: Assets/Scenes/01_1. Cars.unity
+    guid: e296a30baa8bdc543864fed3699f540f
+  - enabled: 1
+    path: Assets/Scenes/02. Collision.unity
+    guid: 06a3805b6f0cece4ea9ffd59150abd2b
   m_configObjects: {}
