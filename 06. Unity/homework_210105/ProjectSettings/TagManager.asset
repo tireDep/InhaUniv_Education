@@ -9,6 +9,8 @@ TagManager:
   - TTTTT
   - Vehicle
   - Wall
+  - EndLine
+  - Floor
   layers:
   - Default
   - TransparentFX
