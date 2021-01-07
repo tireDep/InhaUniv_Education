@@ -40,7 +40,7 @@ public class AutoMove : MonoBehaviour
             Debug.Log("front");
         }
 
-        float rDist = -9999, lDist = -9999;
+        float rDist = 9999, lDist = 9999;
         if (Physics.Raycast(rayRight, out rayRightHit, fDistance))
         {
             rDist = rayRightHit.distance;
@@ -51,9 +51,9 @@ public class AutoMove : MonoBehaviour
             lDist = rayLeftHit.distance;
         }
 
-        if(rDist > lDist)
+        if(rDist < lDist)
             this.transform.Rotate(new Vector3(0, -1 * fSpeed * Time.deltaTime, 0));
-        else if (rDist < lDist)
+        else if (rDist > lDist)
             this.transform.Rotate(new Vector3(0, fSpeed * Time.deltaTime, 0));
 
         // >> todo : center 이동
@@ -70,9 +70,11 @@ public class AutoMove : MonoBehaviour
         rotate = Quaternion.Euler(0.0f, 45.0f, 0.0f);
         Vector3 rightPos = rotate * pos;
 
-        rayLeft = new Ray(this.transform.position, leftPos);
-        rayRight = new Ray(this.transform.position, rightPos);
-        rayFront = new Ray(this.transform.position, this.transform.forward);
+        rayLeft.origin = this.transform.position;
+        rayLeft.direction = leftPos;
+
+        rayRight.origin = this.transform.position;
+        rayRight.direction = rightPos;
     }
 
     private void OnDrawGizmos()
