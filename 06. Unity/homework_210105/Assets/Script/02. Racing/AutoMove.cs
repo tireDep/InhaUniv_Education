@@ -98,8 +98,17 @@ public class AutoMove : MonoBehaviour
         // rDist = Mathf.Floor(rDist);
         // lDist = Mathf.Floor(lDist);
 
-        // Debug.Log(lDist + " + " + rDist);
-        if(rDist < lDist)
+        
+        // if(lDist != 9999 && (rDist >= 9999 && rDist <= 9998))// (rayRightHit.collider.tag=="Wall"))
+        // if(lDist < rDist && rDist >= 9998.9 && rayLeftHit.collider.tag == "Wall")
+        // {
+        //     Debug.Log("turnRight");
+        //     this.transform.Rotate(new Vector3(0, -1 * fSpeed * Time.deltaTime, 0));
+        // }
+        // else if (rDist == 9999 && rayLeftHit.collider.tag == "Wall")
+        //     this.transform.Rotate(new Vector3(0, fSpeed * Time.deltaTime, 0));
+
+        if (rDist < lDist)
             this.transform.Rotate(new Vector3(0, -1 * fSpeed * Time.deltaTime, 0));
         else if (rDist > lDist)
             this.transform.Rotate(new Vector3(0, fSpeed * Time.deltaTime, 0));

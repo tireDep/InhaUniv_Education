@@ -82,4 +82,10 @@ public class GameManager : MonoBehaviour
         return result;
     }
 
+    public void ResetLabTime()
+    {
+        for (int i = 0; i < timeArr.Length; i++)
+            timeArr[i] = -1;
+    }
+
 }

@@ -16,7 +16,10 @@ public class SceneChange : MonoBehaviour
         scene = SceneManager.GetActiveScene();
 
         if (scene.name.Contains("Start"))
+        {
             SceneChangeUI("StartScene", "Start", "00. RacingGame");
+            GameManager.Instance.ResetLabTime();
+        }
 
         else if (scene.name.Contains("End"))
         {

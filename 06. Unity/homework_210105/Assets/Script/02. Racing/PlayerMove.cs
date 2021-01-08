@@ -26,7 +26,6 @@ public class PlayerMove : MonoBehaviour
     private float canBoostTime = 0.0f;
     private float goalBoostTime = 5.0f;
 
-    private bool isHit = false;
     private bool isBoost = false;
     private bool isBossting = false;
 
@@ -64,15 +63,23 @@ public class PlayerMove : MonoBehaviour
 
                 float moveDelta = fSpeed * Time.deltaTime;
 
-                if (Input.GetKey(KeyCode.W))
+                if(isFinish)
+                {
                     this.transform.Translate(Vector3.forward * moveDelta);
-                else if (Input.GetKey(KeyCode.S))
-                    this.transform.Translate(Vector3.back * moveDelta);
+                    // >> 피니시 라인 통과 후 제어 x
+                }
+                else
+                {
+                    if (Input.GetKey(KeyCode.W))
+                        this.transform.Translate(Vector3.forward * moveDelta);
+                    else if (Input.GetKey(KeyCode.S))
+                        this.transform.Translate(Vector3.back * moveDelta);
 
-                if (Input.GetKey(KeyCode.A))
-                    this.transform.rotation *= Quaternion.AngleAxis(moveDelta * -1, Vector3.up);
-                else if (Input.GetKey(KeyCode.D))
-                    this.transform.Rotate(Vector3.up * moveDelta);
+                    if (Input.GetKey(KeyCode.A))
+                        this.transform.rotation *= Quaternion.AngleAxis(moveDelta * -1, Vector3.up);
+                    else if (Input.GetKey(KeyCode.D))
+                        this.transform.Rotate(Vector3.up * moveDelta);
+                }
             }
             else
             {
@@ -120,7 +127,6 @@ public class PlayerMove : MonoBehaviour
         // if (hitObj.tag == "Vehicle" && !isFinish)
         if (!isFinish)
         {
-            isHit = true;
             goalBoostTime = canBoostTime + 5.0f;
 
             float tempSpeed = fSpeed;
@@ -169,7 +175,6 @@ public class PlayerMove : MonoBehaviour
 
         if (!isFinish)
         {
-            isHit = false;
             fSpeed = fOrigSpeed;
         }
     }
