@@ -25,10 +25,6 @@ public class GameManager : MonoBehaviour
     {
         objArr = GameObject.FindGameObjectsWithTag("Vehicle");
 
-        Debug.Log(objArr[0].gameObject.name);
-        Debug.Log(objArr[1].gameObject.name);
-        Debug.Log(objArr[2].gameObject.name);
-
         timeArr = new float[objArr.Length];
         for (int i = 0; i < timeArr.Length; i++)
             timeArr[i] = -1.0f;

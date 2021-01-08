@@ -23,4 +23,13 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/02_2. End.unity
     guid: 67b0cac206d3f9a4d965a1b9942904e6
+  - enabled: 1
+    path: Assets/Scenes/FlappyBird/00. Main.unity
+    guid: 8534dc1851bf2a449b1313266d226c87
+  - enabled: 1
+    path: Assets/Scenes/FlappyBird/01. Game.unity
+    guid: b33a59944052a234fa9edc957846cb2d
+  - enabled: 1
+    path: Assets/Scenes/FlappyBird/02. End.unity
+    guid: edccd676a3e547949bf287e70047b64f
   m_configObjects: {}

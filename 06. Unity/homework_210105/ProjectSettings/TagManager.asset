@@ -11,6 +11,7 @@ TagManager:
   - Wall
   - EndLine
   - Floor
+  - passSpot
   layers:
   - Default
   - TransparentFX
