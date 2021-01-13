@@ -71,18 +71,20 @@ public class AutoMove : MonoBehaviour
     {
         SetRay();
 
-        //if (Physics.Raycast(rayFront, out rayFrontHit, fDistance * 0.5f))
-        //{
-        //    if (rayFrontHit.collider.gameObject.tag == "Vehicle")
-        //    {
-        //        fSpeed -= 0.25f;
-        //    }
-        //}
-        //else
-        //{
-        //    Debug.Log(fSpeed);
-        //    fSpeed = 100.0f;
-        //}
+        bool isFront = false;
+        if (Physics.Raycast(rayFront, out rayFrontHit, fDistance * 0.5f))
+        {
+            if (rayFrontHit.collider.gameObject.tag == "Vehicle")
+            {
+                isFront = true;
+                fSpeed -= 0.25f;
+            }
+        }
+        else
+        {
+            if(!isFinish)
+                fSpeed = fOrigSpeed;
+        }
 
         float rDist = 9999, lDist = 9999;
         if (Physics.Raycast(rayRight, out rayRightHit, fDistance))
@@ -110,7 +112,10 @@ public class AutoMove : MonoBehaviour
         // else if (rDist == 9999 && rayLeftHit.collider.tag == "Wall")
         //     this.transform.Rotate(new Vector3(0, fSpeed * Time.deltaTime, 0));
 
-        if (rDist < lDist)
+        if(isFront)
+            this.transform.Rotate(new Vector3(0, -1 * fSpeed * Time.deltaTime, 0));
+
+        else if (rDist < lDist)
             this.transform.Rotate(new Vector3(0, -1 * fSpeed * Time.deltaTime, 0));
         else if (rDist > lDist)
             this.transform.Rotate(new Vector3(0, fSpeed * Time.deltaTime, 0));
@@ -139,8 +144,7 @@ public class AutoMove : MonoBehaviour
     {
         Debug.DrawRay(rayRight.origin, rayRight.direction * fDistance, Color.red);
         Debug.DrawRay(rayLeft.origin, rayLeft.direction * fDistance, Color.blue);
-
-       // Debug.DrawRay(rayFront.origin, rayFront.direction * fDistance * 0.5f, Color.black);
+        Debug.DrawRay(rayFront.origin, rayFront.direction * fDistance * 0.5f, Color.black);
     }
 
     private void OnCollisionEnter(UnityEngine.Collision collision)
