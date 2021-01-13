@@ -8,6 +8,8 @@ public class Bullet : MonoBehaviour
     private float maxTime = 1.0f;
     private Vector3 dir;
 
+    private float fSpeed = 500.0f;
+
     public GameObject obj = null;
 
     private void Start()
@@ -28,8 +30,7 @@ public class Bullet : MonoBehaviour
     {
         liveTime += Time.deltaTime;
 
-        
-        this.transform.Translate(dir * 5.0f);
+        this.transform.Translate(dir * fSpeed * Time.deltaTime);
 
         
         if (liveTime >= maxTime)
@@ -40,14 +41,20 @@ public class Bullet : MonoBehaviour
 
     private void OnCollisionEnter2D(Collision2D collision)
     {
-        Destroy(this.gameObject);
-        // GameObject.Find("ShotEffect").GetComponent<ShotEffect>().Setup(this.transform.position);
+        if (collision.collider.tag.Contains("Wall"))
+            return;
 
-        //effect = GetComponent<ShotEffect>();
-        //effect.transform.position = this.transform.position;
-        //effect.Setup(this.transform.position);
-        // this.GetComponent<ShotEffect>().Setup(this.transform.position);
+        if (this.tag.Contains("enemy") && collision.collider.tag.Contains("enemy"))
+            return;
 
-        Instantiate(obj, this.transform.position, this.transform.rotation);
+        if (!collision.collider.tag.Contains("Bullet") && this.tag != collision.collider.tag)
+        {
+            if (this.tag == "playerBullet" && collision.collider.tag == "enemy")
+                GameManager.Instance.AddScore();
+
+            Destroy(this.gameObject);
+
+            Instantiate(obj, this.transform.position, this.transform.rotation);
+        }
     }
 }

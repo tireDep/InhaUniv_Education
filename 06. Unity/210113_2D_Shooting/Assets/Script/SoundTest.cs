@@ -10,28 +10,25 @@ public class SoundTest : MonoBehaviour
     void Start()
     {
         audioSource = GetComponent<AudioSource>();
-    }
 
-    void Update()
-    {
-        SoundTest_1();
-    }
-
-    private void SoundTest_1()
-    {
-        if (Input.GetKeyDown(KeyCode.Keypad1))
-            StopAndPlay(audioClipArr[0]);
-        else if (Input.GetKeyDown(KeyCode.Keypad2))
-            StopAndPlay(audioClipArr[1]);
-        else if (Input.GetKeyDown(KeyCode.Keypad3))
+        if (this.tag != "Player")
         {
-            audioSource.loop = false;
-            StopAndPlay(audioClipArr[2]);
+            StopAndPlay(audioClipArr[0]);
+            audioSource.loop = true;
         }
+
+    }
+
+    public void setSound(int set)
+    {
+        StopAndPlay(audioClipArr[set]);
     }
     
     private void StopAndPlay(AudioClip clip)
     {
+        if (this.tag == "Player")
+            audioSource.loop = false;
+
         audioSource.Stop();
         audioSource.clip = clip;
         audioSource.Play();

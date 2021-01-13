@@ -6,7 +6,7 @@ using UnityEngine;
 public class Player2D : MonoBehaviour
 {
     private Rigidbody2D rigidbody2D = null;
-    private float fSpeedMove = 1000.0f;
+    private float fSpeedMove = 2500.0f;
 
     private SpriteRenderer spriteRenderer = null;
     private CircleCollider2D circleCollider2D = null;
@@ -17,8 +17,7 @@ public class Player2D : MonoBehaviour
     private float maxTime = 0.025f;
     private Color color = Color.white;
 
-    private float fLife = 100.0f;
-    private float fReduceLife = 10.0f;
+    private bool isHit = false;
 
     private Vector3 dir = Vector3.right;
     public Vector3 Direction
@@ -41,7 +40,14 @@ public class Player2D : MonoBehaviour
     void Update()
     {
         // Move();
+        CheckLife();
         RigidbodyMove();
+    }
+
+    private void CheckLife()
+    {
+        // if(fLife <= 0.0f)
+        //     GameManager.Instance.
     }
 
     private void Move()
@@ -112,10 +118,26 @@ public class Player2D : MonoBehaviour
         rigidbody2D.MovePosition(position);
     }
 
+    private bool isPress = false;
+    private float inputDelay = -0.0001f;
+    private float maxDelay = 0.1f;
     private void Attack()
     {
+        if (isPress && inputDelay <= maxDelay)
+        {
+            inputDelay += Time.deltaTime;
+            return;
+        }
+        else
+        {
+            isPress = false;
+            inputDelay = -0.0001f;
+        }
+
         if(Input.GetKeyDown(KeyCode.Space))
         {
+            GetComponent<SoundTest>().setSound(0);
+            isPress = true;
             Vector3 pos = this.transform.position;
             GameObject.FindGameObjectWithTag("bulletSpawner").GetComponent<BulletSpawner>().Shot(this.transform.position, dir);
         }
@@ -127,17 +149,23 @@ public class Player2D : MonoBehaviour
         // -> 스크립트 출력에 활용가능함
         Debug.Log("<color=red>충돌 : </color>" + collision.gameObject.name);
 
-        Destroy(collision.gameObject, 0.5f);
-        // -> 삭제 딜레이
+        GetComponent<SoundTest>().setSound(1);
+
+        GameManager.Instance.AddScore();
+
+        Destroy(collision.gameObject, 0.2f);
     }
 
     private void OnCollisionEnter2D(Collision2D collision)
     {
+        if (collision.collider.tag.Contains("Wall") || isHit)
+            return;
+
+        Destroy(collision.gameObject);
+        GameManager.Instance.LoseLife();
+        GetComponent<SoundTest>().setSound(2);
         Invoke("Effect", 0.1f);
-
-        fLife -= fReduceLife;
     }
-
 
     private void Effect()
     {
@@ -145,6 +173,8 @@ public class Player2D : MonoBehaviour
 
         if (hitTimer <= maxTime)
         {
+            isHit = true;
+
             if (color == Color.white)
                 color = Color.red;
             else if (color == Color.red)
@@ -161,6 +191,7 @@ public class Player2D : MonoBehaviour
             color = Color.white;
             // spriteRenderer.color = new Color(color.r, color.g, color.b, 255);
             spriteRenderer.color = color;
+            isHit = false;
         }
 
     }

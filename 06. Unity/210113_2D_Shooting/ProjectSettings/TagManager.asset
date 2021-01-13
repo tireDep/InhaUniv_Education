@@ -6,6 +6,11 @@ TagManager:
   tags:
   - bulletSpawner
   - bullet
+  - playerBullet
+  - enemyBullet
+  - explosion
+  - enemy
+  - invisibleWall
   layers:
   - Default
   - TransparentFX

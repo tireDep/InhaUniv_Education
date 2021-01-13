@@ -7,19 +7,21 @@ public class Enemy : MonoBehaviour
     private float nowTime = 0.0f;
     private float maxTime = 5.0f;
 
-    private ShotEffect effect = null;
+    private float shotTime = 1.5f;
+
+    private float fSpeed = 100.0f;
 
     private void Shot()
     {
-        GameObject.FindGameObjectWithTag("bulletSpawner").GetComponent<BulletSpawner>().Shot(this.transform.position, Vector3.left);
+        GameObject.FindGameObjectWithTag("bulletSpawner").GetComponent<BulletSpawner>().EnemyShot(this.transform.position, Vector3.left);
 
         if(this.gameObject != null)
-            Invoke("Shot", 1.0f);
+            Invoke("Shot", shotTime);
     }
 
     private void Start()
     {
-        Invoke("Shot", 1.0f);
+        Invoke("Shot", shotTime);
     }
 
     void Update()
@@ -29,21 +31,27 @@ public class Enemy : MonoBehaviour
 
     private void Move()
     {
-        this.transform.Translate(Vector3.left * Time.deltaTime * 100.0f);
+        //nowTime += Time.deltaTime;
 
-        nowTime += Time.deltaTime;
+        //if (nowTime >= maxTime)
+        //    Destroy(this.gameObject);
+        //// todo : screen ÁÂÇ¥ ¹Û Destroy
+        ///
 
-        if (nowTime >= maxTime)
+        this.transform.Translate(Vector3.left * Time.deltaTime * fSpeed);
+
+        Vector3 targetPos = Camera.main.WorldToScreenPoint(this.transform.position);
+
+        if (targetPos.x <= -10.0f)
             Destroy(this.gameObject);
-        // todo : screen ÁÂÇ¥ ¹Û Destroy
     }
 
 
     private void OnCollisionEnter2D(Collision2D collision)
     {
-        Destroy(this.gameObject, 0.2f);
-        effect = GetComponent<ShotEffect>();
-        effect.transform.position = this.transform.position;
-        effect.Setup(this.transform.position);
+        if (this.tag.Contains("enemy") && collision.collider.tag.Contains("enemy"))
+            return;
+
+        Destroy(this.gameObject);
     }
 }
