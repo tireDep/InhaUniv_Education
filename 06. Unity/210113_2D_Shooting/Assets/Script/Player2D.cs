@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -7,9 +8,34 @@ public class Player2D : MonoBehaviour
     private Rigidbody2D rigidbody2D = null;
     private float fSpeedMove = 1000.0f;
 
+    private SpriteRenderer spriteRenderer = null;
+    private CircleCollider2D circleCollider2D = null;
+
+    private Vector2 vec2Offset;
+
+    private float hitTimer = 0.0f;
+    private float maxTime = 0.025f;
+    private Color color = Color.white;
+
+    private float fLife = 100.0f;
+    private float fReduceLife = 10.0f;
+
+    private Vector3 dir = Vector3.right;
+    public Vector3 Direction
+    {
+        get
+        {
+            return dir;
+        }
+    }
+
     void Start()
     {
         rigidbody2D = GetComponent<Rigidbody2D>();
+        spriteRenderer = GetComponent<SpriteRenderer>();
+        circleCollider2D = GetComponent<CircleCollider2D>();
+
+        vec2Offset = circleCollider2D.offset;
     }
 
     void Update()
@@ -35,8 +61,35 @@ public class Player2D : MonoBehaviour
         float x = Input.GetAxis("Horizontal");
         float y = Input.GetAxis("Vertical");
 
+        Filp_2D(x);
+
         // Move_AddForce(x, y);
         Move_MovePosition(x, y);
+
+        Attack();
+    }
+
+    private void Filp_2D(float x)
+    {
+        // -> 입력방향에 따른 이미지 뒤집기
+        // -> 뒤집기만 할 경우 콜라이더가 함께 움직이지 않음에 주의해야함!
+        // -> offset 재설정 필요
+
+        if(Mathf.Abs(x) > 0)
+        {
+            if(x>=0)
+            {
+                circleCollider2D.offset = vec2Offset;
+                spriteRenderer.flipX = false;
+                dir = Vector3.right;
+            }
+            else
+            {
+                dir = Vector3.left;
+                circleCollider2D.offset = vec2Offset * -1;
+                spriteRenderer.flipX = true;
+            }
+        }
     }
 
     private void Move_AddForce(float x, float y)
@@ -59,6 +112,15 @@ public class Player2D : MonoBehaviour
         rigidbody2D.MovePosition(position);
     }
 
+    private void Attack()
+    {
+        if(Input.GetKeyDown(KeyCode.Space))
+        {
+            Vector3 pos = this.transform.position;
+            GameObject.FindGameObjectWithTag("bulletSpawner").GetComponent<BulletSpawner>().Shot(this.transform.position, dir);
+        }
+    }
+
     private void OnTriggerEnter2D(Collider2D collision)
     {
         // -> 색상 지정 가능
@@ -67,5 +129,39 @@ public class Player2D : MonoBehaviour
 
         Destroy(collision.gameObject, 0.5f);
         // -> 삭제 딜레이
+    }
+
+    private void OnCollisionEnter2D(Collision2D collision)
+    {
+        Invoke("Effect", 0.1f);
+
+        fLife -= fReduceLife;
+    }
+
+
+    private void Effect()
+    {
+        hitTimer += Time.deltaTime;
+
+        if (hitTimer <= maxTime)
+        {
+            if (color == Color.white)
+                color = Color.red;
+            else if (color == Color.red)
+                color = Color.white;
+
+            spriteRenderer.color = color;
+            // spriteRenderer.color = new Color(color.r, color.g, color.b, 150);
+            // -> alpha 설정?
+            Invoke("Effect", 0.2f);
+        }
+        else
+        {
+            hitTimer = 0.0f;
+            color = Color.white;
+            // spriteRenderer.color = new Color(color.r, color.g, color.b, 255);
+            spriteRenderer.color = color;
+        }
+
     }
 }
