@@ -5,7 +5,7 @@ using UnityEngine;
 public class EnemySpawner : MonoBehaviour
 {
     public GameObject obj = null;
-    public float fRange = 3.0f;
+    private float fRange = 150.0f;
 
     //private void Start()
     //{

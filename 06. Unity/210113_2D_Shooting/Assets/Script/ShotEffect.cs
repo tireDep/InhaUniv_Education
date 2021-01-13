@@ -10,7 +10,7 @@ public class ShotEffect : MonoBehaviour
     {
         animator = GetComponent<Animator>();
 
-        StartCoroutine("ShotEffect_Coroutine");
+        // StartCoroutine("ShotEffect_Coroutine");
         // -> 시작하면서 바로 실행
         // -> 같은 기능을 업데이트에 넣어도 되나, 업데이트의 경우 실행이 일정하지 않을 수 있음
 
@@ -29,11 +29,21 @@ public class ShotEffect : MonoBehaviour
         Destroy(this.gameObject);
     }
 
-    private void TTT()
-    {
-        if (animator.GetCurrentAnimatorStateInfo(0).normalizedTime < 1.0f)
-            Invoke("TTT", 0.1f);
+    //private void TTT()
+    //{
+    //    if (animator.GetCurrentAnimatorStateInfo(0).normalizedTime < 1.0f)
+    //        Invoke("TTT", 0.1f);
 
-        Destroy(this.gameObject);
+    //    Destroy(this.gameObject);
+    //}
+
+    public GameObject obj = null;
+    public void Setup(Vector3 pos)
+    {
+        animator = GetComponent<Animator>();
+
+        Instantiate(obj, pos, this.transform.rotation);
+
+        StartCoroutine("ShotEffect_Coroutine");
     }
 }

@@ -7,6 +7,8 @@ public class Enemy : MonoBehaviour
     private float nowTime = 0.0f;
     private float maxTime = 5.0f;
 
+    private ShotEffect effect = null;
+
     private void Shot()
     {
         GameObject.FindGameObjectWithTag("bulletSpawner").GetComponent<BulletSpawner>().Shot(this.transform.position, Vector3.left);
@@ -27,7 +29,7 @@ public class Enemy : MonoBehaviour
 
     private void Move()
     {
-        // this.transform.Translate(Vector3.left * Time.deltaTime * 100.0f);
+        this.transform.Translate(Vector3.left * Time.deltaTime * 100.0f);
 
         nowTime += Time.deltaTime;
 
@@ -40,5 +42,8 @@ public class Enemy : MonoBehaviour
     private void OnCollisionEnter2D(Collision2D collision)
     {
         Destroy(this.gameObject, 0.2f);
+        effect = GetComponent<ShotEffect>();
+        effect.transform.position = this.transform.position;
+        effect.Setup(this.transform.position);
     }
 }

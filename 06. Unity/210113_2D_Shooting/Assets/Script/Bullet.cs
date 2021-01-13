@@ -8,6 +8,8 @@ public class Bullet : MonoBehaviour
     private float maxTime = 1.0f;
     private Vector3 dir;
 
+    public GameObject obj = null;
+
     private void Start()
     {
         dir = new Vector3(transform.rotation.x, transform.rotation.y, transform.rotation.z);
@@ -39,5 +41,13 @@ public class Bullet : MonoBehaviour
     private void OnCollisionEnter2D(Collision2D collision)
     {
         Destroy(this.gameObject);
+        // GameObject.Find("ShotEffect").GetComponent<ShotEffect>().Setup(this.transform.position);
+
+        //effect = GetComponent<ShotEffect>();
+        //effect.transform.position = this.transform.position;
+        //effect.Setup(this.transform.position);
+        // this.GetComponent<ShotEffect>().Setup(this.transform.position);
+
+        Instantiate(obj, this.transform.position, this.transform.rotation);
     }
 }

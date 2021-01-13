@@ -12,7 +12,7 @@ public class BulletSpawner : MonoBehaviour
         Vector3 setPos = new Vector3
             (
             pos.x + 150.0f,
-            pos.y - 50.0f,
+            pos.y - 25.0f,
             0
             );
 
