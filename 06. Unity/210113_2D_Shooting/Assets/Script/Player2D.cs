@@ -148,7 +148,7 @@ public class Player2D : MonoBehaviour
     {
         // -> 색상 지정 가능
         // -> 스크립트 출력에 활용가능함
-        Debug.Log("<color=red>충돌 : </color>" + collision.gameObject.name);
+        // Debug.Log("<color=red>충돌 : </color>" + collision.gameObject.name);
 
         // GetComponent<SoundTest>().setSound(1);
         GameManager.Instance.SetSFX(1);

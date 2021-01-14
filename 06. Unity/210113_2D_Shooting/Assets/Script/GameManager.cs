@@ -38,6 +38,20 @@ public class GameManager : MonoBehaviour
         }
     }
 
+    private string strID;
+    public string PlayerID
+    {
+        get
+        {
+            return strID;
+        }
+
+        set
+        {
+            strID = value;
+        }
+    }
+
     public static GameManager Instance
     {
         get
@@ -53,6 +67,7 @@ public class GameManager : MonoBehaviour
     private void Awake()
     {
         audioSource = gameObject.AddComponent<AudioSource>();
+        audioSource.loop = true;
         // >> 유니티 컴퍼넌트라서 new AudioSource() 이거로는 생성되지 않음에 주의
 
         audioClipArr = new AudioClip[2];
@@ -73,6 +88,7 @@ public class GameManager : MonoBehaviour
     public void AddScore()
     {
         fScore += 10.0f;
+        GameObject.Find("Canvas").GetComponent<UI>().SetScore(fScore);
     }
 
     public void SetPlayerLive(bool set)
@@ -89,6 +105,8 @@ public class GameManager : MonoBehaviour
     public void LoseLife()
     {
         fLife -= fReduceLife;
+
+        GameObject.Find("Canvas").GetComponent<UI>().SetHPbar(fLife);
 
         if (fLife <= 0.0f)
             SetPlayerLive(false);
@@ -107,6 +125,7 @@ public class GameManager : MonoBehaviour
 
     public void StopAndPlay(AudioClip clip)
     {
+        audioSFX.loop = true;
         audioSource.Stop();
         audioSource.clip = clip;
         audioSource.Play();
