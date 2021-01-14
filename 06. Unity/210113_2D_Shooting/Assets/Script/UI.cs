@@ -12,6 +12,7 @@ public class UI : MonoBehaviour
 
     private bool isChangeMain = false;
     private bool isChangeGame = false;
+    private bool isChangeEnd = false;
 
     public Image ImgHPbar = null;
     public Text TextID = null;
@@ -19,16 +20,15 @@ public class UI : MonoBehaviour
 
     public Image[] ImageScoreArr;
 
+    public Toggle TogBgm = null;
+    public Toggle TogSFX = null;
+
+    public GameObject pauseObj = null;
+
     private void Start()
     {
-        // GameManager.Instance.Reset();
-        // GameManager.Instance.SetBGM(0);
-
         for (int i = 0; i < ImageScoreArr.Length; i++)
             ImageScoreArr[i].enabled = false;
-
-        // if(ImageScoreArr.Length >= 0)
-        //     ImageScoreArr[0].enabled = true;
     }
 
     private void Update()
@@ -38,17 +38,23 @@ public class UI : MonoBehaviour
         if (scene.name.Contains("Main") && !isChangeMain)
         {
             isChangeMain = true;
+            isChangeEnd = false;
             GameManager.Instance.Reset();
             GameManager.Instance.SetBGM(0);
+            GameManager.Instance.BGMPlay = true;
+            GameManager.Instance.SFXPlay = true;
         }
         else if(scene.name.Contains("Game") && !isChangeGame)
         {
             isChangeGame = true;
             GameManager.Instance.SetBGM(1);
+            GameManager.Instance.SetSFX(3);
             TextID.text = GameManager.Instance.PlayerID;
         }
-        else if (scene.name.Contains("End"))
+        else if (scene.name.Contains("End") && !isChangeEnd)
         {
+            isChangeEnd = true;
+            GameManager.Instance.SetSFX(3);
             SetScore(GameManager.Instance.Score);
 
             isChangeMain = false;
@@ -56,6 +62,7 @@ public class UI : MonoBehaviour
         }
     }
 
+    private bool isPress = false;
     private void onStartBtnPress()
     {
         SceneManager.LoadScene("01. Game");
@@ -71,6 +78,25 @@ public class UI : MonoBehaviour
         SceneManager.LoadScene("00. Main");
     }
 
+    private void onPauseRelease()
+    {
+        GameManager.Instance.Pause = false;
+    }
+
+    private void onBGMstatus()
+    {
+        GameManager.Instance.BGMPlay = TogBgm.isOn;
+    }
+
+    private void onSFXstatus()
+    {
+        GameManager.Instance.SFXPlay = TogSFX.isOn;
+    }
+
+    public void SetActivePausePopup(bool set)
+    {
+        pauseObj.SetActive(set);
+    }
     //private void OnGUI()
     //{
     //    scene = SceneManager.GetActiveScene();

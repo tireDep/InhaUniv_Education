@@ -39,15 +39,12 @@ public class Player2D : MonoBehaviour
 
     void Update()
     {
+        if(Input.GetKeyDown(KeyCode.Escape))
+        {
+            GameManager.Instance.Pause = !GameManager.Instance.Pause;
+        }
         // Move();
-        CheckLife();
         RigidbodyMove();
-    }
-
-    private void CheckLife()
-    {
-        // if(fLife <= 0.0f)
-        //     GameManager.Instance.
     }
 
     private void Move()

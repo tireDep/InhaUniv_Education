@@ -52,6 +52,20 @@ public class GameManager : MonoBehaviour
         }
     }
 
+    private bool isBGMplay = false;
+    public bool BGMPlay
+    {
+        get { return isBGMplay; }
+        set { isBGMplay = value; }
+    }
+
+    private bool isSFXplay = false;
+    public bool SFXPlay
+    {
+        get { return isSFXplay; }
+        set { isSFXplay = value; }
+    }
+
     public static GameManager Instance
     {
         get
@@ -66,6 +80,9 @@ public class GameManager : MonoBehaviour
     }
     private void Awake()
     {
+        isBGMplay = true;
+        isSFXplay = true;
+
         audioSource = gameObject.AddComponent<AudioSource>();
         audioSource.loop = true;
         // >> 유니티 컴퍼넌트라서 new AudioSource() 이거로는 생성되지 않음에 주의
@@ -75,11 +92,14 @@ public class GameManager : MonoBehaviour
         audioClipArr[1] = Resources.Load("Sound/stage") as AudioClip;
 
         audioSFX = gameObject.AddComponent<AudioSource>();
+        audioSFX.loop = false;
+
         audioClipSFX = new AudioClip[4];
         audioClipSFX[0] = Resources.Load("Sound/attack") as AudioClip;
         audioClipSFX[1] = Resources.Load("Sound/get") as AudioClip;
         audioClipSFX[2] = Resources.Load("Sound/damaged") as AudioClip;
         audioClipSFX[3] = Resources.Load("Sound/start") as AudioClip;
+        
 
         DontDestroyOnLoad(this.gameObject);
     }
@@ -97,7 +117,7 @@ public class GameManager : MonoBehaviour
 
         if(isLive == false)
         {
-            SetSFX(3);
+            audioSource.Stop();
             SceneManager.LoadScene("02. End");
         }
     }
@@ -120,6 +140,9 @@ public class GameManager : MonoBehaviour
 
     public void SetBGM(int set)
     {
+        if (!isBGMplay)
+            return;
+
         StopAndPlay(audioClipArr[set]);
     }
 
@@ -133,6 +156,9 @@ public class GameManager : MonoBehaviour
 
     public void SetSFX(int set)
     {
+        if (!isSFXplay)
+            return;
+
         StopAndPlaySFX(audioClipSFX[set]);
     }
 
@@ -142,5 +168,36 @@ public class GameManager : MonoBehaviour
         audioSFX.Stop();
         audioSFX.clip = clip;
         audioSFX.Play();
+    }
+
+    private bool isPause = false;
+    public bool Pause
+    {
+        get
+        {
+            return isPause;
+        }
+        set
+        {
+            isPause = value;
+
+            if (value)
+            {
+                Time.timeScale = 0;
+                audioSource.Pause();
+                audioSFX.Pause();
+            }
+            else
+            {
+                Time.timeScale = 1;
+                if(isBGMplay)
+                    audioSource.Play();
+
+                if(isSFXplay)
+                    audioSFX.Stop();
+            }
+            GameObject.Find("Canvas").GetComponent<UI>().SetActivePausePopup(value);
+
+        }
     }
 }
