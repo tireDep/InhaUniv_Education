@@ -6,8 +6,11 @@ using UnityEngine.SceneManagement;
 
 public class GameManager : MonoBehaviour
 {
-    private AudioClip[] audioClipArr = new AudioClip[2];
+    private AudioClip[] audioClipArr;
     private AudioSource audioSource;
+
+    private AudioClip[] audioClipSFX;
+    private AudioSource audioSFX;
 
     // >> singleton
     private static GameManager sInstance;
@@ -49,10 +52,20 @@ public class GameManager : MonoBehaviour
     }
     private void Awake()
     {
-        // audioSource = GetComponent<AudioSource>();
-        // >> todo : 질문하기
+        audioSource = gameObject.AddComponent<AudioSource>();
+        // >> 유니티 컴퍼넌트라서 new AudioSource() 이거로는 생성되지 않음에 주의
+
+        audioClipArr = new AudioClip[2];
         audioClipArr[0] = Resources.Load("Sound/title") as AudioClip;
         audioClipArr[1] = Resources.Load("Sound/stage") as AudioClip;
+
+        audioSFX = gameObject.AddComponent<AudioSource>();
+        audioClipSFX = new AudioClip[4];
+        audioClipSFX[0] = Resources.Load("Sound/attack") as AudioClip;
+        audioClipSFX[1] = Resources.Load("Sound/get") as AudioClip;
+        audioClipSFX[2] = Resources.Load("Sound/damaged") as AudioClip;
+        audioClipSFX[3] = Resources.Load("Sound/start") as AudioClip;
+
         DontDestroyOnLoad(this.gameObject);
     }
     // << singleton
@@ -68,6 +81,7 @@ public class GameManager : MonoBehaviour
 
         if(isLive == false)
         {
+            SetSFX(3);
             SceneManager.LoadScene("02. End");
         }
     }
@@ -86,15 +100,28 @@ public class GameManager : MonoBehaviour
         isLive = true;
     }
 
-    //public void SetBGM(int set)
-    //{
-    //    StopAndPlay(audioClipArr[set]);
-    //}
+    public void SetBGM(int set)
+    {
+        StopAndPlay(audioClipArr[set]);
+    }
 
-    //public void StopAndPlay(AudioClip clip)
-    //{
-    //    audioSource.Stop();
-    //    audioSource.clip = clip;
-    //    audioSource.Play();
-    //}
+    public void StopAndPlay(AudioClip clip)
+    {
+        audioSource.Stop();
+        audioSource.clip = clip;
+        audioSource.Play();
+    }
+
+    public void SetSFX(int set)
+    {
+        StopAndPlaySFX(audioClipSFX[set]);
+    }
+
+    private void StopAndPlaySFX(AudioClip clip)
+    {
+        audioSFX.loop = false;
+        audioSFX.Stop();
+        audioSFX.clip = clip;
+        audioSFX.Play();
+    }
 }

@@ -136,7 +136,8 @@ public class Player2D : MonoBehaviour
 
         if(Input.GetKeyDown(KeyCode.Space))
         {
-            GetComponent<SoundTest>().setSound(0);
+            // GetComponent<SoundTest>().setSound(0);
+            GameManager.Instance.SetSFX(0);
             isPress = true;
             Vector3 pos = this.transform.position;
             GameObject.FindGameObjectWithTag("bulletSpawner").GetComponent<BulletSpawner>().Shot(this.transform.position, dir);
@@ -149,7 +150,8 @@ public class Player2D : MonoBehaviour
         // -> 스크립트 출력에 활용가능함
         Debug.Log("<color=red>충돌 : </color>" + collision.gameObject.name);
 
-        GetComponent<SoundTest>().setSound(1);
+        // GetComponent<SoundTest>().setSound(1);
+        GameManager.Instance.SetSFX(1);
 
         GameManager.Instance.AddScore();
 
@@ -163,7 +165,8 @@ public class Player2D : MonoBehaviour
 
         Destroy(collision.gameObject);
         GameManager.Instance.LoseLife();
-        GetComponent<SoundTest>().setSound(2);
+        // GetComponent<SoundTest>().setSound(2);
+        GameManager.Instance.SetSFX(2);
         Invoke("Effect", 0.1f);
     }
 

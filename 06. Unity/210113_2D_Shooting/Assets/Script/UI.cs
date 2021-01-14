@@ -18,7 +18,7 @@ public class UI : MonoBehaviour
         {
             if(isChangeMain == false)
             {
-                // GameManager.Instance.SetBGM(0);
+                GameManager.Instance.SetBGM(0);
                 isChangeMain = true;
             }
 
@@ -41,7 +41,7 @@ public class UI : MonoBehaviour
         {
             if (isChangeGame == false)
             {
-                // GameManager.Instance.SetBGM(1);
+                GameManager.Instance.SetBGM(1);
                 isChangeGame = true;
             }
 
