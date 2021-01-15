@@ -8,7 +8,8 @@ public class Enemy : MonoBehaviour
     public GameObject objSword = null;
     private CapsuleCollider collider = null;
 
-    private float fSpeed = 10.0f;
+    [SerializeField]
+    private float fSpeed = 15.0f;
 
     private bool isCollision = false;
 
@@ -17,7 +18,7 @@ public class Enemy : MonoBehaviour
     {
         animation = gameObject.GetComponentInChildren<Animation>();
         animation.wrapMode = WrapMode.Loop;
-        animation.CrossFade("walk");
+        animation.CrossFade("run");
 
         collider = gameObject.GetComponent<CapsuleCollider>();
 
@@ -28,18 +29,17 @@ public class Enemy : MonoBehaviour
     {
         if (!isCollision)
         {
-            // this.transform.Translate(Vector3.forward * fSpeed * Time.deltaTime);
-            this.transform.position += Vector3.back * fSpeed * Time.deltaTime;
+            this.transform.Translate(Vector3.forward * fSpeed * Time.deltaTime);
         }
     }
 
-    private void OnCollisionEnter(Collision collision)
+    private void OnTriggerEnter(Collider other)
     {
-        if (collision.collider.tag == "Map" || collision.collider.tag == "Enemy")
+        if (other.tag == "Map" || other.tag == "Enemy")
             return;
 
         isCollision = true;
-        if (collision.collider.tag == "Sword")
+        if (other.tag == "Sword")
         {
             animation.Play("die");
             collider.enabled = false;
@@ -66,11 +66,12 @@ public class Enemy : MonoBehaviour
             yield return new WaitForSeconds(fDelayTime);
 
             objSword.SetActive(false);
-            animation.CrossFade("walk", 0.3f);
+
+            animation.wrapMode = WrapMode.Loop;
+            animation.CrossFade("run");
 
             isCollision = false;
         }
 
-        // Invoke("Attack", 0.2f);
     }
 }
