@@ -135,6 +135,10 @@ PrefabInstance:
       value: DefenceWall (3)
       objectReference: {fileID: 0}
     - target: {fileID: 7818816813056209101, guid: 6e2acc3dd72b76a47afcddb58fb2922b, type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 7818816813056209101, guid: 6e2acc3dd72b76a47afcddb58fb2922b, type: 3}
       propertyPath: m_TagString
       value: Wall
       objectReference: {fileID: 0}
@@ -1519,7 +1523,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: -4216859302048453862, guid: 608191cf3aeaa85419bb4558fccb064b, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 0
+      value: 10.11
       objectReference: {fileID: 0}
     - target: {fileID: -4216859302048453862, guid: 608191cf3aeaa85419bb4558fccb064b, type: 3}
       propertyPath: m_LocalPosition.y
@@ -3238,6 +3242,26 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 7818816813056209103, guid: 6e2acc3dd72b76a47afcddb58fb2922b, type: 3}
   m_PrefabInstance: {fileID: 2000227905}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &2026970691 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 7818816813056209101, guid: 6e2acc3dd72b76a47afcddb58fb2922b, type: 3}
+  m_PrefabInstance: {fileID: 1867679676}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &2026970694
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2026970691}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: cfabb0440166ab443bba8876756fdfa9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_EffectColor: {r: 0.9433962, g: 0, b: 0, a: 0.5}
+  m_EffectDistance: {x: 1, y: -1}
+  m_UseGraphicAlpha: 1
 --- !u!1 &2032071964
 GameObject:
   m_ObjectHideFlags: 0
@@ -3399,6 +3423,10 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 13708931282599610, guid: dd28608aa1ecf204e890b36091f0d262, type: 3}
+      propertyPath: m_TagString
+      value: Untagged
+      objectReference: {fileID: 0}
     - target: {fileID: 808917921951104462, guid: dd28608aa1ecf204e890b36091f0d262, type: 3}
       propertyPath: m_Name
       value: Enemy
@@ -3417,7 +3445,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 808917921951104466, guid: dd28608aa1ecf204e890b36091f0d262, type: 3}
       propertyPath: m_LocalPosition.z
-      value: 49.8
+      value: 10
       objectReference: {fileID: 0}
     - target: {fileID: 808917921951104466, guid: dd28608aa1ecf204e890b36091f0d262, type: 3}
       propertyPath: m_LocalRotation.w
@@ -3447,6 +3475,14 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 1054907133630604947, guid: dd28608aa1ecf204e890b36091f0d262, type: 3}
+      propertyPath: m_TagString
+      value: EnemySword
+      objectReference: {fileID: 0}
+    - target: {fileID: 8653727732897868500, guid: dd28608aa1ecf204e890b36091f0d262, type: 3}
+      propertyPath: m_TagString
+      value: Untagged
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: dd28608aa1ecf204e890b36091f0d262, type: 3}
 --- !u!1001 &2142445040
@@ -3459,6 +3495,10 @@ PrefabInstance:
     - target: {fileID: 7818816813056209101, guid: 6e2acc3dd72b76a47afcddb58fb2922b, type: 3}
       propertyPath: m_Name
       value: DefenceWall (1)
+      objectReference: {fileID: 0}
+    - target: {fileID: 7818816813056209101, guid: 6e2acc3dd72b76a47afcddb58fb2922b, type: 3}
+      propertyPath: m_IsActive
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 7818816813056209101, guid: 6e2acc3dd72b76a47afcddb58fb2922b, type: 3}
       propertyPath: m_TagString

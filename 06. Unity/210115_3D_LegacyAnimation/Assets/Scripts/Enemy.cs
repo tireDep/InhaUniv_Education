@@ -12,7 +12,20 @@ public class Enemy : MonoBehaviour
     private float fSpeed = 15.0f;
 
     private bool isCollision = false;
-
+    public bool EnemyCollisionState
+    {
+        get { return isCollision;  }
+        set
+        {
+            if(!value)
+            {
+                isCollision = false;
+                objSword.SetActive(false);
+                animation.wrapMode = WrapMode.Loop;
+                animation.CrossFade("run");
+            }
+        }
+    }
 
     void Start()
     {
@@ -46,12 +59,26 @@ public class Enemy : MonoBehaviour
         }
         else
         {
-            StartCoroutine("Attack");
+            // StartCoroutine("Attack");
+            Invoke("Attack", 0.0f);
         }
     }
 
-    IEnumerator Attack()
-   {
+    private void OnTriggerExit(Collider other)
+    {
+        // isCollision = false;
+
+        //objSword.SetActive(false);
+        //animation.wrapMode = WrapMode.Loop;
+        //animation.CrossFade("run");
+    }
+
+    // IEnumerator Attack()
+    private void Attack()
+    {
+        if (!isCollision)
+            return;
+
         if (animation.IsPlaying("attack") != true )
         {
             objSword.SetActive(true);
@@ -61,17 +88,13 @@ public class Enemy : MonoBehaviour
             animation.wrapMode = WrapMode.Once;
             animation.CrossFade("attack", 0.3f);
 
-            float fDelayTime = animation.GetClip("attack").length - 0.3f;
-
-            yield return new WaitForSeconds(fDelayTime);
-
-            objSword.SetActive(false);
-
-            animation.wrapMode = WrapMode.Loop;
-            animation.CrossFade("run");
-
-            isCollision = false;
+            // float fDelayTime = animation.GetClip("attack").length - 0.3f;
+            // yield return new WaitForSeconds(fDelayTime);
+            //  objSword.SetActive(false);
+            //  animation.wrapMode = WrapMode.Loop;
+            //  animation.CrossFade("run");
+            // isCollision = false;
         }
-
+        Invoke("Attack", 0.0f);
     }
 }
