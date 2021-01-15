@@ -57,8 +57,8 @@ public class PlayerControl : MonoBehaviour
             StartCoroutine("AttackToIdle");
         }
 
-        if (Input.GetKeyDown(KeyCode.Alpha1))          
-        { 
+        if (Input.GetKeyDown(KeyCode.Alpha1))
+        {
             spartanKing.CrossFade("walk", 0.3f);
             spartanKing.wrapMode = WrapMode.Loop;
         }
@@ -68,14 +68,14 @@ public class PlayerControl : MonoBehaviour
         // else if (Input.GetKeyDown(KeyCode.Alpha5)) { spartanKing.Play("resist"); }
         // else if (Input.GetKeyDown(KeyCode.Alpha6)) { spartanKing.Play("victory"); }
         // else if (Input.GetKeyDown(KeyCode.Alpha7)) { spartanKing.Play("salute"); }
-        else if (Input.GetKeyDown(KeyCode.Alpha8)) 
-        { 
+        else if (Input.GetKeyDown(KeyCode.Alpha8))
+        {
             spartanKing.CrossFade(DIE.name, 0.3f);
             spartanKing.wrapMode = WrapMode.Once;
         }
         // else if (Input.GetKeyDown(KeyCode.Alpha9)) { spartanKing.Play("diehard"); }
-        else if (Input.GetKeyDown(KeyCode.Alpha0)) 
-        { 
+        else if (Input.GetKeyDown(KeyCode.Alpha0))
+        {
             spartanKing.CrossFade("idle", 0.3f);
             spartanKing.wrapMode = WrapMode.Loop;
         }
@@ -85,7 +85,7 @@ public class PlayerControl : MonoBehaviour
     private bool isFin = false;
     IEnumerator AttackToIdle()
     {
-        if(spartanKing.IsPlaying("attack")!=true)
+        if (spartanKing.IsPlaying("attack") != true)
         {
             isFin = true;
             objSword.SetActive(true);
@@ -117,13 +117,13 @@ public class PlayerControl : MonoBehaviour
         velocity = new Vector3(Input.GetAxis("Horizontal"), 0, Input.GetAxis("Vertical"));
         velocity *= RunSpeed;
 
-        if(velocity.magnitude > 0.5f)
+        if (velocity.magnitude > 0.5f)
         {
             // -> magnitude 뭔지 찾아보기
             spartanKing.CrossFade("run", 0.3f);
             transform.LookAt(transform.position + velocity);
         }
-        else if(Input.GetKey(KeyCode.F))
+        else if (Input.GetKey(KeyCode.F))
             StartCoroutine("AttackToIdle");
         // else
         //     spartanKing.CrossFade("idle", 0.3f);
@@ -136,14 +136,14 @@ public class PlayerControl : MonoBehaviour
         // -> 중력 받음
     }
 
-    static float fRotSpeed = 360.0f;
+    static float fRotSpeed = 480.0f;
     void CharacterControll_Slerp()
     {
         // >> 끊김 해결(값 조정으로 어색한것 해결해야함)
 
         Vector3 direction = new Vector3(Input.GetAxis("Horizontal"), 0, Input.GetAxis("Vertical"));
 
-        if (Input.GetKey(KeyCode.F))
+        if (Input.GetKeyDown(KeyCode.Mouse0))
             StartCoroutine("AttackToIdle");
 
         if(!isFin)
@@ -157,13 +157,15 @@ public class PlayerControl : MonoBehaviour
                 // >> 바라보는 방향, 이동 방향 간 보간
 
                 transform.LookAt(transform.position + forward);
+
             }
             else
                 spartanKing.CrossFade("idle", 0.3f);
-        }
 
-        playerController.Move(direction * RunSpeed * Time.deltaTime + Physics.gravity);
-    }
+            playerController.Move(direction * RunSpeed * Time.deltaTime + Physics.gravity);
+        }
+    
+}
 
     private void OnControllerColliderHit(ControllerColliderHit hit)
     {

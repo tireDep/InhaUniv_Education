@@ -27,6 +27,8 @@ public class Enemy : MonoBehaviour
         }
     }
 
+    private bool isDead = false;
+
     void Start()
     {
         animation = gameObject.GetComponentInChildren<Animation>();
@@ -40,22 +42,37 @@ public class Enemy : MonoBehaviour
 
     void Update()
     {
-        if (!isCollision)
+        if(isDead)
         {
-            this.transform.Translate(Vector3.forward * fSpeed * Time.deltaTime);
+            animation.wrapMode = WrapMode.Once;
+
+            if (!animation.IsPlaying("die"))
+                Destroy(this.gameObject);
+        }
+        else
+        {
+            if (!isCollision)
+            {
+                this.transform.Translate(Vector3.forward * fSpeed * Time.deltaTime);
+            }
         }
     }
 
     private void OnTriggerEnter(Collider other)
     {
+        if (isDead)
+            return;
+
         if (other.tag == "Map" || other.tag == "Enemy")
             return;
 
         isCollision = true;
         if (other.tag == "Sword")
         {
+            isDead = true;
             animation.Play("die");
             collider.enabled = false;
+            Debug.Log("check");
         }
         else
         {
@@ -64,19 +81,10 @@ public class Enemy : MonoBehaviour
         }
     }
 
-    private void OnTriggerExit(Collider other)
-    {
-        // isCollision = false;
-
-        //objSword.SetActive(false);
-        //animation.wrapMode = WrapMode.Loop;
-        //animation.CrossFade("run");
-    }
-
     // IEnumerator Attack()
     private void Attack()
     {
-        if (!isCollision)
+        if (!isCollision || isDead)
             return;
 
         if (animation.IsPlaying("attack") != true )
