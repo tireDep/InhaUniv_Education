@@ -28,13 +28,13 @@ public class PlayerControl : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        Animation_Play_1();
+        // Animation_Play_1();
         // >> 애니메이션
 
         // CharacterControll();
         // >> 캐릭터 컨트롤러
 
-        // CharacterControll_Slerp();
+        CharacterControll_Slerp();
         // >> 부드러운 캐릭터 컨트롤러
     }
 
@@ -82,11 +82,15 @@ public class PlayerControl : MonoBehaviour
 
     }
 
+    private bool isFin = false;
     IEnumerator AttackToIdle()
     {
         if(spartanKing.IsPlaying("attack")!=true)
         {
+            isFin = true;
             objSword.SetActive(true);
+            objSword.transform.position = new Vector3(0, 0, 0);
+            objSword.transform.position = this.transform.position;
 
             spartanKing.wrapMode = WrapMode.Once;
             spartanKing.CrossFade("attack", 0.3f);
@@ -99,6 +103,8 @@ public class PlayerControl : MonoBehaviour
             objSword.SetActive(false);
             spartanKing.wrapMode = WrapMode.Loop;
             spartanKing.CrossFade("idle", 0.3f);
+
+            isFin = false;
         }
     }
 
@@ -117,10 +123,10 @@ public class PlayerControl : MonoBehaviour
             spartanKing.CrossFade("run", 0.3f);
             transform.LookAt(transform.position + velocity);
         }
-        else
-        {
-            spartanKing.CrossFade("idle", 0.3f);
-        }
+        else if(Input.GetKey(KeyCode.F))
+            StartCoroutine("AttackToIdle");
+        // else
+        //     spartanKing.CrossFade("idle", 0.3f);
 
         playerController.Move(velocity * Time.deltaTime);
         // ->  중력 받지 x : 공중에 떠 있을 경우 공중부양 상태 됨
@@ -137,19 +143,23 @@ public class PlayerControl : MonoBehaviour
 
         Vector3 direction = new Vector3(Input.GetAxis("Horizontal"), 0, Input.GetAxis("Vertical"));
 
-        if (direction.sqrMagnitude > 0.01f)
-        {
-            spartanKing.CrossFade("run", 0.3f);
-            Vector3 forward = Vector3.Slerp(transform.forward,
-                                            direction,
-                                            fRotSpeed * Time.deltaTime / Vector3.Angle(transform.forward, direction));
-            // >> 바라보는 방향, 이동 방향 간 보간
+        if (Input.GetKey(KeyCode.F))
+            StartCoroutine("AttackToIdle");
 
-            transform.LookAt(transform.position + forward);
-        }
-        else
+        if(!isFin)
         {
-            spartanKing.CrossFade("idle", 0.3f);
+            if (direction.sqrMagnitude > 0.01f)
+            {
+                spartanKing.CrossFade("run", 0.3f);
+                Vector3 forward = Vector3.Slerp(transform.forward,
+                                                direction,
+                                                fRotSpeed * Time.deltaTime / Vector3.Angle(transform.forward, direction));
+                // >> 바라보는 방향, 이동 방향 간 보간
+
+                transform.LookAt(transform.position + forward);
+            }
+            else
+                spartanKing.CrossFade("idle", 0.3f);
         }
 
         playerController.Move(direction * RunSpeed * Time.deltaTime + Physics.gravity);
