@@ -139,14 +139,54 @@ public class PlayerControl : MonoBehaviour
     static float fRotSpeed = 480.0f;
     void CharacterControll_Slerp()
     {
-        // >> 끊김 해결(값 조정으로 어색한것 해결해야함)
-
         Vector3 direction = new Vector3(Input.GetAxis("Horizontal"), 0, Input.GetAxis("Vertical"));
 
+        if(Input.GetKeyDown(KeyCode.Space))
+        {
+            // StartCoroutine("MoveDash");
+
+            Vector3 prePos = transform.position;
+
+            Plane plane = new Plane(Vector3.up, 0); // 가상의 면
+
+            float distance;
+            Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+
+            Vector3 hitPos;
+            Vector3 dir = new Vector3(0, 0, 0);
+            if (plane.Raycast(ray, out distance))
+            {
+                hitPos = ray.GetPoint(distance);
+                dir = hitPos - transform.position;
+
+                transform.rotation = Quaternion.LookRotation(dir);
+                dir = Vector3.Normalize(dir);
+            }
+
+            // transform.Translate(dir * 1000 * Time.deltaTime);
+            transform.position += (dir * 1000 * Time.deltaTime);
+            // >> todo : 이동 수정
+        }
+
         if (Input.GetKeyDown(KeyCode.Mouse0))
+        {
+            // >> 커서 위치(마우스 클릭) 공격
+            Plane plane = new Plane(Vector3.up, 0); // 가상의 면
+
+            float distance;
+            Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+            if (plane.Raycast(ray, out distance))
+            {
+                // transform.position = ray.GetPoint(distance);
+                transform.LookAt(ray.GetPoint(distance));
+            }
+            // << 커서 위치(마우스 클릭) 공격
+
             StartCoroutine("AttackToIdle");
 
-        if(!isFin)
+        }
+
+        if (!isFin)
         {
             if (direction.sqrMagnitude > 0.01f)
             {
@@ -164,12 +204,13 @@ public class PlayerControl : MonoBehaviour
 
             playerController.Move(direction * RunSpeed * Time.deltaTime + Physics.gravity);
         }
-    
-}
+
+    }
 
     private void OnControllerColliderHit(ControllerColliderHit hit)
     {
         // >> 캐릭터 컨트롤러끼리 충돌 확인 가능
         // Debug.Log(hit.collider.name);
     }
+
 }
