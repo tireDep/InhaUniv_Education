@@ -29,6 +29,8 @@ public class Enemy : MonoBehaviour
 
     private bool isDead = false;
 
+    public GameObject effectObj;
+
     void Start()
     {
         animation = gameObject.GetComponentInChildren<Animation>();
@@ -42,6 +44,9 @@ public class Enemy : MonoBehaviour
 
     void Update()
     {
+        // if(this.transform.position)
+        // EnemySpawner.Instance.
+
         if(isDead)
         {
             animation.wrapMode = WrapMode.Once;
@@ -54,6 +59,11 @@ public class Enemy : MonoBehaviour
             if (!isCollision)
             {
                 this.transform.Translate(Vector3.forward * fSpeed * Time.deltaTime);
+                fSpeed = 15.0f;
+            }
+            else
+            {
+                Invoke("Attack", 0.0f);
             }
         }
     }
@@ -67,6 +77,7 @@ public class Enemy : MonoBehaviour
             return;
 
         isCollision = true;
+        fSpeed = 0.0f;
         if (other.tag == "Sword")
         {
             isDead = true;
@@ -76,7 +87,6 @@ public class Enemy : MonoBehaviour
         }
         else
         {
-            // StartCoroutine("Attack");
             Invoke("Attack", 0.0f);
         }
     }
@@ -89,6 +99,8 @@ public class Enemy : MonoBehaviour
 
         if (animation.IsPlaying("attack") != true )
         {
+            GameObject tempObj = Instantiate(effectObj, this.transform.position, this.transform.rotation);
+
             objSword.SetActive(true);
             objSword.transform.position = new Vector3(0, 0, 0);
             objSword.transform.position = this.transform.position;
@@ -102,6 +114,8 @@ public class Enemy : MonoBehaviour
             //  animation.wrapMode = WrapMode.Loop;
             //  animation.CrossFade("run");
             // isCollision = false;
+
+            Destroy(tempObj, 1.0f);
         }
         Invoke("Attack", 0.0f);
     }

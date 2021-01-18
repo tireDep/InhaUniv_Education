@@ -48,6 +48,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   objSword: {fileID: 1054907133630604947}
   fSpeed: 15
+  effectObj: {fileID: 120410, guid: 6636b3078b0905e489f698a11b7a6b6b, type: 3}
 --- !u!136 &1519992953446374389
 CapsuleCollider:
   m_ObjectHideFlags: 0

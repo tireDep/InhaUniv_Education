@@ -14,15 +14,40 @@ public class PlayerControl : MonoBehaviour
 
     public GameObject objSword = null;
 
+    private int playerLife = 3;
+    public int PlayerHp
+    {
+        get { return playerLife; }
+        set { playerLife = value;  }
+    }
+
+    private bool isDead = false;
+
+    private int score = 0;
+    public int Score
+    {
+        get { return score; }
+        set { score = value; }
+    }
+
+    public GameObject effectObj = null;
+
     void Start()
     {
         spartanKing = gameObject.GetComponentInChildren<Animation>();
+
         spartanKing.wrapMode = WrapMode.Loop;
         // >> 애니메이션 플레이 설정(반복 등)
 
         playerController = gameObject.GetComponent<CharacterController>();
 
         objSword.SetActive(false);
+    }
+
+    private void FixedUpdate()
+    {
+        score += 1;
+        GameManager.Instance.Score = score;
     }
 
     // Update is called once per frame
@@ -34,8 +59,20 @@ public class PlayerControl : MonoBehaviour
         // CharacterControll();
         // >> 캐릭터 컨트롤러
 
-        CharacterControll_Slerp();
+        if(isDead)
+        {
+            spartanKing.CrossFade("die", 0.3f);
+            Invoke("AnouncePlayerDead", 2.3f);
+        }
+        else
+            CharacterControll_Slerp();
         // >> 부드러운 캐릭터 컨트롤러
+    }
+
+    private void AnouncePlayerDead()
+    {
+        GameManager.Instance.Score = score;
+        GameManager.Instance.SetScene("02. End");
     }
 
     private void Animation_Play_1()
@@ -87,6 +124,7 @@ public class PlayerControl : MonoBehaviour
     {
         if (spartanKing.IsPlaying("attack") != true)
         {
+            GameObject tempObj = Instantiate(effectObj, this.transform.position, this.transform.rotation);
             isFin = true;
             objSword.SetActive(true);
             objSword.transform.position = new Vector3(0, 0, 0);
@@ -105,6 +143,9 @@ public class PlayerControl : MonoBehaviour
             spartanKing.CrossFade("idle", 0.3f);
 
             isFin = false;
+
+            // DestroyImmediate(tempObj.gameObject, true);
+            Destroy(tempObj);
         }
     }
 
@@ -207,10 +248,54 @@ public class PlayerControl : MonoBehaviour
 
     }
 
-    private void OnControllerColliderHit(ControllerColliderHit hit)
+    // private void OnControllerColliderHit(ControllerColliderHit hit)
+    // {
+    //     // >> 캐릭터 컨트롤러끼리 충돌 확인 가능
+    //     if (hit.collider.CompareTag("Map"))
+    //         return;
+    //
+    //     RunSpeed = 0.0f;
+    //
+    // }
+
+    //private void OnTriggerEnter(Collider other)
+    //{
+    //    Debug.Log(other.name);
+    //    RunSpeed = 0.0f;
+
+    //    playerLife--;
+    //    if (playerLife == 0)
+    //    {
+    //        isDead = true;
+    //    }
+    //}
+
+    //private void OnTriggerExit(Collider other)
+    //{
+    //    RunSpeed = 10.0f;
+    //}
+
+    private void OnCollisionEnter(Collision collision)
     {
-        // >> 캐릭터 컨트롤러끼리 충돌 확인 가능
-        // Debug.Log(hit.collider.name);
+        if (collision.collider.CompareTag("Map") || collision.collider.CompareTag("Sword"))
+            return;
+
+        //         Debug.Log(collision.collider.name);
+
+        RunSpeed = 0.0f;
+
+        playerLife--;
+        if (playerLife == 0)
+        {
+            isDead = true;
+            this.GetComponent<CapsuleCollider>().enabled = false;
+            collision.collider.GetComponentInParent<Enemy>().EnemyCollisionState = false;
+        }
+    }
+
+    private void OnCollisionExit(Collision collision)
+    {
+        RunSpeed = 10.0f;
     }
 
 }
