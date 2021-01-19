@@ -20,15 +20,19 @@ public class MecanimControl : MonoBehaviour
     void Update()
     {
         // if(pcController.velocity.magnitude)
-        animator.SetFloat("Speed", pcController.velocity.magnitude);
 
-        if(Input.GetKeyDown(KeyCode.Space))
-        {
-            animator.SetTrigger("Attack");
-            isAttack = true;
-        }
+        // animator.SetFloat("Speed", pcController.velocity.magnitude);
+        // 
+        // if(Input.GetKeyDown(KeyCode.Space))
+        // {
+        //     animator.SetTrigger("Attack");
+        //     isAttack = true;
+        // }
+        // 
+        // StartCoroutine("CheckAttack");
 
-        StartCoroutine("CheckAttack");
+        Input_Animation();
+        // Input_Animation2();
 
         CharacterController_Slerp();        
     }
@@ -63,5 +67,46 @@ public class MecanimControl : MonoBehaviour
         }
         pcController.Move(direction * fSpeed * Time.deltaTime + Physics.gravity);
 
+    }
+
+    private void Input_Animation()
+    {
+        // animator.SetFloat("Speed", pcController.velocity.magnitude);
+
+        if(Input.GetMouseButtonDown(0))
+        {
+            animator.SetTrigger("HandUp");       
+        }
+    }
+
+    private bool bHandUp = false;
+    private void Input_Animation2()
+    {
+        animator.SetFloat("Speed", pcController.velocity.magnitude);
+
+        if (Input.GetMouseButtonDown(0) && !bHandUp)
+        {
+            bHandUp = true;
+            animator.SetBool("HandUp", bHandUp);
+            StartCoroutine("HandUp_Routine");
+        }
+    }
+
+    IEnumerator HandUp_Routine()
+    {
+        while(true)
+        {
+            yield return new WaitForSeconds(0.0f);
+            if (bHandUp && animator.GetCurrentAnimatorStateInfo(1).IsName("UpperBody.Attack"))
+            {
+                if(animator.GetCurrentAnimatorStateInfo(1).normalizedTime >= 1.0f)
+                {
+                    // >> 애니메이션 끝난 상태
+                    bHandUp = false;
+                    animator.SetBool("HandUp", bHandUp);
+                    break;
+                }
+            }
+        }
     }
 }
