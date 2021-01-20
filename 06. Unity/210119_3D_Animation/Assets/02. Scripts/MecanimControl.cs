@@ -71,7 +71,7 @@ public class MecanimControl : MonoBehaviour
 
     private void Input_Animation()
     {
-        // animator.SetFloat("Speed", pcController.velocity.magnitude);
+        animator.SetFloat("Speed", pcController.velocity.magnitude);
 
         if(Input.GetMouseButtonDown(0))
         {
