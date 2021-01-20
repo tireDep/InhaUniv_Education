@@ -34,12 +34,14 @@ public class Item : MonoBehaviour
         {
             tempObj = Instantiate(effectObj_Player, this.transform.position, Quaternion.identity);
             other.GetComponentInParent<MecanimControl>().ItemCount = 1;
+            SoundSys.Instance.StopAndPlay(0);
         }
         else if (other.CompareTag("Enemy") && effectObj_Enemy != null)
         {
             tempObj = Instantiate(effectObj_Enemy, this.transform.position, Quaternion.identity);
             other.GetComponent<NavEnemy>().setZero();
             other.GetComponentInParent<NavEnemy>().ItemCount = 1;
+            SoundSys.Instance.StopAndPlay(1);
         }
         else
             return;

@@ -43,10 +43,10 @@ public class MecanimControl : MonoBehaviour
         // 
         // StartCoroutine("CheckAttack");
 
-        Input_Animation();
+        // Input_Animation();
         // Input_Animation2();
 
-        // CharacterController_Slerp();        
+        CharacterController_Slerp();        
     }
 
     private void CheckAttack()
@@ -62,7 +62,7 @@ public class MecanimControl : MonoBehaviour
 
     void CharacterController_Slerp()
     {
-        Vector3 direction = new Vector3(Input.GetAxis("Horizontal"), 0, Input.GetAxis("Vertical"));
+        Vector3 direction = new Vector3(Input.GetAxis("Horizontal") * -1, 0, Input.GetAxis("Vertical") * -1);
 
         if (direction.sqrMagnitude > 0.01f)
         {
@@ -77,6 +77,7 @@ public class MecanimControl : MonoBehaviour
         {
 
         }
+        animator.SetFloat("Speed", pcController.velocity.magnitude);
         pcController.Move(direction * fSpeed * Time.deltaTime + Physics.gravity);
 
     }
@@ -92,12 +93,12 @@ public class MecanimControl : MonoBehaviour
         animator.SetFloat("Speed", agent.velocity.magnitude);
         // animator.SetFloat("Speed", pcController.velocity.magnitude);
         //
-        // if(Input.GetMouseButtonDown(0))
-        // {
-        //     animator.SetTrigger("HandUp");       
-        // }
+        //if (Input.GetMouseButtonDown(0))
+        //{
+        //    animator.SetTrigger("HandUp");
+        //}
 
-        if(Input.GetMouseButton(0))
+        if (Input.GetMouseButton(0))
         {
             Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
             RaycastHit hit;
@@ -105,7 +106,7 @@ public class MecanimControl : MonoBehaviour
             if(Physics.Raycast(ray,out hit))
             {
                 agent.destination = hit.point;
-                Debug.Log(hit.point);
+                // Debug.Log(hit.point);
             }
         }
     }

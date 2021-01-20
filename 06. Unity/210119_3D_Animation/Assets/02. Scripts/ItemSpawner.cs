@@ -116,6 +116,11 @@ public class ItemSpawner : MonoBehaviour
     public GameObject ResultDialog = null;
     public Text FinScore = null;
     public Text PlayerState = null;
+
+    public GameObject PlayerEffect = null;
+    public GameObject EnemyEffect = null;
+    public GameObject SameEffect = null;
+    private bool isMake = false;
     private void FixedUpdate()
     {
         if(cnt > 0)
@@ -136,12 +141,44 @@ public class ItemSpawner : MonoBehaviour
             InGameDiallog.SetActive(false);
             ResultDialog.SetActive(true);
 
-            if (GameObject.FindGameObjectWithTag("Player").GetComponent<MecanimControl>().ItemCount > GameObject.FindGameObjectWithTag("Enemy").GetComponent<NavEnemy>().ItemCount)
-                PlayerState.text = "Player Win";
-            else
-                PlayerState.text = "Player Defeat";
+            int playerScore = GameObject.FindGameObjectWithTag("Player").GetComponent<MecanimControl>().ItemCount;
+            int enemyScore = GameObject.FindGameObjectWithTag("Enemy").GetComponent<NavEnemy>().ItemCount;
+            
+            Vector3 pos = Camera.main.transform.position;
+            pos.y = 0;
 
-            FinScore.text = PlayerScoreText.text + " : " + EnemySocreText.text;
+            if (playerScore > enemyScore)
+            {
+                if (!isMake)
+                {
+                    GameObject obj = Instantiate(PlayerEffect, pos, Quaternion.identity);
+                    Destroy(obj, 1.0f);
+                    isMake = true;
+                }
+                PlayerState.text = "Player Win";
+            }
+            else if (playerScore < enemyScore)
+            {
+                if (!isMake)
+                {
+                    GameObject obj = Instantiate(EnemyEffect, pos, Quaternion.identity);
+                    Destroy(obj, 1.0f);
+                    isMake = true;
+                }
+                PlayerState.text = "Player Defeat";
+            }
+            else
+            {
+                if (!isMake)
+                {
+                    GameObject obj = Instantiate(SameEffect, pos, Quaternion.identity);
+                    Destroy(obj, 1.0f);
+                    isMake = true;
+                }
+                PlayerState.text = "Same Score";
+            }
+
+            FinScore.text = playerScore.ToString() + " : " + enemyScore.ToString();
         }
     }
 
@@ -152,6 +189,7 @@ public class ItemSpawner : MonoBehaviour
         while(true)
         {
             agent.transform.position = new Vector3(Random.Range(-20, 20), 2, Random.Range(0, 20));
+            // agent.transform.position = new Vector3(Random.Range(-45, 45), 2, Random.Range(-45, 45));
 
             if (agent.CalculatePath(agent.transform.position, agent.path))
             {

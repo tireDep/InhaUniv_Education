@@ -7,6 +7,9 @@ TagManager:
   - Gem
   - Enemy
   - Map
+  - Coin
+  - Floor
+  - Maze
   layers:
   - Default
   - TransparentFX
