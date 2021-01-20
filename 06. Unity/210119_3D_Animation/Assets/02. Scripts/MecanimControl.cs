@@ -1,17 +1,29 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.AI;
 
 public class MecanimControl : MonoBehaviour
 {
-    private float fSpeed = 10.0f;
+    [SerializeField]
+    private float fSpeed = 20.0f;
     private float fRotSpeed = 360.0f;
 
     CharacterController pcController;
     Animator animator;
 
+    NavMeshAgent agent;
+
+    private int itemCnt = 0;
+    public int ItemCount
+    {
+        get { return itemCnt; }
+        set { itemCnt += value; }
+    }
+
     void Start()
     {
+        agent = GetComponent<NavMeshAgent>();
         pcController = GetComponent<CharacterController>();
         animator = GetComponent<Animator>();
     }
@@ -34,7 +46,7 @@ public class MecanimControl : MonoBehaviour
         Input_Animation();
         // Input_Animation2();
 
-        CharacterController_Slerp();        
+        // CharacterController_Slerp();        
     }
 
     private void CheckAttack()
@@ -69,13 +81,32 @@ public class MecanimControl : MonoBehaviour
 
     }
 
+    Vector3 target = new Vector3(0, 0, 0);
     private void Input_Animation()
     {
-        animator.SetFloat("Speed", pcController.velocity.magnitude);
+        //if (target != null)
+        //{
+        //    agent.destination = target;
+        //}
 
-        if(Input.GetMouseButtonDown(0))
+        animator.SetFloat("Speed", agent.velocity.magnitude);
+        // animator.SetFloat("Speed", pcController.velocity.magnitude);
+        //
+        // if(Input.GetMouseButtonDown(0))
+        // {
+        //     animator.SetTrigger("HandUp");       
+        // }
+
+        if(Input.GetMouseButton(0))
         {
-            animator.SetTrigger("HandUp");       
+            Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+            RaycastHit hit;
+
+            if(Physics.Raycast(ray,out hit))
+            {
+                agent.destination = hit.point;
+                Debug.Log(hit.point);
+            }
         }
     }
 
@@ -108,5 +139,11 @@ public class MecanimControl : MonoBehaviour
                 }
             }
         }
+    }
+
+    private void OnCollisionEnter(Collision collision)
+    {
+        if (collision.collider.CompareTag("Map"))
+            return;
     }
 }

@@ -1,0 +1,13 @@
+fileFormatVersion: 2
+guid: 7dcd5cae31fa6034cb0c4ee8c635530d
+MonoImporter:
+  externalObjects: {}
+  serializedVersion: 2
+  defaultReferences:
+  - effectObj_Player: {fileID: 180128, guid: 6586ff0f14125534cae2f5d8f04b7871, type: 3}
+  - effectObj_Enemy: {fileID: 120410, guid: 6636b3078b0905e489f698a11b7a6b6b, type: 3}
+  executionOrder: 0
+  icon: {instanceID: 0}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
