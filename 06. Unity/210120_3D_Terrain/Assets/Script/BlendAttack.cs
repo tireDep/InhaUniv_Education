@@ -20,31 +20,52 @@ public class BlendAttack : MonoBehaviour, IAction
         animator = GetComponentInChildren<Animator>();
     }
 
+    private Damage damage = null;
     void Update()
     {
+        // if (animator.GetCurrentAnimatorStateInfo(0).IsName("Attack"))
+        //    Debug.Log("fdashkjfdskjsdhkjsdfakhj");
+
+        //int layerCnt = 0;
+        //var clipInfo = animator.GetCurrentAnimatorClipInfo(layerCnt);
+        //for(int i=0;i<clipInfo.Length;i++)
+        //{
+        //    print(i + " : " +clipInfo[i].clip.name);
+        //}
+
         if (_target == null)
             return;
 
-        if(IsInRange() == true)
+        if(IsInRange() == true && animator.GetCurrentAnimatorStateInfo(0).nameHash != Animator.StringToHash("Base Layer.Attack"))
         {
-            if (animator.GetCurrentAnimatorStateInfo(0).normalizedTime > 1.0f)
+           // if (animator.GetCurrentAnimatorStateInfo(0).normalizedTime > 1.0f)
+           // if(clipInfo[0].clip.name != "Attack")
+            {
                 animator.SetTrigger("Attack");
-
-            print("Attack");
+            }
             move.End();
+            print("Attack");
+
+            damage = _target.GetComponent<Damage>();
+
+            End();
         }
         else
         {
             print("None");
             move.MoveTo(_target.position);
         }
+
     }
 
     public void Begin(object obj)
     {
         Damage target = obj as Damage;
 
-        Debug.Assert(target != null, obj.ToString() + "Damage type Need");
+        if (target == null)
+            return;
+
+        // Debug.Assert(target != null, obj.ToString() + "Damage type Need");
         // >> asset 조건이 false여야 실행됨에 주의
 
         actionManager.StartAction(this);
@@ -64,6 +85,16 @@ public class BlendAttack : MonoBehaviour, IAction
         Vector2 my = new Vector2(transform.position.x, transform.position.z);
 
         return Vector2.Distance(other, my) < range;
+    }
+
+    public void Hit()
+    {
+        if (damage != null)
+        {
+            damage.Damaged();
+            damage = null;
+            Debug.Log("Hit");
+        }         
     }
 
 }
