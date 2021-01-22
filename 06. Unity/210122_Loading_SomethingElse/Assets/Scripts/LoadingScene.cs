@@ -24,14 +24,8 @@ public class LoadingScene : MonoBehaviour
     {
         // >> test
         // >> 2초 대기
-
-        if(asyncOperation.progress >= 0.9f)
-        {
-            delayTime += Time.deltaTime;
-
-            if (delayTime > 1.0f)
-                asyncOperation.allowSceneActivation = true;
-        }
+        
+        delayTime += Time.deltaTime;
 
         // 진행바 표시는 asyncOperation.progress 값 사용하면 됨
     }
@@ -50,10 +44,18 @@ public class LoadingScene : MonoBehaviour
         {
             // >> 이 시간동안 대기
             // : to do Something
+
             yield return null;
         }
 
-        // asyncOperation.allowSceneActivation = false;
-        // >> test 코드에 존재함
+        while (asyncOperation.progress >= 0.9f)
+        {
+            yield return new WaitForSeconds(0.1f);
+
+            if (delayTime > 1.0f)
+                break;
+        }
+
+        asyncOperation.allowSceneActivation = true;
     }
 }
