@@ -28,7 +28,7 @@ public class GameManager : MonoBehaviour
     }
 
     private float fLife = 100.0f;
-    private float fReduceLife = 10.0f;
+    private float fReduceLife = 50.0f;
     private bool isLive = true;
     public float Life
     {
@@ -200,4 +200,110 @@ public class GameManager : MonoBehaviour
 
         }
     }
+
+    // List<Dictionary<string, float>> rankScore;
+    // Dictionary<string, float> tempData = null;
+
+    public string NextSceneName;
+
+    public class saveData
+    {
+        public string strName;
+        public float fScore;
+    }
+    public List<saveData> listSaveData = null;
+    public List<saveData> SaveLoadData()
+    {
+        #region test
+        //if(tempData == null)
+        //{
+        //    tempData = new Dictionary<string, float>();
+        //
+        //    tempData.Add(PlayerPrefs.GetString("ID1", "NONE_1"), PlayerPrefs.GetFloat("Score1", 0));
+        //    rankScore.Add(tempData);        tempData = null;
+        //
+        //    tempData.Add(PlayerPrefs.GetString("ID2", "NONE_2"), PlayerPrefs.GetFloat("Score2", 0));
+        //    rankScore.Add(tempData); tempData = null;
+        //
+        //    tempData.Add(PlayerPrefs.GetString("ID3", "NONE_3"), PlayerPrefs.GetFloat("Score3", 0));
+        //    rankScore.Add(tempData); tempData = null;
+        //}
+        //
+        //var enumerator = rankScore.GetEnumerator();
+        //
+        //while(enumerator.MoveNext())
+        //{
+        //    var pair = enumerator.Current;
+        //
+        //    Debug.Log(pair.Key + " : " + pair.Value.ToString());
+        //}
+        //
+        ////while(enumerator.MoveNext())
+        ////{
+        ////    var pair = enumerator.Current;
+        ////
+        ////    if(pair.Value < this.fScore)
+        ////    {
+        ////        tempData[pair.Value] = strID;
+        ////        tempData[pair.Key] = fScore;
+        ////    }
+        ////    Debug.Log(pair.Key + " : " + pair.Value.ToString());
+        ////}
+        #endregion
+
+        #region LoadData
+        if (listSaveData == null)
+            listSaveData = new List<saveData>();
+
+        // PlayerPrefs.DeleteAll();
+
+        saveData tempData = new saveData();
+        tempData.strName = PlayerPrefs.GetString("ID1", "NONE");
+        tempData.fScore = PlayerPrefs.GetFloat("Score1", 0);
+        listSaveData.Add(tempData);
+
+        saveData tempData2 = new saveData();
+        tempData2.strName = PlayerPrefs.GetString("ID2", "NONE");
+        tempData2.fScore = PlayerPrefs.GetFloat("Score2", 0);
+        listSaveData.Add(tempData2);
+
+        saveData tempData3 = new saveData();
+        tempData3.strName = PlayerPrefs.GetString("ID3", "NONE");
+        tempData3.fScore = PlayerPrefs.GetFloat("Score3", 0);
+        listSaveData.Add(tempData3);
+        #endregion
+
+        var enumerator = listSaveData.GetEnumerator();
+
+        while (enumerator.MoveNext())
+        {
+            var pair = enumerator.Current;
+
+            if (pair.fScore < this.fScore)
+            {
+                string strTemp = pair.strName;
+                float scoreTemp = pair.fScore;
+
+                pair.strName = strID;
+                pair.fScore = this.fScore;
+
+                this.strID = strTemp;
+                this.fScore = scoreTemp;
+
+                // break;
+            }
+        }
+
+        PlayerPrefs.SetString("ID1", listSaveData[0].strName);
+        PlayerPrefs.SetFloat("Score1", listSaveData[0].fScore);
+
+        PlayerPrefs.SetString("ID2", listSaveData[1].strName);
+        PlayerPrefs.SetFloat("Score2", listSaveData[1].fScore);
+
+        PlayerPrefs.SetString("ID3", listSaveData[2].strName);
+        PlayerPrefs.SetFloat("Score3", listSaveData[2].fScore);
+
+        return listSaveData;
+    }
+
 }

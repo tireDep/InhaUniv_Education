@@ -50,12 +50,16 @@ public class UI : MonoBehaviour
             GameManager.Instance.SetBGM(1);
             GameManager.Instance.SetSFX(3);
             TextID.text = GameManager.Instance.PlayerID;
+
+            isCheck = false;
         }
         else if (scene.name.Contains("End") && !isChangeEnd)
         {
             isChangeEnd = true;
             GameManager.Instance.SetSFX(3);
-            SetScore(GameManager.Instance.Score);
+            // SetScore(GameManager.Instance.Score);
+
+            SetRankingScore();
 
             isChangeMain = false;
             isChangeGame = false;
@@ -65,7 +69,9 @@ public class UI : MonoBehaviour
     private bool isPress = false;
     private void onStartBtnPress()
     {
-        SceneManager.LoadScene("01. Game");
+        // SceneManager.LoadScene("01. Game");
+        GameManager.Instance.NextSceneName = "01. Game";
+        SceneManager.LoadScene("03. Load");
     }
 
     private void onInputID()
@@ -100,7 +106,7 @@ public class UI : MonoBehaviour
     //private void OnGUI()
     //{
     //    scene = SceneManager.GetActiveScene();
-
+    //
     //    //if (scene.name.Contains("Main"))
     //    //{
     //    //    if(isChangeMain == false)
@@ -108,22 +114,22 @@ public class UI : MonoBehaviour
     //    //        GameManager.Instance.SetBGM(0);
     //    //        isChangeMain = true;
     //    //    }
-
+    //
     //    //    SceneChangeUI("StartScene", "Start", "01. Game");
     //    //    GameManager.Instance.Reset();
     //    //}
-
+    //
     //    //else if (scene.name.Contains("End"))
     //    //{
     //    //    Vector3 camPos = new Vector3(Camera.main.pixelWidth / 2, Camera.main.pixelHeight / 2);
     //    //    GUI.Box(new Rect(camPos.x - 30, camPos.y - 50, 100, 30), "Score : " + GameManager.Instance.Score);
-
+    //
     //    //    SceneChangeUI("EndScene", "Retry", "00. Main");
-
+    //
     //    //    isChangeGame = false;
     //    //    isChangeMain = false;
     //    //}
-
+    //
     //    //else if (scene.name.Contains("Game"))
     //    //{
     //    //    if (isChangeGame == false)
@@ -131,19 +137,19 @@ public class UI : MonoBehaviour
     //    //        GameManager.Instance.SetBGM(1);
     //    //        isChangeGame = true;
     //    //    }
-
+    //
     //    //    GUILayout.Label("PlayerLife : " + GameManager.Instance.Life);
     //    //    GUILayout.Label("PlayerScore : " + GameManager.Instance.Score);
     //    //}
-
+    //
     //}
-
+    //
     ////private void SceneChangeUI(string nowSceneName, string btnName, string nextScene)
     ////{
     ////    Vector3 camPos = new Vector3(Camera.main.pixelWidth / 2, Camera.main.pixelHeight / 2);
-
+    //
     ////    GUI.Box(new Rect(camPos.x - 30, camPos.y, 100, 30), nowSceneName);
-
+    //
     ////    if (GUI.Button(new Rect(camPos.x - 10, camPos.y + 45, 50, 30), btnName))
     ////        SceneManager.LoadScene(nextScene);
     ////}
@@ -195,5 +201,26 @@ public class UI : MonoBehaviour
     public void SetID(string strID)
     {
         TextID.text = GameManager.Instance.PlayerID;
+    }
+
+    public Text Score_1 = null;
+    public Text Score_2 = null;
+    public Text Score_3 = null;
+
+    private bool isCheck = false;
+    public void SetRankingScore()
+    {
+        if(!isCheck)
+        {
+            isCheck = true;
+            GameManager.Instance.SaveLoadData();
+        }
+
+        if (Score_1 != null)
+            Score_1.text = GameManager.Instance.listSaveData[0].strName + "\t\t" + GameManager.Instance.listSaveData[0].fScore.ToString();
+        if (Score_2 != null)
+            Score_2.text = GameManager.Instance.listSaveData[1].strName + "\t\t" + GameManager.Instance.listSaveData[1].fScore.ToString();
+        if (Score_3 != null)
+            Score_3.text = GameManager.Instance.listSaveData[2].strName + "\t\t" + GameManager.Instance.listSaveData[2].fScore.ToString();
     }
 }

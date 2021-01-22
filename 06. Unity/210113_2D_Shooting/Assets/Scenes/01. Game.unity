@@ -2996,6 +2996,9 @@ MonoBehaviour:
   TogBgm: {fileID: 287635313}
   TogSFX: {fileID: 174756806}
   pauseObj: {fileID: 1806442815}
+  Score_1: {fileID: 0}
+  Score_2: {fileID: 0}
+  Score_3: {fileID: 0}
 --- !u!1 &1106599428
 GameObject:
   m_ObjectHideFlags: 0
@@ -5478,6 +5481,9 @@ MonoBehaviour:
   TogBgm: {fileID: 0}
   TogSFX: {fileID: 0}
   pauseObj: {fileID: 0}
+  Score_1: {fileID: 0}
+  Score_2: {fileID: 0}
+  Score_3: {fileID: 0}
 --- !u!4 &2044540765
 Transform:
   m_ObjectHideFlags: 0

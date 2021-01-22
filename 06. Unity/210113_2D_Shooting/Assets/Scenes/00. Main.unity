@@ -316,6 +316,9 @@ MonoBehaviour:
   TextID: {fileID: 0}
   InputFieldID: {fileID: 0}
   ImageScoreArr: []
+  TogBgm: {fileID: 0}
+  TogSFX: {fileID: 0}
+  pauseObj: {fileID: 0}
 --- !u!4 &535642507
 Transform:
   m_ObjectHideFlags: 0
@@ -806,6 +809,9 @@ MonoBehaviour:
   TextID: {fileID: 0}
   InputFieldID: {fileID: 1780936341}
   ImageScoreArr: []
+  TogBgm: {fileID: 0}
+  TogSFX: {fileID: 0}
+  pauseObj: {fileID: 0}
 --- !u!114 &1350723948
 MonoBehaviour:
   m_ObjectHideFlags: 0
