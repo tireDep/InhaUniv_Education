@@ -16,8 +16,13 @@ public:
 	virtual void ResizeScreen() override { };
 
 private:
+	//Shader* shader;
+	//Vertex vertices[6];
+	//ID3D11Buffer* vertexBuffer;
+
+	// Homework
 	Shader* shader;
-	Vertex vertices[6];
+	Vertex vertices[10];
 	ID3D11Buffer* vertexBuffer;
 };
 
