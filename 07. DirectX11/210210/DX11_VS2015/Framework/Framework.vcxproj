@@ -21,7 +21,11 @@
   <ItemGroup>
     <ClCompile Include="Environment\Terrain.cpp" />
     <ClCompile Include="Mesh.cpp" />
+    <ClCompile Include="MeshGrid.cpp" />
     <ClCompile Include="MeshQuad.cpp" />
+    <ClCompile Include="Meshs\MeshCube.cpp" />
+    <ClCompile Include="Meshs\MeshCylinder.cpp" />
+    <ClCompile Include="Meshs\MeshSphere.cpp" />
     <ClCompile Include="Renders\Context.cpp" />
     <ClCompile Include="Renders\Shader.cpp" />
     <ClCompile Include="Renders\Texture.cpp" />
@@ -47,7 +51,11 @@
     <ClInclude Include="Environment\Terrain.h" />
     <ClInclude Include="Framework.h" />
     <ClInclude Include="Mesh.h" />
+    <ClInclude Include="MeshGrid.h" />
     <ClInclude Include="MeshQuad.h" />
+    <ClInclude Include="Meshs\MeshCube.h" />
+    <ClInclude Include="Meshs\MeshCylinder.h" />
+    <ClInclude Include="Meshs\MeshSphere.h" />
     <ClInclude Include="Renders\Context.h" />
     <ClInclude Include="Renders\Shader.h" />
     <ClInclude Include="Renders\Texture.h" />

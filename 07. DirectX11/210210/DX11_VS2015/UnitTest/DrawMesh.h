@@ -19,4 +19,10 @@ private :
 	Shader* shader; 
 
 	MeshQuad* quad;
+
+	MeshGrid* grid;
+
+	MeshCube* cube;
+	MeshSphere* sphere[5];
+	MeshCylinder* cylinder[5];
 };
