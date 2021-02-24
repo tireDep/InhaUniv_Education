@@ -71,6 +71,31 @@ void DrawTerrain::Render()
 		Gui::Get()->RenderText(10, 100, 1, 0, 0, text);
 	}
 
+	{
+		// 2D·Î Ç¥Çö
+		// static Vector3 position(123, 10, 128);
+		// 
+		// if (Keyboard::Get()->Press('A'))
+		// 	position.x -= 10.0f * Time::Delta();
+		// if (Keyboard::Get()->Press('D'))
+		// 	position.x += 10.0f * Time::Delta();
+
+		Vector3 position;
+		sphere->Position(&position);
+		position.y += 2.0f;
+
+		Vector3 project;
+		Matrix world;
+		D3DXMatrixIdentity(&world);
+
+		Matrix V, P;
+		V = Context::Get()->View();
+		P = Context::Get()->Projection();
+
+		Context::Get()->GetViewport()->Project(&project, position, world, V, P);
+
+		Gui::Get()->RenderText(project.x, project.y, 0, 0, 1, "Test");
+	}
 
 	terrain->Render(); 
 	sphere->Render();
