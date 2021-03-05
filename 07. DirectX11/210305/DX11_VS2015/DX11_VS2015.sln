@@ -1,0 +1,61 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 14
+VisualStudioVersion = 14.0.25420.1
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Framework", "Framework\Framework.vcxproj", "{FCBFD52F-D55D-4D1E-B867-AAE088E411A1}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "UnitTest", "UnitTest\UnitTest.vcxproj", "{C584E0D0-BAD4-4621-B240-E2A52C10BCA8}"
+	ProjectSection(ProjectDependencies) = postProject
+		{FCBFD52F-D55D-4D1E-B867-AAE088E411A1} = {FCBFD52F-D55D-4D1E-B867-AAE088E411A1}
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "_Shaders", "_Shaders", "{C8468150-4B23-4BE1-A6CE-584A352700C5}"
+	ProjectSection(SolutionItems) = preProject
+		..\_Shaders\000_Header.fx = ..\_Shaders\000_Header.fx
+		..\_Shaders\000_Light.fx = ..\_Shaders\000_Light.fx
+		..\_Shaders\000_Terrain.fx = ..\_Shaders\000_Terrain.fx
+		..\_Shaders\001_Vertex.fx = ..\_Shaders\001_Vertex.fx
+		..\_Shaders\002_Rect.fx = ..\_Shaders\002_Rect.fx
+		..\_Shaders\003_World.fx = ..\_Shaders\003_World.fx
+		..\_Shaders\004_Quad.fx = ..\_Shaders\004_Quad.fx
+		..\_Shaders\005_Texture.fx = ..\_Shaders\005_Texture.fx
+		..\_Shaders\006_Terrain.fx = ..\_Shaders\006_Terrain.fx
+		..\_Shaders\007_Mesh.fx = ..\_Shaders\007_Mesh.fx
+		..\_Shaders\008_Texture.fx = ..\_Shaders\008_Texture.fx
+		..\_Shaders\009_Terrain.fx = ..\_Shaders\009_Terrain.fx
+		..\_Shaders\010_Terrain.fx = ..\_Shaders\010_Terrain.fx
+		..\_Shaders\011_Terrain.fx = ..\_Shaders\011_Terrain.fx
+		..\_Shaders\012_Terrain.fx = ..\_Shaders\012_Terrain.fx
+		..\_Shaders\013_Terrain_Splatting.fx = ..\_Shaders\013_Terrain_Splatting.fx
+	EndProjectSection
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|x64 = Debug|x64
+		Debug|x86 = Debug|x86
+		Release|x64 = Release|x64
+		Release|x86 = Release|x86
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{FCBFD52F-D55D-4D1E-B867-AAE088E411A1}.Debug|x64.ActiveCfg = Debug|x64
+		{FCBFD52F-D55D-4D1E-B867-AAE088E411A1}.Debug|x64.Build.0 = Debug|x64
+		{FCBFD52F-D55D-4D1E-B867-AAE088E411A1}.Debug|x86.ActiveCfg = Debug|Win32
+		{FCBFD52F-D55D-4D1E-B867-AAE088E411A1}.Debug|x86.Build.0 = Debug|Win32
+		{FCBFD52F-D55D-4D1E-B867-AAE088E411A1}.Release|x64.ActiveCfg = Release|x64
+		{FCBFD52F-D55D-4D1E-B867-AAE088E411A1}.Release|x64.Build.0 = Release|x64
+		{FCBFD52F-D55D-4D1E-B867-AAE088E411A1}.Release|x86.ActiveCfg = Release|Win32
+		{FCBFD52F-D55D-4D1E-B867-AAE088E411A1}.Release|x86.Build.0 = Release|Win32
+		{C584E0D0-BAD4-4621-B240-E2A52C10BCA8}.Debug|x64.ActiveCfg = Debug|x64
+		{C584E0D0-BAD4-4621-B240-E2A52C10BCA8}.Debug|x64.Build.0 = Debug|x64
+		{C584E0D0-BAD4-4621-B240-E2A52C10BCA8}.Debug|x86.ActiveCfg = Debug|Win32
+		{C584E0D0-BAD4-4621-B240-E2A52C10BCA8}.Debug|x86.Build.0 = Debug|Win32
+		{C584E0D0-BAD4-4621-B240-E2A52C10BCA8}.Release|x64.ActiveCfg = Release|x64
+		{C584E0D0-BAD4-4621-B240-E2A52C10BCA8}.Release|x64.Build.0 = Release|x64
+		{C584E0D0-BAD4-4621-B240-E2A52C10BCA8}.Release|x86.ActiveCfg = Release|Win32
+		{C584E0D0-BAD4-4621-B240-E2A52C10BCA8}.Release|x86.Build.0 = Release|Win32
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal
