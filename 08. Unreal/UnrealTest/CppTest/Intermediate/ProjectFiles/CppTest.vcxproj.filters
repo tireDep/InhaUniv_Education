@@ -1,0 +1,51 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <None Include="..\..\CppTest.uproject" />
+    <Filter Include="Source">
+      <UniqueIdentifier>{80DF4ADF-1637-4669-AAEC-6F121538013E}</UniqueIdentifier>
+    </Filter>
+    <None Include="..\..\Source\CppTest.Target.cs">
+      <Filter>Source</Filter>
+    </None>
+    <None Include="..\..\Source\CppTestEditor.Target.cs">
+      <Filter>Source</Filter>
+    </None>
+    <Filter Include="Config">
+      <UniqueIdentifier>{8CA91A2F-0481-4898-85B3-85F089E99977}</UniqueIdentifier>
+    </Filter>
+    <None Include="..\..\Config\DefaultEditor.ini">
+      <Filter>Config</Filter>
+    </None>
+    <None Include="..\..\Config\DefaultEngine.ini">
+      <Filter>Config</Filter>
+    </None>
+    <None Include="..\..\Config\DefaultGame.ini">
+      <Filter>Config</Filter>
+    </None>
+    <Filter Include="Source\CppTest">
+      <UniqueIdentifier>{B3389279-5F13-4215-9F88-ABE9C2A6CA90}</UniqueIdentifier>
+    </Filter>
+    <None Include="..\..\Source\CppTest\CppTest.Build.cs">
+      <Filter>Source\CppTest</Filter>
+    </None>
+    <ClCompile Include="..\..\Source\CppTest\CppTest.cpp">
+      <Filter>Source\CppTest</Filter>
+    </ClCompile>
+    <ClInclude Include="..\..\Source\CppTest\CppTest.h">
+      <Filter>Source\CppTest</Filter>
+    </ClInclude>
+    <ClCompile Include="..\..\Source\CppTest\CppTestGameModeBase.cpp">
+      <Filter>Source\CppTest</Filter>
+    </ClCompile>
+    <ClInclude Include="..\..\Source\CppTest\CppTestGameModeBase.h">
+      <Filter>Source\CppTest</Filter>
+    </ClInclude>
+    <ClCompile Include="..\..\Source\CppTest\HelloSphere.cpp">
+      <Filter>Source\CppTest</Filter>
+    </ClCompile>
+    <ClInclude Include="..\..\Source\CppTest\HelloSphere.h">
+      <Filter>Source\CppTest</Filter>
+    </ClInclude>
+  </ItemGroup>
+</Project>
